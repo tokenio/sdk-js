@@ -1,0 +1,26 @@
+{
+  "name": "sdk-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run buildBrowser && npm run buildNode",
+    "buildBrowser": "webpack --config config/webpack.config.js",
+    "buildBrowserw": "webpack --config config/webpack.config.js -w",
+    "buildNode": "webpack --config config/webpack.config.node.js",
+    "buildNodew": "webpack --config config/webpack.config.node.js -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.14.0",
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0"
+  },
+  "dependencies": {
+    "es6-promise": "^3.3.1",
+    "webpack": "^1.13.2"
+  }
+}
