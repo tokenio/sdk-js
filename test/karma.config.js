@@ -17,7 +17,7 @@ module.exports = function(config) {
       // add webpack as preprocessor
       '*.spec.js': ['webpack'],
     },
-
+    reporters: [ 'mocha'],
     webpack: webpackConfig,
 
     webpackMiddleware: {
