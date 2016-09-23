@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "npm run testNode",
     "testBrowser": "./node_modules/karma/bin/karma start test/karma.config.js",
     "testNode": "node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js \"test/**/*.spec.js\"",
     "build": "npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser && WEBPACK_ENV=build npm run buildNode",
@@ -33,6 +34,7 @@
     "base64url": "^2.0.0",
     "es6-promise": "^3.3.1",
     "js-sha256": "^0.3.2",
+    "json-stable-stringify": "^1.0.1",
     "mocha-webpack": "^0.6.0",
     "sinon": "^1.17.6",
     "supercop.js": "^2.0.1",
