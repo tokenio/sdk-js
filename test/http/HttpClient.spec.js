@@ -1,10 +1,10 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-import Member from '../src/main/Member';
-import HttpClient from '../src/http/HttpClient';
-import AuthHttpClient from '../src/http/AuthHttpClient';
-import Crypto from '../src/Crypto';
+import Member from '../../src/main/Member';
+import HttpClient from '../../src/http/HttpClient';
+import AuthHttpClient from '../../src/http/AuthHttpClient';
+import Crypto from '../../src/Crypto';
 
 describe('MemberId', () => {
   it('should generate a memberId', () => {

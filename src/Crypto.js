@@ -23,5 +23,9 @@ class Crypto {
   static strKey(key) {
     return base64Url(key);
   }
+
+  static bufferKey(key) {
+    return base64Url.toBuffer(key);
+  }
 }
 export default Crypto;

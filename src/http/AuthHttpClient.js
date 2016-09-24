@@ -11,6 +11,16 @@ const instance = axios.create({
 
 class AuthHttpClient {
 
+  static getMember(keys, memberId) {
+    const config = {
+      method: 'get',
+      url: `/member`,
+      data: {},
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config).then((res) => res.data.member);
+  }
+
   static addKey(keys, memberId, prevHash, publicKey, level=0, tags=[]) {
     const update = {
       memberId: memberId,
