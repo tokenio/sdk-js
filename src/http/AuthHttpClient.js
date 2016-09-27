@@ -1,32 +1,110 @@
 import Crypto from '../Crypto';
 import Auth from './Auth';
-import { uriHost } from '../constants';
+import {uriHost, defaultNotificationProvider} from '../constants';
+const stringify = require('json-stable-stringify');
 
-// Promise polyfill for IE and older browsers
-require('es6-promise').polyfill();
 const axios = require('axios');
 const instance = axios.create({
-  baseURL: uriHost,
+  baseURL: uriHost
 });
 
 class AuthHttpClient {
+  static subscribeDevice(keys, memberId, notificationUri, provider,
+    platform, tags) {
+    const req = {
+      provider,
+      notificationUri,
+      platform,
+      tags
+    };
+    const config = {
+      method: 'post',
+      url: `/devices`,
+      data: req
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
 
+  //
+  // ACCOUNTS
+  //
+  static linkAccounts(keys, memberId, bankId, accountLinkPayload) {
+    const req = {
+      bankId,
+      accountLinkPayload
+    };
+    const config = {
+      method: 'post',
+      url: `/accounts`,
+      data: req
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static lookupAccounts(keys, memberId) {
+    const config = {
+      method: 'get',
+      url: `/accounts`
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static setAccountName(keys, memberId, accountId, name) {
+    const config = {
+      method: 'patch',
+      url: `/accounts/${accountId}?name={name}`
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  //
+  // Tokens
+  //
+  static createPaymentToken(keys, memberId, paymentToken) {
+    const config = {
+      method: 'post',
+      url: `/pay-tokens`,
+      data: {
+        token: paymentToken
+      }
+    };
+
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static lookupToken(keys, memberId, tokenId) {
+    const config = {
+      method: 'get',
+      url: `/tokens/${tokenId}`
+    };
+
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  //
+  // Directory
+  //
   static getMember(keys, memberId) {
     const config = {
       method: 'get',
-      url: `/member`,
-      data: {},
+      url: `/member`
     };
     Auth.addAuthorizationHeader(keys, memberId, config);
-    return instance(config).then((res) => res.data.member);
+    return instance(config);
   }
 
-  static addKey(keys, memberId, prevHash, publicKey, level=0, tags=[]) {
+  static addKey(keys, memberId, prevHash, publicKey, level, tags) {
     const update = {
       memberId: memberId,
       addKey: {
-        publicKey: Crypto.strKey(publicKey),
-      },
+        publicKey: Crypto.strKey(publicKey)
+      }
     };
 
     // Do this because default keys are invisible in protos
@@ -34,7 +112,7 @@ class AuthHttpClient {
       update.addKey.tags = tags;
     }
 
-    if (level != 0) {
+    if (level !== 0) {
       update.level = level;
     }
 
@@ -45,8 +123,8 @@ class AuthHttpClient {
     const update = {
       memberId: memberId,
       removeKey: {
-        keyId,
-      },
+        keyId
+      }
     };
     return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
   }
@@ -55,8 +133,8 @@ class AuthHttpClient {
     const update = {
       memberId: memberId,
       addAlias: {
-        alias,
-      },
+        alias
+      }
     };
     return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
   }
@@ -65,14 +143,14 @@ class AuthHttpClient {
     const update = {
       memberId: memberId,
       removeAlias: {
-        alias,
-      },
+        alias
+      }
     };
     return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
   }
 
   static memberUpdate(keys, update, memberId, prevHash) {
-    if (prevHash != '') {
+    if (prevHash !== '') {
       update.prevHash = prevHash;
     }
 
@@ -81,16 +159,16 @@ class AuthHttpClient {
       signature: {
         keyId: keys.keyId,
         signature: Crypto.signJson(update, keys),
-        timestampMs: new Date().getTime(),
-      },
+        timestampMs: new Date().getTime()
+      }
     };
     const config = {
       method: 'post',
       url: `/members/${memberId}`,
-      data: req,
+      data: req
     };
     Auth.addAuthorizationHeader(keys, memberId, config);
-    return instance(config).then((res) => res.data.member);
+    return instance(config);
   }
 }
 

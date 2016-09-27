@@ -2,15 +2,15 @@ var webpackConfig = require('../config/webpack.config.js');
 webpackConfig.entry = {};
 
 // Karma configuration
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
 
     // ... normal karma configuration
     files: [
 
       // all files ending in ".spec"
-      { pattern: 'src/**/*.js', watched: true },
-      { pattern: '**/*.spec.js', watched: false },
+      {pattern: 'src/**/*.js', watched: true},
+      {pattern: '**/*.spec.js', watched: false}
 
       // each file acts as entry point for the webpack configuration
     ],
@@ -21,7 +21,7 @@ module.exports = function (config) {
     preprocessors: {
       // add webpack as preprocessor
       '**/*.js': ['webpack'],
-      '**/*.spec.js': ['webpack'],
+      '**/*.spec.js': ['webpack']
     },
     reporters: ['mocha'],
     webpack: webpackConfig,
@@ -29,7 +29,7 @@ module.exports = function (config) {
     webpackMiddleware: {
       // webpack-dev-middleware configuration
       // i. e.
-      stats: 'errors-only',
-    },
+      stats: 'errors-only'
+    }
   });
 };

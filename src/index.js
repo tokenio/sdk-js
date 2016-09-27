@@ -1,9 +1,12 @@
 import TokenIO from './main/TokenIO';
 
-const Token = {
-  createMember: (alias) => TokenIO.createMember(alias),
+// Promise polyfill for IE and older browsers
+require('es6-promise').polyfill();
 
-  login: (memberId, key) => TokenIO.loginMember(memberId, keys),
+const Token = {
+  createMember: alias => TokenIO.createMember(alias),
+  loginMember: (memberId, keys) => TokenIO.loginMember(memberId, keys),
+  loginMemberFromLocalStorage: () => TokenIO.loginMemberFromLocalStorage()
 };
 
 module.exports = Token;

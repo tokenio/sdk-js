@@ -22,4 +22,12 @@ describe('Key management', () => {
       assert.isAtLeast(sig.length, 50);
     }
   });
+
+  it('should convert to and from string', () => {
+    const keys = Crypto.generateKeys();
+    const keyStr = Crypto.strKey(keys.publicKey);
+    assert.isAtLeast(keyStr.length, 5);
+    const keyBuffer = Crypto.bufferKey(keyStr);
+    assert.equal(keys.publicKey[10], keyBuffer[10]);
+  });
 });

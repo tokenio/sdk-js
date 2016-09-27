@@ -1,7 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-import Member from '../../src/main/Member';
 import HttpClient from '../../src/http/HttpClient';
 import AuthHttpClient from '../../src/http/AuthHttpClient';
 import Crypto from '../../src/Crypto';
@@ -11,15 +10,15 @@ describe('AuthHttpClient', () => {
     const keys = Crypto.generateKeys();
     const keys2 = Crypto.generateKeys();
     return HttpClient.createMemberId()
-    .then((res) => {
+    .then(res => {
       assert.isOk(res.data.memberId);
       return HttpClient.addFirstKey(keys, res.data.memberId)
-      .then((member) => AuthHttpClient.addKey(keys, res.data.memberId,
-        member.lastHash, keys2.publicKey)
-        .then((member2) => {
-          assert.isOk(member2);
-          assert.isOk(member2.lastHash);
-          assert.equal(member2.keys.length, 2);
+      .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
+        res2.data.member.lastHash, keys2.publicKey, 0, [])
+        .then(res3 => {
+          assert.isOk(res3.data.member);
+          assert.isOk(res3.data.member.lastHash);
+          assert.equal(res3.data.member.keys.length, 2);
         })
       );
     });
@@ -29,15 +28,15 @@ describe('AuthHttpClient', () => {
     const keys = Crypto.generateKeys();
     const keys2 = Crypto.generateKeys();
     return HttpClient.createMemberId()
-    .then((res) => {
+    .then(res => {
       assert.isOk(res.data.memberId);
       return HttpClient.addFirstKey(keys, res.data.memberId)
-      .then((member) => AuthHttpClient.addKey(keys, res.data.memberId,
-        member.lastHash, keys2.publicKey)
-        .then((member2) => {
-          assert.equal(member2.keys.length, 2);
+      .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
+        res2.data.member.lastHash, keys2.publicKey, 0, [])
+        .then(res3 => {
+          assert.equal(res3.data.member.keys.length, 2);
           return AuthHttpClient.removeKey(keys, res.data.memberId,
-            member2.lastHash, keys2.keyId);
+            res3.data.member.lastHash, keys2.keyId);
         })
       );
     });
@@ -45,19 +44,18 @@ describe('AuthHttpClient', () => {
 
   it('should add aliases', () => {
     const keys = Crypto.generateKeys();
-    const keys2 = Crypto.generateKeys();
     return HttpClient.createMemberId()
-    .then((res) => {
+    .then(res => {
       assert.isOk(res.data.memberId);
       return HttpClient.addFirstKey(keys, res.data.memberId)
-      .then((member) => AuthHttpClient.addAlias(keys, res.data.memberId,
-        member.lastHash, Crypto.generateKeys().keyId)
-        .then((member2) => {
-          assert.equal(member2.aliases.length, 1);
+      .then(res2 => AuthHttpClient.addAlias(keys, res.data.memberId,
+        res2.data.member.lastHash, Crypto.generateKeys().keyId)
+        .then(res3 => {
+          assert.equal(res3.data.member.aliases.length, 1);
           return AuthHttpClient.addAlias(keys, res.data.memberId,
-                  member2.lastHash, Crypto.generateKeys().keyId)
-                  .then((member2) => {
-                    assert.equal(member2.aliases.length, 2);
+                  res3.data.member.lastHash, Crypto.generateKeys().keyId)
+                  .then(res4 => {
+                    assert.equal(res4.data.member.aliases.length, 2);
                   });
         })
       );
@@ -66,26 +64,24 @@ describe('AuthHttpClient', () => {
 
   it('should remove aliases', () => {
     const keys = Crypto.generateKeys();
-    const keys2 = Crypto.generateKeys();
     return HttpClient.createMemberId()
-    .then((res) => {
+    .then(res => {
       assert.isOk(res.data.memberId);
       return HttpClient.addFirstKey(keys, res.data.memberId)
-      .then((member) => AuthHttpClient.addAlias(keys, res.data.memberId,
-        member.lastHash, Crypto.generateKeys().keyId)
-        .then((member2) => {
-          assert.equal(member2.aliases.length, 1);
+      .then(res2 => AuthHttpClient.addAlias(keys, res.data.memberId,
+        res2.data.member.lastHash, Crypto.generateKeys().keyId)
+        .then(res3 => {
+          assert.equal(res3.data.member.aliases.length, 1);
           const secondAlias = Crypto.generateKeys().keyId;
           return AuthHttpClient.addAlias(keys, res.data.memberId,
-                  member2.lastHash, secondAlias)
-                  .then((member2) => {
-                    assert.equal(member2.aliases.length, 2);
+                  res3.data.member.lastHash, secondAlias)
+                  .then(res4 => {
+                    assert.equal(res4.data.member.aliases.length, 2);
                     return AuthHttpClient.removeAlias(keys, res.data.memberId,
-                            member2.lastHash, secondAlias)
-                            .then((member2) => {
-                              assert.equal(member2.aliases.length, 1);
+                            res4.data.member.lastHash, secondAlias)
+                            .then(res5 => {
+                              assert.equal(res5.data.member.aliases.length, 1);
                             });
-
                   });
         })
       );
@@ -95,14 +91,14 @@ describe('AuthHttpClient', () => {
   it('should get a member', () => {
     const keys = Crypto.generateKeys();
     return HttpClient.createMemberId()
-    .then((res) => {
+    .then(res => {
       assert.isOk(res.data.memberId);
       return HttpClient.addFirstKey(keys, res.data.memberId)
-      .then((member) => AuthHttpClient.getMember(keys, res.data.memberId)
-        .then((member2) => {
-          assert.isOk(member2);
-          assert.isOk(member2.lastHash);
-          assert.equal(member2.keys.length, 1);
+      .then(res2 => AuthHttpClient.getMember(keys, res.data.memberId)
+        .then(res3 => {
+          assert.isOk(res3.data.member);
+          assert.isOk(res3.data.member.lastHash);
+          assert.equal(res3.data.member.keys.length, 1);
         })
       );
     });
