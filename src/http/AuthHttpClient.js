@@ -1,6 +1,7 @@
 import Crypto from '../Crypto';
 import Auth from './Auth';
 import {uriHost} from '../constants';
+const stringify = require('json-stable-stringify');
 
 const axios = require('axios');
 const instance = axios.create({
@@ -21,6 +22,29 @@ class AuthHttpClient {
       url: `/devices`,
       data: req
     };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  //
+  // ADDRESSES
+  //
+  static createAddress(keys, memberId, paymentToken) {
+    const req = {
+      tokenId: paymentToken.id,
+      signature: {
+        keyId: keys.keyId,
+        signature: Crypto.signJson(paymentToken.json, keys),
+        timestampMs: new Date().getTime()
+      }
+    };
+    const tokenId = paymentToken.id;
+    const config = {
+      method: 'put',
+      url: `/tokens/${tokenId}/endorse`,
+      data: req
+    };
+
     Auth.addAuthorizationHeader(keys, memberId, config);
     return instance(config);
   }
@@ -86,6 +110,7 @@ class AuthHttpClient {
         timestampMs: new Date().getTime()
       }
     };
+    console.log("payload:", stringify(paymentToken.json));
     const tokenId = paymentToken.id;
     const config = {
       method: 'put',
