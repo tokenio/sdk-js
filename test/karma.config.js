@@ -20,7 +20,7 @@ module.exports = function(config) {
 
     preprocessors: {
       // add webpack as preprocessor
-      '**/*.js': ['webpack'],
+      'src/**/*.js': ['webpack'],
       '**/*.spec.js': ['webpack']
     },
     reporters: ['mocha'],

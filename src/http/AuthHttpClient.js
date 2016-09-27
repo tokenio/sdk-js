@@ -1,7 +1,6 @@
 import Crypto from '../Crypto';
 import Auth from './Auth';
-import {uriHost, defaultNotificationProvider} from '../constants';
-const stringify = require('json-stable-stringify');
+import {uriHost} from '../constants';
 
 const axios = require('axios');
 const instance = axios.create({
@@ -55,9 +54,10 @@ class AuthHttpClient {
   static setAccountName(keys, memberId, accountId, name) {
     const config = {
       method: 'patch',
-      url: `/accounts/${accountId}?name={name}`
+      url: `/accounts/${accountId}?name=${name}`,
+      data: {}
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeader(keys, memberId, config, ["name"]);
     return instance(config);
   }
 
@@ -77,6 +77,26 @@ class AuthHttpClient {
     return instance(config);
   }
 
+  static endorseToken(keys, memberId, paymentToken) {
+    const req = {
+      tokenId: paymentToken.id,
+      signature: {
+        keyId: keys.keyId,
+        signature: Crypto.signJson(paymentToken.json, keys),
+        timestampMs: new Date().getTime()
+      }
+    };
+    const tokenId = paymentToken.id;
+    const config = {
+      method: 'put',
+      url: `/tokens/${tokenId}/endorse`,
+      data: req
+    };
+
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
   static lookupToken(keys, memberId, tokenId) {
     const config = {
       method: 'get',
@@ -84,6 +104,15 @@ class AuthHttpClient {
     };
 
     Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static lookupTokens(keys, memberId, offset, limit) {
+    const config = {
+      method: 'get',
+      url: `/pay-tokens?offset=${offset}&limit=${limit}`
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config, ['offset', 'limit']);
     return instance(config);
   }
 

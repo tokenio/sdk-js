@@ -13,8 +13,9 @@ export default class PaymentToken {
     const description = token.payment.description;
     const scheme = token.payment.scheme;
     const issuer = token.payment.issuer;
-    return new PaymentToken(id, payer, account, amount, currency, redeemer,
+    const tokenResult = new PaymentToken(id, payer, account, amount, currency, redeemer,
       description, scheme, issuer);
+    return tokenResult;
   }
 
   static create(member, account, amount, currency, alias, description) {

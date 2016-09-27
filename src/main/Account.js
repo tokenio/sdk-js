@@ -9,9 +9,9 @@ export default class Account {
   }
 
   setAccountName(name) {
-    return AuthHttpClient.setAccountName(this._member._keys, this._member_id,
+    return AuthHttpClient.setAccountName(this._member._keys, this._member.id,
           this._id, name)
-    .then(() => {
+    .then(res => {
       this._name = name;
     });
   }
@@ -31,15 +31,27 @@ export default class Account {
   }
 
   lookupToken(tokenId) {
-
+    return AuthHttpClient.lookupToken(this._member._keys, this._member.id,
+      tokenId)
+    .then(res => {
+      return PaymentToken.createFromToken(res.data.token);
+    });
   }
 
-  lookupTokens(offset, limit) {
-
+  lookupTokens(offset = 0, limit = 100) {
+    return AuthHttpClient.lookupTokens(this._member._keys, this._member.id,
+      offset, limit)
+    .then(res => {
+      return res.data;
+    });
   }
 
   endorseToken(token) {
-
+    return AuthHttpClient.endorseToken(this._member._keys, this._member.id,
+      token)
+    .then(res => {
+      return res;
+    });
   }
 
   declineToken(token) {

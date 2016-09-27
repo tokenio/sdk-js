@@ -66,15 +66,20 @@ describe('Tokens', () => {
   });
 
   it('Token creation simple', () => {
-    return account1.createToken(100.24, 'USD', alias2).then(token => {
+    return account1.createToken(9.24, 'USD', alias2).then(token => {
       assert.equal(token.issuer.id, 'iron-bank');
       assert.isAtLeast(token.id.length, 5);
       assert.equal(token.payer.id, member1.id);
       assert.equal(token.redeemer.alias, alias2);
-      assert.equal(token.amount, 100.24);
+      assert.equal(token.amount, 9.24);
       assert.equal(token.currency, 'USD');
       assert.equal(token.description, undefined);
       assert.equal(token.scheme, 'Pay/1.0');
+      return account1.lookupToken(token.id)
+      .then(tokenLookedUp => {
+        assert.equal(token.id, tokenLookedUp.id);
+        return account1.endorseToken(tokenLookedUp);
+      });
     });
   });
 });

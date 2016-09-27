@@ -1,16 +1,20 @@
 const chai = require('chai');
-const token = require('../src/index.js');
+let Token = {};
+if (BROWSER) {
+  Token = require('../dist/token-io');
+} else {
+  Token = require('../dist/token-io.node');
+}
 const assert = chai.assert;
 
-describe('Member creation', () => {
-  // it("should create a member from scratch", () => {
-  //   return token.createMember()
-  //   .then((member) => {
-  //     assert.isOk(member);
-  //     assert.isString(member.memberId);
-  //     assert.isAbove(member.memberId.length, 1);
-  //   })
-  //   assert.isOk(promise);
-  //   return promise;
-  // })
+describe('Token library', () => {
+  it("should create a member from scratch", () => {
+    const randomAlias = Token.Crypto.generateKeys().keyId;
+    return Token.createMember(randomAlias)
+    .then(member => {
+      assert.isOk(member);
+      assert.isString(member.id);
+      assert.isAbove(member.id.length, 1);
+    });
+  });
 });

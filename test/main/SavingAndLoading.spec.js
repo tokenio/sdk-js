@@ -23,11 +23,13 @@ describe('Saving and loading Members', () => {
     return Promise.all([setUp1()]);
   });
   it('save and login from LocalStorage', () => {
-    member1.saveToLocalStorage();
-    const member2 = Token.loginMemberFromLocalStorage();
-    return member2.getPublicKeys(keys => {
-      assert.equal(keys.length, 1);
-    });
+    if (BROWSER) {
+      member1.saveToLocalStorage();
+      const member2 = Token.loginMemberFromLocalStorage();
+      return member2.getPublicKeys(keys => {
+        assert.equal(keys.length, 1);
+      });
+    }
   });
   it('save and login keys', () => {
     const keys = member1.keys;

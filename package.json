@@ -1,8 +1,8 @@
 {
-  "name": "sdk-js",
+  "name": "token-io",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/token-io.js",
   "scripts": {
     "test": "npm run testNode",
     "testBrowser": "./node_modules/karma/bin/karma start test/karma.config.js",
@@ -11,7 +11,8 @@
     "buildBrowser": "webpack --config config/webpack.config.js",
     "buildBrowserw": "webpack --config config/webpack.config.js --progress --colors -w",
     "buildNode": "webpack --config config/webpack.config.node.js",
-    "buildNodew": "webpack --config config/webpack.config.node.js --progress --colors -w"
+    "buildNodew": "webpack --config config/webpack.config.node.js --progress --colors -w",
+    "prepublish": "npm run build"
   },
   "author": "",
   "license": "ISC",
