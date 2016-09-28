@@ -1,4 +1,5 @@
 import PaymentToken from './PaymentToken';
+import Payment from './Payment';
 import AuthHttpClient from '../http/AuthHttpClient';
 
 export default class Account {
@@ -6,6 +7,18 @@ export default class Account {
     this._member = member;
     this._id = acc.id;
     this._name = acc.name;
+  }
+
+  get member() {
+    return this._member;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get name() {
+    return this._name;
   }
 
   setAccountName(name) {
@@ -19,12 +32,8 @@ export default class Account {
   createToken(amount, currency, alias, description) {
     const token = PaymentToken.create(this._member, this, amount,
       currency, alias, description);
-    return this.createTokenFromPayload(token);
-  }
-
-  createTokenFromPayload(paymentToken) {
     return AuthHttpClient.createPaymentToken(this._member._keys,
-      this._member.id, paymentToken.json)
+      this._member.id, token.json)
     .then(res => {
       return PaymentToken.createFromToken(res.data.token);
     });
@@ -47,27 +56,70 @@ export default class Account {
   }
 
   endorseToken(token) {
-    return AuthHttpClient.endorseToken(this._member._keys, this._member.id,
-      token)
-    .then(res => {
-      return res;
+    return this._resolveToken(token)
+    .then(finalToken => {
+      return AuthHttpClient.endorseToken(this._member._keys, this._member.id,
+          finalToken)
+      .then(res => {
+        if (typeof token !== 'string' && !(token instanceof String)) {
+          token.signatures = res.data.token.signatures;
+        }
+        return;
+      });
     });
   }
 
   declineToken(token) {
-
+    return this._resolveToken(token)
+    .then(finalToken => {
+      return AuthHttpClient.declineToken(this._member._keys, this._member.id,
+          finalToken)
+      .then(res => {
+        if (typeof token !== 'string' && !(token instanceof String)) {
+          token.signatures = res.data.token.signatures;
+        }
+        return;
+      });
+    });
   }
 
   revokeToken(token) {
-
+    return this._resolveToken(token)
+    .then(finalToken => {
+      return AuthHttpClient.revokeToken(this._member._keys, this._member.id,
+          finalToken)
+      .then(res => {
+        if (typeof token !== 'string' && !(token instanceof String)) {
+          token.signatures = res.data.token.signatures;
+        }
+        return;
+      });
+    });
   }
 
-  redeemToken(token, amount, currency = 'EUR') {
-
+  redeemToken(token, amount, currency) {
+    return this._resolveToken(token)
+    .then(finalToken => {
+      if (amount === undefined) {
+        amount = finalToken.amount;
+      }
+      if (currency === undefined) {
+        currency = finalToken.currency;
+      }
+      return AuthHttpClient.redeemToken(this._member._keys, this._member.id,
+          finalToken, amount, currency)
+      .then(res => {
+        return new Payment(res.data.payment);
+      });
+    });
   }
 
   lookupBalance() {
-
+    return AuthHttpClient.lookupBalance(this._member._keys, this._member.id,
+      this._id)
+    .then(res => {
+      return res.data;
+    });
   }
 
   lookupTransaction(transactionId) {
@@ -77,15 +129,14 @@ export default class Account {
   lookupTransactions() {
 
   }
-  get member() {
-    return this._member;
-  }
 
-  get id() {
-    return this._id;
-  }
-
-  get name() {
-    return this._name;
+  _resolveToken(token) {
+    return new Promise((resolve, reject) => {
+      if (typeof token === 'string' || token instanceof String) {
+        this.lookupToken(token).then(lookedUp => resolve(lookedUp));
+      } else {
+        resolve(token);
+      }
+    });
   }
 }

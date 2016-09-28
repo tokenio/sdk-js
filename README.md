@@ -1,5 +1,7 @@
 # Token-io SDK
 
+A javascript SDK for interacting with the Token System. Visit Token at http://token.io.
+
 ### Installation
 
 Dillinger requires a recent version of npm to run.
@@ -116,9 +118,9 @@ token.json => Json representation of token
 
 
 * Either way: return tokenID to merchant, who does:
-* ```account.redeemToken(token, 15, ‘USD’)```
+* ```account.redeemToken(token, 15, ‘EUR’)```
 
-### AISP (Backend still in progres) 
+### AISP (Backend still in progres)
 * ```Token.loginMemberFromLocalStorage()```
 * If fails:
 * ```member.notifyAddKey(alias, publicKey)```

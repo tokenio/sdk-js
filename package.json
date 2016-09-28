@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run testNode",
     "testBrowser": "./node_modules/karma/bin/karma start test/karma.config.js",
-    "testNode": "node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --watch --colors \"test/**/*.spec.js\"",
+    "testNode": "node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 5000 --watch --colors \"test/**/*.spec.js\"",
     "build": "npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser && WEBPACK_ENV=build npm run buildNode",
     "buildBrowser": "webpack --config config/webpack.config.js",
     "buildBrowserw": "webpack --config config/webpack.config.js --progress --colors -w",
@@ -42,6 +42,7 @@
     "es6-promise": "^3.3.1",
     "fast-sha256": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
+    "lodash": "^4.16.2",
     "supercop.js": "^2.0.1"
   }
 }

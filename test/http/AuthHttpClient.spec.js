@@ -19,6 +19,7 @@ describe('AuthHttpClient', () => {
           assert.isOk(res3.data.member);
           assert.isOk(res3.data.member.lastHash);
           assert.equal(res3.data.member.keys.length, 2);
+          return true;
         })
       );
     });

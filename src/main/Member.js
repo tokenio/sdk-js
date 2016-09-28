@@ -9,6 +9,14 @@ export default class Member {
     this._id = memberId;
     this._keys = keys;
   }
+
+  get id() {
+    return this._id;
+  }
+
+  get keys() {
+    return this._keys;
+  }
   saveToLocalStorage() {
     LocalStorage.saveMember(this);
   }
@@ -18,29 +26,28 @@ export default class Member {
     .then(prevHash =>
         AuthHttpClient.addKey(this._keys, this._id,
           prevHash, Crypto.bufferKey(publicKey), level, tags)
-      .then(res => res.data.member));
+      .then(res => undefined));
   }
 
   removeKey(keyId) {
     return this._getPreviousHash()
     .then(prevHash =>
       AuthHttpClient.removeKey(this._keys, this._id, prevHash, keyId)
-      .then(res => res.data.member)
-    );
+      .then(res => undefined));
   }
 
   addAlias(alias) {
     return this._getPreviousHash()
     .then(prevHash =>
         AuthHttpClient.addAlias(this._keys, this._id, prevHash, alias)
-        .then(res => res.data.member));
+        .then(res => undefined));
   }
 
   removeAlias(alias) {
     return this._getPreviousHash()
       .then(prevHash =>
         AuthHttpClient.removeAlias(this._keys, this._id, prevHash, alias)
-        .then(res => res.data.member));
+        .then(res => undefined));
   }
 
   linkAccounts(bankId, accountLinkPayload) {
@@ -62,14 +69,6 @@ export default class Member {
         platform = "IOS", tags = []) {
     return AuthHttpClient.subscribeDevice(this._keys, this._id,
       notificationUri, provider, platform, tags);
-  }
-
-  get id() {
-    return this._id;
-  }
-
-  get keys() {
-    return this._keys;
   }
 
   getFirstAlias() {

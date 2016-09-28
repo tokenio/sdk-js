@@ -1,4 +1,5 @@
 import Crypto from '../Crypto';
+import Util from '../Util';
 import Auth from './Auth';
 import {uriHost} from '../constants';
 const stringify = require('json-stable-stringify');
@@ -78,10 +79,18 @@ class AuthHttpClient {
   static setAccountName(keys, memberId, accountId, name) {
     const config = {
       method: 'patch',
-      url: `/accounts/${accountId}?name=${name}`,
-      data: {}
+      url: `/accounts/${accountId}?name=${name}`
     };
     Auth.addAuthorizationHeader(keys, memberId, config, ["name"]);
+    return instance(config);
+  }
+
+  static lookupBalance(keys, memberId, accountId) {
+    const config = {
+      method: 'get',
+      url: `/accounts/${accountId}/balance`
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
     return instance(config);
   }
 
@@ -102,19 +111,63 @@ class AuthHttpClient {
   }
 
   static endorseToken(keys, memberId, paymentToken) {
+    return AuthHttpClient._tokenOperation(keys, memberId, paymentToken,
+      'endorse', 'endorsed');
+  }
+
+  static declineToken(keys, memberId, paymentToken) {
+    return AuthHttpClient._tokenOperation(keys, memberId, paymentToken,
+      'decline', 'declined');
+  }
+
+  static revokeToken(keys, memberId, paymentToken) {
+    return AuthHttpClient._tokenOperation(keys, memberId, paymentToken,
+      'revoke', 'revoked');
+  }
+
+  static _tokenOperation(keys, memberId, paymentToken, operation, suffix) {
+    const payload = stringify(paymentToken.json) + `.${suffix}`;
     const req = {
       tokenId: paymentToken.id,
       signature: {
         keyId: keys.keyId,
-        signature: Crypto.signJson(paymentToken.json, keys),
+        signature: Crypto.sign(payload, keys),
         timestampMs: new Date().getTime()
       }
     };
-    console.log("payload:", stringify(paymentToken.json));
     const tokenId = paymentToken.id;
     const config = {
       method: 'put',
-      url: `/tokens/${tokenId}/endorse`,
+      url: `/tokens/${tokenId}/${operation}`,
+      data: req
+    };
+
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static redeemToken(keys, memberId, paymentToken, amount, currency) {
+    const payload = {
+      nonce: Util.generateNonce(),
+      tokenId: paymentToken.id,
+      amount: {
+        value: amount.toString(),
+        currency
+      },
+      transfer: paymentToken.transfer
+    };
+
+    const req = {
+      payload,
+      signature: {
+        keyId: keys.keyId,
+        signature: Crypto.signJson(payload, keys),
+        timestampMs: new Date().getTime()
+      }
+    };
+    const config = {
+      method: 'post',
+      url: `/payments`,
       data: req
     };
 
@@ -170,7 +223,7 @@ class AuthHttpClient {
       update.level = level;
     }
 
-    return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
+    return AuthHttpClient._memberUpdate(keys, update, memberId, prevHash);
   }
 
   static removeKey(keys, memberId, prevHash, keyId) {
@@ -180,7 +233,7 @@ class AuthHttpClient {
         keyId
       }
     };
-    return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
+    return AuthHttpClient._memberUpdate(keys, update, memberId, prevHash);
   }
 
   static addAlias(keys, memberId, prevHash, alias) {
@@ -190,7 +243,7 @@ class AuthHttpClient {
         alias
       }
     };
-    return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
+    return AuthHttpClient._memberUpdate(keys, update, memberId, prevHash);
   }
 
   static removeAlias(keys, memberId, prevHash, alias) {
@@ -200,10 +253,10 @@ class AuthHttpClient {
         alias
       }
     };
-    return AuthHttpClient.memberUpdate(keys, update, memberId, prevHash);
+    return AuthHttpClient._memberUpdate(keys, update, memberId, prevHash);
   }
 
-  static memberUpdate(keys, update, memberId, prevHash) {
+  static _memberUpdate(keys, update, memberId, prevHash) {
     if (prevHash !== '') {
       update.prevHash = prevHash;
     }

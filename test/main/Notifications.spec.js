@@ -22,8 +22,8 @@ describe('Notifications', () => {
     return Promise.all([setUp1()]);
   });
   it('should subscribe device', () => {
-    assert.equal(1 + 1, 2);
-    // return member1.subscribeDevice("URI:rm23klrm23oi829").then(res => {
-    // });
+    // assert.equal(1 + 1, 2);
+    return member1.subscribeDevice("URI:rm23klrm23oi829").then(res => {
+    });
   });
 });

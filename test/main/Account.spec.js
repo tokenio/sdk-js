@@ -3,7 +3,7 @@ const assert = chai.assert;
 
 const Token = require('../../src');
 import Crypto from '../../src/Crypto';
-import Util from '../../src/Util';
+import BankClient from '../sample/BankClient';
 
 let member = {};
 let alias = '';
@@ -19,27 +19,22 @@ describe('Account tests', () => {
     });
   });
   it('should lookup accounts', () => {
-    const alp = Util.accountLinkPayload({
-      alias,
-      accounts: [{name: 'Checking1', accountNumber: 'acc1'},
-          {name: "Savings", accountNumber: '2'}]
-    });
-    return member.linkAccounts('bank-id', alp).then(() => {
-      return member.lookupAccounts().then(accs => {
-        assert.equal(accs.length, 2);
+    return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
+      return member.linkAccounts('bank-id', alp).then(() => {
+        return member.lookupAccounts().then(accs => {
+          assert.equal(accs.length, 1);
+        });
       });
     });
   });
   it('should have name and id', () => {
-    const alp = Util.accountLinkPayload({
-      alias,
-      accounts: [{name: 'Checking1', accountNumber: 'acc1'}]
-    });
-    return member.linkAccounts('bank-id', alp).then(() => {
-      return member.lookupAccounts().then(accs => {
-        assert.equal(accs.length, 1);
-        assert.isOk(accs[0].name);
-        assert.isOk(accs[0].id);
+    return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
+      return member.linkAccounts('bank-id', alp).then(() => {
+        return member.lookupAccounts().then(accs => {
+          assert.equal(accs.length, 1);
+          assert.isOk(accs[0].name);
+          assert.isOk(accs[0].id);
+        });
       });
     });
   });
@@ -48,19 +43,20 @@ describe('Account tests', () => {
 
   describe('advances', () => {
     beforeEach(() => {
-      const alp = Util.accountLinkPayload({
-        alias,
-        accounts: [{name: 'Checking1', accountNumber: 'acc1'}]
-      });
-      return member.linkAccounts('bank-id', alp).then(accs => {
-        account = accs[0];
-        return true;
+      return BankClient.requestLinkAccounts(alias, 100000, 'EUR')
+      .then(alp => {
+        return member.linkAccounts('bank-id', alp).then(accs => {
+          account = accs[0];
+        });
       });
     });
-    // it('should change the name', () => {
-    //   return account.setAccountName('newName').then(() => {
-    //     assert.equal(account.name, 'newName');
-    //   });
-    // });
+    it('should lookup the balance', () => {
+      return account.lookupBalance().then(bal => {
+        assert.equal(parseFloat(bal.current.value), 100000);
+      });
+    });
+    it('should lookup transactions', () => {
+      assert.equal(1 + 1, 2);
+    });
   });
 });

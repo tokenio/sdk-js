@@ -27,22 +27,25 @@ describe('member tests', () => {
     it('should add and remove a key', () => {
       const keys = Crypto.generateKeys();
       return member.approveKey(Crypto.strKey(keys.publicKey))
-      .then(() => member.removeKey(keys.keyId))
-      .then(mem => assert.equal(mem.keys.length, 2));
+        .then(() => member.removeKey(keys.keyId))
+        .then(() => member.getPublicKeys())
+        .then(keys => assert.equal(keys.length, 2));
     });
 
     it('should add an alias', () => {
       const alias = Crypto.generateKeys().keyId;
       return member.addAlias(alias)
-      .then(mem => assert.equal(mem.aliases.length, 2));
+      .then(() => member.getAllAliases())
+      .then(aliases => assert.equal(aliases.length, 2));
     });
     it('should add and remove an alias', () => {
       const newAlias = Crypto.generateKeys().keyId;
       return member.addAlias(newAlias)
       .then(() => member.removeAlias(newAlias))
-      .then(mem => {
-        assert.equal(mem.aliases.length, 1);
-        assert.include(mem.aliases, alias);
+      .then(() => member.getAllAliases())
+      .then(aliases => {
+        assert.equal(aliases.length, 1);
+        assert.include(aliases, alias);
       });
     });
     it('should get all aliases', () => {
