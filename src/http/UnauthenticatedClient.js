@@ -6,7 +6,7 @@ const instance = axios.create({
   baseURL: uriHost
 });
 
-class HttpClient {
+class UnauthenticatedClient {
   static createMemberId() {
     return instance({
       method: 'post',
@@ -14,17 +14,48 @@ class HttpClient {
     });
   }
 
-  static notifyAddKey(alias, publicKey, tags = []) {
+  static notifyLinkAccounts(alias, bankId, accountLinkPayload) {
+    const req = {
+      alias,
+      bankId,
+      accountLinkPayload
+    };
+    const config = {
+      method: 'put',
+      url: `/devices/notifyLinkAccounts`,
+      data: req
+    };
+    return instance(config);
+  }
+  static notifyAddKey(alias, publicKey, tags) {
     const req = {
       alias,
       publicKey: Crypto.strKey(publicKey),
       tags
     };
-    return instance({
+    const config = {
       method: 'put',
-      url: '/devices/notifyAddKey',
+      url: `/devices/notifyAddKey`,
       data: req
-    });
+    };
+    return instance(config);
+  }
+
+  static notifyLinkAccountsAndAddKey(alias, bankId, accountLinkPayload,
+    publicKey, tags) {
+    const req = {
+      alias,
+      bankId,
+      accountLinkPayload,
+      publicKey: Crypto.strKey(publicKey),
+      tags
+    };
+    const config = {
+      method: 'put',
+      url: `/devices/notifyLinkAccountsAndAddKey`,
+      data: req
+    };
+    return instance(config);
   }
 
   static addFirstKey(keys, memberId, level = 0, tags = []) {
@@ -61,4 +92,4 @@ class HttpClient {
   }
 }
 
-export default HttpClient;
+export default UnauthenticatedClient;

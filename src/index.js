@@ -3,7 +3,7 @@ import Util from './Util';
 import PaymentToken from './main/PaymentToken';
 import Member from './main/Member';
 import LocalStorage from './LocalStorage';
-import HttpClient from './http/HttpClient';
+import UnauthenticatedClient from './http/UnauthenticatedClient';
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
@@ -11,8 +11,9 @@ require('es6-promise').polyfill();
 const Token = {
   createMember: alias => {
     const keys = Crypto.generateKeys();
-    return HttpClient.createMemberId()
-    .then(response => HttpClient.addFirstKey(keys, response.data.memberId)
+    return UnauthenticatedClient.createMemberId()
+    .then(response => UnauthenticatedClient.addFirstKey(keys,
+        response.data.memberId)
       .then(() => {
         const member = new Member(response.data.memberId, keys);
         return member.addAlias(alias)
@@ -27,6 +28,21 @@ const Token = {
 
   loginMemberFromLocalStorage: () => {
     return LocalStorage.loadMember();
+  },
+
+  notifyLinkAccounts(alias, bankId, accountLinkPayload) {
+    return UnauthenticatedClient.notifyLinkAccounts(alias, bankId,
+      accountLinkPayload);
+  },
+
+  notifyAddKey(alias, publicKey, tags = []) {
+    return UnauthenticatedClient.notifyAddKey(alias, publicKey, tags);
+  },
+
+  notifyLinkAccountsAndAddKey(alias, bankId, accountLinkPayload, publicKey,
+      tags = []) {
+    return UnauthenticatedClient.notifyLinkAccountsAndAddKey(alias, bankId,
+      accountLinkPayload, publicKey, tags);
   },
   Crypto,
   Util,

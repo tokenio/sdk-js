@@ -1,6 +1,3 @@
-import Util from '../Util';
-import {paymentTokenScheme} from '../constants';
-
 export default class Payment {
   constructor(paymentObj) {
     this._id = paymentObj.id;

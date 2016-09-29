@@ -122,6 +122,18 @@ export default class Account {
     });
   }
 
+  lookupPayment(paymentId) {
+
+  }
+
+  lookupPayments(tokenId, offset = 0, limit = 100) {
+    return AuthHttpClient.lookupPayments(this._member._keys, this._member.id,
+      tokenId, offset, limit)
+    .then(res => {
+      return res.data;
+    });
+  }
+
   lookupTransaction(transactionId) {
 
   }

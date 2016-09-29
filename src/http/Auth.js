@@ -25,7 +25,8 @@ class Auth {
       requestBody: stringify(config.data)
     };
     if (uriParam !== undefined) {
-      payload.uriParam = uriParam;
+      const sorted = uriParam.sort();
+      payload.uriParam = sorted;
     }
     const signature = Crypto.signJson(payload, keys);
     const header = signatureScheme + ' ' +

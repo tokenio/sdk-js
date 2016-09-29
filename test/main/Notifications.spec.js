@@ -1,8 +1,6 @@
-const chai = require('chai');
-const assert = chai.assert;
-
 const Token = require('../../src');
 import Crypto from '../../src/Crypto';
+import BankClient from '../sample/BankClient';
 
 let member1 = {};
 let alias1 = '';
@@ -22,8 +20,46 @@ describe('Notifications', () => {
     return Promise.all([setUp1()]);
   });
   it('should subscribe device', () => {
-    // assert.equal(1 + 1, 2);
-    return member1.subscribeDevice("URI:rm23klrm23oi829").then(res => {
-    });
+    const randomStr = Crypto.generateKeys().keyId;
+    return member1.subscribeDevice(randomStr);
+  });
+  // it('should subscribe and unsubscribe device', () => {
+  //   const randomStr = Crypto.generateKeys().keyId;
+  //   return member1.subscribeDevice(randomStr)
+  //   .then(() => {
+  //     member1.unsubscribeDevice(randomStr);
+  //   });
+  // });
+  it('should send a push for linking accounts', () => {
+    const randomStr = Crypto.generateKeys().keyId;
+    return member1.subscribeDevice(randomStr)
+    .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
+    .then(alp => Token.notifyLinkAccounts(alias1,
+        'bank-id', alp));
+  });
+
+  it('should send a push for adding key', () => {
+    const randomUri = Crypto.generateKeys().keyId;
+    const keys = Crypto.generateKeys();
+    return member1.subscribeDevice(randomUri)
+    .then(alp => Token.notifyAddKey(alias1,
+      keys.publicKey, ["tag"]));
+  });
+
+  it('should send a push for adding a key and linking accounts', () => {
+    const randomStr = '0ECA0A78592EC9BA1290147A81BB88C8292D1F38772EAB' +
+      'A8E528A656318534D9';
+    const keys = Crypto.generateKeys();
+    return member1.subscribeDevice(randomStr)
+    .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
+    .then(alp => Token.notifyLinkAccountsAndAddKey(alias1, 'bank-id', alp,
+        keys.publicKey, ["mytag"]));
+  });
+
+  it('should send an actual push to device', () => {
+    return member1.subscribeDevice('0ECA0A78592EC9BA12' +
+    '90147A81BB88C8292D1F38772EABA8E528A656318534D9')
+    .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
+    .then(alp => Token.notifyLinkAccounts(alias1, 'bank-id', alp));
   });
 });

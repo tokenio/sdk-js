@@ -1,22 +1,22 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-import HttpClient from '../../src/http/HttpClient';
+import UnauthenticatedClient from '../../src/http/UnauthenticatedClient';
 import Crypto from '../../src/Crypto';
 
 describe('Unauthenticated', () => {
   it('should generate a memberId', () => {
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
     });
   });
   it('should add a key', () => {
     const keys = Crypto.generateKeys();
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
-      return HttpClient.addFirstKey(keys, res.data.memberId)
+      return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => {
         assert.isOk(res2.data.member);
         assert.isOk(res2.data.member.lastHash);

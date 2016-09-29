@@ -71,6 +71,19 @@ export default class Member {
       notificationUri, provider, platform, tags);
   }
 
+  // unsubscribeDevice(notificationUri, provider = defaultNotificationProvider) {
+  //   return AuthHttpClient.unsubscribeDevice(this._keys, this._id,
+  //     notificationUri, provider);
+  // }
+
+  createAddress(name, data) {
+    return AuthHttpClient.createAddress(this._keys, this._id, name, data)
+    .then(res => {
+      console.log("res", res);
+      return;
+    });
+  }
+
   getFirstAlias() {
     return this.getAllAliases().then(aliases => {
       if (aliases.length > 0) {

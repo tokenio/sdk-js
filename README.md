@@ -45,11 +45,11 @@ static Token.loginMemberFromLocalStorage() => Member
 static Token.requestLinkAccounts(alias) => Promise(accountAuthorizationPayload)
 ```
 
-#### Member(id, keys)
+#### Member
 ```
 member.approveKey(publicKey, level=0, tags=[])
   => Promise()
-member.removeKey(	keyId)
+member.removeKey(keyId)
   => Promise()
 member.addAlias(alias) => Promise()
 member.removeAlias(alias) => Promise()
@@ -67,6 +67,8 @@ member.saveToLocalStorage() => void
 (X) member.isActive() => Promise()
 (X) member.createAddress() => Promise()
 (X) member.getAddresses() => Promise(addresses)
+member.id => memberid
+member.keys => keys
 ```
 
 #### Account
@@ -74,24 +76,40 @@ member.saveToLocalStorage() => void
 (X) account.setAccountName(name) => Promise()
 account.createToken(amount, currency, alias, description)
   => Promise(PaymentToken)
-account.createTokenFromPayload(PaymentToken)
-  => Promise(PaymentToken)
 account.lookupToken(tokenId)
 (X) account.lookupTokens()
-(X) account.endorseToken(token)
-(X) account.declineToken(token)
-(X) account.revokeToken(token)
-(X) account.redeemToken(tokenId, amount, currency)
-(X) account.redeemToken(tokenId, 'transactions')
+account.endorseToken(token or tokenId) => Promise()
+account.declineToken(token or tokenId) => Promise()
+account.revokeToken(token or tokenId) => Promise()
+account.redeemToken(tokenId, amount, currency) => Promise(Payment)
+(X) account.redeemToken(tokenId, 'transactions') => Promise(Object)
 ```
 
 #### PaymentToken
 ```
-static PaymentToken.create(member, account, amount, currency, alias, description)
-    => PaymentToken
 token.json => Json representation of token
+token.id => token id
+token.payer => payer
+token.transfer => transfer
+token.amount => amount
+token.currency => currency
+token.redeemer => redeemer
+token.description => description
+token.scheme => scheme
+token.issuer => issuer
+token.nonce => nonce
+token.signatures => signatures
 ```
-
+### Payment
+```
+payment.id => payment Id;
+payment.referenceId => reference Id;
+payment.payload => payload
+payment.amount => amount
+payment.currency => currency
+payment.transfer => transfer
+payment.signatures => signatures
+```
 
 ## Sales Demo
 

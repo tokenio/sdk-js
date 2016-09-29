@@ -14,5 +14,6 @@ module.exports = {
   },
   "rules": {
     "no-unused-vars": "warn",
+    "max-nested-callbacks": "off"
   },
 }

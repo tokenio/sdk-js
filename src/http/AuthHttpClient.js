@@ -27,22 +27,39 @@ class AuthHttpClient {
     return instance(config);
   }
 
+  static unsubscribeDevice(keys, memberId, notificationUri, provider) {
+    const req = {
+      provider
+    };
+    const config = {
+      method: 'delete',
+      url: `/devices/${notificationUri}`,
+      data: req
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
   //
   // ADDRESSES
   //
-  static createAddress(keys, memberId, paymentToken) {
+  static createAddress(keys, memberId, name, data) {
+    const payload = {
+      name,
+      data
+    };
     const req = {
-      tokenId: paymentToken.id,
+      name,
+      data,
       signature: {
         keyId: keys.keyId,
-        signature: Crypto.signJson(paymentToken.json, keys),
+        signature: Crypto.signJson(payload, keys),
         timestampMs: new Date().getTime()
       }
     };
-    const tokenId = paymentToken.id;
     const config = {
-      method: 'put',
-      url: `/tokens/${tokenId}/endorse`,
+      method: 'post',
+      url: `/addresses`,
       data: req
     };
 
@@ -190,7 +207,30 @@ class AuthHttpClient {
       method: 'get',
       url: `/pay-tokens?offset=${offset}&limit=${limit}`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config, ['offset', 'limit']);
+    Auth.addAuthorizationHeader(keys, memberId, config, ['limit', 'offset']);
+    return instance(config);
+  }
+
+  //
+  // Payments
+  //
+  static lookupPayment(keys, memberId, paymentId) {
+    const config = {
+      method: 'get',
+      url: `/payments/${paymentId}`
+    };
+
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static lookupPayments(keys, memberId, tokenId, offset, limit) {
+    const config = {
+      method: 'get',
+      url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
+    };
+    Auth.addAuthorizationHeader(keys, memberId, config, ['tokenId', 'offset',
+     'limit']);
     return instance(config);
   }
 

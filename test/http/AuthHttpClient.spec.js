@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-import HttpClient from '../../src/http/HttpClient';
+import UnauthenticatedClient from '../../src/http/UnauthenticatedClient';
 import AuthHttpClient from '../../src/http/AuthHttpClient';
 import Crypto from '../../src/Crypto';
 
@@ -9,10 +9,10 @@ describe('AuthHttpClient', () => {
   it('should add a second key', () => {
     const keys = Crypto.generateKeys();
     const keys2 = Crypto.generateKeys();
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
-      return HttpClient.addFirstKey(keys, res.data.memberId)
+      return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
         res2.data.member.lastHash, keys2.publicKey, 0, [])
         .then(res3 => {
@@ -28,10 +28,10 @@ describe('AuthHttpClient', () => {
   it('should remove a key', () => {
     const keys = Crypto.generateKeys();
     const keys2 = Crypto.generateKeys();
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
-      return HttpClient.addFirstKey(keys, res.data.memberId)
+      return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
         res2.data.member.lastHash, keys2.publicKey, 0, [])
         .then(res3 => {
@@ -45,10 +45,10 @@ describe('AuthHttpClient', () => {
 
   it('should add aliases', () => {
     const keys = Crypto.generateKeys();
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
-      return HttpClient.addFirstKey(keys, res.data.memberId)
+      return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.addAlias(keys, res.data.memberId,
         res2.data.member.lastHash, Crypto.generateKeys().keyId)
         .then(res3 => {
@@ -65,10 +65,10 @@ describe('AuthHttpClient', () => {
 
   it('should remove aliases', () => {
     const keys = Crypto.generateKeys();
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
-      return HttpClient.addFirstKey(keys, res.data.memberId)
+      return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.addAlias(keys, res.data.memberId,
         res2.data.member.lastHash, Crypto.generateKeys().keyId)
         .then(res3 => {
@@ -91,10 +91,10 @@ describe('AuthHttpClient', () => {
 
   it('should get a member', () => {
     const keys = Crypto.generateKeys();
-    return HttpClient.createMemberId()
+    return UnauthenticatedClient.createMemberId()
     .then(res => {
       assert.isOk(res.data.memberId);
-      return HttpClient.addFirstKey(keys, res.data.memberId)
+      return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.getMember(keys, res.data.memberId)
         .then(res3 => {
           assert.isOk(res3.data.member);
