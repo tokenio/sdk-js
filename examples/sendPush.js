@@ -30,6 +30,6 @@ var notifyBoth = () => {
   });
 };
 
-// notifyLinkAccounts();
-// notifyAddKey();
+//notifyLinkAccounts();
+//notifyAddKey();
 notifyBoth();
