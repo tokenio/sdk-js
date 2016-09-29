@@ -42,11 +42,17 @@ $ npm run testNode
 static Token.createMember(alias) => Promise(Member)
 static Token.loginMember(memberId, keys) => Member
 static Token.loginMemberFromLocalStorage() => Member
+static Token.getMember(keys, alias) => Promise(Member)
 static Token.requestLinkAccounts(alias) => Promise(accountAuthorizationPayload)
+static Token.notifyAddKey(alias, publicKey) => Promise()
+static Token.notifyLinkAccounts(alias, bankCode, accountLinkPayload) => Promise()
+static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountLinkPayload)
+  => Promise()
 ```
 
 #### Member
 ```
+member.saveToLocalStorage() => void
 member.approveKey(publicKey, level=0, tags=[])
   => Promise()
 member.removeKey(keyId)
@@ -54,21 +60,15 @@ member.removeKey(keyId)
 member.addAlias(alias) => Promise()
 member.removeAlias(alias) => Promise()
 member.linkAccounts(bankId, accountLinkPayload)
-  => Promise(Accounts)
-member.lookupAccounts() => Promise(Accounts)
+  => Promise(Account[])
+member.lookupAccounts() => Promise(Account[])
 member.subscribeDevice(notificationUri, provider=“Token”,
      platform=“IOS”, tags=[]) =>  Promise()
-member.notifyAddKey(alias, publicKey) => Promise()
-member.notifyLinkAccounts(alias, bankCode, accountLinkPayload) => Promise()
-member.notifyLinkAccountsAndAddKey(alias, bankCode, accountLinkPayload)
-  => Promise()
-member.getAllAliases() => Promise(aliases)
-member.getFirstAlias() => Promise(alias)
-member.getPublicKeys() => Promise(keys)
-member.saveToLocalStorage() => void
-(X) member.isActive() => Promise()
-member.createAddress() => Promise()
-member.getAddresses() => Promise(addresses)
+member.getAllAliases() => Promise(string[])
+member.getFirstAlias() => Promise(string)
+member.getPublicKeys() => Promise(key[])
+member.createAddress(name, address) => Promise()
+member.getAddresses() => Promise(Address[])
 member.id => memberid
 member.keys => keys
 ```
@@ -78,13 +78,15 @@ member.keys => keys
 (X) account.setAccountName(name) => Promise()
 account.createToken(amount, currency, alias, description)
   => Promise(PaymentToken)
-account.lookupToken(tokenId)
-(X) account.lookupTokens()
+account.lookupToken(tokenId) => Promise(PaymentToken)
+(X) account.lookupTokens() => Promise(PaymentToken[])
 account.endorseToken(token or tokenId) => Promise()
 account.declineToken(token or tokenId) => Promise()
 account.revokeToken(token or tokenId) => Promise()
 account.redeemToken(tokenId, amount, currency) => Promise(Payment)
 (X) account.redeemToken(tokenId, 'transactions') => Promise(Object)
+account.lookupBalance() => Promise(balance)
+(X) account.lookupPayments() => Promise(Payment[])
 ```
 
 #### PaymentToken
@@ -118,8 +120,8 @@ payment.signatures => signatures
 ### Bank
 * ```Token.requestLinkAccounts(alias)```
 * ```member.notifyAddKey (alias, publicKey)```
-* ```member.isActive()```
-* ```member.notifyLinkAccounts(alias, bank-id, accountsPayload)```
+* ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.notifyLinkAccounts(alias, bank-id, accountsPayload)```
 * ```member.persistInLocalStorage()```
 
 ### Merchant
@@ -132,7 +134,7 @@ payment.signatures => signatures
 * ```member.lookupAccounts()```
 * ```account.createToken(amount, currency)```
 * If fails:
-* ```account.getTokens()``` (until you find the rightcorrect endorsed token)
+* ```account.getTokens()``` (until you find the correct endorsed token)
 * If succeeds:
 * ```account.endorseToken(tokenId)```
 
@@ -144,7 +146,7 @@ payment.signatures => signatures
 * ```Token.loginMemberFromLocalStorage()```
 * If fails:
 * ```member.notifyAddKey(alias, publicKey)```
-* ```member.isActive()```(for seeing if we’re authenticated)
+* ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAddresses()```
 * ```member.lookupAccounts()```
 * ```account.createToken(acl list...)```

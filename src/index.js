@@ -4,6 +4,7 @@ import PaymentToken from './main/PaymentToken';
 import Member from './main/Member';
 import LocalStorage from './LocalStorage';
 import UnauthenticatedClient from './http/UnauthenticatedClient';
+import AuthHttpClient from './http/AuthHttpClient';
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
@@ -29,6 +30,11 @@ const Token = {
   loginMemberFromLocalStorage: () => {
     return LocalStorage.loadMember();
   },
+
+  getMember: (keys, alias) =>
+    AuthHttpClient.getMemberByAlias(keys, alias)
+      .then(res =>
+        new Member(res.data.member.id, keys)),
 
   notifyLinkAccounts(alias, bankId, accountLinkPayload) {
     return UnauthenticatedClient.notifyLinkAccounts(alias, bankId,

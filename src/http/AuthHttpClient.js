@@ -23,7 +23,7 @@ class AuthHttpClient {
       url: `/devices`,
       data: req
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -36,7 +36,7 @@ class AuthHttpClient {
       url: `/devices/${notificationUri}`,
       data: req
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -59,7 +59,7 @@ class AuthHttpClient {
       data: req
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -69,7 +69,7 @@ class AuthHttpClient {
       url: `/addresses`
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -86,7 +86,7 @@ class AuthHttpClient {
       url: `/accounts`,
       data: req
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -95,7 +95,7 @@ class AuthHttpClient {
       method: 'get',
       url: `/accounts`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -104,7 +104,7 @@ class AuthHttpClient {
       method: 'patch',
       url: `/accounts/${accountId}?name=${name}`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config, ["name"]);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config, ["name"]);
     return instance(config);
   }
 
@@ -113,7 +113,7 @@ class AuthHttpClient {
       method: 'get',
       url: `/accounts/${accountId}/balance`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -129,7 +129,7 @@ class AuthHttpClient {
       }
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -165,7 +165,7 @@ class AuthHttpClient {
       data: req
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -194,7 +194,7 @@ class AuthHttpClient {
       data: req
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -204,7 +204,7 @@ class AuthHttpClient {
       url: `/tokens/${tokenId}`
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -213,7 +213,7 @@ class AuthHttpClient {
       method: 'get',
       url: `/pay-tokens?offset=${offset}&limit=${limit}`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config, ['limit', 'offset']);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config, ['limit', 'offset']);
     return instance(config);
   }
 
@@ -226,7 +226,7 @@ class AuthHttpClient {
       url: `/payments/${paymentId}`
     };
 
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -235,7 +235,7 @@ class AuthHttpClient {
       method: 'get',
       url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config, ['tokenId', 'offset',
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config, ['tokenId', 'offset',
      'limit']);
     return instance(config);
   }
@@ -248,7 +248,16 @@ class AuthHttpClient {
       method: 'get',
       url: `/member`
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
+    return instance(config);
+  }
+
+  static getMemberByAlias(keys, alias) {
+    const config = {
+      method: 'get',
+      url: `/member`
+    };
+    Auth.addAuthorizationHeaderAlias(keys, alias, config);
     return instance(config);
   }
 
@@ -320,7 +329,7 @@ class AuthHttpClient {
       url: `/members/${memberId}`,
       data: req
     };
-    Auth.addAuthorizationHeader(keys, memberId, config);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 }

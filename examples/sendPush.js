@@ -1,4 +1,4 @@
-var Token = require("./dist/token-io.node.js");
+var Token = require("../dist/token-io.node.js");
 
 var alias = Token.Crypto.generateKeys().keyId;
 var pushToken = '0ECA0A78592EC9BA1290147A81BB88C8292D1F38772EABA8E528A656318534D9';

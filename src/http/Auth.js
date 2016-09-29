@@ -5,12 +5,26 @@ import Crypto from '../Crypto';
 
 class Auth {
 
+  static addAuthorizationHeaderMemberId(keys, memberId, config, uriParam) {
+    const identity = 'member-id=' + memberId;
+    Auth.addAuthorizationHeader(keys, identity, config, uriParam);
+  }
+
+  /*
+  * Adds an authorization header with identity set as the alias. Useful when
+  * on a browser that doesn't yet have a memberId
+  */
+  static addAuthorizationHeaderAlias(keys, alias, config, uriParam) {
+    const identity = 'alias=' + alias;
+    Auth.addAuthorizationHeader(keys, identity, config, uriParam);
+  }
+
   /*
   * Adds an authorization header to an HTTP request. The header is built
   * using the request info and the keys.
   *
   */
-  static addAuthorizationHeader(keys, memberId, config, uriParam) {
+  static addAuthorizationHeader(keys, identity, config, uriParam) {
     let uriPath = config.url.replace(uriHost, '');
     uriPath = uriPath.substring(0, 1) === '/' ? uriPath : uriPath + '/';
     uriPath = uriPath.substring(uriPath.length - 1) === '/' ?
@@ -30,7 +44,7 @@ class Auth {
     }
     const signature = Crypto.signJson(payload, keys);
     const header = signatureScheme + ' ' +
-      'member-id=' + memberId + ',' +
+       identity + ',' +
       'key-id=' + keys.keyId + ',' +
       'signature=' + signature;
     config.headers = {
