@@ -3,16 +3,11 @@ const assert = chai.assert;
 
 const Token = require('../../src');
 import Crypto from '../../src/Crypto';
-const some = require('lodash/some');
-const map = require('lodash/map');
 import BankClient from '../sample/BankClient';
-import {defaultCurrency} from '../../src/constants';
 
 let member1 = {};
 let alias1 = '';
 let account1 = {};
-
-let alias2 = '';
 
 // Set up a first member
 const setUp1 = () => {

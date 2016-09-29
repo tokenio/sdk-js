@@ -22,7 +22,7 @@ export default class PaymentToken {
     return tokenResult;
   }
 
-  static create(member, account, amount, currency, alias, description) {
+  static create(member, accountId, amount, currency, alias, description) {
     const payer = {
       id: member.id
     };
@@ -31,7 +31,7 @@ export default class PaymentToken {
     };
     const transfer = {
       from: {
-        accountId: account.id
+        accountId
       }
     };
     return new PaymentToken(undefined, payer, transfer, amount, currency,

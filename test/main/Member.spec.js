@@ -3,7 +3,7 @@ const assert = chai.assert;
 
 const Token = require('../../src');
 import Crypto from '../../src/Crypto';
-import Util from '../../src/Util';
+import BankClient from '../sample/BankClient';
 
 let member = {};
 let alias = '';
@@ -59,26 +59,20 @@ describe('member tests', () => {
       });
     });
     it('should link an account', () => {
-      const alp = Util.accountLinkPayload({
-        alias,
-        accounts: [{name: 'Checking1', accountNumber: 'acc1'},
-          {name: "Savings", accountNumber: '2'}]
-      });
-      return member.linkAccounts('bank-id', alp).then(accs => {
-        assert.equal(accs.length, 2);
-      });
+      BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
+        member.linkAccounts('bank-id', alp).then(accs => {
+          assert.equal(accs.length, 2);
+        })
+      );
     });
     it('should lookup accounts', () => {
-      const alp = Util.accountLinkPayload({
-        alias,
-        accounts: [{name: 'Checking1', accountNumber: 'acc1'},
-          {name: "Savings", accountNumber: '2'}]
-      });
-      return member.linkAccounts('bank-id', alp).then(() => {
-        return member.lookupAccounts().then(accs => {
-          assert.equal(accs.length, 2);
-        });
-      });
+      BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
+        member.linkAccounts('bank-id', alp).then(() => {
+          return member.lookupAccounts().then(accs => {
+            assert.equal(accs.length, 2);
+          });
+        })
+      );
     });
   });
 });

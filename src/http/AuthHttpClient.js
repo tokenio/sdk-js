@@ -9,6 +9,9 @@ const instance = axios.create({
   baseURL: uriHost
 });
 
+/**
+ * Authenticated client for making requests to the Token gateway
+ */
 class AuthHttpClient {
   static subscribeDevice(keys, memberId, notificationUri, provider,
     platform, tags) {
@@ -104,7 +107,7 @@ class AuthHttpClient {
       method: 'patch',
       url: `/accounts/${accountId}?name=${name}`
     };
-    Auth.addAuthorizationHeaderMemberId(keys, memberId, config, ["name"]);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -213,7 +216,7 @@ class AuthHttpClient {
       method: 'get',
       url: `/pay-tokens?offset=${offset}&limit=${limit}`
     };
-    Auth.addAuthorizationHeaderMemberId(keys, memberId, config, ['limit', 'offset']);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
@@ -235,8 +238,7 @@ class AuthHttpClient {
       method: 'get',
       url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
     };
-    Auth.addAuthorizationHeaderMemberId(keys, memberId, config, ['tokenId', 'offset',
-     'limit']);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 

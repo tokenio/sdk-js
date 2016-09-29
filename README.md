@@ -65,7 +65,6 @@ member.lookupAccounts() => Promise(Account[])
 member.subscribeDevice(notificationUri, provider=“Token”,
      platform=“IOS”, tags=[]) =>  Promise()
 member.getAllAliases() => Promise(string[])
-member.getFirstAlias() => Promise(string)
 member.getPublicKeys() => Promise(key[])
 member.createAddress(name, address) => Promise()
 member.getAddresses() => Promise(Address[])

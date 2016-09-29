@@ -3,7 +3,7 @@ const assert = chai.assert;
 
 const Token = require('../../src');
 import Crypto from '../../src/Crypto';
-import Util from '../../src/Util';
+import BankClient from '../sample/BankClient';
 import PaymentToken from '../../src/main/PaymentToken';
 import {defaultCurrency} from '../../src/constants';
 
@@ -17,13 +17,11 @@ const setUp1 = () => {
   return Token.createMember(alias1)
     .then(res => {
       member1 = res;
-      const alp = Util.accountLinkPayload({
-        alias: alias1,
-        accounts: [{name: 'Checking1', accountNumber: 'acc1'}]
-      });
-      return member1.linkAccounts('bank-id', alp).then(accs => {
-        account1 = accs[0];
-      });
+      BankClient.requestLinkAccounts(alias1, 100000, 'EUR').then(alp =>
+        member1.linkAccounts('bank-id', alp).then(accs => {
+          account1 = accs[0];
+        })
+      );
     });
 };
 
@@ -33,7 +31,7 @@ describe('PaymentTokens', () => {
   });
 
   it('create a payment token object', () => {
-    const token = PaymentToken.create(member1, account1, 12.54, defaultCurrency,
+    const token = PaymentToken.create(member1, account1.id, 12.54, defaultCurrency,
       alias1, 'desc');
     const json = token.json;
     assert.equal(json.scheme, 'Pay/1.0');

@@ -40,7 +40,7 @@ describe('Tokens', () => {
   });
 
   it('should create a token, look it up, and endorse it', () => {
-    return account1.createToken(9.24, defaultCurrency, alias2).then(token => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
       assert.equal(token.issuer.id, 'iron-bank');
       assert.isAtLeast(token.id.length, 5);
       assert.equal(token.payer.id, member1.id);
@@ -49,10 +49,10 @@ describe('Tokens', () => {
       assert.equal(token.currency, defaultCurrency);
       assert.equal(token.description, undefined);
       assert.equal(token.scheme, 'Pay/1.0');
-      return account1.lookupToken(token.id)
+      return member1.lookupToken(token.id)
       .then(tokenLookedUp => {
         assert.equal(token.id, tokenLookedUp.id);
-        return account1.endorseToken(token).then(() => {
+        return member1.endorseToken(token).then(() => {
           assert.equal(token.signatures.length, 2);
         });
       });
@@ -60,9 +60,9 @@ describe('Tokens', () => {
   });
 
   it('should create a token and endorse it by id', () => {
-    return account1.createToken(9.24, defaultCurrency, alias2).then(token => {
-      return account1.endorseToken(token.id).then(() => {
-        return account1.lookupToken(token.id).then(lookedUp => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorseToken(token.id).then(() => {
+        return member1.lookupToken(token.id).then(lookedUp => {
           assert.equal(lookedUp.signatures.length, 2);
           assert.equal(lookedUp.signatures[0].action, 'ENDORSED');
         });
@@ -71,8 +71,8 @@ describe('Tokens', () => {
   });
 
   it('should create a token and decline it', () => {
-    return account1.createToken(9.24, defaultCurrency, alias2).then(token => {
-      return account1.declineToken(token).then(() => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.declineToken(token).then(() => {
         assert.equal(token.signatures.length, 2);
         assert.equal(token.signatures[0].action, 'DECLINED');
       });
@@ -80,9 +80,9 @@ describe('Tokens', () => {
   });
 
   it('should create token and declines it by id', () => {
-    return account1.createToken(9.24, defaultCurrency, alias2).then(token => {
-      return account1.declineToken(token.id).then(() => {
-        return account1.lookupToken(token.id).then(lookedUp => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.declineToken(token.id).then(() => {
+        return member1.lookupToken(token.id).then(lookedUp => {
           assert.equal(lookedUp.signatures.length, 2);
           const actions = map(lookedUp.signatures, sig => sig.action);
           assert.isOk(some(actions, action => action === 'DECLINED'));
@@ -92,9 +92,9 @@ describe('Tokens', () => {
   });
 
   it('should create a token, endorse it, and revoke it', () => {
-    return account1.createToken(9.24, defaultCurrency, alias2).then(token => {
-      return account1.endorseToken(token).then(() => {
-        return account1.revokeToken(token).then(() => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorseToken(token).then(() => {
+        return member1.revokeToken(token).then(() => {
           const actions = map(token.signatures, sig => sig.action);
           assert.isOk(some(actions, action => action === 'REVOKED'));
         });
@@ -102,10 +102,10 @@ describe('Tokens', () => {
     });
   });
   it('should create token, endorse it, and revoke it by id', () => {
-    return account1.createToken(9.24, defaultCurrency, alias2).then(token => {
-      return account1.endorseToken(token.id).then(() => {
-        return account1.revokeToken(token.id).then(() => {
-          return account1.lookupToken(token.id).then(lookedUp => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorseToken(token.id).then(() => {
+        return member1.revokeToken(token.id).then(() => {
+          return member1.lookupToken(token.id).then(lookedUp => {
             assert.equal(lookedUp.signatures.length, 4);
             const actions = map(lookedUp.signatures, sig => sig.action);
             assert.isOk(some(actions, action => action === 'REVOKED'));
