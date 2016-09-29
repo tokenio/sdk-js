@@ -44,16 +44,12 @@ class AuthHttpClient {
   // ADDRESSES
   //
   static createAddress(keys, memberId, name, data) {
-    const payload = {
-      name,
-      data
-    };
     const req = {
       name,
       data,
       signature: {
         keyId: keys.keyId,
-        signature: Crypto.signJson(payload, keys),
+        signature: Crypto.sign(data, keys),
         timestampMs: new Date().getTime()
       }
     };
@@ -61,6 +57,16 @@ class AuthHttpClient {
       method: 'post',
       url: `/addresses`,
       data: req
+    };
+
+    Auth.addAuthorizationHeader(keys, memberId, config);
+    return instance(config);
+  }
+
+  static getAddresses(keys, memberId) {
+    const config = {
+      method: 'get',
+      url: `/addresses`
     };
 
     Auth.addAuthorizationHeader(keys, memberId, config);

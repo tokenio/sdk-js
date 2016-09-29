@@ -1,6 +1,7 @@
 import Crypto from '../Crypto';
 import LocalStorage from '../LocalStorage';
 import Account from './Account';
+import Address from './Address';
 import AuthHttpClient from '../http/AuthHttpClient';
 import {defaultNotificationProvider} from '../constants';
 
@@ -79,8 +80,14 @@ export default class Member {
   createAddress(name, data) {
     return AuthHttpClient.createAddress(this._keys, this._id, name, data)
     .then(res => {
-      console.log("res", res);
       return;
+    });
+  }
+
+  getAddresses() {
+    return AuthHttpClient.getAddresses(this._keys, this._id)
+    .then(res => {
+      return res.data.addresses.map(address => new Address(address));
     });
   }
 

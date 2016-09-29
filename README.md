@@ -56,17 +56,19 @@ member.removeAlias(alias) => Promise()
 member.linkAccounts(bankId, accountLinkPayload)
   => Promise(Accounts)
 member.lookupAccounts() => Promise(Accounts)
-(X) member.subscribeDevice(notificationUri, provider=“Token”,
+member.subscribeDevice(notificationUri, provider=“Token”,
      platform=“IOS”, tags=[]) =>  Promise()
-(X) member.notifyAddKey(alias, publicKey) => Promise()
-(X) member.notifyLinkBank(alias, bankCode, accountLinkPayload) => Promise()
+member.notifyAddKey(alias, publicKey) => Promise()
+member.notifyLinkAccounts(alias, bankCode, accountLinkPayload) => Promise()
+member.notifyLinkAccountsAndAddKey(alias, bankCode, accountLinkPayload)
+  => Promise()
 member.getAllAliases() => Promise(aliases)
 member.getFirstAlias() => Promise(alias)
 member.getPublicKeys() => Promise(keys)
 member.saveToLocalStorage() => void
 (X) member.isActive() => Promise()
-(X) member.createAddress() => Promise()
-(X) member.getAddresses() => Promise(addresses)
+member.createAddress() => Promise()
+member.getAddresses() => Promise(addresses)
 member.id => memberid
 member.keys => keys
 ```
