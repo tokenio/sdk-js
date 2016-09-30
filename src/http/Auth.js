@@ -46,13 +46,16 @@ class Auth {
     const payload = {
       method: config.method.toUpperCase(),
       uriHost: uriHost.replace('http://', '').replace('https://', ''),
-      uriPath,
-      requestBody: stringify(config.data)
+      uriPath
     };
 
+    if (config.data !== undefined && config.data !== '') {
+      payload.requestBody = stringify(config.data);
+    }
+
     // Signs the query string as well, if it exists
-    if (uriPath.indexOf("?") !== -1) {
-      payload.queryString = uriPath.substring(uriPath.indexOf("?"));
+    if (config.url.indexOf("?") !== -1) {
+      payload.queryString = config.url.substring(config.url.indexOf("?") + 1);
     }
 
     // Signs the Json string

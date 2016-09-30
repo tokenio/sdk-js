@@ -114,4 +114,14 @@ describe('Tokens', () => {
       });
     });
   });
+  it('should create token, and look it up', () => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorseToken(token.id).then(() => {
+        return member1.lookupTokens().then(tokens => {
+          assert.equal(tokens.length, 1);
+          assert.equal(tokens[0].signatures.length, 2);
+        });
+      });
+    });
+  });
 });

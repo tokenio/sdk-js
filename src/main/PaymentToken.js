@@ -17,9 +17,8 @@ export default class PaymentToken {
     const issuer = token.payment.issuer;
     const nonce = token.payment.nonce;
     const signatures = token.signatures;
-    const tokenResult = new PaymentToken(id, payer, transfer, amount, currency,
+    return new PaymentToken(id, payer, transfer, amount, currency,
       redeemer, description, scheme, issuer, nonce, signatures);
-    return tokenResult;
   }
 
   static create(member, accountId, amount, currency, alias, description) {
@@ -98,6 +97,7 @@ export default class PaymentToken {
     return this._signatures;
   }
 
+  // Creates a standardized json object for the PaymentToken, to be used for signing
   get json() {
     const json = {
       scheme: this._scheme,

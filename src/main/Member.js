@@ -218,7 +218,7 @@ export default class Member {
     return AuthHttpClient.lookupTokens(this._keys, this._id,
       offset, limit)
     .then(res => {
-      return res.data;
+      return res.data.tokens.map(tk => PaymentToken.createFromToken(tk));
     });
   }
 
@@ -306,8 +306,14 @@ export default class Member {
   /**
    * Looks up a payment
    * @param {string} paymentId - id to look up
+   * @return {Payment} payment - payment if found
    */
   lookupPayment(paymentId) {
+    return AuthHttpClient.lookupPayment(this._keys, this._id,
+      paymentId)
+    .then(res => {
+      return new Payment(res.data.payment);
+    });
   }
 
   /**
@@ -321,7 +327,7 @@ export default class Member {
     return AuthHttpClient.lookupPayments(this._keys, this._id,
       tokenId, offset, limit)
     .then(res => {
-      return res.data;
+      return res.data.payments.map(pt => new Payment(pt));
     });
   }
 

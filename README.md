@@ -36,6 +36,7 @@ $ npm run testNode
 ```
 
 ### API
+Note that information token support has not yet been added to this sdk.
 
 #### Token
 ```
@@ -68,6 +69,16 @@ member.getAllAliases() => Promise(string[])
 member.getPublicKeys() => Promise(key[])
 member.createAddress(name, address) => Promise()
 member.getAddresses() => Promise(Address[])
+member.createToken(amount, currency, alias, description)
+  => Promise(PaymentToken)
+member.lookupToken(tokenId) => Promise(PaymentToken)
+member.lookupTokens() => Promise(PaymentToken[])
+member.endorseToken(token or tokenId) => Promise()
+member.declineToken(token or tokenId) => Promise()
+member.revokeToken(token or tokenId) => Promise()
+member.redeemToken(tokenId, amount, currency) => Promise(Payment)
+member.lookupPayment(paymentId) => Promise(Payment)
+member.lookupPayments() => Promise(Payment[])
 member.id => memberid
 member.keys => keys
 ```
@@ -75,17 +86,8 @@ member.keys => keys
 #### Account
 ```
 (X) account.setAccountName(name) => Promise()
-account.createToken(amount, currency, alias, description)
-  => Promise(PaymentToken)
-account.lookupToken(tokenId) => Promise(PaymentToken)
-(X) account.lookupTokens() => Promise(PaymentToken[])
-account.endorseToken(token or tokenId) => Promise()
-account.declineToken(token or tokenId) => Promise()
-account.revokeToken(token or tokenId) => Promise()
-account.redeemToken(tokenId, amount, currency) => Promise(Payment)
-(X) account.redeemToken(tokenId, 'transactions') => Promise(Object)
 account.lookupBalance() => Promise(balance)
-(X) account.lookupPayments() => Promise(Payment[])
+(X) account.lookupTransactions() => Promise(Transaction)
 ```
 
 #### PaymentToken
@@ -118,10 +120,9 @@ payment.signatures => signatures
 
 ### Bank
 * ```Token.requestLinkAccounts(alias)```
-* ```member.notifyAddKey (alias, publicKey)```
+* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsPayload, publicKey, tags)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
-* ```Token.notifyLinkAccounts(alias, bank-id, accountsPayload)```
-* ```member.persistInLocalStorage()```
+* ```member.saveToLocalStorage()```
 
 ### Merchant
 * ```Token.loginMemberFromLocalStorage()```
@@ -129,31 +130,29 @@ payment.signatures => signatures
 * ```member.notifyAddKey(alias, publicKey)```
 
 
-* ```member.isActive()```
+* ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.lookupAccounts()```
-* ```account.createToken(amount, currency)```
+* ```member.lookupAddresses()```
+* ```member.createToken(accountId, amount, currency)```
+* ```member.endorseToken(token)```
 * If fails:
-* ```account.getTokens()``` (until you find the correct endorsed token)
-* If succeeds:
-* ```account.endorseToken(tokenId)```
+* ```member.getTokens()``` (until you find the correct endorsed token)
 
 
 * Either way: return tokenID to merchant, who does:
-* ```account.redeemToken(token, 15, ‘EUR’)```
+* ```member.redeemToken(token, 15, ‘EUR’)```
 
-### AISP (Backend still in progres)
+### AISP (Backend still in progress)
 * ```Token.loginMemberFromLocalStorage()```
 * If fails:
 * ```member.notifyAddKey(alias, publicKey)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAddresses()```
 * ```member.lookupAccounts()```
-* ```account.createToken(acl list...)```
+* ```member.createToken(acl list...)```
+* ```member.endorseToken(token)```
 * If fails:
-* ```getTokens(until you find the correct endorsed token)```
-* If succeeds:
-* ```endorseToken(tokenId)```
+* ```member.getTokens(until you find the correct endorsed token)```
 
-
-* Either way: return tokenID to merchant, who does:
+* Either way: return tokenID to AISP, who does:
 * ```account.redeemToken(token, ‘transactions’)```
