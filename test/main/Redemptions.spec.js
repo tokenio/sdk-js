@@ -71,6 +71,9 @@ describe('Tokens', () => {
       assert.equal(15.28, payment.amount);
       assert.equal('EUR', payment.currency);
       assert.isAtLeast(payment.signatures.length, 1);
+      return account1.lookupBalance().then(bal => {
+        assert.equal(bal.current.value, 100000 - 15.28);
+      });
     });
   });
 

@@ -87,8 +87,22 @@ member.keys => keys
 ```
 (X) account.setAccountName(name) => Promise()
 account.lookupBalance() => Promise(balance)
-(X) account.lookupTransactions() => Promise(Transaction)
+account.lookupTransactions() => Promise(Transaction[])
 ```
+#### Crypto
+```
+Token.Crypto.generateKeys() => keys
+Token.Crypto.signJson(json, keys) => signature
+Token.Crypto.sign(message, keys) => signature
+Token.Crypto.strKey(Buffer key) => str key
+Token.Crypto.bufferKey(str key) => Buffer key
+```
+
+#### Util
+```
+Token.Util.generateNonce() => nonce
+```
+
 
 #### PaymentToken
 ```

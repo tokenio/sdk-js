@@ -120,6 +120,25 @@ class AuthHttpClient {
     return instance(config);
   }
 
+  static lookupTransaction(keys, memberId, accountId, transactionId) {
+    const config = {
+      method: 'get',
+      url: `/accounts/${accountId}/transactions/${transactionId}`
+    };
+    console.log("URL", config.url);
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
+    return instance(config);
+  }
+
+  static lookupTransactions(keys, memberId, accountId, offset, limit) {
+    const config = {
+      method: 'get',
+      url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`
+    };
+    Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
+    return instance(config);
+  }
+
   //
   // Tokens
   //

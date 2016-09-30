@@ -27,7 +27,7 @@ describe('Notifications', () => {
   //   const randomStr = Crypto.generateKeys().keyId;
   //   return member1.subscribeDevice(randomStr)
   //   .then(() => {
-  //     member1.unsubscribeDevice(randomStr);
+  //     return member1.unsubscribeDevice(randomStr);
   //   });
   // });
   it('should send a push for linking accounts', () => {
@@ -47,7 +47,7 @@ describe('Notifications', () => {
   });
 
   it('should send a push for adding a key and linking accounts', () => {
-    const randomStr = '0ECA0A78592EC9BA1290147A81BB88C8292D1F38772EAB' +
+    const randomStr = 'X0ECA0A78592EC9BA1290147A81BB88C8292D1F38772EAB' +
       'A8E528A656318534D9';
     const keys = Crypto.generateKeys();
     return member1.subscribeDevice(randomStr)
@@ -57,7 +57,7 @@ describe('Notifications', () => {
   });
 
   it('should send an actual push to device', () => {
-    return member1.subscribeDevice('0ECA0A78592EC9BA12' +
+    return member1.subscribeDevice('X0ECA0A78592EC9BA12' +
     '90147A81BB88C8292D1F38772EABA8E528A656318534D9')
     .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
     .then(alp => Token.notifyLinkAccounts(alias1, 'bank-id', alp));

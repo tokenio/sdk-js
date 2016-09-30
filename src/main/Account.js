@@ -1,4 +1,5 @@
 import AuthHttpClient from '../http/AuthHttpClient';
+import Transaction from './Transaction';
 
 /**
  * Account class. Allows the member to make account specific operations, move money, etc
@@ -65,11 +66,31 @@ export default class Account {
     });
   }
 
-  lookupTransaction(transactionId) {
+  // /**
+  //  * Looks up a transaction for the account
+  //  * @param {string} transactionId - which transaction to look up
+  //  * @return {Promise} transaction - the Transaction
+  //  */
+  // lookupTransaction(transactionId) {
+  //   return AuthHttpClient.lookupTransaction(this._member.keys, this._member.id,
+  //     this._id, transactionId)
+  //   .then(res => {
+  //     console.log(res);
+  //     return new Transaction(res.data);
+  //   });
+  // }
 
-  }
-
-  lookupTransactions() {
-
+  /**
+   * Looks up all of the member's payments
+   * @param {int} offset - where to start looking
+   * @param {int} limit - how many to retrieve
+   * @return {Promise} transactions - Transactions
+   */
+  lookupTransactions(offset = 0, limit = 100) {
+    return AuthHttpClient.lookupTransactions(this._member.keys, this._member.id,
+      this._id, offset, limit)
+    .then(res => {
+      return res.data.transactions.map(tr => new Transaction(tr));
+    });
   }
 }
