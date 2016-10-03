@@ -13,6 +13,7 @@ let alias1 = '';
 let account1 = {};
 
 let alias2 = '';
+let member2 = {};
 
 // Set up a first member
 const setUp1 = () => {
@@ -31,7 +32,9 @@ const setUp1 = () => {
 // Set up a second member
 const setUp2 = () => {
   alias2 = Crypto.generateKeys().keyId;
-  return Token.createMember(alias2);
+  return Token.createMember(alias2).then(member => {
+    member2 = member;
+  });
 };
 
 describe('Tokens', () => {
@@ -114,12 +117,33 @@ describe('Tokens', () => {
       });
     });
   });
+
   it('should create token, and look it up', () => {
     return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
       return member1.endorseToken(token.id).then(() => {
         return member1.lookupTokens().then(tokens => {
           assert.equal(tokens.length, 1);
           assert.equal(tokens[0].signatures.length, 2);
+        });
+      });
+    });
+  });
+
+  it('should create token, and look it up, second member', () => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorseToken(token.id).then(() => {
+        return member2.lookupTokens().then(tokens => {
+          assert.equal(tokens.length, 0);
+        });
+      });
+    });
+  });
+
+  it('should create token, and look it up, second member, tokenId', () => {
+    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorseToken(token.id).then(() => {
+        return member2.lookupToken(token.id).then(t => {
+          assert.equal(t.id, token.id);
         });
       });
     });

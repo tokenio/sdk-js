@@ -1,7 +1,7 @@
 var Token = require("../dist/token-io.node.js");
 
 var alias = Token.Crypto.generateKeys().keyId;
-var pushToken = '0ECA0A78592EC9BA1290147A81BB88C8292D1F38772EABA8E528A656318534D9';
+var pushToken = 'D2C3279E1DC0DE52DB52D16A61A2629537B26B05C63A7E974D58E2722FE29824';
 var accountLinkPayload = 'eyJhY2NvdW50cyI6W3siYWNjb3VudE51bWJlciI6IlR6N3Jubkl' +
   'pd1FEcU9lVi0iLCJuYW1lIjoiMTIzIn1dLCJhbGlhcyI6Ik1NWXhCZTdISU9RTUM3S2oifQ==';
 
@@ -30,6 +30,6 @@ var notifyBoth = () => {
   });
 };
 
-//notifyLinkAccounts();
-//notifyAddKey();
+// notifyLinkAccounts();
+// notifyAddKey();
 notifyBoth();

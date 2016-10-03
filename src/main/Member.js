@@ -218,6 +218,7 @@ export default class Member {
     return AuthHttpClient.lookupTokens(this._keys, this._id,
       offset, limit)
     .then(res => {
+      if (res.data.tokens === undefined) return [];
       return res.data.tokens.map(tk => PaymentToken.createFromToken(tk));
     });
   }

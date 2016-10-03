@@ -75,7 +75,6 @@ export default class Account {
   //   return AuthHttpClient.lookupTransaction(this._member.keys, this._member.id,
   //     this._id, transactionId)
   //   .then(res => {
-  //     console.log(res);
   //     return new Transaction(res.data);
   //   });
   // }

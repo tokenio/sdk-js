@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "",
   "main": "dist/token-io.js",
   "scripts": {

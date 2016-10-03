@@ -97,4 +97,14 @@ describe('Tokens', () => {
     })
     .catch(() => done());
   });
+
+  it('should should redeem a token with notifications', () => {
+    return member1.subscribeDevice('0ECA0A78592EC9BA12' +
+    '90147A81BB88C8292D1F38772EABA8E528A656318534D9')
+    .then(() => member2.redeemToken(token1, 10.21, 'EUR').then(payment => {
+      assert.equal(10.21, payment.amount);
+      assert.equal('EUR', payment.currency);
+      assert.isAtLeast(payment.signatures.length, 1);
+    }));
+  });
 });

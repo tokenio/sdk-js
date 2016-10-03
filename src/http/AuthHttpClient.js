@@ -125,7 +125,6 @@ class AuthHttpClient {
       method: 'get',
       url: `/accounts/${accountId}/transactions/${transactionId}`
     };
-    console.log("URL", config.url);
     Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
