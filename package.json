@@ -11,6 +11,8 @@
     "testNode": "node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 5000 --watch --colors \"test/**/*.spec.js\"",
     "testNodeDev": "API_ENV=dev node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 5000 --watch --colors \"test/**/*.spec.js\"",
     "testNodeStg": "API_ENV=stg node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 5000 --watch --colors \"test/**/*.spec.js\"",
+    "bambooDev": "API_ENV=dev node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 5000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
+    "bambooStg": "API_ENV=stg node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 5000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "build": "npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser && WEBPACK_ENV=build npm run buildNode",
     "buildBrowser": "API_ENV=stg webpack --config config/webpack.config.js",
     "buildBrowserw": "API_ENV=stg webpack --config config/webpack.config.js --progress --colors -w",
@@ -36,6 +38,7 @@
     "karma-mocha-reporter": "^2.2.0",
     "karma-webpack": "^1.8.0",
     "mocha": "^3.0.2",
+    "mocha-bamboo-reporter": "^1.1.1",
     "mocha-webpack": "^0.6.0",
     "sinon": "^1.17.6",
     "webpack": "^1.13.2"
