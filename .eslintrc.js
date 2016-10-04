@@ -11,6 +11,8 @@ module.exports = {
     "define": true,
     "API_URL": true,
     "BROWSER": true,
+    "URI_HOST": true,
+    "URI_HOST_BANK": true
   },
   "rules": {
     "no-unused-vars": "warn",

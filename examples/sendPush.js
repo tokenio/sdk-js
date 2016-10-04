@@ -1,7 +1,7 @@
 var Token = require("../dist/token-io.node.js");
 
 var alias = Token.Crypto.generateKeys().keyId;
-var pushToken = 'D2C3279E1DC0DE52DB52D16A61A2629537B26B05C63A7E974D58E2722FE29824';
+var pushToken = '36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a10535581f979';
 var accountLinkPayload = 'eyJhY2NvdW50cyI6W3siYWNjb3VudE51bWJlciI6IlR6N3Jubkl' +
   'pd1FEcU9lVi0iLCJuYW1lIjoiMTIzIn1dLCJhbGlhcyI6Ik1NWXhCZTdISU9RTUM3S2oifQ==';
 
