@@ -1,6 +1,6 @@
 const lib = require('supercop.js');
 import sha256 from 'fast-sha256';
-import base64Url from 'base64Url';
+import base64Url from 'base64url';
 const stringify = require('json-stable-stringify');
 
 class Crypto {

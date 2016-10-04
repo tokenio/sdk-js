@@ -254,7 +254,7 @@ class AuthHttpClient {
   static lookupPayments(keys, memberId, tokenId, offset, limit) {
     const config = {
       method: 'get',
-      url: `/payments?token_id=${tokenId}&offset=${offset}&limit=${limit}`
+      url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
     };
     Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
