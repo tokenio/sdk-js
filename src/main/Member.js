@@ -138,10 +138,16 @@ export default class Member {
       notificationUri, provider, platform, tags);
   }
 
-  // unsubscribeDevice(notificationUri, provider = defaultNotificationProvider) {
-  //   return AuthHttpClient.unsubscribeDevice(this._keys, this._id,
-  //     notificationUri, provider);
-  // }
+    /**
+   * Unsubscribes a device from push notifications
+   * @param {string} notificationUri - the notification Uri for this device. (e.g iOS push token)
+   * @param {string} provider - provider to send the notification (default Token)
+   * @return {Promise} empty - empty promise
+   */
+  unsubscribeDevice(notificationUri, provider = defaultNotificationProvider) {
+    return AuthHttpClient.unsubscribeDevice(this._keys, this._id,
+      notificationUri, provider);
+  }
 
   /**
    * Creates an address for this member, and saves it
