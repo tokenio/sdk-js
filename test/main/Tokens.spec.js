@@ -63,92 +63,68 @@ describe('Tokens', () => {
     });
   });
 
-  // it('should create a token and endorse it by id', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.endorsePaymentToken(token.id).then(() => {
-  //       return member1.lookupPaymentToken(token.id).then(lookedUp => {
-  //         assert.equal(lookedUp.signatures.length, 2);
-  //         assert.equal(lookedUp.signatures[0].action, 'ENDORSED');
-  //       });
-  //     });
-  //   });
-  // });
-  //
-  // it('should create a token and decline it', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.declinePaymentToken(token).then(() => {
-  //       assert.equal(token.signatures.length, 2);
-  //       assert.equal(token.signatures[0].action, 'DECLINED');
-  //     });
-  //   });
-  // });
-  //
-  // it('should create token and declines it by id', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.declinePaymentToken(token.id).then(() => {
-  //       return member1.lookupPaymentToken(token.id).then(lookedUp => {
-  //         assert.equal(lookedUp.signatures.length, 2);
-  //         const actions = map(lookedUp.signatures, sig => sig.action);
-  //         assert.isOk(some(actions, action => action === 'DECLINED'));
-  //       });
-  //     });
-  //   });
-  // });
-  //
-  // it('should create a token, endorse it, and revoke it', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.endorsePaymentToken(token).then(() => {
-  //       return member1.revokePaymentToken(token).then(() => {
-  //         const actions = map(token.signatures, sig => sig.action);
-  //         assert.isOk(some(actions, action => action === 'REVOKED'));
-  //       });
-  //     });
-  //   });
-  // });
-  // it('should create token, endorse it, and revoke it by id', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.endorsePaymentToken(token.id).then(() => {
-  //       return member1.revokePaymentToken(token.id).then(() => {
-  //         return member1.lookupPaymentToken(token.id).then(lookedUp => {
-  //           assert.equal(lookedUp.signatures.length, 4);
-  //           const actions = map(lookedUp.signatures, sig => sig.action);
-  //           assert.isOk(some(actions, action => action === 'REVOKED'));
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
-  //
-  // it('should create token, and look it up', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.endorsePaymentToken(token.id).then(() => {
-  //       return member1.lookupPaymentTokens().then(tokens => {
-  //         assert.equal(tokens.length, 1);
-  //         assert.equal(tokens[0].signatures.length, 2);
-  //       });
-  //     });
-  //   });
-  // });
-  //
-  // it('should create token, and look it up, second member', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.endorsePaymentToken(token.id).then(() => {
-  //       return member2.lookupPaymentTokens().then(tokens => {
-  //         assert.equal(tokens.length, 0);
-  //       });
-  //     });
-  //   });
-  // });
-  //
-  // it('should create token, and look it up, second member, tokenId', () => {
-  //   return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-  //     return member1.endorsePaymentToken(token.id).then(() => {
-  //       return member2.lookupPaymentToken(token.id).then(t => {
-  //         assert.equal(t.id, token.id);
-  //       });
-  //     });
-  //   });
-  // });
+  it('should create a token and endorse it by id', () => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member1.lookupPaymentToken(token.id).then(lookedUp => {
+          assert.equal(lookedUp.signatures.length, 2);
+          assert.equal(lookedUp.signatures[0].action, 'ENDORSED');
+        });
+      });
+    });
+  });
+
+  it('should create a token and cancel it', () => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.cancelPaymentToken(token).then(() => {
+        assert.equal(token.signatures.length, 2);
+        assert.equal(token.signatures[0].action, 'CANCELLED');
+      });
+    });
+  });
+
+  it('should create token and cancel it by id', () => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.cancelPaymentToken(token.id).then(() => {
+        return member1.lookupPaymentToken(token.id).then(lookedUp => {
+          assert.equal(lookedUp.signatures.length, 2);
+          const actions = map(lookedUp.signatures, sig => sig.action);
+          assert.isOk(some(actions, action => action === 'CANCELLED'));
+        });
+      });
+    });
+  });
+
+  it('should create token, and look it up', () => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member1.lookupPaymentTokens().then(tokens => {
+          assert.equal(tokens.length, 1);
+          assert.equal(tokens[0].signatures.length, 2);
+        });
+      });
+    });
+  });
+
+  it('should create token, and look it up, second member', () => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member2.lookupPaymentTokens().then(tokens => {
+          assert.equal(tokens.length, 0);
+        });
+      });
+    });
+  });
+
+  it('should create token, and look it up, second member, tokenId', () => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member2.lookupPaymentToken(token.id).then(t => {
+          assert.equal(t.id, token.id);
+        });
+      });
+    });
+  });
 
   it('should fail to endorse a high value token with a low value key', () => {
     const keys = Crypto.generateKeys();
