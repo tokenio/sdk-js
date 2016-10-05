@@ -159,14 +159,9 @@ class AuthHttpClient {
       'endorse', 'endorsed');
   }
 
-  static declinePaymentToken(keys, memberId, paymentToken) {
+  static cancelPaymentToken(keys, memberId, paymentToken) {
     return AuthHttpClient._paymentTokenOperation(keys, memberId, paymentToken,
-      'decline', 'declined');
-  }
-
-  static revokePaymentToken(keys, memberId, paymentToken) {
-    return AuthHttpClient._paymentTokenOperation(keys, memberId, paymentToken,
-      'revoke', 'revoked');
+      'cancel', 'cancelled');
   }
 
   static _paymentTokenOperation(keys, memberId, paymentToken, operation, suffix) {

@@ -249,33 +249,14 @@ export default class Member {
   }
 
   /**
-   * Declines a token. (Called by the payer)
-   * @param {PaymentToken} token - token to decline. Can also be a {string} tokenId
-   * @return {PaymentToken} token - declined token
+   * Cancels a token. (Called by the payer or the redeemer)
+   * @param {PaymentToken} token - token to cancel. Can also be a {string} tokenId
+   * @return {PaymentToken} token - cancelled token
    */
-  declinePaymentToken(token) {
+  cancelPaymentToken(token) {
     return this._resolveToken(token)
     .then(finalToken => {
-      return AuthHttpClient.declinePaymentToken(this._keys, this._id,
-          finalToken)
-      .then(res => {
-        if (typeof token !== 'string' && !(token instanceof String)) {
-          token.signatures = res.data.token.signatures;
-        }
-        return;
-      });
-    });
-  }
-
-  /**
-   * Revokes a token. (Called by the payer)
-   * @param {PaymentToken} token - token to revoke. Can also be a {string} tokenId
-   * @return {PaymentToken} token - revoked token
-   */
-  revokePaymentToken(token) {
-    return this._resolveToken(token)
-    .then(finalToken => {
-      return AuthHttpClient.revokePaymentToken(this._keys, this._id,
+      return AuthHttpClient.cancelPaymentToken(this._keys, this._id,
           finalToken)
       .then(res => {
         if (typeof token !== 'string' && !(token instanceof String)) {
