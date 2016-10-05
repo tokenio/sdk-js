@@ -43,9 +43,9 @@ const setUp2 = () => {
 
 // Set up an endorsed payment token
 const setUp3 = () => {
-  return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
-    return member1.endorseToken(token.id).then(() => {
-      return member2.lookupToken(token.id).then(lookedUp => {
+  return member1.createPaymentToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+    return member1.endorsePaymentToken(token.id).then(() => {
+      return member2.lookupPaymentToken(token.id).then(lookedUp => {
         token1 = lookedUp;
       });
     });
@@ -59,7 +59,7 @@ describe('Tokens', () => {
   });
 
   it('should redeem a basic token', () => {
-    return member2.redeemToken(token1, 10.21, 'EUR').then(payment => {
+    return member2.redeemPaymentToken(token1, 10.21, 'EUR').then(payment => {
       assert.equal(10.21, payment.amount);
       assert.equal('EUR', payment.currency);
       assert.isAtLeast(payment.signatures.length, 1);
@@ -67,7 +67,7 @@ describe('Tokens', () => {
   });
 
   it('should redeem a basic token by id', () => {
-    return member2.redeemToken(token1.id, 15.28, 'EUR').then(payment => {
+    return member2.redeemPaymentToken(token1.id, 15.28, 'EUR').then(payment => {
       assert.equal(15.28, payment.amount);
       assert.equal('EUR', payment.currency);
       assert.isAtLeast(payment.signatures.length, 1);
@@ -78,30 +78,30 @@ describe('Tokens', () => {
   });
 
   it('should fail if redeem amount is too high', done => {
-    member2.redeemToken(token1.id, 1242.28, 'EUR').then(payment => {
+    member2.redeemPaymentToken(token1.id, 1242.28, 'EUR').then(payment => {
       done(new Error("should fail"));
     })
     .catch(() => done());
   });
 
   it('should fail if redeemer is wrong', done => {
-    member1.redeemToken(token1.id, 10.28, 'EUR').then(payment => {
+    member1.redeemPaymentToken(token1.id, 10.28, 'EUR').then(payment => {
       done(new Error("should fail"));
     })
     .catch(() => done());
   });
 
   it('should fail if wrong currency', done => {
-    member1.redeemToken(token1.id, 10.28, 'USD').then(payment => {
+    member1.redeemPaymentToken(token1.id, 10.28, 'USD').then(payment => {
       done(new Error("should fail"));
     })
     .catch(() => done());
   });
 
   it('should should redeem a token with notifications', () => {
-    return member1.subscribeDevice('0ECA0A78592EC9BA12' +
-    '90147A81BB88C8292D1F38772EABA8E528A656318534D9')
-    .then(() => member2.redeemToken(token1, 10.21, 'EUR').then(payment => {
+    return member1.subscribeDevice('36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
+    '81f97900')
+    .then(() => member2.redeemPaymentToken(token1, 10.21, 'EUR').then(payment => {
       assert.equal(10.21, payment.amount);
       assert.equal('EUR', payment.currency);
       assert.isAtLeast(payment.signatures.length, 1);

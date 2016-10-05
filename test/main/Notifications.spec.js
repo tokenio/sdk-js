@@ -23,13 +23,13 @@ describe('Notifications', () => {
     const randomStr = Crypto.generateKeys().keyId;
     return member1.subscribeDevice(randomStr);
   });
-  it('should subscribe and unsubscribe device', () => {
-    const randomStr = Crypto.generateKeys().keyId;
-    return member1.subscribeDevice(randomStr)
-    .then(() => {
-      return member1.unsubscribeDevice(randomStr);
-    });
-  });
+  // it('should subscribe and unsubscribe device', () => {
+  //   const randomStr = Crypto.generateKeys().keyId;
+  //   return member1.subscribeDevice(randomStr)
+  //   .then(() => {
+  //     return member1.unsubscribeDevice(randomStr);
+  //   });
+  // });
   it('should send a push for linking accounts', () => {
     const randomStr = Crypto.generateKeys().keyId;
     return member1.subscribeDevice(randomStr)

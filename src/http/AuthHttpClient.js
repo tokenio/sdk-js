@@ -144,9 +144,9 @@ class AuthHttpClient {
   static createPaymentToken(keys, memberId, paymentToken) {
     const config = {
       method: 'post',
-      url: `/pay-tokens`,
+      url: `/payment-tokens`,
       data: {
-        token: paymentToken
+        payload: paymentToken
       }
     };
 
@@ -154,22 +154,22 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static endorseToken(keys, memberId, paymentToken) {
-    return AuthHttpClient._tokenOperation(keys, memberId, paymentToken,
+  static endorsePaymentToken(keys, memberId, paymentToken) {
+    return AuthHttpClient._paymentTokenOperation(keys, memberId, paymentToken,
       'endorse', 'endorsed');
   }
 
-  static declineToken(keys, memberId, paymentToken) {
-    return AuthHttpClient._tokenOperation(keys, memberId, paymentToken,
+  static declinePaymentToken(keys, memberId, paymentToken) {
+    return AuthHttpClient._paymentTokenOperation(keys, memberId, paymentToken,
       'decline', 'declined');
   }
 
-  static revokeToken(keys, memberId, paymentToken) {
-    return AuthHttpClient._tokenOperation(keys, memberId, paymentToken,
+  static revokePaymentToken(keys, memberId, paymentToken) {
+    return AuthHttpClient._paymentTokenOperation(keys, memberId, paymentToken,
       'revoke', 'revoked');
   }
 
-  static _tokenOperation(keys, memberId, paymentToken, operation, suffix) {
+  static _paymentTokenOperation(keys, memberId, paymentToken, operation, suffix) {
     const payload = stringify(paymentToken.json) + `.${suffix}`;
     const req = {
       tokenId: paymentToken.id,
@@ -182,7 +182,7 @@ class AuthHttpClient {
     const tokenId = paymentToken.id;
     const config = {
       method: 'put',
-      url: `/tokens/${tokenId}/${operation}`,
+      url: `/payment-tokens/${tokenId}/${operation}`,
       data: req
     };
 
@@ -190,7 +190,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static redeemToken(keys, memberId, paymentToken, amount, currency) {
+  static redeemPaymentToken(keys, memberId, paymentToken, amount, currency) {
     const payload = {
       nonce: Util.generateNonce(),
       tokenId: paymentToken.id,
@@ -219,20 +219,20 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupToken(keys, memberId, tokenId) {
+  static lookupPaymentToken(keys, memberId, tokenId) {
     const config = {
       method: 'get',
-      url: `/tokens/${tokenId}`
+      url: `/payment-tokens/${tokenId}`
     };
 
     Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);
   }
 
-  static lookupTokens(keys, memberId, offset, limit) {
+  static lookupPaymentTokens(keys, memberId, offset, limit) {
     const config = {
       method: 'get',
-      url: `/pay-tokens?offset=${offset}&limit=${limit}`
+      url: `/payment-tokens?offset=${offset}&limit=${limit}`
     };
     Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
     return instance(config);

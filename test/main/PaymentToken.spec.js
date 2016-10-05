@@ -34,7 +34,7 @@ describe('PaymentTokens', () => {
     const token = PaymentToken.create(member1, account1.id, 12.54, defaultCurrency,
       alias1, 'desc');
     const json = token.json;
-    assert.equal(json.scheme, 'Pay/1.0');
+    assert.equal(json.version, '1.0');
     assert.isOk(json.nonce);
     assert.equal(json.payer.id, member1.id);
     assert.equal(json.currency, defaultCurrency);

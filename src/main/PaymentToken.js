@@ -1,24 +1,24 @@
 import Util from '../Util';
-import {paymentTokenScheme} from '../constants';
+import {paymentTokenVersion} from '../constants';
 
 export default class PaymentToken {
 
   static createFromToken(token) {
     const id = token.id;
-    const payer = token.payment.payer;
+    const payer = token.payload.payer;
     const transfer = {
-      from: token.payment.transfer.from
+      from: token.payload.transfer.from
     };
-    const amount = parseFloat(token.payment.amount);
-    const currency = token.payment.currency;
-    const redeemer = token.payment.redeemer;
-    const description = token.payment.description;
-    const scheme = token.payment.scheme;
-    const issuer = token.payment.issuer;
-    const nonce = token.payment.nonce;
+    const amount = parseFloat(token.payload.amount);
+    const currency = token.payload.currency;
+    const redeemer = token.payload.redeemer;
+    const description = token.payload.description;
+    const version = token.payload.version;
+    const issuer = token.payload.issuer;
+    const nonce = token.payload.nonce;
     const signatures = token.signatures;
     return new PaymentToken(id, payer, transfer, amount, currency,
-      redeemer, description, scheme, issuer, nonce, signatures);
+      redeemer, description, version, issuer, nonce, signatures);
   }
 
   static create(member, accountId, amount, currency, alias, description) {
@@ -38,7 +38,7 @@ export default class PaymentToken {
   }
 
   constructor(id, payer, transfer, amount, currency, redeemer, description,
-      scheme = paymentTokenScheme, issuer = undefined, nonce = undefined,
+      version = paymentTokenVersion, issuer = undefined, nonce = undefined,
       signatures = []) {
     this._id = id;
     this._payer = payer;
@@ -47,7 +47,7 @@ export default class PaymentToken {
     this._currency = currency;
     this._redeemer = redeemer;
     this._description = description;
-    this._scheme = scheme;
+    this._version = version;
     this._issuer = issuer;
     this._nonce = nonce;
     this._signatures = signatures;
@@ -84,8 +84,8 @@ export default class PaymentToken {
   get description() {
     return this._description;
   }
-  get scheme() {
-    return this._scheme;
+  get version() {
+    return this._version;
   }
   get issuer() {
     return this._issuer;
@@ -100,7 +100,7 @@ export default class PaymentToken {
   // Creates a standardized json object for the PaymentToken, to be used for signing
   get json() {
     const json = {
-      scheme: this._scheme,
+      version: this._version,
       nonce: this._nonce,
       payer: this._payer,
       currency: this._currency,

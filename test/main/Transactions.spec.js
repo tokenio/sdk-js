@@ -46,10 +46,10 @@ const setUp2 = () => {
 
 // Set up an endorsed payment token
 const setUp3 = () => {
-  return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
-    return member1.endorseToken(token.id).then(() => {
-      return member2.lookupToken(token.id).then(lookedUp => {
-        return member2.redeemToken(lookedUp, 10.21, 'EUR').then(payment => {
+  return member1.createPaymentToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+    return member1.endorsePaymentToken(token.id).then(() => {
+      return member2.lookupPaymentToken(token.id).then(lookedUp => {
+        return member2.redeemPaymentToken(lookedUp, 10.21, 'EUR').then(payment => {
           token1 = lookedUp;
           payment1 = payment;
         });

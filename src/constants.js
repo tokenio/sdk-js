@@ -6,7 +6,7 @@ const uriHost = URI_HOST;             // populates with webpack
 const uriHostBank = URI_HOST_BANK;    // ''
 
 // Scheme for payment tokens
-const paymentTokenScheme = 'Pay/1.0';
+const paymentTokenVersion = '1.0';
 
 // Default currency to use
 const defaultCurrency = 'EUR';
@@ -14,5 +14,5 @@ const defaultCurrency = 'EUR';
 // Default notification provider to use
 const defaultNotificationProvider = 'Token';
 
-export {signatureScheme, uriHost, uriHostBank, paymentTokenScheme,
+export {signatureScheme, uriHost, uriHostBank, paymentTokenVersion,
    defaultCurrency, defaultNotificationProvider};

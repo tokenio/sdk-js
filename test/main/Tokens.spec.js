@@ -43,7 +43,7 @@ describe('Tokens', () => {
   });
 
   it('should create a token, look it up, and endorse it', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
       assert.equal(token.issuer.id, 'iron-bank');
       assert.isAtLeast(token.id.length, 5);
       assert.equal(token.payer.id, member1.id);
@@ -51,11 +51,11 @@ describe('Tokens', () => {
       assert.equal(token.amount, 9.24);
       assert.equal(token.currency, defaultCurrency);
       assert.equal(token.description, undefined);
-      assert.equal(token.scheme, 'Pay/1.0');
-      return member1.lookupToken(token.id)
+      assert.equal(token.version, '1.0');
+      return member1.lookupPaymentToken(token.id)
       .then(tokenLookedUp => {
         assert.equal(token.id, tokenLookedUp.id);
-        return member1.endorseToken(token).then(() => {
+        return member1.endorsePaymentToken(token).then(() => {
           assert.equal(token.signatures.length, 2);
         });
       });
@@ -63,9 +63,9 @@ describe('Tokens', () => {
   });
 
   it('should create a token and endorse it by id', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.endorseToken(token.id).then(() => {
-        return member1.lookupToken(token.id).then(lookedUp => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member1.lookupPaymentToken(token.id).then(lookedUp => {
           assert.equal(lookedUp.signatures.length, 2);
           assert.equal(lookedUp.signatures[0].action, 'ENDORSED');
         });
@@ -74,8 +74,8 @@ describe('Tokens', () => {
   });
 
   it('should create a token and decline it', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.declineToken(token).then(() => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.declinePaymentToken(token).then(() => {
         assert.equal(token.signatures.length, 2);
         assert.equal(token.signatures[0].action, 'DECLINED');
       });
@@ -83,9 +83,9 @@ describe('Tokens', () => {
   });
 
   it('should create token and declines it by id', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.declineToken(token.id).then(() => {
-        return member1.lookupToken(token.id).then(lookedUp => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.declinePaymentToken(token.id).then(() => {
+        return member1.lookupPaymentToken(token.id).then(lookedUp => {
           assert.equal(lookedUp.signatures.length, 2);
           const actions = map(lookedUp.signatures, sig => sig.action);
           assert.isOk(some(actions, action => action === 'DECLINED'));
@@ -95,9 +95,9 @@ describe('Tokens', () => {
   });
 
   it('should create a token, endorse it, and revoke it', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.endorseToken(token).then(() => {
-        return member1.revokeToken(token).then(() => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token).then(() => {
+        return member1.revokePaymentToken(token).then(() => {
           const actions = map(token.signatures, sig => sig.action);
           assert.isOk(some(actions, action => action === 'REVOKED'));
         });
@@ -105,10 +105,10 @@ describe('Tokens', () => {
     });
   });
   it('should create token, endorse it, and revoke it by id', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.endorseToken(token.id).then(() => {
-        return member1.revokeToken(token.id).then(() => {
-          return member1.lookupToken(token.id).then(lookedUp => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member1.revokePaymentToken(token.id).then(() => {
+          return member1.lookupPaymentToken(token.id).then(lookedUp => {
             assert.equal(lookedUp.signatures.length, 4);
             const actions = map(lookedUp.signatures, sig => sig.action);
             assert.isOk(some(actions, action => action === 'REVOKED'));
@@ -119,9 +119,9 @@ describe('Tokens', () => {
   });
 
   it('should create token, and look it up', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.endorseToken(token.id).then(() => {
-        return member1.lookupTokens().then(tokens => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member1.lookupPaymentTokens().then(tokens => {
           assert.equal(tokens.length, 1);
           assert.equal(tokens[0].signatures.length, 2);
         });
@@ -130,9 +130,9 @@ describe('Tokens', () => {
   });
 
   it('should create token, and look it up, second member', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.endorseToken(token.id).then(() => {
-        return member2.lookupTokens().then(tokens => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member2.lookupPaymentTokens().then(tokens => {
           assert.equal(tokens.length, 0);
         });
       });
@@ -140,9 +140,9 @@ describe('Tokens', () => {
   });
 
   it('should create token, and look it up, second member, tokenId', () => {
-    return member1.createToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
-      return member1.endorseToken(token.id).then(() => {
-        return member2.lookupToken(token.id).then(t => {
+    return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
+      return member1.endorsePaymentToken(token.id).then(() => {
+        return member2.lookupPaymentToken(token.id).then(t => {
           assert.equal(t.id, token.id);
         });
       });

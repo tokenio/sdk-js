@@ -69,14 +69,14 @@ member.getAllAliases() => Promise(string[])
 member.getPublicKeys() => Promise(key[])
 member.createAddress(name, address) => Promise()
 member.getAddresses() => Promise(Address[])
-member.createToken(amount, currency, alias, description)
+member.createPaymentToken(amount, currency, alias, description)
   => Promise(PaymentToken)
-member.lookupToken(tokenId) => Promise(PaymentToken)
-member.lookupTokens() => Promise(PaymentToken[])
-member.endorseToken(token or tokenId) => Promise()
-member.declineToken(token or tokenId) => Promise()
-member.revokeToken(token or tokenId) => Promise()
-member.redeemToken(tokenId, amount, currency) => Promise(Payment)
+member.lookupPaymentToken(tokenId) => Promise(PaymentToken)
+member.lookupPaymentTokens() => Promise(PaymentToken[])
+member.endorsePaymentToken(token or tokenId) => Promise()
+member.declinePaymentToken(token or tokenId) => Promise()
+member.revokePaymentToken(token or tokenId) => Promise()
+member.redeemPaymentToken(tokenId, amount, currency) => Promise(Payment)
 member.lookupPayment(paymentId) => Promise(Payment)
 member.lookupPayments() => Promise(Payment[])
 member.id => memberid
@@ -114,7 +114,7 @@ token.amount => amount
 token.currency => currency
 token.redeemer => redeemer
 token.description => description
-token.scheme => scheme
+token.version => version
 token.issuer => issuer
 token.nonce => nonce
 token.signatures => signatures
@@ -134,7 +134,7 @@ payment.signatures => signatures
 
 ### Bank
 * ```Token.requestLinkAccounts(alias)```
-* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsPayload, publicKey, tags)```
+* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountLinkPayload, publicKey, tags)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.saveToLocalStorage()```
 
@@ -147,14 +147,14 @@ payment.signatures => signatures
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.lookupAccounts()```
 * ```member.lookupAddresses()```
-* ```member.createToken(accountId, amount, currency)```
-* ```member.endorseToken(token)```
+* ```member.createPaymentToken(accountId, amount, currency)```
+* ```member.endorsePaymentToken(token)```
 * If fails:
 * ```member.getTokens()``` (until you find the correct endorsed token)
 
 
 * Either way: return tokenID to merchant, who does:
-* ```member.redeemToken(token, 15, ‘EUR’)```
+* ```member.redeemPaymentToken(token, 15, ‘EUR’)```
 
 ### AISP (Backend still in progress)
 * ```Token.loginMemberFromLocalStorage()```
@@ -163,10 +163,10 @@ payment.signatures => signatures
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAddresses()```
 * ```member.lookupAccounts()```
-* ```member.createToken(acl list...)```
-* ```member.endorseToken(token)```
+* ```member.createPaymentToken(acl list...)```
+* ```member.endorsePaymentToken(token)```
 * If fails:
 * ```member.getTokens(until you find the correct endorsed token)```
 
 * Either way: return tokenID to AISP, who does:
-* ```account.redeemToken(token, ‘transactions’)```
+* ```account.redeemPaymentToken(token, ‘transactions’)```

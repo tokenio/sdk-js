@@ -138,16 +138,16 @@ export default class Member {
       notificationUri, provider, platform, tags);
   }
 
-    /**
-   * Unsubscribes a device from push notifications
-   * @param {string} notificationUri - the notification Uri for this device. (e.g iOS push token)
-   * @param {string} provider - provider to send the notification (default Token)
-   * @return {Promise} empty - empty promise
-   */
-  unsubscribeDevice(notificationUri, provider = defaultNotificationProvider) {
-    return AuthHttpClient.unsubscribeDevice(this._keys, this._id,
-      notificationUri, provider);
-  }
+  //   /**
+  //  * Unsubscribes a device from push notifications
+  //  * @param {string} notificationUri - the notification Uri for this device. (e.g iOS push token)
+  //  * @param {string} provider - provider to send the notification (default Token)
+  //  * @return {Promise} empty - empty promise
+  //  */
+  // unsubscribeDevice(notificationUri, provider = defaultNotificationProvider) {
+  //   return AuthHttpClient.unsubscribeDevice(this._keys, this._id,
+  //     notificationUri, provider);
+  // }
 
   /**
    * Creates an address for this member, and saves it
@@ -191,7 +191,7 @@ export default class Member {
    * @param {string} description - optional description for the token
    * @return {Promise} token - promise of a created PaymentToken
    */
-  createToken(accountId, amount, currency, alias, description = undefined) {
+  createPaymentToken(accountId, amount, currency, alias, description = undefined) {
     const token = PaymentToken.create(this, accountId, amount,
       currency, alias, description);
     return AuthHttpClient.createPaymentToken(this._keys,
@@ -206,8 +206,8 @@ export default class Member {
    * @param {string} tokenId - id of the token
    * @return {Promise} token - PaymentToken
    */
-  lookupToken(tokenId) {
-    return AuthHttpClient.lookupToken(this._keys, this._id,
+  lookupPaymentToken(tokenId) {
+    return AuthHttpClient.lookupPaymentToken(this._keys, this._id,
       tokenId)
     .then(res => {
       return PaymentToken.createFromToken(res.data.token);
@@ -220,8 +220,8 @@ export default class Member {
    * @param {int} limit - how many to look for
    * @return {PaymentTokens} tokens - returns a list of Payment Tokens
    */
-  lookupTokens(offset = 0, limit = 100) {
-    return AuthHttpClient.lookupTokens(this._keys, this._id,
+  lookupPaymentTokens(offset = 0, limit = 100) {
+    return AuthHttpClient.lookupPaymentTokens(this._keys, this._id,
       offset, limit)
     .then(res => {
       if (res.data.tokens === undefined) return [];
@@ -234,10 +234,10 @@ export default class Member {
    * @param {PaymentToken} token - Payment token to endorse. Can also be a {string} tokenId
    * @return {Promise} token - Promise of endorsed payment token
    */
-  endorseToken(token) {
+  endorsePaymentToken(token) {
     return this._resolveToken(token)
     .then(finalToken => {
-      return AuthHttpClient.endorseToken(this._keys, this._id,
+      return AuthHttpClient.endorsePaymentToken(this._keys, this._id,
           finalToken)
       .then(res => {
         if (typeof token !== 'string' && !(token instanceof String)) {
@@ -253,10 +253,10 @@ export default class Member {
    * @param {PaymentToken} token - token to decline. Can also be a {string} tokenId
    * @return {PaymentToken} token - declined token
    */
-  declineToken(token) {
+  declinePaymentToken(token) {
     return this._resolveToken(token)
     .then(finalToken => {
-      return AuthHttpClient.declineToken(this._keys, this._id,
+      return AuthHttpClient.declinePaymentToken(this._keys, this._id,
           finalToken)
       .then(res => {
         if (typeof token !== 'string' && !(token instanceof String)) {
@@ -272,10 +272,10 @@ export default class Member {
    * @param {PaymentToken} token - token to revoke. Can also be a {string} tokenId
    * @return {PaymentToken} token - revoked token
    */
-  revokeToken(token) {
+  revokePaymentToken(token) {
     return this._resolveToken(token)
     .then(finalToken => {
-      return AuthHttpClient.revokeToken(this._keys, this._id,
+      return AuthHttpClient.revokePaymentToken(this._keys, this._id,
           finalToken)
       .then(res => {
         if (typeof token !== 'string' && !(token instanceof String)) {
@@ -293,7 +293,7 @@ export default class Member {
    * @param {string} currency - currency to redeem
    * @return {Promise} payment - Payment created as a result of this redeem call
    */
-  redeemToken(token, amount, currency) {
+  redeemPaymentToken(token, amount, currency) {
     return this._resolveToken(token)
     .then(finalToken => {
       if (amount === undefined) {
@@ -302,7 +302,7 @@ export default class Member {
       if (currency === undefined) {
         currency = finalToken.currency;
       }
-      return AuthHttpClient.redeemToken(this._keys, this._id,
+      return AuthHttpClient.redeemPaymentToken(this._keys, this._id,
           finalToken, amount, currency)
       .then(res => {
         return new Payment(res.data.payment);
@@ -362,7 +362,7 @@ export default class Member {
   _resolveToken(token) {
     return new Promise((resolve, reject) => {
       if (typeof token === 'string' || token instanceof String) {
-        this.lookupToken(token).then(lookedUp => resolve(lookedUp));
+        this.lookupPaymentToken(token).then(lookedUp => resolve(lookedUp));
       } else {
         resolve(token);
       }
