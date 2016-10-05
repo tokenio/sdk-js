@@ -1,4 +1,5 @@
 import Crypto from '../Crypto';
+import KeyLevel from '../main/KeyLevel';
 import {uriHost} from '../constants';
 
 const axios = require('axios');
@@ -58,7 +59,7 @@ class UnauthenticatedClient {
     return instance(config);
   }
 
-  static addFirstKey(keys, memberId, level = 0, tags = []) {
+  static addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED, tags = []) {
     const update = {
       memberId: memberId,
       addKey: {
@@ -71,8 +72,8 @@ class UnauthenticatedClient {
       update.addKey.tags = tags;
     }
 
-    if (level !== 0) {
-      update.level = level;
+    if (keyLevel !== KeyLevel.PRIVILEGED) {
+      update.addKey.level = keyLevel;
     }
 
     const req = {

@@ -2,6 +2,7 @@ import Crypto from '../Crypto';
 import LocalStorage from '../LocalStorage';
 import Account from './Account';
 import Address from './Address';
+import KeyLevel from './KeyLevel';
 import AuthHttpClient from '../http/AuthHttpClient';
 import PaymentToken from './PaymentToken';
 import Payment from './Payment';
@@ -50,15 +51,15 @@ export default class Member {
 /**
  * Approves a new key for this member
  * @param {Buffer} publicKey - key to add
- * @param {int} level - Security level of this new key. 0 is root security
+ * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
  * @param {array} tags - Tags to attach to this key
  * @return {Promise} empty empty promise
  */
-  approveKey(publicKey, level = 0, tags = []) {
+  approveKey(publicKey, keyLevel = KeyLevel.PRIVILEGED, tags = []) {
     return this._getPreviousHash()
     .then(prevHash =>
         AuthHttpClient.addKey(this._keys, this._id,
-          prevHash, Crypto.bufferKey(publicKey), level, tags)
+          prevHash, Crypto.bufferKey(publicKey), keyLevel, tags)
       .then(res => undefined));
   }
 

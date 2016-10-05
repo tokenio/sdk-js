@@ -100,7 +100,7 @@ describe('Tokens', () => {
 
   it('should should redeem a token with notifications', () => {
     return member1.subscribeDevice('36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
-    '81f97900')
+    '81f97900000') // Remove 0s to notify iphone
     .then(() => member2.redeemPaymentToken(token1, 10.21, 'EUR').then(payment => {
       assert.equal(10.21, payment.amount);
       assert.equal('EUR', payment.currency);

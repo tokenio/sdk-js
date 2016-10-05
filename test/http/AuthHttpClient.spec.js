@@ -4,6 +4,7 @@ const assert = chai.assert;
 import UnauthenticatedClient from '../../src/http/UnauthenticatedClient';
 import AuthHttpClient from '../../src/http/AuthHttpClient';
 import Crypto from '../../src/Crypto';
+import KeyLevel from '../../src/main/KeyLevel';
 
 describe('AuthHttpClient', () => {
   it('should add a second key', () => {
@@ -14,7 +15,7 @@ describe('AuthHttpClient', () => {
       assert.isOk(res.data.memberId);
       return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
-        res2.data.member.lastHash, keys2.publicKey, 0, [])
+        res2.data.member.lastHash, keys2.publicKey, KeyLevel.PRIVILEGED, [])
         .then(res3 => {
           assert.isOk(res3.data.member);
           assert.isOk(res3.data.member.lastHash);
@@ -33,7 +34,7 @@ describe('AuthHttpClient', () => {
       assert.isOk(res.data.memberId);
       return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
       .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
-        res2.data.member.lastHash, keys2.publicKey, 0, [])
+        res2.data.member.lastHash, keys2.publicKey, KeyLevel.PRIVILEGED, [])
         .then(res3 => {
           assert.equal(res3.data.member.keys.length, 2);
           return AuthHttpClient.removeKey(keys, res.data.memberId,

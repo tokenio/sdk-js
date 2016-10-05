@@ -54,7 +54,7 @@ static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountLinkPayload)
 #### Member
 ```
 member.saveToLocalStorage() => void
-member.approveKey(publicKey, level=0, tags=[])
+member.approveKey(publicKey, level=PRIVILEGED, tags=[])
   => Promise()
 member.removeKey(keyId)
   => Promise()

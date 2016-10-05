@@ -2,6 +2,7 @@ import Crypto from '../Crypto';
 import Util from '../Util';
 import Auth from './Auth';
 import {uriHost} from '../constants';
+import KeyLevel from '../main/KeyLevel';
 const stringify = require('json-stable-stringify');
 
 const axios = require('axios');
@@ -281,7 +282,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static addKey(keys, memberId, prevHash, publicKey, level, tags) {
+  static addKey(keys, memberId, prevHash, publicKey, keyLevel, tags) {
     const update = {
       memberId: memberId,
       addKey: {
@@ -294,8 +295,8 @@ class AuthHttpClient {
       update.addKey.tags = tags;
     }
 
-    if (level !== 0) {
-      update.level = level;
+    if (keyLevel !== KeyLevel.PRIVILEGED) {
+      update.addKey.level = keyLevel;
     }
 
     return AuthHttpClient._memberUpdate(keys, update, memberId, prevHash);
