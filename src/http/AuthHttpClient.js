@@ -47,7 +47,7 @@ class AuthHttpClient {
   //
   // ADDRESSES
   //
-  static createAddress(keys, memberId, name, data) {
+  static addAddress(keys, memberId, name, data) {
     const req = {
       name,
       data,
@@ -80,10 +80,10 @@ class AuthHttpClient {
   //
   // ACCOUNTS
   //
-  static linkAccounts(keys, memberId, bankId, accountLinkPayload) {
+  static linkAccounts(keys, memberId, bankId, accountsLinkPayload) {
     const req = {
       bankId,
-      accountLinkPayload
+      accountsLinkPayload
     };
     const config = {
       method: 'post',
@@ -94,7 +94,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupAccounts(keys, memberId) {
+  static getAccounts(keys, memberId) {
     const config = {
       method: 'get',
       url: `/accounts`
@@ -112,7 +112,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupBalance(keys, memberId, accountId) {
+  static getBalance(keys, memberId, accountId) {
     const config = {
       method: 'get',
       url: `/accounts/${accountId}/balance`
@@ -121,7 +121,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupTransaction(keys, memberId, accountId, transactionId) {
+  static getTransaction(keys, memberId, accountId, transactionId) {
     const config = {
       method: 'get',
       url: `/accounts/${accountId}/transactions/${transactionId}`
@@ -130,7 +130,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupTransactions(keys, memberId, accountId, offset, limit) {
+  static getTransactions(keys, memberId, accountId, offset, limit) {
     const config = {
       method: 'get',
       url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`
@@ -215,7 +215,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupPaymentToken(keys, memberId, tokenId) {
+  static getPaymentToken(keys, memberId, tokenId) {
     const config = {
       method: 'get',
       url: `/payment-tokens/${tokenId}`
@@ -225,7 +225,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupPaymentTokens(keys, memberId, offset, limit) {
+  static getPaymentTokens(keys, memberId, offset, limit) {
     const config = {
       method: 'get',
       url: `/payment-tokens?offset=${offset}&limit=${limit}`
@@ -237,7 +237,7 @@ class AuthHttpClient {
   //
   // Payments
   //
-  static lookupPayment(keys, memberId, paymentId) {
+  static getPayment(keys, memberId, paymentId) {
     const config = {
       method: 'get',
       url: `/payments/${paymentId}`
@@ -247,7 +247,7 @@ class AuthHttpClient {
     return instance(config);
   }
 
-  static lookupPayments(keys, memberId, tokenId, offset, limit) {
+  static getPayments(keys, memberId, tokenId, offset, limit) {
     const config = {
       method: 'get',
       url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`

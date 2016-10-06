@@ -48,7 +48,7 @@ const setUp2 = () => {
 const setUp3 = () => {
   return member1.createPaymentToken(account1.id, 38.71, 'EUR', alias2).then(token => {
     return member1.endorsePaymentToken(token.id).then(() => {
-      return member2.lookupPaymentToken(token.id).then(lookedUp => {
+      return member2.getPaymentToken(token.id).then(lookedUp => {
         return member2.redeemPaymentToken(lookedUp, 10.21, 'EUR').then(payment => {
           token1 = lookedUp;
           payment1 = payment;
@@ -65,21 +65,21 @@ describe('Transactions and payments', () => {
   });
 
   it('should see a payment', () => {
-    return member1.lookupPayment(payment1.id).then(payment => {
+    return member1.getPayment(payment1.id).then(payment => {
       assert.equal(payment.id, payment1.id);
       assert.equal(payment.payload.tokenId, token1.id);
     });
   });
 
-  it('should lookup all payments', () => {
-    return member1.lookupPayments(token1.id).then(payments => {
+  it('should get all payments', () => {
+    return member1.getPayments(token1.id).then(payments => {
       assert.equal(payments.length, 1);
       assert.isOk(payments[0].payload.amount);
     });
   });
 
   it('should see the transaction', () => {
-    return account1.lookupTransactions().then(transactions => {
+    return account1.getTransactions().then(transactions => {
       assert.equal(transactions[0].type, 'DEBIT');
       assert.isOk(transactions[0].id);
       assert.isOk(transactions[0].currency);

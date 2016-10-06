@@ -65,12 +65,12 @@ const Token = {
    * payload
    * @param {string} alias - alias to notify
    * @param {string} bankId - If of the bank owning the accounts
-   * @param {string} accountLinkPayload - accountLinkPayload retrieved from the bank
+   * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
    * @return {Promise} empty - empty
    */
-  notifyLinkAccounts(alias, bankId, accountLinkPayload) {
+  notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
     return UnauthenticatedClient.notifyLinkAccounts(alias, bankId,
-      accountLinkPayload);
+      accountsLinkPayload);
   },
 
   /**
@@ -90,15 +90,15 @@ const Token = {
    * payload
    * @param {string} alias - alias to notify
    * @param {string} bankId - If of the bank owning the accounts
-   * @param {string} accountLinkPayload - accountLinkPayload retrieved from the bank
+   * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
    * @param {string} publicKey - public
    * @param {array} tags - tags for the new key
    * @return {Promise} empty - empty
    */
-  notifyLinkAccountsAndAddKey(alias, bankId, accountLinkPayload, publicKey,
+  notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey,
       tags = []) {
     return UnauthenticatedClient.notifyLinkAccountsAndAddKey(alias, bankId,
-      accountLinkPayload, publicKey, tags);
+      accountsLinkPayload, publicKey, tags);
   },
   Crypto,
   Util,

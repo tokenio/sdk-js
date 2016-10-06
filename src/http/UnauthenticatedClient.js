@@ -15,11 +15,11 @@ class UnauthenticatedClient {
     });
   }
 
-  static notifyLinkAccounts(alias, bankId, accountLinkPayload) {
+  static notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
     const req = {
       alias,
       bankId,
-      accountLinkPayload
+      accountsLinkPayload
     };
     const config = {
       method: 'put',
@@ -42,12 +42,12 @@ class UnauthenticatedClient {
     return instance(config);
   }
 
-  static notifyLinkAccountsAndAddKey(alias, bankId, accountLinkPayload,
+  static notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload,
     publicKey, tags) {
     const req = {
       alias,
       bankId,
-      accountLinkPayload,
+      accountsLinkPayload,
       publicKey: Crypto.strKey(publicKey),
       tags
     };

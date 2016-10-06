@@ -105,9 +105,9 @@ export default class Member {
    * @param {string} accountLinkPayload - accountLinkPayload obtained from bank
    * @return {Promise} accounts - Promise resolving the the Accounts linked
    */
-  linkAccounts(bankId, accountLinkPayload) {
+  linkAccounts(bankId, accountsLinkPayload) {
     return AuthHttpClient.linkAccounts(this._keys, this._id,
-      bankId, accountLinkPayload)
+      bankId, accountsLinkPayload)
     .then(res => {
       return res.data.accounts.map(acc => new Account(this, acc));
     });
@@ -117,8 +117,8 @@ export default class Member {
    * Looks up the member's accounts
    * @return {Promise} accounts - Promise resolving to the accounts
    */
-  lookupAccounts() {
-    return AuthHttpClient.lookupAccounts(this._keys, this._id)
+  getAccounts() {
+    return AuthHttpClient.getAccounts(this._keys, this._id)
     .then(res => {
       return res.data.accounts.map(acc => new Account(this, acc));
     });
@@ -156,8 +156,8 @@ export default class Member {
    * @param {string} data - data of the address (e.g '123 Broadway rd, San Francisco, CA 94158')
    * @return {Promise} empty - empty promise
    */
-  createAddress(name, data) {
-    return AuthHttpClient.createAddress(this._keys, this._id, name, data)
+  addAddress(name, data) {
+    return AuthHttpClient.addAddress(this._keys, this._id, name, data)
     .then(res => {
       return;
     });
@@ -207,8 +207,8 @@ export default class Member {
    * @param {string} tokenId - id of the token
    * @return {Promise} token - PaymentToken
    */
-  lookupPaymentToken(tokenId) {
-    return AuthHttpClient.lookupPaymentToken(this._keys, this._id,
+  getPaymentToken(tokenId) {
+    return AuthHttpClient.getPaymentToken(this._keys, this._id,
       tokenId)
     .then(res => {
       return PaymentToken.createFromToken(res.data.token);
@@ -221,8 +221,8 @@ export default class Member {
    * @param {int} limit - how many to look for
    * @return {PaymentTokens} tokens - returns a list of Payment Tokens
    */
-  lookupPaymentTokens(offset = 0, limit = 100) {
-    return AuthHttpClient.lookupPaymentTokens(this._keys, this._id,
+  getPaymentTokens(offset = 0, limit = 100) {
+    return AuthHttpClient.getPaymentTokens(this._keys, this._id,
       offset, limit)
     .then(res => {
       if (res.data.tokens === undefined) return [];
@@ -297,8 +297,8 @@ export default class Member {
    * @param {string} paymentId - id to look up
    * @return {Payment} payment - payment if found
    */
-  lookupPayment(paymentId) {
-    return AuthHttpClient.lookupPayment(this._keys, this._id,
+  getPayment(paymentId) {
+    return AuthHttpClient.getPayment(this._keys, this._id,
       paymentId)
     .then(res => {
       return new Payment(res.data.payment);
@@ -312,8 +312,8 @@ export default class Member {
    * @param {int} limit - how many to retrieve
    * @return {Promise} payments - Payments
    */
-  lookupPayments(tokenId, offset = 0, limit = 100) {
-    return AuthHttpClient.lookupPayments(this._keys, this._id,
+  getPayments(tokenId, offset = 0, limit = 100) {
+    return AuthHttpClient.getPayments(this._keys, this._id,
       tokenId, offset, limit)
     .then(res => {
       return res.data.payments.map(pt => new Payment(pt));
@@ -344,7 +344,7 @@ export default class Member {
   _resolveToken(token) {
     return new Promise((resolve, reject) => {
       if (typeof token === 'string' || token instanceof String) {
-        this.lookupPaymentToken(token).then(lookedUp => resolve(lookedUp));
+        this.getPaymentToken(token).then(lookedUp => resolve(lookedUp));
       } else {
         resolve(token);
       }

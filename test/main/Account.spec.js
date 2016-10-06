@@ -18,10 +18,10 @@ describe('Account tests', () => {
       return member.approveKey(Crypto.strKey(keys.publicKey));
     });
   });
-  it('should lookup accounts', () => {
+  it('should get accounts', () => {
     return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
       return member.linkAccounts('bank-id', alp).then(() => {
-        return member.lookupAccounts().then(accs => {
+        return member.getAccounts().then(accs => {
           assert.equal(accs.length, 1);
         });
       });
@@ -30,7 +30,7 @@ describe('Account tests', () => {
   it('should have name and id', () => {
     return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
       return member.linkAccounts('bank-id', alp).then(() => {
-        return member.lookupAccounts().then(accs => {
+        return member.getAccounts().then(accs => {
           assert.equal(accs.length, 1);
           assert.isOk(accs[0].name);
           assert.isOk(accs[0].id);
@@ -50,12 +50,12 @@ describe('Account tests', () => {
         });
       });
     });
-    it('should lookup the balance', () => {
-      return account.lookupBalance().then(bal => {
+    it('should get the balance', () => {
+      return account.getBalance().then(bal => {
         assert.equal(parseFloat(bal.current.value), 100000);
       });
     });
-    it('should lookup transactions', () => {
+    it('should get transactions', () => {
       assert.equal(1 + 1, 2);
     });
   });

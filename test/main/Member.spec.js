@@ -65,10 +65,10 @@ describe('member tests', () => {
         })
       );
     });
-    it('should lookup accounts', () => {
+    it('should get accounts', () => {
       BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
         member.linkAccounts('bank-id', alp).then(() => {
-          return member.lookupAccounts().then(accs => {
+          return member.getAccounts().then(accs => {
             assert.equal(accs.length, 2);
           });
         })

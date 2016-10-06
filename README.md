@@ -46,8 +46,8 @@ static Token.loginMemberFromLocalStorage() => Member
 static Token.getMember(keys, alias) => Promise(Member)
 static Token.requestLinkAccounts(alias) => Promise(accountAuthorizationPayload)
 static Token.notifyAddKey(alias, publicKey) => Promise()
-static Token.notifyLinkAccounts(alias, bankCode, accountLinkPayload) => Promise()
-static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountLinkPayload)
+static Token.notifyLinkAccounts(alias, bankCode, accountsLinkPayload) => Promise()
+static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload)
   => Promise()
 ```
 
@@ -60,24 +60,24 @@ member.removeKey(keyId)
   => Promise()
 member.addAlias(alias) => Promise()
 member.removeAlias(alias) => Promise()
-member.linkAccounts(bankId, accountLinkPayload)
+member.linkAccounts(bankId, accountsLinkPayload)
   => Promise(Account[])
-member.lookupAccounts() => Promise(Account[])
+member.getAccounts() => Promise(Account[])
 member.subscribeDevice(notificationUri, provider=“Token”,
      platform=“IOS”, tags=[]) =>  Promise()
 member.getAllAliases() => Promise(string[])
 member.getPublicKeys() => Promise(key[])
-member.createAddress(name, address) => Promise()
+member.addAddress(name, address) => Promise()
 member.getAddresses() => Promise(Address[])
 member.createPaymentToken(amount, currency, alias, description)
   => Promise(PaymentToken)
-member.lookupPaymentToken(tokenId) => Promise(PaymentToken)
-member.lookupPaymentTokens() => Promise(PaymentToken[])
+member.getPaymentToken(tokenId) => Promise(PaymentToken)
+member.getPaymentTokens() => Promise(PaymentToken[])
 member.endorsePaymentToken(token or tokenId) => Promise()
 member.cancelPaymentToken(token or tokenId) => Promise()
 member.redeemPaymentToken(tokenId, amount, currency) => Promise(Payment)
-member.lookupPayment(paymentId) => Promise(Payment)
-member.lookupPayments() => Promise(Payment[])
+member.getPayment(paymentId) => Promise(Payment)
+member.getPayments() => Promise(Payment[])
 member.id => memberid
 member.keys => keys
 ```
@@ -85,8 +85,8 @@ member.keys => keys
 #### Account
 ```
 (X) account.setAccountName(name) => Promise()
-account.lookupBalance() => Promise(balance)
-account.lookupTransactions() => Promise(Transaction[])
+account.getBalance() => Promise(balance)
+account.getTransactions() => Promise(Transaction[])
 ```
 #### Crypto
 ```
@@ -133,7 +133,7 @@ payment.signatures => signatures
 
 ### Bank
 * ```Token.requestLinkAccounts(alias)```
-* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountLinkPayload, publicKey, tags)```
+* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsLinkPayload, publicKey, tags)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.saveToLocalStorage()```
 
@@ -144,8 +144,8 @@ payment.signatures => signatures
 
 
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
-* ```member.lookupAccounts()```
-* ```member.lookupAddresses()```
+* ```member.getAccounts()```
+* ```member.getAddresses()```
 * ```member.createPaymentToken(accountId, amount, currency)```
 * ```member.endorsePaymentToken(token)```
 * If fails:
@@ -161,7 +161,7 @@ payment.signatures => signatures
 * ```member.notifyAddKey(alias, publicKey)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAddresses()```
-* ```member.lookupAccounts()```
+* ```member.getAccounts()```
 * ```member.createPaymentToken(acl list...)```
 * ```member.endorsePaymentToken(token)```
 * If fails:
