@@ -18,7 +18,8 @@ To use in a browser:
 $ var Token = require("token-io")
 ```
 
-Works in a node as well, but have to directly require the node file from dist.
+Works in a node as well, but have to directly require the node file from token-io/dist.
+Minified files available in dist as well.
 
 To build:
 ```sh
@@ -27,16 +28,17 @@ $ npm run build
 
 To test in the browser:
 ```sh
-$ npm run testBrowser
+$ npm run testBrowserStg
 ```
 
 To test in node:
 ```sh
-$ npm run testNode
+$ npm run testNodeStg
 ```
 
 ### API
 Note that information token support has not yet been added to this sdk.
+(X) Not implemented yet
 
 #### Token
 ```
@@ -44,7 +46,6 @@ static Token.createMember(alias) => Promise(Member)
 static Token.loginMember(memberId, keys) => Member
 static Token.loginMemberFromLocalStorage() => Member
 static Token.getMember(keys, alias) => Promise(Member)
-static Token.requestLinkAccounts(alias) => Promise(accountAuthorizationPayload)
 static Token.notifyAddKey(alias, publicKey) => Promise()
 static Token.notifyLinkAccounts(alias, bankCode, accountsLinkPayload) => Promise()
 static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload)
