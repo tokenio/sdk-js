@@ -1,9 +1,4 @@
-let Token = {};
-if (BROWSER) {
-  Token = require('../dist/token-io');
-} else {
-  Token = require('../dist/token-io.node');
-}
+import Token from '../src';
 
 import BankClient from './sample/BankClient';
 
@@ -25,6 +20,7 @@ describe('Token library', () => {
       Token.createMember(alias1)
       .then(member => {
         member1 = member;
+        console.log("member:", member);
         return member1.subscribeDevice(pushToken)
         .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
         .then(alp => member1.linkAccounts("bank-id", alp))
@@ -37,8 +33,6 @@ describe('Token library', () => {
       Token.createMember(alias2)
       .then(member => {
         member2 = member;
-        BankClient.requestLinkAccounts(alias2, 100000, 'EUR')
-        .then(alp => member2.linkAccounts("bank-id", alp));
       });
 
     var createAndEndorse = () =>
@@ -52,8 +46,7 @@ describe('Token library', () => {
     .then(setUpMem2)
     .then(createAndEndorse)
     .then(() => member2.redeemPaymentToken(tokenId, 5, 'EUR'))
-    .then(() => member1.lookupPayments(tokenId))
-    .then(pmts => console.log("Payments:", pmts))
-    .catch(any => console.log(any));
+    .then(() => member1.getPayments(tokenId))
+    .then(pmts => console.log("Payments:", pmts));
   });
 });
