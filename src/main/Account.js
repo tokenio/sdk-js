@@ -58,21 +58,22 @@ export default class Account {
    * Looks up the balance of the account
    * @return {Promise} balance - Promise of balance object
    */
-  lookupBalance() {
-    return AuthHttpClient.lookupBalance(this._member._keys, this._member.id,
+  getBalance() {
+    return AuthHttpClient.getBalance(this._member._keys, this._member.id,
       this._id)
     .then(res => {
       return res.data;
     });
   }
 
+  // TODO(mariano): Fix me.
   // /**
   //  * Looks up a transaction for the account
   //  * @param {string} transactionId - which transaction to look up
   //  * @return {Promise} transaction - the Transaction
   //  */
-  // lookupTransaction(transactionId) {
-  //   return AuthHttpClient.lookupTransaction(this._member.keys, this._member.id,
+  // getTransaction(transactionId) {
+  //   return AuthHttpClient.getTransaction(this._member.keys, this._member.id,
   //     this._id, transactionId)
   //   .then(res => {
   //     return new Transaction(res.data);
@@ -85,8 +86,8 @@ export default class Account {
    * @param {int} limit - how many to retrieve
    * @return {Promise} transactions - Transactions
    */
-  lookupTransactions(offset = 0, limit = 100) {
-    return AuthHttpClient.lookupTransactions(this._member.keys, this._member.id,
+  getTransactions(offset = 0, limit = 100) {
+    return AuthHttpClient.getTransactions(this._member.keys, this._member.id,
       this._id, offset, limit)
     .then(res => {
       return res.data.transactions.map(tr => new Transaction(tr));

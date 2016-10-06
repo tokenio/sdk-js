@@ -45,7 +45,7 @@ const setUp2 = () => {
 const setUp3 = () => {
   return member1.createPaymentToken(account1.id, 38.71, 'EUR', alias2).then(token => {
     return member1.endorsePaymentToken(token.id).then(() => {
-      return member2.lookupPaymentToken(token.id).then(lookedUp => {
+      return member2.getPaymentToken(token.id).then(lookedUp => {
         token1 = lookedUp;
       });
     });
@@ -71,7 +71,7 @@ describe('Tokens', () => {
       assert.equal(15.28, payment.amount);
       assert.equal('EUR', payment.currency);
       assert.isAtLeast(payment.signatures.length, 1);
-      return account1.lookupBalance().then(bal => {
+      return account1.getBalance().then(bal => {
         assert.equal(bal.current.value, 100000 - 15.28);
       });
     });

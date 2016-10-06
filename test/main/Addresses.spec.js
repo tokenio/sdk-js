@@ -28,8 +28,8 @@ describe('Tokens', () => {
     return setUp1();
   });
 
-  it('Create and lookup an address', () => {
-    return member1.createAddress("Home", "125 Broadway rd").then(() => {
+  it('Add and lookup an address', () => {
+    return member1.addAddress("Home", "125 Broadway rd").then(() => {
       return member1.getAddresses().then(res => {
         assert.equal(res.length, 1);
         assert.equal(res[0].name, "Home");
