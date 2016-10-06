@@ -54,7 +54,7 @@ static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload)
 #### Member
 ```
 member.saveToLocalStorage() => void
-member.approveKey(publicKey, level=PRIVILEGED, tags=[])
+member.approveKey(publicKey, level="PRIVILEGED", tags=[])
   => Promise()
 member.removeKey(keyId)
   => Promise()
@@ -102,6 +102,13 @@ Token.Crypto.bufferKey(str key) => Buffer key
 Token.Util.generateNonce() => nonce
 ```
 
+#### KeyLevel
+```
+// Used for setting key security level, probably use standard or low for browsers
+Token.KeyLevel.PRIVILEGED => string
+Token.KeyLevel.STANDARD => string  
+Token.KeyLevel.LOW => string
+```
 
 #### PaymentToken
 ```
@@ -139,33 +146,37 @@ payment.signatures => signatures
 
 ### Merchant
 * ```Token.loginMemberFromLocalStorage()```
-* If fails:
+
+If fails:
 * ```member.notifyAddKey(alias, publicKey)```
 
-
+Then
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAccounts()```
 * ```member.getAddresses()```
 * ```member.createPaymentToken(accountId, amount, currency)```
 * ```member.endorsePaymentToken(token)```
-* If fails:
+
+If fails:
 * ```member.getTokens()``` (until you find the correct endorsed token)
 
 
-* Either way: return tokenID to merchant, who does:
+Either way: return tokenID to merchant, who does:
 * ```member.redeemPaymentToken(token, 15, ‘EUR’)```
 
 ### AISP (Backend still in progress)
 * ```Token.loginMemberFromLocalStorage()```
-* If fails:
+
+If fails:
 * ```member.notifyAddKey(alias, publicKey)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAddresses()```
 * ```member.getAccounts()```
 * ```member.createPaymentToken(acl list...)```
 * ```member.endorsePaymentToken(token)```
-* If fails:
+
+If fails:
 * ```member.getTokens(until you find the correct endorsed token)```
 
-* Either way: return tokenID to AISP, who does:
+Either way: return tokenID to AISP, who does:
 * ```account.redeemPaymentToken(token, ‘transactions’)```
