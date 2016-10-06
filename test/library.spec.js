@@ -20,7 +20,6 @@ describe('Token library', () => {
       Token.createMember(alias1)
       .then(member => {
         member1 = member;
-        console.log("member:", member);
         return member1.subscribeDevice(pushToken)
         .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
         .then(alp => member1.linkAccounts("bank-id", alp))
