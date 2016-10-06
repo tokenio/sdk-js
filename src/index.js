@@ -2,6 +2,7 @@ import Crypto from './Crypto';
 import Util from './Util';
 import PaymentToken from './main/PaymentToken';
 import Member from './main/Member';
+import KeyLevel from './main/KeyLevel';
 import LocalStorage from './LocalStorage';
 import UnauthenticatedClient from './http/UnauthenticatedClient';
 import AuthHttpClient from './http/AuthHttpClient';
@@ -102,7 +103,8 @@ const Token = {
   },
   Crypto,
   Util,
-  PaymentToken
+  PaymentToken,
+  KeyLevel
 };
 
 module.exports = Token;
