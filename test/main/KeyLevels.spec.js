@@ -53,8 +53,6 @@ describe('Key levels', () => {
     member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
       return Token.getMember(keys, alias).then(memberNew => {
         const keys2 = Crypto.generateKeys();
-
-        memberNew.getPublicKeys().then(keys => console.log("KEYS...", keys));
         return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
           done(new Error("should fail"));
         });
