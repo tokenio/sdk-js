@@ -57,10 +57,10 @@ const Token = {
 
     /**
      * Logs a member in from keys stored in localStorage
-     * @return {Member} member - instantiated member
+     * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage: () => {
-        return LocalStorage.loadMember();
+        return new Promise(LocalStorage.loadMember());
     },
 
     /**
@@ -97,10 +97,13 @@ const Token = {
      * @param {array} tags - tags for the new key
      * @return {Promise} empty - empty
      */
-    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey,
-                                tags = []) {
-        return UnauthenticatedClient.notifyLinkAccountsAndAddKey(alias, bankId,
-            accountsLinkPayload, publicKey, tags);
+    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey, tags = []) {
+        return UnauthenticatedClient.notifyLinkAccountsAndAddKey(
+            alias,
+            bankId,
+            accountsLinkPayload,
+            publicKey,
+            tags);
     },
 
     Crypto,
