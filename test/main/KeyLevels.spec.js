@@ -11,7 +11,8 @@ describe('Key levels', () => {
     beforeEach(() => {
         const keys = Crypto.generateKeys();
         alias = Crypto.generateKeys().keyId;
-        return Token.createMember(alias)
+        return Token
+            .createMember(alias)
             .then(res => {
                 member = res;
                 return member.approveKey(Crypto.strKey(keys.publicKey));
@@ -21,29 +22,35 @@ describe('Key levels', () => {
     it('should approve a standard level key', () => {
         const keys = Crypto.generateKeys();
         return member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD).then(() => {
-            return Token.getMember(keys, alias).then(memberNew => {
-                assert.equal(member.id, memberNew.id);
-            });
+            return Token
+                .loginWithAlias(keys, alias)
+                .then(memberNew => {
+                    assert.equal(member.id, memberNew.id);
+                });
         });
     });
 
     it('should approve a low level key', () => {
         const keys = Crypto.generateKeys();
         return member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
-            return Token.getMember(keys, alias).then(memberNew => {
-                assert.equal(member.id, memberNew.id);
-            });
+            return Token
+                .loginWithAlias(keys, alias)
+                .then(memberNew => {
+                    assert.equal(member.id, memberNew.id);
+                });
         });
     });
 
     it('should not allow non-privileged key to add a key', done => {
         const keys = Crypto.generateKeys();
         member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD).then(() => {
-            return Token.getMember(keys, alias).then(memberNew => {
-                const keys2 = Crypto.generateKeys();
-                return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
-                    done(new Error("should fail"));
-                });
+            return Token
+                .loginWithAlias(keys, alias)
+                .then(memberNew => {
+                    const keys2 = Crypto.generateKeys();
+                    return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
+                        done(new Error("should fail"));
+                    });
             });
         }).catch(() => done());
     });
@@ -51,12 +58,14 @@ describe('Key levels', () => {
     it('should not allow non-privileged key to add a key, LOW', done => {
         const keys = Crypto.generateKeys();
         member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
-            return Token.getMember(keys, alias).then(memberNew => {
-                const keys2 = Crypto.generateKeys();
-                return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
-                    done(new Error("should fail"));
+            return Token
+                .loginWithAlias(keys, alias)
+                .then(memberNew => {
+                    const keys2 = Crypto.generateKeys();
+                    return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
+                        done(new Error("should fail"));
+                    });
                 });
-            });
         }).catch(() => done());
     });
 });

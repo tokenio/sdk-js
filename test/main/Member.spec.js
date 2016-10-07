@@ -7,6 +7,7 @@ import BankClient from "../sample/BankClient";
 
 let member = {};
 let alias = '';
+
 describe('member tests', () => {
     beforeEach(() => {
         const keys = Crypto.generateKeys();
@@ -38,6 +39,7 @@ describe('member tests', () => {
                 .then(() => member.getAllAliases())
                 .then(aliases => assert.equal(aliases.length, 2));
         });
+
         it('should add and remove an alias', () => {
             const newAlias = Crypto.generateKeys().keyId;
             return member.addAlias(newAlias)
@@ -48,16 +50,19 @@ describe('member tests', () => {
                     assert.include(aliases, alias);
                 });
         });
+
         it('should get all aliases', () => {
             return member.getAllAliases().then(aliases => {
                 assert.equal(aliases.length, 1);
             });
         });
+
         it('should get all keys', () => {
             return member.getPublicKeys().then(keys => {
                 assert.equal(keys.length, 2);
             });
         });
+
         it('should link an account', () => {
             BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(accs => {
@@ -65,6 +70,7 @@ describe('member tests', () => {
                 })
             );
         });
+
         it('should get accounts', () => {
             BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(() => {

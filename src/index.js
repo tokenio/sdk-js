@@ -35,31 +35,33 @@ const Token = {
      * Log in a member (Instantiate a member object from keys and Id)
      * @param  {string} memberId - id of the member
      * @param  {object} keys - member's keys
-     * @return {Member} member - instantiated Member
+     * @return {Promise} member - Promise of instantiated Member
      */
-    loginMember: (memberId, keys) => {
-        return new Member(memberId, keys);
+    login: (memberId, keys) => {
+        return Promise.resolve(new Member(memberId, keys));
+    },
+
+    /**
+     * Log in a member by keys and alias. This is useful for checking whether we are
+     * authenticated, after requesting to add a key (by notification). Can call this
+     * every n seconds until it succeeds
+     * @param  {object} keys - Member keys
+     * @param  {string} alias - alias to authenticate with
+     * @return {Promise} member - instantiated Member, if successful
+     */
+    loginWithAlias: (keys, alias) => {
+        return AuthHttpClient
+          .getMemberByAlias(keys, alias)
+          .then(res => new Member(res.data.member.id, keys));
     },
 
     /**
      * Logs a member in from keys stored in localStorage
      * @return {Member} member - instantiated member
      */
-    loginMemberFromLocalStorage: () => {
+    loginFromLocalStorage: () => {
         return LocalStorage.loadMember();
     },
-
-    /**
-     * Gets a member by keys and alias. This is useful for checking whether we are authenticated,
-     * after requsting to add a key (by notification). Can call this every n seconds until it succeeds
-     * @param  {object} keys - Member keys
-     * @param  {string} alias - alias to authenticate with
-     * @return {Promise} member - instantiated Member, if successful
-     */
-    getMember: (keys, alias) =>
-        AuthHttpClient.getMemberByAlias(keys, alias)
-            .then(res =>
-                new Member(res.data.member.id, keys)),
 
     /**
      * Notifies subscribed devices that accounts should be linked, and passes the bank id and
@@ -70,8 +72,7 @@ const Token = {
      * @return {Promise} empty - empty
      */
     notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
-        return UnauthenticatedClient.notifyLinkAccounts(alias, bankId,
-            accountsLinkPayload);
+        return UnauthenticatedClient.notifyLinkAccounts(alias, bankId, accountsLinkPayload);
     },
 
     /**
@@ -101,6 +102,7 @@ const Token = {
         return UnauthenticatedClient.notifyLinkAccountsAndAddKey(alias, bankId,
             accountsLinkPayload, publicKey, tags);
     },
+
     Crypto,
     Util,
     PaymentToken,
