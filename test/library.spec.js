@@ -45,7 +45,6 @@ describe('Token library', () => {
     .then(setUpMem2)
     .then(createAndEndorse)
     .then(() => member2.redeemPaymentToken(tokenId, 5, 'EUR'))
-    .then(() => member1.getPayments(tokenId))
-    .then(pmts => console.log("Payments:", pmts));
+    .then(() => member1.getPayments(tokenId));
   });
 });

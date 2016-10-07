@@ -3,7 +3,7 @@ export default class Address {
     this._id = addressObj.id;
     this._name = addressObj.name;
     this._data = addressObj.data;
-    this._signature = addressObj.signature;
+    this._dataSignature = addressObj.dataSignature;
   }
 
   get id() {
@@ -15,7 +15,7 @@ export default class Address {
   get data() {
     return this._data;
   }
-  get signature() {
-    return this._signature;
+  get dataSignature() {
+    return this._dataSignature;
   }
 }

@@ -34,7 +34,7 @@ describe('Tokens', () => {
         assert.equal(res.length, 1);
         assert.equal(res[0].name, "Home");
         assert.equal(res[0].data, "125 Broadway rd");
-        assert.isOk(res[0].signature);
+        assert.isOk(res[0].dataSignature);
         assert.isOk(res[0].id);
       });
     });

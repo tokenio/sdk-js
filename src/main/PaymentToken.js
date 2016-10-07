@@ -16,9 +16,9 @@ export default class PaymentToken {
     const version = token.payload.version;
     const issuer = token.payload.issuer;
     const nonce = token.payload.nonce;
-    const signatures = token.signatures;
+    const payloadSignatures = token.payloadSignatures;
     return new PaymentToken(id, payer, transfer, amount, currency,
-      redeemer, description, version, issuer, nonce, signatures);
+      redeemer, description, version, issuer, nonce, payloadSignatures);
   }
 
   static create(member, accountId, amount, currency, alias, description) {
@@ -39,7 +39,7 @@ export default class PaymentToken {
 
   constructor(id, payer, transfer, amount, currency, redeemer, description,
       version = paymentTokenVersion, issuer = undefined, nonce = undefined,
-      signatures = []) {
+      payloadSignatures = []) {
     this._id = id;
     this._payer = payer;
     this._transfer = transfer;
@@ -50,16 +50,16 @@ export default class PaymentToken {
     this._version = version;
     this._issuer = issuer;
     this._nonce = nonce;
-    this._signatures = signatures;
+    this._payloadSignatures = payloadSignatures;
     if (nonce === undefined) {
       this._nonce = Util.generateNonce();
     }
   }
 
-  set signatures(sigs) {
-    this._signatures = [];
+  set payloadSignatures(sigs) {
+    this._payloadSignatures = [];
     for (let sig of sigs) {
-      this._signatures.push(sig);
+      this._payloadSignatures.push(sig);
     }
   }
 
@@ -93,8 +93,8 @@ export default class PaymentToken {
   get nonce() {
     return this._nonce;
   }
-  get signatures() {
-    return this._signatures;
+  get payloadSignatures() {
+    return this._payloadSignatures;
   }
 
   // Creates a standardized json object for the PaymentToken, to be used for signing

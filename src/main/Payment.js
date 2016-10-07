@@ -3,7 +3,7 @@ export default class Payment {
     this._id = paymentObj.id;
     this._referenceId = paymentObj.referenceId;
     this._payload = JSON.parse(JSON.stringify(paymentObj.payload));
-    this._signatures = JSON.parse(JSON.stringify(paymentObj.signature));
+    this._payloadSignatures = JSON.parse(JSON.stringify(paymentObj.payloadSignatures));
   }
 
   get id() {
@@ -24,7 +24,7 @@ export default class Payment {
   get transfer() {
     return this._payload.transfer;
   }
-  get signatures() {
-    return this._signatures;
+  get payloadSignatures() {
+    return this._payloadSignatures;
   }
 }

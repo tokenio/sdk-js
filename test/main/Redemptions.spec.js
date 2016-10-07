@@ -62,7 +62,7 @@ describe('Tokens', () => {
     return member2.redeemPaymentToken(token1, 10.21, 'EUR').then(payment => {
       assert.equal(10.21, payment.amount);
       assert.equal('EUR', payment.currency);
-      assert.isAtLeast(payment.signatures.length, 1);
+      assert.isAtLeast(payment.payloadSignatures.length, 1);
     });
   });
 
@@ -70,7 +70,7 @@ describe('Tokens', () => {
     return member2.redeemPaymentToken(token1.id, 15.28, 'EUR').then(payment => {
       assert.equal(15.28, payment.amount);
       assert.equal('EUR', payment.currency);
-      assert.isAtLeast(payment.signatures.length, 1);
+      assert.isAtLeast(payment.payloadSignatures.length, 1);
       return account1.getBalance().then(bal => {
         assert.equal(bal.current.value, 100000 - 15.28);
       });
@@ -104,7 +104,7 @@ describe('Tokens', () => {
     .then(() => member2.redeemPaymentToken(token1, 10.21, 'EUR').then(payment => {
       assert.equal(10.21, payment.amount);
       assert.equal('EUR', payment.currency);
-      assert.isAtLeast(payment.signatures.length, 1);
+      assert.isAtLeast(payment.payloadSignatures.length, 1);
     }));
   });
 });

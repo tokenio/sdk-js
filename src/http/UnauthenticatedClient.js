@@ -78,7 +78,7 @@ class UnauthenticatedClient {
 
     const req = {
       update,
-      signature: {
+      updateSignature: {
         keyId: keys.keyId,
         signature: Crypto.signJson(update, keys),
         timestampMs: new Date().getTime()

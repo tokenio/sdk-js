@@ -57,7 +57,7 @@ describe('Tokens', () => {
       .then(tokenLookedUp => {
         assert.equal(token.id, tokenLookedUp.id);
         return member1.endorsePaymentToken(token).then(() => {
-          assert.equal(token.signatures.length, 2);
+          assert.equal(token.payloadSignatures.length, 2);
         });
       });
     });
@@ -67,8 +67,8 @@ describe('Tokens', () => {
     return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
       return member1.endorsePaymentToken(token.id).then(() => {
         return member1.getPaymentToken(token.id).then(lookedUp => {
-          assert.equal(lookedUp.signatures.length, 2);
-          assert.equal(lookedUp.signatures[0].action, 'ENDORSED');
+          assert.equal(lookedUp.payloadSignatures.length, 2);
+          assert.equal(lookedUp.payloadSignatures[0].action, 'ENDORSED');
         });
       });
     });
@@ -77,8 +77,8 @@ describe('Tokens', () => {
   it('should create a token and cancel it', () => {
     return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
       return member1.cancelPaymentToken(token).then(() => {
-        assert.equal(token.signatures.length, 2);
-        assert.equal(token.signatures[0].action, 'CANCELLED');
+        assert.equal(token.payloadSignatures.length, 2);
+        assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
       });
     });
   });
@@ -87,8 +87,8 @@ describe('Tokens', () => {
     return member1.createPaymentToken(account1.id, 9.24, defaultCurrency, alias2).then(token => {
       return member1.cancelPaymentToken(token.id).then(() => {
         return member1.getPaymentToken(token.id).then(lookedUp => {
-          assert.equal(lookedUp.signatures.length, 2);
-          const actions = map(lookedUp.signatures, sig => sig.action);
+          assert.equal(lookedUp.payloadSignatures.length, 2);
+          const actions = map(lookedUp.payloadSignatures, sig => sig.action);
           assert.isOk(some(actions, action => action === 'CANCELLED'));
         });
       });
@@ -100,7 +100,7 @@ describe('Tokens', () => {
       return member1.endorsePaymentToken(token.id).then(() => {
         return member1.getPaymentTokens().then(tokens => {
           assert.equal(tokens.length, 1);
-          assert.equal(tokens[0].signatures.length, 2);
+          assert.equal(tokens[0].payloadSignatures.length, 2);
         });
       });
     });

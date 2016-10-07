@@ -242,7 +242,7 @@ export default class Member {
           finalToken)
       .then(res => {
         if (typeof token !== 'string' && !(token instanceof String)) {
-          token.signatures = res.data.token.signatures;
+          token.payloadSignatures = res.data.token.payloadSignatures;
         }
         return;
       });
@@ -261,7 +261,7 @@ export default class Member {
           finalToken)
       .then(res => {
         if (typeof token !== 'string' && !(token instanceof String)) {
-          token.signatures = res.data.token.signatures;
+          token.payloadSignatures = res.data.token.payloadSignatures;
         }
         return;
       });

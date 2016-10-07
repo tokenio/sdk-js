@@ -124,7 +124,7 @@ token.description => description
 token.version => version
 token.issuer => issuer
 token.nonce => nonce
-token.signatures => signatures
+token.payloadSignatures => signatures
 ```
 ### Payment
 ```
@@ -134,7 +134,7 @@ payment.payload => payload
 payment.amount => amount
 payment.currency => currency
 payment.transfer => transfer
-payment.signatures => signatures
+payment.payloadSignatures => signatures
 ```
 
 ## Sales Demo

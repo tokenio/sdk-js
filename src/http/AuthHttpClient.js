@@ -51,7 +51,7 @@ class AuthHttpClient {
     const req = {
       name,
       data,
-      signature: {
+      dataSignature: {
         keyId: keys.keyId,
         signature: Crypto.sign(data, keys),
         timestampMs: new Date().getTime()
@@ -199,7 +199,7 @@ class AuthHttpClient {
 
     const req = {
       payload,
-      signature: {
+      payloadSignature: {
         keyId: keys.keyId,
         signature: Crypto.signJson(payload, keys),
         timestampMs: new Date().getTime()
@@ -334,7 +334,7 @@ class AuthHttpClient {
 
     const req = {
       update,
-      signature: {
+      updateSignature: {
         keyId: keys.keyId,
         signature: Crypto.signJson(update, keys),
         timestampMs: new Date().getTime()
