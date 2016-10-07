@@ -14,5 +14,7 @@ const defaultCurrency = 'EUR';
 // Default notification provider to use
 const defaultNotificationProvider = 'Token';
 
-export {signatureScheme, uriHost, uriHostBank, paymentTokenVersion,
-   defaultCurrency, defaultNotificationProvider};
+export {
+    signatureScheme, uriHost, uriHostBank, paymentTokenVersion,
+    defaultCurrency, defaultNotificationProvider
+};
