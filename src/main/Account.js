@@ -9,7 +9,7 @@ export default class Account {
      * Represents the account
      * @constructor
      * @param {Member} member - member that owns this account
-     * @param {object} acc - accoun json object retrieved from server
+     * @param {object} acc - account json object retrieved from server
      */
     constructor(member, acc) {
         this._member = member;

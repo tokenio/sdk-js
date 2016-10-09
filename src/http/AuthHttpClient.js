@@ -140,7 +140,7 @@ class AuthHttpClient {
     }
 
     //
-    // Tokens
+    // Payment Tokens
     //
     static createPaymentToken(keys, memberId, paymentToken) {
         const config = {
@@ -252,6 +252,22 @@ class AuthHttpClient {
             method: 'get',
             url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
         };
+        Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
+        return instance(config);
+    }
+
+    //
+    // Access Tokens
+    //
+    static createAccessToken(keys, memberId, accessToken) {
+        const config = {
+            method: 'post',
+            url: `/access-tokens`,
+            data: {
+                payload: accessToken
+            }
+        };
+
         Auth.addAuthorizationHeaderMemberId(keys, memberId, config);
         return instance(config);
     }

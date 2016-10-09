@@ -5,6 +5,7 @@ import Address from "./Address";
 import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
 import PaymentToken from "./PaymentToken";
+import AccessToken from "./AccessToken";
 import Payment from "./Payment";
 import {defaultNotificationProvider} from "../constants";
 
@@ -184,7 +185,72 @@ export default class Member {
     }
 
     /**
-     * Creates an unendorsed token
+     * Creates a new unendorsed Access Token
+     *
+     * @param {string} grantee - the alias of the grantee
+     * @param {object} resources - an array of resources
+     * @return {Promise} token - promise of a created AccessToken
+     */
+    createAccessToken(grantee, resources) {
+        const token = new AccessToken(undefined, this, grantee, resources);
+        return AuthHttpClient
+            .createAccessToken(this._keys, this._id, token.json)
+            .then(res => {
+                return AccessToken.createFromToken(res.data.token);
+            });
+    }
+
+    /**
+     * Creates a new Address Access Token
+     *
+     * @param {string} grantee - the alias of the grantee
+     * @param {string} addressId - an optional addressId
+     * @return {Promise} token - promise of a created AccessToken
+     */
+    createAddressAccessToken(grantee, addressId) {
+        const token = AccessToken.createAddressAccessToken(grantee, addressId);
+        return AuthHttpClient
+            .createAccessToken(this._keys, this._id, token.json)
+            .then(res => {
+                return AccessToken.createFromToken(res.data.token);
+            });
+    }
+
+    /**
+     * Creates a new Account Access Token
+     *
+     * @param {string} grantee - the alias of the grantee
+     * @param {string} accountId - an optional accountId
+     * @return {Promise} token - promise of a created AccessToken
+     */
+    createAccountAccessToken(grantee, accountId) {
+        const token = AccessToken.createAccountAccessToken(grantee, accountId);
+        return AuthHttpClient
+            .createAccessToken(this._keys, this._id, token.json)
+            .then(res => {
+                return AccessToken.createFromToken(res.data.token);
+            });
+    }
+
+    /**
+     * Creates a new Transaction Access Token
+     *
+     * @param {string} grantee - the alias of the grantee
+     * @param {string} accountId - an optional accountId
+     * @return {Promise} token - promise of a created AccessToken
+     */
+    createTransactionAccessToken(grantee, accountId) {
+        const token = AccessToken.createTransactionAccessToken(grantee, accountId);
+        return AuthHttpClient
+            .createAccessToken(this._keys, this._id, token.json)
+            .then(res => {
+                return AccessToken.createFromToken(res.data.token);
+            });
+    }
+
+    /**
+     * Creates an unendorsed Payment Token
+     *
      * @param {string} accountId - id of the source account
      * @param {double} amount - amount limit on the token
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)

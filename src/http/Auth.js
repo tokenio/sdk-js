@@ -5,6 +5,7 @@ import Crypto from "../Crypto";
 
 class Auth {
 
+
     /*
      * Adds an authorization header with the identity set as the memberId. This is preferrable
      * to alias identity, because it reduces trust required (no alias lookup)
