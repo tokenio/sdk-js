@@ -8,12 +8,13 @@ const instance = axios.create({
 export default {
     requestLinkAccounts: (alias, balance = 100000, currency = defaultCurrency,
                           accountName = "123") => {
+        const randLastName = Crypto.generateKeys().keyId;
         const req = {
             alias,
             secret: "",
             metadata: {
                 firstName: "Alice",
-                lastName: "Roberts",
+                lastName: randLastName,
                 balance,
                 currency,
                 accountName
