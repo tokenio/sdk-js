@@ -1,4 +1,5 @@
 import Util from "../Util";
+import {accessTokenVersion} from "../constants";
 
 export default class AccessToken {
     /**
@@ -75,11 +76,11 @@ export default class AccessToken {
 
     static createFromToken(token) {
         const id = token.id;
-        const version = token.version;
-        const nonce = token.payload.nonce;
         const grantor = token.payload.grantor;
         const grantee = token.payload.grantee;
         const resources = token.payload.resources;
+        const version = token.version;
+        const nonce = token.payload.nonce;
         const payloadSignatures = token.payloadSignatures;
 
         return new AccessToken(
@@ -96,11 +97,11 @@ export default class AccessToken {
         nonce = undefined,
         payloadSignatures = []) {
         this._id = id;
-        this._version = version;
-        this._nonce = nonce;
         this._grantor = grantor;
         this._grantee = grantee;
         this._resources = resources;
+        this._version = version;
+        this._nonce = nonce;
         this._payloadSignatures = payloadSignatures;
 
         if (nonce === undefined) {
