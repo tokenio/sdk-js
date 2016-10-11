@@ -8,6 +8,9 @@ const uriHostBank = URI_HOST_BANK;    // ''
 // Scheme for payment tokens
 const paymentTokenVersion = '1.0';
 
+// Scheme for payment tokens
+const accessTokenVersion = '1.0';
+
 // Default currency to use
 const defaultCurrency = 'EUR';
 
@@ -15,6 +18,6 @@ const defaultCurrency = 'EUR';
 const defaultNotificationProvider = 'Token';
 
 export {
-    signatureScheme, uriHost, uriHostBank, paymentTokenVersion,
+    signatureScheme, uriHost, uriHostBank, paymentTokenVersion, accessTokenVersion,
     defaultCurrency, defaultNotificationProvider
 };

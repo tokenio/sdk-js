@@ -4,23 +4,22 @@ import {uriHost, signatureScheme} from "../constants";
 import Crypto from "../Crypto";
 
 class Auth {
-
     /*
      * Adds an authorization header with the identity set as the memberId. This is preferrable
      * to alias identity, because it reduces trust required (no alias lookup)
      */
-    static addAuthorizationHeaderMemberId(keys, memberId, config, uriParam) {
+    static addAuthorizationHeaderMemberId(keys, memberId, config, uriParam, context) {
         const identity = 'member-id=' + memberId;
-        Auth.addAuthorizationHeader(keys, identity, config, uriParam);
+        Auth.addAuthorizationHeader(keys, identity, config, uriParam, context);
     }
 
     /*
      * Adds an authorization header with identity set as the alias. Useful when
      * on a browser that doesn't yet have a memberId
      */
-    static addAuthorizationHeaderAlias(keys, alias, config, uriParam) {
+    static addAuthorizationHeaderAlias(keys, alias, config, uriParam, context) {
         const identity = 'alias=' + alias;
-        Auth.addAuthorizationHeader(keys, identity, config, uriParam);
+        Auth.addAuthorizationHeader(keys, identity, config, uriParam, context);
     }
 
     /*
@@ -28,7 +27,7 @@ class Auth {
      * using the request info and the keys. The config is the axios request configutration,
      * right before it is sent to the server
      */
-    static addAuthorizationHeader(keys, identity, config) {
+    static addAuthorizationHeader(keys, identity, config, context) {
         // Parses out the base uri
         let uriPath = config.url.replace(uriHost, '');
 
@@ -65,10 +64,21 @@ class Auth {
         const header = signatureScheme + ' ' +
             identity + ',' +
             'key-id=' + keys.keyId + ',' +
-            'signature=' + signature;
+            'signature=' + signature +
+            Auth._onBehalfOfHeader(context);
+
         config.headers = {
             Authorization: header
         };
+    }
+
+    static _onBehalfOfHeader(context) {
+        if(context !== undefined &&
+            context.onBehalfOf !== undefined &&
+            context.onBehalfOf  !== '') {
+            return ',on-behalf-of=' + context.onBehalfOf;
+        }
+        return '';
     }
 }
 
