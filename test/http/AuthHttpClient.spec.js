@@ -16,15 +16,17 @@ describe('AuthHttpClient', () => {
                 assert.isOk(res.data.memberId);
                 return UnauthenticatedClient
                     .addFirstKey(keys, res.data.memberId)
-                    .then(res2 => AuthHttpClient
-                        .addKey(keys, res.data.memberId, res2.data.member.lastHash, keys2.publicKey, KeyLevel.PRIVILEGED, [])
-                        .then(res3 => {
-                            assert.isOk(res3.data.member);
-                            assert.isOk(res3.data.member.lastHash);
-                            assert.equal(res3.data.member.keys.length, 2);
-                            return true;
-                        })
-                    );
+                    .then(res2 => {
+                        const client = new AuthHttpClient(res.data.memberId, keys);
+                        client
+                            .addKey(res2.data.member.lastHash, keys2.publicKey, KeyLevel.PRIVILEGED, [])
+                            .then(res3 => {
+                                assert.isOk(res3.data.member);
+                                assert.isOk(res3.data.member.lastHash);
+                                assert.equal(res3.data.member.keys.length, 2);
+                                return true;
+                            })
+                    });
             });
     });
 
@@ -35,14 +37,15 @@ describe('AuthHttpClient', () => {
             .then(res => {
                 assert.isOk(res.data.memberId);
                 return UnauthenticatedClient.addFirstKey(keys, res.data.memberId)
-                    .then(res2 => AuthHttpClient.addKey(keys, res.data.memberId,
-                        res2.data.member.lastHash, keys2.publicKey, KeyLevel.PRIVILEGED, [])
-                        .then(res3 => {
-                            assert.equal(res3.data.member.keys.length, 2);
-                            return AuthHttpClient.removeKey(keys, res.data.memberId,
-                                res3.data.member.lastHash, keys2.keyId);
-                        })
-                    );
+                    .then(res2 => {
+                        const client = new AuthHttpClient(res.data.memberId, keys);
+                        client
+                            .addKey(res2.data.member.lastHash, keys2.publicKey, KeyLevel.PRIVILEGED, [])
+                            .then(res3 => {
+                                assert.equal(res3.data.member.keys.length, 2);
+                                return client.removeKey(res3.data.member.lastHash, keys2.keyId);
+                            })
+                    });
             });
     });
 
@@ -54,17 +57,18 @@ describe('AuthHttpClient', () => {
                 assert.isOk(res.data.memberId);
                 return UnauthenticatedClient
                     .addFirstKey(keys, res.data.memberId)
-                    .then(res2 => AuthHttpClient
-                        .addAlias(keys, res.data.memberId, res2.data.member.lastHash, Crypto.generateKeys().keyId)
-                        .then(res3 => {
-                            assert.equal(res3.data.member.aliases.length, 1);
-                            return AuthHttpClient
-                                .addAlias(keys, res.data.memberId, res3.data.member.lastHash, Crypto.generateKeys().keyId)
-                                .then(res4 => {
-                                    assert.equal(res4.data.member.aliases.length, 2);
-                                });
-                        })
-                    );
+                    .then(res2 => {
+                        const client = new AuthHttpClient(res.data.memberId, keys);
+                        client.addAlias(res2.data.member.lastHash, Crypto.generateKeys().keyId)
+                            .then(res3 => {
+                                assert.equal(res3.data.member.aliases.length, 1);
+                                return client
+                                    .addAlias(res3.data.member.lastHash, Crypto.generateKeys().keyId)
+                                    .then(res4 => {
+                                        assert.equal(res4.data.member.aliases.length, 2);
+                                    });
+                            })
+                    });
             });
     });
 
@@ -76,23 +80,25 @@ describe('AuthHttpClient', () => {
                 assert.isOk(res.data.memberId);
                 return UnauthenticatedClient
                     .addFirstKey(keys, res.data.memberId)
-                    .then(res2 => AuthHttpClient
-                        .addAlias(keys, res.data.memberId, res2.data.member.lastHash, Crypto.generateKeys().keyId)
-                        .then(res3 => {
-                            assert.equal(res3.data.member.aliases.length, 1);
-                            const secondAlias = Crypto.generateKeys().keyId;
-                            return AuthHttpClient
-                                .addAlias(keys, res.data.memberId, res3.data.member.lastHash, secondAlias)
-                                .then(res4 => {
-                                    assert.equal(res4.data.member.aliases.length, 2);
-                                    return AuthHttpClient
-                                        .removeAlias(keys, res.data.memberId, res4.data.member.lastHash, secondAlias)
-                                        .then(res5 => {
-                                            assert.equal(res5.data.member.aliases.length, 1);
-                                        });
-                                });
-                        })
-                    );
+                    .then(res2 => {
+                        const client = new AuthHttpClient(res.data.memberId, keys);
+                        client
+                            .addAlias(res2.data.member.lastHash, Crypto.generateKeys().keyId)
+                            .then(res3 => {
+                                assert.equal(res3.data.member.aliases.length, 1);
+                                const secondAlias = Crypto.generateKeys().keyId;
+                                return client
+                                    .addAlias(res3.data.member.lastHash, secondAlias)
+                                    .then(res4 => {
+                                        assert.equal(res4.data.member.aliases.length, 2);
+                                        return client
+                                            .removeAlias(res4.data.member.lastHash, secondAlias)
+                                            .then(res5 => {
+                                                assert.equal(res5.data.member.aliases.length, 1);
+                                            });
+                                    });
+                            })
+                    });
             });
     });
 
@@ -103,8 +109,8 @@ describe('AuthHttpClient', () => {
                 assert.isOk(res.data.memberId);
                 return UnauthenticatedClient
                     .addFirstKey(keys, res.data.memberId)
-                    .then(res2 => AuthHttpClient
-                        .getMember(keys, res.data.memberId)
+                    .then(res2 => new AuthHttpClient(res.data.memberId, keys)
+                        .getMember(res.data.memberId, keys)
                         .then(res3 => {
                             assert.isOk(res3.data.member);
                             assert.isOk(res3.data.member.lastHash);

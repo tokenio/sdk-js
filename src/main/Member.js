@@ -24,6 +24,7 @@ export default class Member {
     constructor(memberId, keys) {
         this._id = memberId;
         this._keys = keys;
+        this._client = new AuthHttpClient(memberId, keys);
     }
 
     /**
@@ -50,6 +51,23 @@ export default class Member {
     }
 
     /**
+     * Sets the On-Behalf-Of authentication value to be used
+     * with this client.
+     *
+     * @param onBehalfOf the on-behalf-of value
+     */
+    setOnBehalfOf(onBehalfOf) {
+        this._client.setOnBehalfOf(onBehalfOf);
+    }
+
+    /**
+     * Clears the On-Behalf-Of value used with this client.
+     */
+    clearOnBehalfOf() {
+        this._client.clearOnBehalfOf();
+    }
+
+    /**
      * Approves a new key for this member
      * @param {Buffer} publicKey - key to add
      * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
@@ -59,8 +77,8 @@ export default class Member {
     approveKey(publicKey, keyLevel = KeyLevel.PRIVILEGED, tags = []) {
         return this._getPreviousHash()
             .then(prevHash =>
-                AuthHttpClient.addKey(this._keys, this._id,
-                    prevHash, Crypto.bufferKey(publicKey), keyLevel, tags)
+                this._client
+                    .addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel, tags)
                     .then(res => undefined));
     }
 
@@ -72,7 +90,8 @@ export default class Member {
     removeKey(keyId) {
         return this._getPreviousHash()
             .then(prevHash =>
-                AuthHttpClient.removeKey(this._keys, this._id, prevHash, keyId)
+                this._client
+                    .removeKey(prevHash, keyId)
                     .then(res => undefined));
     }
 
@@ -84,7 +103,8 @@ export default class Member {
     addAlias(alias) {
         return this._getPreviousHash()
             .then(prevHash =>
-                AuthHttpClient.addAlias(this._keys, this._id, prevHash, alias)
+                this._client
+                    .addAlias(prevHash, alias)
                     .then(res => undefined));
     }
 
@@ -94,9 +114,11 @@ export default class Member {
      * @return {Promise} empty - empty promise
      */
     removeAlias(alias) {
-        return this._getPreviousHash()
+        return this
+            ._getPreviousHash()
             .then(prevHash =>
-                AuthHttpClient.removeAlias(this._keys, this._id, prevHash, alias)
+                this._client
+                    .removeAlias(prevHash, alias)
                     .then(res => undefined));
     }
 
@@ -107,8 +129,8 @@ export default class Member {
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
     linkAccounts(bankId, accountsLinkPayload) {
-        return AuthHttpClient.linkAccounts(this._keys, this._id,
-            bankId, accountsLinkPayload)
+        return this._client
+            .linkAccounts(bankId, accountsLinkPayload)
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
             });
@@ -119,7 +141,8 @@ export default class Member {
      * @return {Promise} accounts - Promise resolving to the accounts
      */
     getAccounts() {
-        return AuthHttpClient.getAccounts(this._keys, this._id)
+        return this._client
+            .getAccounts()
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
             });
@@ -134,22 +157,14 @@ export default class Member {
      * @param {string} tags - tags of this device, for future categorization, etc
      * @return {Promise} empty - empty promise
      */
-    subscribeDevice(notificationUri, provider = defaultNotificationProvider,
-                    platform = "IOS", tags = []) {
-        return AuthHttpClient.subscribeDevice(this._keys, this._id,
-            notificationUri, provider, platform, tags);
+    subscribeDevice(
+        notificationUri,
+        provider = defaultNotificationProvider,
+        platform = "IOS",
+        tags = []) {
+        return this._client
+            .subscribeDevice(notificationUri, provider, platform, tags);
     }
-
-    //   /**
-    //  * Unsubscribes a device from push notifications
-    //  * @param {string} notificationUri - the notification Uri for this device. (e.g iOS push token)
-    //  * @param {string} provider - provider to send the notification (default Token)
-    //  * @return {Promise} empty - empty promise
-    //  */
-    // unsubscribeDevice(notificationUri, provider = defaultNotificationProvider) {
-    //   return AuthHttpClient.unsubscribeDevice(this._keys, this._id,
-    //     notificationUri, provider);
-    // }
 
     /**
      * Creates an address for this member, and saves it
@@ -158,9 +173,24 @@ export default class Member {
      * @return {Promise} empty - empty promise
      */
     addAddress(name, data) {
-        return AuthHttpClient.addAddress(this._keys, this._id, name, data)
+        return this._client
+            .addAddress(name, data)
             .then(res => {
+                return new Address(res.data.address)
+            });
+    }
 
+    /**
+     * Gets the member's addresse
+     *
+     * @param {string} addressId - the address id
+     * @return {Promise} address - the address
+     */
+    getAddress(addressId) {
+        return this._client
+            .getAddress(addressId)
+            .then(res => {
+                return new Address(res.data.address);
             });
     }
 
@@ -169,9 +199,11 @@ export default class Member {
      * @return {Promise} addresses - Addresses
      */
     getAddresses() {
-        return AuthHttpClient.getAddresses(this._keys, this._id)
+        return this._client
+            .getAddresses()
             .then(res => {
-                return res.data.addresses.map(address => new Address(address));
+                return res.data.addresses
+                    .map(address => new Address(address));
             });
     }
 
@@ -180,7 +212,8 @@ export default class Member {
      * @return {Promise} aliases - member's aliases
      */
     getAllAliases() {
-        return this._getMember(this._keys, this._id)
+        return this
+            ._getMember()
             .then(member => member.aliases);
     }
 
@@ -193,8 +226,8 @@ export default class Member {
      */
     createAccessToken(grantee, resources) {
         const token = new AccessToken(undefined, this, grantee, resources);
-        return AuthHttpClient
-            .createAccessToken(this._keys, this._id, token.json)
+        return this._client
+            .createAccessToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             });
@@ -208,9 +241,9 @@ export default class Member {
      * @return {Promise} token - promise of a created AccessToken
      */
     createAddressAccessToken(grantee, addressId) {
-        const token = AccessToken.createAddressAccessToken(grantee, addressId);
-        return AuthHttpClient
-            .createAccessToken(this._keys, this._id, token.json)
+        const token = AccessToken.addressAccessToken(this, grantee, addressId);
+        return this._client
+            .createAccessToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             });
@@ -224,9 +257,9 @@ export default class Member {
      * @return {Promise} token - promise of a created AccessToken
      */
     createAccountAccessToken(grantee, accountId) {
-        const token = AccessToken.createAccountAccessToken(grantee, accountId);
-        return AuthHttpClient
-            .createAccessToken(this._keys, this._id, token.json)
+        const token = AccessToken.accountAccessToken(this, grantee, accountId);
+        return this._client
+            .createAccessToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             });
@@ -240,9 +273,9 @@ export default class Member {
      * @return {Promise} token - promise of a created AccessToken
      */
     createTransactionAccessToken(grantee, accountId) {
-        const token = AccessToken.createTransactionAccessToken(grantee, accountId);
-        return AuthHttpClient
-            .createAccessToken(this._keys, this._id, token.json)
+        const token = AccessToken.transactionAccessToken(this, grantee, accountId);
+        return this._client
+            .createAccessToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             });
@@ -261,8 +294,8 @@ export default class Member {
     createPaymentToken(accountId, amount, currency, alias, description = undefined) {
         const token = PaymentToken.create(this, accountId, amount,
             currency, alias, description);
-        return AuthHttpClient.createPaymentToken(this._keys,
-            this._id, token.json)
+        return this._client
+            .createPaymentToken(token.json)
             .then(res => {
                 return PaymentToken.createFromToken(res.data.token);
             });
@@ -274,8 +307,8 @@ export default class Member {
      * @return {Promise} token - PaymentToken
      */
     getPaymentToken(tokenId) {
-        return AuthHttpClient.getPaymentToken(this._keys, this._id,
-            tokenId)
+        return this._client
+            .getPaymentToken(tokenId)
             .then(res => {
                 return PaymentToken.createFromToken(res.data.token);
             });
@@ -288,11 +321,12 @@ export default class Member {
      * @return {PaymentTokens} tokens - returns a list of Payment Tokens
      */
     getPaymentTokens(offset = 0, limit = 100) {
-        return AuthHttpClient.getPaymentTokens(this._keys, this._id,
-            offset, limit)
+        return this._client
+            .getPaymentTokens(offset, limit)
             .then(res => {
                 if (res.data.tokens === undefined) return [];
-                return res.data.tokens.map(tk => PaymentToken.createFromToken(tk));
+                return res.data.tokens
+                    .map(tk => PaymentToken.createFromToken(tk));
             });
     }
 
@@ -302,15 +336,15 @@ export default class Member {
      * @return {Promise} token - Promise of endorsed payment token
      */
     endorsePaymentToken(token) {
-        return this._resolveToken(token)
+        return this
+            ._resolveToken(token)
             .then(finalToken => {
-                return AuthHttpClient.endorsePaymentToken(this._keys, this._id,
-                    finalToken)
+                return this._client
+                    .endorsePaymentToken(finalToken)
                     .then(res => {
                         if (typeof token !== 'string' && !(token instanceof String)) {
                             token.payloadSignatures = res.data.token.payloadSignatures;
                         }
-
                     });
             });
     }
@@ -323,13 +357,12 @@ export default class Member {
     cancelPaymentToken(token) {
         return this._resolveToken(token)
             .then(finalToken => {
-                return AuthHttpClient.cancelPaymentToken(this._keys, this._id,
-                    finalToken)
+                return this._client
+                    .cancelPaymentToken(finalToken)
                     .then(res => {
                         if (typeof token !== 'string' && !(token instanceof String)) {
                             token.payloadSignatures = res.data.token.payloadSignatures;
                         }
-
                     });
             });
     }
@@ -350,8 +383,8 @@ export default class Member {
                 if (currency === undefined) {
                     currency = finalToken.currency;
                 }
-                return AuthHttpClient.redeemPaymentToken(this._keys, this._id,
-                    finalToken, amount, currency)
+                return this._client
+                    .redeemPaymentToken(finalToken, amount, currency)
                     .then(res => {
                         return new Payment(res.data.payment);
                     });
@@ -364,8 +397,8 @@ export default class Member {
      * @return {Payment} payment - payment if found
      */
     getPayment(paymentId) {
-        return AuthHttpClient.getPayment(this._keys, this._id,
-            paymentId)
+        return this._client
+            .getPayment(paymentId)
             .then(res => {
                 return new Payment(res.data.payment);
             });
@@ -379,8 +412,8 @@ export default class Member {
      * @return {Promise} payments - Payments
      */
     getPayments(tokenId, offset = 0, limit = 100) {
-        return AuthHttpClient.getPayments(this._keys, this._id,
-            tokenId, offset, limit)
+        return this._client
+            .getPayments(tokenId, offset, limit)
             .then(res => {
                 return res.data.payments.map(pt => new Payment(pt));
             });
@@ -391,17 +424,20 @@ export default class Member {
      * @return {Promise} keys - keys objects
      */
     getPublicKeys() {
-        return this._getMember(this._keys, this._id)
+        return this
+            ._getMember()
             .then(member => member.keys);
     }
 
     _getPreviousHash() {
-        return this._getMember(this._keys, this._id)
+        return this
+            ._getMember()
             .then(member => member.lastHash);
     }
 
     _getMember() {
-        return AuthHttpClient.getMember(this._keys, this._id)
+        return this._client
+            .getMember()
             .then(res => {
                 return res.data.member;
             });

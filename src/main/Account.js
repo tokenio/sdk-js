@@ -1,4 +1,3 @@
-import AuthHttpClient from "../http/AuthHttpClient";
 import Transaction from "./Transaction";
 
 /**
@@ -47,8 +46,7 @@ export default class Account {
      * @return {Promise} empty - empty promise
      */
     setAccountName(name) {
-        return AuthHttpClient.setAccountName(this._member._keys, this._member.id,
-            this._id, name)
+        return this._member._client.setAccountName(this._id, name)
             .then(res => {
                 this._name = name;
             });
@@ -59,8 +57,7 @@ export default class Account {
      * @return {Promise} balance - Promise of balance object
      */
     getBalance() {
-        return AuthHttpClient.getBalance(this._member._keys, this._member.id,
-            this._id)
+        return this._member._client.getBalance(this._id)
             .then(res => {
                 return res.data;
             });
@@ -87,8 +84,7 @@ export default class Account {
      * @return {Promise} transactions - Transactions
      */
     getTransactions(offset = 0, limit = 100) {
-        return AuthHttpClient.getTransactions(this._member.keys, this._member.id,
-            this._id, offset, limit)
+        return this._member._client.getTransactions(this._id, offset, limit)
             .then(res => {
                 return res.data.transactions.map(tr => new Transaction(tr));
             });

@@ -1,14 +1,17 @@
 import {uriHostBank, defaultCurrency} from "../../src/constants";
-import Crypto from "../../src/Crypto";
+import Sample from "./Sample";
 const axios = require('axios');
 const instance = axios.create({
     baseURL: uriHostBank
 });
 
 export default {
-    requestLinkAccounts: (alias, balance = 100000, currency = defaultCurrency,
-                          accountName = "123") => {
-        const randLastName = Crypto.generateKeys().keyId;
+    requestLinkAccounts: (
+        alias,
+        balance = 100000,
+        currency = defaultCurrency,
+        accountName = "123") => {
+        const randLastName = Sample.string();
         const req = {
             alias,
             secret: "",
@@ -20,12 +23,11 @@ export default {
                 accountName
             }
         };
-        const randomAccNumber = Crypto.generateKeys().keyId;
+        const randomAccNumber = Sample.string();
         return instance({
             method: 'put',
             url: `/link/accounts/${randomAccNumber}`,
             data: req
-        })
-            .then(res => res.data);
+        }).then(res => res.data);
     }
 };

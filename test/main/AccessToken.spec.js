@@ -11,7 +11,8 @@ let alias = {};
 
 const setUp = () => {
     alias = Crypto.generateKeys().keyId;
-    return Token.createMember(alias)
+    Token
+        .createMember(alias)
         .then(res => {
             member = res;
         });
@@ -19,7 +20,7 @@ const setUp = () => {
 
 describe('AccessTokens', () => {
     before(() => {
-        return setUp();
+        setUp();
     });
 
     it('create an address access token object', () => {

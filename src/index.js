@@ -21,11 +21,12 @@ const Token = {
     createMember: alias => {
         const keys = Crypto.generateKeys();
         return UnauthenticatedClient.createMemberId()
-            .then(response => UnauthenticatedClient.addFirstKey(keys,
-                response.data.memberId)
+            .then(response => UnauthenticatedClient
+                .addFirstKey(keys, response.data.memberId)
                 .then(() => {
                     const member = new Member(response.data.memberId, keys);
-                    return member.addAlias(alias)
+                    return member
+                        .addAlias(alias)
                         .then(() => member);
                 })
             );
