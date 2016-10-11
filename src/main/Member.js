@@ -51,20 +51,19 @@ export default class Member {
     }
 
     /**
-     * Sets the On-Behalf-Of authentication value to be used
-     * with this client.
+     * Sets the access token id to be used with this client.
      *
-     * @param onBehalfOf the on-behalf-of value
+     * @param accessTokenId the access token id
      */
-    setOnBehalfOf(onBehalfOf) {
-        this._client.setOnBehalfOf(onBehalfOf);
+    useAccessToken(accessTokenId) {
+        this._client.useAccessToken(accessTokenId);
     }
 
     /**
-     * Clears the On-Behalf-Of value used with this client.
+     * Clears the access token id used with this client.
      */
-    clearOnBehalfOf() {
-        this._client.clearOnBehalfOf();
+    clearAccessToken() {
+        this._client.clearAccessToken();
     }
 
     /**

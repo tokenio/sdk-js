@@ -20,7 +20,8 @@ const Token = {
      */
     createMember: alias => {
         const keys = Crypto.generateKeys();
-        return UnauthenticatedClient.createMemberId()
+        return UnauthenticatedClient
+            .createMemberId()
             .then(response => UnauthenticatedClient
                 .addFirstKey(keys, response.data.memberId)
                 .then(() => {

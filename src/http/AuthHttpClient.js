@@ -21,11 +21,11 @@ class AuthHttpClient {
         this._context = new AuthContext();
     }
 
-    setOnBehalfOf(accessTokenId) {
+    useAccessToken(accessTokenId) {
         this._context.onBehalfOf = accessTokenId;
     }
 
-    clearOnBehalfOf() {
+    clearAccessToken() {
         this._context.onBehalfOf = undefined;
     }
     

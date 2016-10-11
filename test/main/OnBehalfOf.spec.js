@@ -45,7 +45,7 @@ describe('On-Behalf-Of', () => {
         return grantor
             .createAddressAccessToken(granteeAlias, address.id)
             .then(token => {
-                grantee.setOnBehalfOf(token.id);
+                grantee.useAccessToken(token.id);
                 return grantee
                     .getAddress(address.id)
                     .then(result => {
