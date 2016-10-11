@@ -43,6 +43,14 @@ class UnauthenticatedClient {
         return instance(config);
     }
 
+    static aliasExists(alias) {
+        const config = {
+            method: 'get',
+            url: `/alias-exists?alias=${alias}`
+        }
+        return instance(config);
+     }
+
     static notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload,
                                        publicKey, tags) {
         const req = {

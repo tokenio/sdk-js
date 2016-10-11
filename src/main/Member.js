@@ -6,6 +6,7 @@ import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
 import PaymentToken from "./PaymentToken";
 import Payment from "./Payment";
+import UnauthenticatedClient from "../http/UnauthenticatedClient";
 import {defaultNotificationProvider} from "../constants";
 
 /**
@@ -73,6 +74,17 @@ export default class Member {
             .then(prevHash =>
                 AuthHttpClient.removeKey(this._keys, this._id, prevHash, keyId)
                     .then(res => undefined));
+    }
+
+    /**
+     * Checks if a given alias already exists
+     * @param {string} alias - alias to check
+     * @return {Promise} result - true if alias exists, false otherwise
+     */
+    aliasExists(alias) {
+        return UnauthenticatedClient.aliasExists(alias)
+            // Workaround for a default value case when protobuf does not serialize it.
+            .then(res => res.data.exists ? res.data.exists : false);
     }
 
     /**
