@@ -257,7 +257,6 @@ class AuthHttpClient {
             url: `/payment-tokens/${tokenId}/${operation}`,
             data: req
         };
-debugger;
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
             this._memberId,

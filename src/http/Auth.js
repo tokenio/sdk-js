@@ -76,7 +76,6 @@ class Auth {
         if(context !== undefined &&
             context.onBehalfOf !== undefined &&
             context.onBehalfOf  !== '') {
-            debugger;
             return ',on-behalf-of=' + context.onBehalfOf;
         }
         return '';
