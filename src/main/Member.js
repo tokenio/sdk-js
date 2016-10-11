@@ -82,7 +82,8 @@ export default class Member {
      * @return {Promise} result - true if alias exists, false otherwise
      */
     aliasExists(alias) {
-        return UnauthenticatedClient.aliasExists(alias)
+        return UnauthenticatedClient
+            .aliasExists(alias)
             // Workaround for a default value case when protobuf does not serialize it.
             .then(res => res.data.exists ? res.data.exists : false);
     }

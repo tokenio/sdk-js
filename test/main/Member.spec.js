@@ -34,13 +34,15 @@ describe('member tests', () => {
         });
 
         it('should confirm alias does not exist', () => {
-            return member.aliasExists(Crypto.generateKeys().keyId)
+            return member
+                .aliasExists(Crypto.generateKeys().keyId)
                 .then(exists => assert.equal(exists, false));
         });
 
         it('should confirm alias exists', () => {
             const alias = Crypto.generateKeys().keyId;
-            return member.addAlias(alias)
+            return member
+                .addAlias(alias)
                 .then(() => member.aliasExists(alias))
                 .then(exists => assert.equal(exists, true));
         });
