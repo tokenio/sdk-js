@@ -19,7 +19,7 @@ describe('Token library', () => {
                 .then(member => {
                     member1 = member;
                     return member1
-                        .subscribeDevice(pushToken)
+                        .subscribeToNotifications(pushToken)
                         .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
                         .then(alp => member1.linkAccounts("bank-id", alp))
                         .then(accounts => {

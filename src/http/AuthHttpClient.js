@@ -28,17 +28,16 @@ class AuthHttpClient {
     clearAccessToken() {
         this._context.onBehalfOf = undefined;
     }
-    
-    subscribeDevice(notificationUri, provider, platform, tags) {
+
+    subscribeToNotifications(target, provider, platform) {
         const req = {
             provider,
-            notificationUri,
-            platform,
-            tags
+            target,
+            platform
         };
         const config = {
             method: 'post',
-            url: `/devices`,
+            url: `/subscribers`,
             data: req
         };
         Auth.addAuthorizationHeaderMemberId(
@@ -49,14 +48,36 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    unsubscribeDevice(notificationUri, provider) {
-        const req = {
-            provider
+    getSubscribers() {
+        const config = {
+            method: 'get',
+            url: `/subscribers`
         };
+        Auth.addAuthorizationHeaderMemberId(
+            this._keys,
+            this._memberId,
+            config,
+            this._context);
+        return instance(config);
+    }
+
+    getSubscriber(subscriberId) {
+        const config = {
+            method: 'get',
+            url: `/subscribers/${subscriberId}`
+        };
+        Auth.addAuthorizationHeaderMemberId(
+            this._keys,
+            this._memberId,
+            config,
+            this._context);
+        return instance(config);
+    }
+
+    unsubscribeFromNotifications(subscriberId) {
         const config = {
             method: 'delete',
-            url: `/devices/${notificationUri}`,
-            data: req
+            url: `/subscribers/${subscriberId}`
         };
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
@@ -72,7 +93,7 @@ class AuthHttpClient {
     addAddress(name, data) {
         const req = {
             name,
-            data,
+            payload,
             dataSignature: {
                 keyId: this._keys.keyId,
                 signature: Crypto.sign(data, this._keys),

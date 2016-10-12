@@ -68,6 +68,19 @@ class UnauthenticatedClient {
         return instance(config);
     }
 
+    static notify(alias, notification) {
+        const req = {
+            alias,
+            notification
+        };
+        const config = {
+            method: 'post',
+            url: `/notify`,
+            data: req
+        };
+        return instance(config);
+    }
+
     static addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED, tags = []) {
         const update = {
             memberId: memberId,

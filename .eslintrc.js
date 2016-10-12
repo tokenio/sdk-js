@@ -17,6 +17,7 @@ module.exports = {
     "rules": {
         "no-unused-vars": "warn",
         "max-nested-callbacks": "off",
-        "max-len": ["warn", 100]
+        "max-len": ["warn", 100],
+        "indent": "off"
     },
 };

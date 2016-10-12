@@ -1,6 +1,7 @@
 import Crypto from "../Crypto";
 import LocalStorage from "../LocalStorage";
 import Account from "./Account";
+import Subscriber from "./Subscriber";
 import Address from "./Address";
 import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
@@ -53,7 +54,7 @@ export default class Member {
     /**
      * Sets the access token id to be used with this client.
      *
-     * @param accessTokenId the access token id
+     * @param {string} accessTokenId - the access token id
      */
     useAccessToken(accessTokenId) {
         this._client.useAccessToken(accessTokenId);
@@ -148,21 +149,59 @@ export default class Member {
     }
 
     /**
-     * Subscribes a device to receive notifications of member events, such as step up auth,
+     * Creates a subscriber to receive notifications of member events, such as step up auth,
      * new device requests, linking account requests, or payment notifications
-     * @param {string} notificationUri - the notification Uri for this device. (e.g iOS push token)
+     * @param {string} target - the notification target for this device. (e.g iOS push token)
      * @param {string} provider - provider to send the notification (default Token)
      * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
-     * @param {string} tags - tags of this device, for future categorization, etc
+     * @return {Promise} subscriber - Subscriber object
+     */
+    subscribeToNotifications(
+        target,
+        provider = defaultNotificationProvider,
+        platform = "IOS") {
+        return this._client
+            .subscribeToNotifications(target, provider, platform)
+            .then(res => {
+                return new Subscriber(res.data.subscriber);
+            });
+    }
+
+    /**
+     * Gets all subscribers for this member
+     *
+     * @return {Promise} - subscribers
+     */
+    getSubscribers() {
+        return this._client
+            .getSubscribers()
+            .then(res => {
+                return res.data.subscribers.map(s => new Subscriber(s));
+            });
+    }
+
+    /**
+     * Gets a specific subscriber by Id
+     *
+     * @param {string} subscriberId - id of the subscriber
+     * @return {Promise} - subscriber
+     */
+    getSubscriber(subscriberId) {
+        return this._client
+            .getSubscriber(subscriberId)
+            .then(res => {
+                return new Subscriber(res.data.subscriber);
+            });
+    }
+
+    /**
+     * Unsubscribes from notifications (removes a subscriber)
+     * @param {string} subscriberId - subscriber to remove
      * @return {Promise} empty - empty promise
      */
-    subscribeDevice(
-        notificationUri,
-        provider = defaultNotificationProvider,
-        platform = "IOS",
-        tags = []) {
+    unsubscribeFromNotifications(subscriberId) {
         return this._client
-            .subscribeDevice(notificationUri, provider, platform, tags);
+            .unsubscribeFromNotifications(subscriberId);
     }
 
     /**
@@ -175,7 +214,7 @@ export default class Member {
         return this._client
             .addAddress(name, data)
             .then(res => {
-                return new Address(res.data.address)
+                return new Address(res.data.address);
             });
     }
 
@@ -317,7 +356,7 @@ export default class Member {
      * Looks up all tokens (not just for this account)
      * @param {int} offset - where to start looking
      * @param {int} limit - how many to look for
-     * @return {PaymentTokens} tokens - returns a list of Payment Tokens
+     * @return {PaymentToken} tokens - returns a list of Payment Tokens
      */
     getPaymentTokens(offset = 0, limit = 100) {
         return this._client

@@ -7,7 +7,7 @@ var accountsLinkPayload = 'eyJhY2NvdW50cyI6W3siYWNjb3VudE51bWJlciI6IlR6N3Jubkl' 
 
 var setUp = () =>
     Token.createMember(alias).then(member =>
-        member.subscribeDevice(pushToken));
+        member.subscribeToNotifications(pushToken));
 
 var notifyLinkAccounts = () => {
     setUp().then(() => {

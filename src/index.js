@@ -1,6 +1,5 @@
 import Crypto from "./Crypto";
 import Util from "./Util";
-import PaymentToken from "./main/PaymentToken";
 import Member from "./main/Member";
 import KeyLevel from "./main/KeyLevel";
 import LocalStorage from "./LocalStorage";
@@ -77,7 +76,7 @@ const Token = {
     },
 
     /**
-     * Notifies subscribed devices that accounts should be linked, and passes the bank id and
+     * Notifies subscribers that accounts should be linked, and passes the bank id and
      * payload
      * @param {string} alias - alias to notify
      * @param {string} bankId - If of the bank owning the accounts
@@ -85,19 +84,31 @@ const Token = {
      * @return {Promise} empty - empty
      */
     notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
-        return UnauthenticatedClient.notifyLinkAccounts(alias, bankId, accountsLinkPayload);
+        const notification = {
+            linkAccounts: {
+                bankId,
+                accountsLinkPayload
+            }
+        };
+        return UnauthenticatedClient.notify(alias, notification);
     },
 
     /**
-     * Notifies subscribed devices that a key should be added and passes the public Key and
-     * optional tags
+     * Notifies subscribers that a key should be added and passes the public Key and
+     * optional name
      * @param {string} alias - alias to notify
      * @param {string} publicKey - public
-     * @param {array} tags - tags for the new key
+     * @param {string} name - name for the new key, (e.g Chrome 53.0)
      * @return {Promise} empty - empty
      */
-    notifyAddKey(alias, publicKey, tags = []) {
-        return UnauthenticatedClient.notifyAddKey(alias, publicKey, tags);
+    notifyAddKey(alias, publicKey, name = '') {
+        const notification = {
+            addKey: {
+                publicKey,
+                name
+            }
+        };
+        return UnauthenticatedClient.notify(alias, notification);
     },
 
     /**
@@ -107,21 +118,27 @@ const Token = {
      * @param {string} bankId - If of the bank owning the accounts
      * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
      * @param {string} publicKey - public
-     * @param {array} tags - tags for the new key
+     * @param {array} name - name for the new key, (e.g Chrome 53.0)
      * @return {Promise} empty - empty
      */
-    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey, tags = []) {
-        return UnauthenticatedClient.notifyLinkAccountsAndAddKey(
-            alias,
-            bankId,
-            accountsLinkPayload,
-            publicKey,
-            tags);
+    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey, name = "") {
+        const notification = {
+            linkAccountAndAddKey: {
+                linkAccounts: {
+                    bankId,
+                    accountsLinkPayload
+                },
+                addKey: {
+                    publicKey,
+                    name
+                }
+            }
+        };
+        return UnauthenticatedClient.notify(alias, notification);
     },
 
     Crypto,
     Util,
-    PaymentToken,
     KeyLevel
 };
 

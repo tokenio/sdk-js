@@ -47,9 +47,9 @@ static Token.createMember(alias) => Promise(Member)
 static Token.loginMember(memberId, keys) => Member
 static Token.loginMemberFromLocalStorage() => Member
 static Token.getMember(keys, alias) => Promise(Member)
-static Token.notifyAddKey(alias, publicKey) => Promise()
+static Token.notifyAddKey(alias, publicKey, name="") => Promise()
 static Token.notifyLinkAccounts(alias, bankCode, accountsLinkPayload) => Promise()
-static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload)
+static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload, publicKey, name="")
   => Promise()
 ```
 
@@ -65,8 +65,11 @@ member.removeAlias(alias) => Promise()
 member.linkAccounts(bankId, accountsLinkPayload)
   => Promise(Account[])
 member.getAccounts() => Promise(Account[])
-member.subscribeDevice(notificationUri, provider=“Token”,
-     platform=“IOS”, tags=[]) =>  Promise()
+member.subscribeToNotifications(notificationUri, provider=“Token”,
+     platform=“IOS”, tags=[]) =>  Promise(Subscriber)
+member.getSubscribers() =>  Promise(Subscriber [])
+member.getSubscriber(subscriberId) =>  Promise(Subscriber)
+member.unsubscribeFromNotifications(subscriberId) =>  Promise()
 member.getAllAliases() => Promise(string[])
 member.getPublicKeys() => Promise(key[])
 member.addAddress(name, address) => Promise()
@@ -141,8 +144,8 @@ payment.payloadSignatures => signatures
 ## Sales Demo
 
 ### Bank
-* ```Token.requestLinkAccounts(alias)```
-* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsLinkPayload, publicKey, tags)```
+* ```Token.requestLinkAccounts(alias, accountsLinkPayload)```
+* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsLinkPayload, publicKey, name)```
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.saveToLocalStorage()```
 
@@ -171,14 +174,11 @@ Either way: return tokenID to merchant, who does:
 
 If fails:
 * ```member.notifyAddKey(alias, publicKey)```
+
+Then
 * ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
-* ```member.getAddresses()```
-* ```member.getAccounts()```
-* ```member.createPaymentToken(acl list...)```
-* ```member.endorsePaymentToken(token)```
+* ```member.createAccessToken(acl list...)```
+* ```member.endorseAccessToken(token)```
 
-If fails:
-* ```member.getTokens(until you find the correct endorsed token)```
-
-Either way: return tokenID to AISP, who does:
+Return tokenID to AISP, who does:
 * ```account.redeemPaymentToken(token, ‘transactions’)```

@@ -191,7 +191,7 @@ describe('Tokens', () => {
     it('should fail to endorse a high value token with a low value key', done => {
         const keys = Crypto.generateKeys();
 
-        member1.subscribeDevice('36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
+        member1.subscribeToNotifications('36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
             '81f97900').then(() =>
             member1
                 .approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD)

@@ -18,12 +18,11 @@ const setUpGrantor = () => {
         .then(res => {
             grantor = res;
             grantor
-                .addAddress("name","address")
+                .addAddress("name", "address")
                 .then(res => {
-                    address = res
+                    address = res;
                 });
         });
-
 };
 
 const setupGrantee = () => {
@@ -36,7 +35,7 @@ const setupGrantee = () => {
 };
 
 describe('On-Behalf-Of', () => {
-    before( () => {
+    before(() => {
         return setUpGrantor().then(res =>
             setupGrantee());
     });
