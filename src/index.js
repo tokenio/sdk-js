@@ -12,6 +12,17 @@ require('es6-promise').polyfill();
 
 // Main entry object
 const Token = {
+    /**
+     * Checks if a given alias already exists
+     * @param {string} alias - alias to check
+     * @return {Promise} result - true if alias exists, false otherwise
+     */
+    aliasExists(alias) {
+        return UnauthenticatedClient
+            .aliasExists(alias)
+            // Workaround for a default value case when protobuf does not serialize it.
+            .then(res => res.data.exists ? res.data.exists : false);
+    },
 
     /**
      * Creates a member with an alias and a keypair

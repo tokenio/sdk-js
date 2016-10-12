@@ -42,6 +42,7 @@ Note that information token support has not yet been added to this sdk.
 
 #### Token
 ```
+static Token.aliasExists(alias) => Promise(boolean)
 static Token.createMember(alias) => Promise(Member)
 static Token.loginMember(memberId, keys) => Member
 static Token.loginMemberFromLocalStorage() => Member

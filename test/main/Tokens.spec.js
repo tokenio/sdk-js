@@ -50,6 +50,21 @@ describe('Tokens', () => {
         return Promise.all([setUp1(), setUp2()]);
     });
 
+    it('should confirm alias does not exist', () => {
+      return Token
+          .aliasExists(Crypto.generateKeys().keyId)
+          .then(exists => assert.equal(exists, false));
+    });
+
+    it('should confirm alias exists', () => {
+      const alias = Crypto.generateKeys().keyId;
+      member1
+          .addAlias(alias)
+          .then(() => Token
+              .aliasExists(alias))
+              .then(exists => assert.equal(exists, true));
+    });
+
     it('should create a token, look it up, and endorse it', () => {
         return member1
             .createPaymentToken(account1.id, 9.24, defaultCurrency, alias2)
