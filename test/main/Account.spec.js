@@ -18,6 +18,7 @@ describe('Account tests', () => {
                 return member.approveKey(Crypto.strKey(keys.publicKey));
             });
     });
+
     it('should get accounts', () => {
         return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
             return member.linkAccounts('bank-id', alp).then(() => {
@@ -27,6 +28,7 @@ describe('Account tests', () => {
             });
         });
     });
+
     it('should have name and id', () => {
         return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
             return member.linkAccounts('bank-id', alp).then(() => {
@@ -50,11 +52,13 @@ describe('Account tests', () => {
                     });
                 });
         });
+
         it('should get the balance', () => {
             return account.getBalance().then(bal => {
                 assert.equal(parseFloat(bal.current.value), 100000);
             });
         });
+
         it('should get transactions', () => {
             assert.equal(1 + 1, 2);
         });
