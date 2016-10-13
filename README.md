@@ -4,7 +4,7 @@ A javascript SDK for interacting with the Token System. Visit Token at http://to
 
 ### Installation
 
-Dillinger requires a recent version of npm to run.
+Token requires a recent version of npm to build.
 
 Install the npm package:
 
@@ -44,9 +44,9 @@ Note that information token support has not yet been added to this sdk.
 ```
 static Token.aliasExists(alias) => Promise(boolean)
 static Token.createMember(alias) => Promise(Member)
-static Token.loginMember(memberId, keys) => Member
-static Token.loginMemberFromLocalStorage() => Member
-static Token.getMember(keys, alias) => Promise(Member)
+static Token.loginMember(memberId, keys) => Promise(Member)
+static Token.loginFromLocalStorage() => Promise(Member)
+static Token.loginWithAlias(keys, alias) => Promise(Member)
 static Token.notifyAddKey(alias, publicKey, name="") => Promise()
 static Token.notifyLinkAccounts(alias, bankCode, accountsLinkPayload) => Promise()
 static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload, publicKey, name="")
@@ -56,7 +56,7 @@ static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload, p
 #### Member
 ```
 member.saveToLocalStorage() => void
-member.approveKey(publicKey, level="PRIVILEGED", tags=[])
+member.approveKey(publicKey, level="PRIVILEGED")
   => Promise()
 member.removeKey(keyId)
   => Promise()
@@ -66,7 +66,7 @@ member.linkAccounts(bankId, accountsLinkPayload)
   => Promise(Account[])
 member.getAccounts() => Promise(Account[])
 member.subscribeToNotifications(notificationUri, provider=“Token”,
-     platform=“IOS”, tags=[]) =>  Promise(Subscriber)
+     platform=“IOS”, name="") =>  Promise(Subscriber)
 member.getSubscribers() =>  Promise(Subscriber [])
 member.getSubscriber(subscriberId) =>  Promise(Subscriber)
 member.unsubscribeFromNotifications(subscriberId) =>  Promise()

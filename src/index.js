@@ -72,7 +72,7 @@ const Token = {
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage: () => {
-        return new Promise(LocalStorage.loadMember());
+        return Promise.resolve(LocalStorage.loadMember());
     },
 
     /**
@@ -104,7 +104,7 @@ const Token = {
     notifyAddKey(alias, publicKey, name = '') {
         const notification = {
             addKey: {
-                publicKey,
+                publicKey: Crypto.strKey(publicKey),
                 name
             }
         };
@@ -123,13 +123,13 @@ const Token = {
      */
     notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey, name = "") {
         const notification = {
-            linkAccountAndAddKey: {
+            linkAccountsAndAddKey: {
                 linkAccounts: {
                     bankId,
                     accountsLinkPayload
                 },
                 addKey: {
-                    publicKey,
+                    publicKey: Crypto.strKey(publicKey),
                     name
                 }
             }

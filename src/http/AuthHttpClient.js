@@ -58,7 +58,7 @@ class AuthHttpClient {
             this._memberId,
             config,
             this._context);
-        return instance(config);
+        return instance(config).then(res => {console.log(res.data.subscribers[0]); return res});
     }
 
     getSubscriber(subscriberId) {
@@ -93,7 +93,7 @@ class AuthHttpClient {
     addAddress(name, data) {
         const req = {
             name,
-            payload,
+            data,
             dataSignature: {
                 keyId: this._keys.keyId,
                 signature: Crypto.sign(data, this._keys),
@@ -424,7 +424,7 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    addKey(prevHash, publicKey, keyLevel, tags) {
+    addKey(prevHash, publicKey, keyLevel) {
         const update = {
             memberId: this._memberId,
             addKey: {
@@ -433,10 +433,6 @@ class AuthHttpClient {
         };
 
         // Do this because default this._keys are invisible in protos
-        if (tags.length > 0) {
-            update.addKey.tags = tags;
-        }
-
         if (keyLevel !== KeyLevel.PRIVILEGED) {
             update.addKey.level = keyLevel;
         }

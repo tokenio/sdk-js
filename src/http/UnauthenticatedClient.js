@@ -29,11 +29,11 @@ class UnauthenticatedClient {
         return instance(config);
     }
 
-    static notifyAddKey(alias, publicKey, tags) {
+    static notifyAddKey(alias, publicKey, name) {
         const req = {
             alias,
             publicKey: Crypto.strKey(publicKey),
-            tags
+            name
         };
         const config = {
             method: 'put',
@@ -52,13 +52,13 @@ class UnauthenticatedClient {
      }
 
     static notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload,
-                                       publicKey, tags) {
+                                       publicKey, name) {
         const req = {
             alias,
             bankId,
             accountsLinkPayload,
             publicKey: Crypto.strKey(publicKey),
-            tags
+            name
         };
         const config = {
             method: 'put',
@@ -81,18 +81,13 @@ class UnauthenticatedClient {
         return instance(config);
     }
 
-    static addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED, tags = []) {
+    static addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED) {
         const update = {
             memberId: memberId,
             addKey: {
                 publicKey: Crypto.strKey(keys.publicKey)
             }
         };
-
-        // Do this because default keys are invisible in protos
-        if (tags.length > 0) {
-            update.addKey.tags = tags;
-        }
 
         if (keyLevel !== KeyLevel.PRIVILEGED) {
             update.addKey.level = keyLevel;

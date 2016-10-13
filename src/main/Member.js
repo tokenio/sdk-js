@@ -71,14 +71,13 @@ export default class Member {
      * Approves a new key for this member
      * @param {Buffer} publicKey - key to add
      * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
-     * @param {array} tags - Tags to attach to this key
      * @return {Promise} empty empty promise
      */
-    approveKey(publicKey, keyLevel = KeyLevel.PRIVILEGED, tags = []) {
+    approveKey(publicKey, keyLevel = KeyLevel.PRIVILEGED) {
         return this._getPreviousHash()
             .then(prevHash =>
                 this._client
-                    .addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel, tags)
+                    .addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel)
                     .then(res => undefined));
     }
 

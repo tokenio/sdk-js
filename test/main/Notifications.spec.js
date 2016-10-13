@@ -1,3 +1,6 @@
+const chai = require('chai');
+const assert = chai.assert;
+
 const Token = require('../../src');
 import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
@@ -19,46 +22,69 @@ describe('Notifications', () => {
     beforeEach(() => {
         return Promise.all([setUp1()]);
     });
-    it('should subscribe device', () => {
-        const randomStr = Crypto.generateKeys().keyId;
-        return member1.subscribeToNotifications(randomStr);
-    });
-    // it('should subscribe and unsubscribe device', () => {
-    //   const randomStr = Crypto.generateKeys().keyId;
-    //   return member1.subscribeToNotifications(randomStr)
-    //   .then(() => {
-    //     return member1.unsubscribeFromNotifications(randomStr);
-    //   });
-    // });
-    it('should send a push for linking accounts', () => {
+    it('should create and get subscribers', () => {
         const randomStr = Crypto.generateKeys().keyId;
         return member1.subscribeToNotifications(randomStr)
+            .then(subscriber => {
+                return member1.getSubscribers()
+                    .then(subscribers => {
+                        assert.equal(subscriber.id, subscribers[0].id);
+                    });
+            });
+    });
+    it('should create and get subscriber by Id', () => {
+        const randomStr = Crypto.generateKeys().keyId;
+        return member1.subscribeToNotifications(randomStr, "Token", "ANDROID")
+            .then(subscriber => {
+                return member1.getSubscriber(subscriber.id)
+                    .then(subscriber2 => {
+                        assert.equal(subscriber.platform, subscriber2.platform);
+                        assert.equal(subscriber.platform, "ANDROID");
+                    });
+            });
+    });
+    it('should subscribe and unsubscribe device', done => {
+      const randomStr = Crypto.generateKeys().keyId;
+      member1.subscribeToNotifications("8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554")
+      .then(subscriber => {
+        member1.unsubscribeFromNotifications(subscriber.id)
+          .then(() => {
+              Token.notifyLinkAccounts(alias1, "bank-id", "alp...")
+                  .then(() => {
+                      done(new Error("Should fail"));
+                  }).catch(() => done());
+          });
+      });
+    });
+
+    it('should send a push for linking accounts', () => {
+        const target = Crypto.generateKeys().keyId;
+        return member1.subscribeToNotifications(target)
             .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccounts(alias1,
                 'bank-id', alp));
     });
 
     it('should send a push for adding key', () => {
-        const randomUri = Crypto.generateKeys().keyId;
+        const target = Crypto.generateKeys().keyId;
         const keys = Crypto.generateKeys();
-        return member1.subscribeToNotifications(randomUri)
+        return member1.subscribeToNotifications(target)
             .then(alp => Token.notifyAddKey(alias1,
-                keys.publicKey, ["tag"]));
+                keys.publicKey, "Chrome 54.1"));
     });
 
     it('should send a push for adding a key and linking accounts', () => {
-        const randomStr = '36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
-            '81f97900000';
+        const randomStr = '8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554000';
         const keys = Crypto.generateKeys();
         return member1.subscribeToNotifications(randomStr)
             .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccountsAndAddKey(alias1, 'bank-id', alp,
-                keys.publicKey, ["mytag"]));
+                keys.publicKey, "Chrome 51.0"));
     });
 
     it('should send an actual push to device', () => {
-        return member1.subscribeToNotifications('36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
-            '81f97900000')
+        return member1.subscribeToNotifications('8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B' +
+            '8E5F9402554000')
             .then(() => BankClient.requestLinkAccounts(alias1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccounts(alias1, 'bank-id', alp));
     });

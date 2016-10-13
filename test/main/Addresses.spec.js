@@ -27,7 +27,7 @@ const setUp1 = () => {
         });
 };
 
-describe('Tokens', () => {
+describe('Addresses', () => {
     beforeEach(() => {
         return setUp1();
     });
