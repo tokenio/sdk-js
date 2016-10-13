@@ -22,7 +22,7 @@
     "buildBrowserw": "API_ENV=prd webpack --config config/webpack.config.js --progress --colors -w",
     "buildNode": "API_ENV=prd webpack --config config/webpack.config.node.js",
     "buildNodew": "API_ENV=prd webpack --config config/webpack.config.node.js --progress --colors -w",
-    "prepublish": "npm run build"
+    "prepublish": "npm version patch && npm run build"
   },
   "author": "",
   "license": "ISC",
@@ -44,6 +44,7 @@
     "mocha": "^3.0.2",
     "mocha-bamboo-reporter": "^1.1.1",
     "mocha-webpack": "^0.6.0",
+    "npm-cli-login": "0.0.10",
     "sinon": "^1.17.6",
     "webpack": "^1.13.2"
   },
