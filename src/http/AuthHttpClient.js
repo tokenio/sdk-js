@@ -58,7 +58,7 @@ class AuthHttpClient {
             this._memberId,
             config,
             this._context);
-        return instance(config).then(res => {console.log(res.data.subscribers[0]); return res});
+        return instance(config);
     }
 
     getSubscriber(subscriberId) {

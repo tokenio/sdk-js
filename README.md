@@ -146,17 +146,17 @@ payment.payloadSignatures => signatures
 ### Bank
 * ```Token.requestLinkAccounts(alias, accountsLinkPayload)```
 * ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsLinkPayload, publicKey, name)```
-* ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.saveToLocalStorage()```
 
 ### Merchant
-* ```Token.loginMemberFromLocalStorage()```
+* ```Token.loginFromLocalStorage()```
 
 If fails:
 * ```member.notifyAddKey(alias, publicKey)```
 
 Then
-* ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAccounts()```
 * ```member.getAddresses()```
 * ```member.createPaymentToken(accountId, amount, currency)```
@@ -170,13 +170,13 @@ Either way: return tokenID to merchant, who does:
 * ```member.redeemPaymentToken(token, 15, ‘EUR’)```
 
 ### AISP (Backend still in progress)
-* ```Token.loginMemberFromLocalStorage()```
+* ```Token.loginFromLocalStorage()```
 
 If fails:
 * ```member.notifyAddKey(alias, publicKey)```
 
 Then
-* ```Token.getMember(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.createAccessToken(acl list...)```
 * ```member.endorseAccessToken(token)```
 
