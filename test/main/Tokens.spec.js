@@ -69,14 +69,15 @@ describe('Tokens', () => {
         return member1
             .createPaymentToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
-                assert.equal(token.issuer.id, 'iron-bank');
+                debugger;
                 assert.isAtLeast(token.id.length, 5);
-                assert.equal(token.payer.id, member1.id);
+                assert.equal(token.version, '1.0');
+                assert.equal(token.issuer.id, 'iron-bank');
+                assert.equal(token.from.id, member1.id);
+                assert.equal(token.description, undefined);
                 assert.equal(token.redeemer.alias, alias2);
                 assert.equal(token.amount, 9.24);
                 assert.equal(token.currency, defaultCurrency);
-                assert.equal(token.description, undefined);
-                assert.equal(token.version, '1.0');
                 return member1
                     .getPaymentToken(token.id)
                     .then(tokenLookedUp => {

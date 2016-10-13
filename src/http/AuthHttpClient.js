@@ -231,12 +231,12 @@ class AuthHttpClient {
     //
     // Payment Tokens
     //
-    createPaymentToken(paymentToken) {
+    createPaymentToken(payload) {
         const config = {
             method: 'post',
             url: `/payment-tokens`,
             data: {
-                payload: paymentToken
+                payload: payload
             }
         };
 
@@ -248,9 +248,9 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    endorsePaymentToken(paymentToken) {
+    endorsePaymentToken(token) {
         return this._paymentTokenOperation(
-            paymentToken,
+            token,
             'endorse',
             'endorsed');
     }

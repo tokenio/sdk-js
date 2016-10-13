@@ -369,7 +369,7 @@ export default class Member {
 
     /**
      * Endorses a token
-     * @param {PaymentToken} token - Payment token to endorse. Can also be a {string} tokenId
+     * @param {BankTransferToken} token - Payment token to endorse. Can also be a {string} tokenId
      * @return {Promise} token - Promise of endorsed payment token
      */
     endorsePaymentToken(token) {
@@ -388,8 +388,8 @@ export default class Member {
 
     /**
      * Cancels a token. (Called by the payer or the redeemer)
-     * @param {PaymentToken} token - token to cancel. Can also be a {string} tokenId
-     * @return {PaymentToken} token - cancelled token
+     * @param {BankTransferToken} token - token to cancel. Can also be a {string} tokenId
+     * @return {BankTransferToken} token - cancelled token
      */
     cancelPaymentToken(token) {
         return this._resolveToken(token)
@@ -406,7 +406,7 @@ export default class Member {
 
     /**
      * Redeems a token. (Called by the payee)
-     * @param {PaymentToken} token - token to redeem. Can also be a {string} tokenId
+     * @param {BankTransferToken} token - token to redeem. Can also be a {string} tokenId
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
      * @return {Promise} payment - Payment created as a result of this redeem call
@@ -415,10 +415,10 @@ export default class Member {
         return this._resolveToken(token)
             .then(finalToken => {
                 if (amount === undefined) {
-                    amount = finalToken.amount;
+                    amount = finalToken.payload.bankTransfer.amount;
                 }
                 if (currency === undefined) {
-                    currency = finalToken.currency;
+                    currency = finalToken.payload.bankTransfer.currency;
                 }
                 return this._client
                     .redeemPaymentToken(finalToken, amount, currency)

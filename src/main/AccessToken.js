@@ -6,13 +6,13 @@ export default class AccessToken {
      * Creates an Address AccessToken
      *
      * @param {Member} member - the member granting resource access
-     * @param {string} granteeAlias - the alias of the grantee
+     * @param {string} toAlias - the alias of the grantee
      * @param {string} addressId - an optional address id
      * @returns {AccessToken} - the access token created
      */
-    static addressAccessToken(member, granteeAlias, addressId) {
-        const grantor = {id: member.id};
-        const grantee = {alias: granteeAlias};
+    static addressAccessToken(member, toAlias, addressId) {
+        const from = {id: member.id};
+        const to = {alias: toAlias};
         const resource = {
             address: {
                 addressId: addressId
@@ -21,8 +21,8 @@ export default class AccessToken {
 
         return new AccessToken(
             undefined,
-            grantor,
-            grantee,
+            from,
+            to,
             [resource]);
     }
 
@@ -30,13 +30,13 @@ export default class AccessToken {
      * Creates an Account AccessToken
      *
      * @param {Member} member - the member granting resource access
-     * @param {string} granteeAlias - the alias of the grantee
+     * @param {string} toAlias - the alias of the grantee
      * @param {string} accountId - an optional account id
      * @returns {AccessToken} - the access token created
      */
-    static accountAccessToken(member, granteeAlias, accountId) {
-        const grantor = {id: member.id};
-        const grantee = {alias: granteeAlias};
+    static accountAccessToken(member, toAlias, accountId) {
+        const from = {id: member.id};
+        const to = {alias: toAlias};
         const resource = {
             account: {
                 accountId: accountId
@@ -45,8 +45,8 @@ export default class AccessToken {
 
         return new AccessToken(
             undefined,
-            grantor,
-            grantee,
+            from,
+            to,
             [resource]);
     }
 
@@ -54,13 +54,13 @@ export default class AccessToken {
      * Creates a Transaction AccessToken
      *
      * @param {Member} member - the member granting resource access
-     * @param {string} granteeAlias - the alias of the grantee
+     * @param {string} toAlias - the alias of the grantee
      * @param {string} accountId - an optional account id
      * @returns {AccessToken} - the access token created
      */
-    static transactionAccessToken(member, granteeAlias, accountId) {
-        const grantor = {id: member.id};
-        const grantee = {alias: granteeAlias};
+    static transactionAccessToken(member, toAlias, accountId) {
+        const from = {id: member.id};
+        const to = {alias: toAlias};
         const resource = {
             transaction: {
                 accountId: accountId
@@ -69,36 +69,36 @@ export default class AccessToken {
 
         return new AccessToken(
             undefined,
-            grantor,
-            grantee,
+            from,
+            to,
             [resource]);
     }
 
     static createFromToken(token) {
         const id = token.id;
-        const grantor = token.payload.grantor;
-        const grantee = token.payload.grantee;
-        const resources = token.payload.resources;
-        const version = token.version;
+        const from = token.payload.from;
+        const to = token.payload.to;
+        const resources = token.payload.access.resources;
+        const version = token.payload.version;
         const nonce = token.payload.nonce;
         const payloadSignatures = token.payloadSignatures;
 
         return new AccessToken(
-            id, version, nonce, grantor, grantee,
+            id, version, nonce, from, to,
             resources, payloadSignatures);
     }
 
     constructor(
         id,
-        grantor,
-        grantee,
+        from,
+        to,
         resources,
         version = accessTokenVersion,
         nonce = undefined,
         payloadSignatures = []) {
         this._id = id;
-        this._grantor = grantor;
-        this._grantee = grantee;
+        this._from = from;
+        this._to = to;
         this._resources = resources;
         this._version = version;
         this._nonce = nonce;
@@ -128,12 +128,12 @@ export default class AccessToken {
         return this._nonce;
     }
 
-    get grantor() {
-        return this._grantor;
+    get from() {
+        return this._from;
     }
 
-    get grantee() {
-        return this._grantee;
+    get to() {
+        return this._to;
     }
 
     get resources() {
@@ -149,9 +149,11 @@ export default class AccessToken {
         return {
             version: this._version,
             nonce: this._nonce,
-            grantor: this._grantor,
-            grantee: this._grantee,
-            resources: this._resources,
+            from: this._from,
+            to: this._to,
+            access: {
+                resources: this._resources
+            }
         };
     }
 }
