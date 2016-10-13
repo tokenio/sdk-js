@@ -3,7 +3,7 @@
  */
 class Sample {
 
-    static string() {
+static string() {
         return Sample.stringOf(5);
     }
 
