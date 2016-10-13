@@ -1,47 +1,45 @@
 import Util from "../Util";
 import {paymentTokenVersion} from "../constants";
 
-export default class PaymentToken {
+export default class BankTransferToken {
 
     static createFromToken(token) {
         const id = token.id;
-        const payer = token.payload.payer;
-        const transfer = {
-            from: token.payload.transfer.from
-        };
-        const amount = parseFloat(token.payload.amount);
-        const currency = token.payload.currency;
-        const redeemer = token.payload.redeemer;
+        const from = token.payload.from;
+        const transfer = token.payload.bankTransfer.transfer;
+        const amount = parseFloat(token.payload.bankTransfer.amount);
+        const currency = token.payload.bankTransfer.currency;
+        const redeemer = token.payload.bankTransfer.redeemer;
         const description = token.payload.description;
         const version = token.payload.version;
         const issuer = token.payload.issuer;
         const nonce = token.payload.nonce;
         const payloadSignatures = token.payloadSignatures;
-        return new PaymentToken(id, payer, transfer, amount, currency,
+        return new BankTransferToken(id, from, transfer, amount, currency,
             redeemer, description, version, issuer, nonce, payloadSignatures);
     }
 
     static create(member, accountId, amount, currency, alias, description) {
-        const payer = {
+        const from = {
             id: member.id
         };
         const redeemer = {
-            alias
+            alias: alias
         };
         const transfer = {
-            from: {
-                accountId
+            source: {
+                accountId: accountId
             }
         };
-        return new PaymentToken(undefined, payer, transfer, amount, currency,
+        return new BankTransferToken(undefined, from, transfer, amount, currency,
             redeemer, description);
     }
 
-    constructor(id, payer, transfer, amount, currency, redeemer, description,
+    constructor(id, from, transfer, amount, currency, redeemer, description,
                 version = paymentTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
         this._id = id;
-        this._payer = payer;
+        this._from = from;
         this._transfer = transfer;
         this._amount = amount;
         this._currency = currency;
@@ -67,12 +65,8 @@ export default class PaymentToken {
         return this._id;
     }
 
-    get payer() {
-        return this._payer;
-    }
-
-    get account() {
-        return this._account;
+    get from() {
+        return this._from;
     }
 
     get amount() {
@@ -112,13 +106,15 @@ export default class PaymentToken {
         const json = {
             version: this._version,
             nonce: this._nonce,
-            payer: this._payer,
-            currency: this._currency,
-            amount: this._amount.toString(),
-            transfer: this._transfer
+            from: this._from,
+            bankTransfer: {
+                currency: this._currency,
+                amount: this._amount.toString(),
+                transfer: this._transfer
+            }
         };
         if (this._redeemer !== undefined) {
-            json.redeemer = this._redeemer;
+            json.bankTransfer.redeemer = this._redeemer;
         }
         if (this._description !== '') {
             json.description = this._description;

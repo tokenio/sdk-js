@@ -34,15 +34,15 @@ describe('PaymentTokens', () => {
         return setUp1();
     });
 
-    it('create a payment token object', () => {
+    it('create a bank transfer token object', () => {
         const token = PaymentToken
             .create(member1, account1.id, 12.54, defaultCurrency, alias1, 'desc');
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
-        assert.equal(json.payer.id, member1.id);
-        assert.equal(json.currency, defaultCurrency);
-        assert.equal(json.amount, '12.54');
-        assert.equal(json.transfer.from.accountId, account1.id);
+        assert.equal(json.from.id, member1.id);
+        assert.equal(json.bankTransfer.currency, defaultCurrency);
+        assert.equal(json.bankTransfer.amount, '12.54');
+        assert.equal(json.bankTransfer.transfer.source.accountId, account1.id);
     });
 });

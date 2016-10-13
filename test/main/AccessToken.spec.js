@@ -4,6 +4,7 @@ const assert = chai.assert;
 const Token = require('../../src');
 import Crypto from "../../src/Crypto";
 import AccessToken from "../../src/main/AccessToken";
+import Sample from "../sample/Sample";
 
 let member = {};
 let alias = {};
@@ -11,51 +12,52 @@ let alias = {};
 
 const setUp = () => {
     alias = Crypto.generateKeys().keyId;
-    Token
+    return Token
         .createMember(alias)
         .then(res => {
             member = res;
+            return null;
         });
 };
 
 describe('AccessTokens', () => {
     before(() => {
-        setUp();
+        return setUp();
     });
 
     it('create an address access token object', () => {
-        const granteeAlias = "GranteeAlias";
-        const addressId = "SomeAddressId";
-        const token = AccessToken.addressAccessToken(member, granteeAlias, addressId);
+        const alias = Sample.string();
+        const addressId = Sample.string();
+        const token = AccessToken.addressAccessToken(member, alias, addressId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
-        assert.equal(json.grantor.id, member.id);
-        assert.equal(json.grantee.alias, granteeAlias);
-        assert.equal(json.resources[0].address.addressId, addressId)
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.alias, alias);
+        assert.equal(json.access.resources[0].address.addressId, addressId)
     });
 
     it('create an account access token object', () => {
-        const granteeAlias = "GranteeAlias";
-        const accountId = "SomeAccountId";
-        const token = AccessToken.accountAccessToken(member, granteeAlias, accountId);
+        const alias = Sample.string();
+        const accountId = Sample.string();
+        const token = AccessToken.accountAccessToken(member, alias, accountId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
-        assert.equal(json.grantor.id, member.id);
-        assert.equal(json.grantee.alias, granteeAlias);
-        assert.equal(json.resources[0].account.accountId, accountId)
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.alias, alias);
+        assert.equal(json.access.resources[0].account.accountId, accountId)
     });
 
     it('create a transaction access token object', () => {
-        const granteeAlias = "GranteeAlias";
-        const accountId = "SomeAccountId";
-        const token = AccessToken.transactionAccessToken(member, granteeAlias, accountId);
+        const alias = Sample.string();
+        const accountId = Sample.string();
+        const token = AccessToken.transactionAccessToken(member, alias, accountId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
-        assert.equal(json.grantor.id, member.id);
-        assert.equal(json.grantee.alias, granteeAlias);
-        assert.equal(json.resources[0].transaction.accountId, accountId)
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.alias, alias);
+        assert.equal(json.access.resources[0].transaction.accountId, accountId)
     });
 });
