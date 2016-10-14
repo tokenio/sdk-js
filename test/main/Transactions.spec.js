@@ -64,9 +64,12 @@ const setUp3 = () => {
 };
 
 describe('Transactions and transfers', () => {
+    before(() => {
+        return Promise.all([setUp1(), setUp2()]);
+    });
+
     beforeEach(() => {
-        return Promise.all([setUp1(), setUp2()])
-            .then(setUp3);
+       return setUp3();
     });
 
     it('should see a transfer', () => {
@@ -78,7 +81,7 @@ describe('Transactions and transfers', () => {
 
     it('should get all transfers', () => {
         return member1.getTransfers(token1.id).then(transfers => {
-            assert.equal(transfers.length, 1);
+            assert.isAtLeast(transfers.length, 1);
             assert.isOk(transfers[0].payload.amount);
         });
     });

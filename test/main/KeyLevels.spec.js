@@ -8,7 +8,7 @@ import KeyLevel from "../../src/main/KeyLevel";
 let member = {};
 let alias = '';
 describe('Key levels', () => {
-    beforeEach(() => {
+    before(() => {
         const keys = Crypto.generateKeys();
         alias = Crypto.generateKeys().keyId;
         return Token

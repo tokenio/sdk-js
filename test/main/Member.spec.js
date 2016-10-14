@@ -9,7 +9,7 @@ let member = {};
 let alias = '';
 
 describe('member tests', () => {
-    beforeEach(() => {
+    before(() => {
         const keys = Crypto.generateKeys();
         alias = Crypto.generateKeys().keyId;
         return Token.createMember(alias)
@@ -30,14 +30,14 @@ describe('member tests', () => {
             return member.approveKey(Crypto.strKey(keys.publicKey))
                 .then(() => member.removeKey(keys.keyId))
                 .then(() => member.getPublicKeys())
-                .then(keys => assert.equal(keys.length, 2));
+                .then(keys => assert.isAtLeast(keys.length, 2));
         });
 
         it('should add an alias', () => {
             const alias = Crypto.generateKeys().keyId;
             return member.addAlias(alias)
                 .then(() => member.getAllAliases())
-                .then(aliases => assert.equal(aliases.length, 2));
+                .then(aliases => assert.isAtLeast(aliases.length, 2));
         });
 
         it('should add and remove an alias', () => {
@@ -46,27 +46,27 @@ describe('member tests', () => {
                 .then(() => member.removeAlias(newAlias))
                 .then(() => member.getAllAliases())
                 .then(aliases => {
-                    assert.equal(aliases.length, 1);
                     assert.include(aliases, alias);
+                    assert.notInclude(aliases, newAlias);
                 });
         });
 
         it('should get all aliases', () => {
             return member.getAllAliases().then(aliases => {
-                assert.equal(aliases.length, 1);
+                assert.isAtLeast(aliases.length, 1);
             });
         });
 
         it('should get all keys', () => {
             return member.getPublicKeys().then(keys => {
-                assert.equal(keys.length, 2);
+                assert.isAtLeast(keys.length, 1);
             });
         });
 
         it('should link an account', () => {
             BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(accs => {
-                    assert.equal(accs.length, 2);
+                    assert.isAtLeast(accs.length, 2);
                 })
             );
         });
@@ -75,7 +75,7 @@ describe('member tests', () => {
             BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(() => {
                     return member.getAccounts().then(accs => {
-                        assert.equal(accs.length, 2);
+                        assert.isAtLeast(accs.length, 2);
                     });
                 })
             );
