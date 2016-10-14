@@ -6,16 +6,16 @@ export default class BankTransferToken {
     static createFromToken(token) {
         const id = token.id;
         const from = token.payload.from;
-        const transfer = token.payload.bankTransfer.transfer;
-        const amount = parseFloat(token.payload.bankTransfer.amount);
-        const currency = token.payload.bankTransfer.currency;
-        const redeemer = token.payload.bankTransfer.redeemer;
+        const instructions = token.payload.transfer.instructions;
+        const amount = parseFloat(token.payload.transfer.amount);
+        const currency = token.payload.transfer.currency;
+        const redeemer = token.payload.transfer.redeemer;
         const description = token.payload.description;
         const version = token.payload.version;
         const issuer = token.payload.issuer;
         const nonce = token.payload.nonce;
         const payloadSignatures = token.payloadSignatures;
-        return new BankTransferToken(id, from, transfer, amount, currency,
+        return new BankTransferToken(id, from, instructions, amount, currency,
             redeemer, description, version, issuer, nonce, payloadSignatures);
     }
 
@@ -26,21 +26,21 @@ export default class BankTransferToken {
         const redeemer = {
             alias: alias
         };
-        const transfer = {
+        const instructions = {
             source: {
                 accountId: accountId
             }
         };
-        return new BankTransferToken(undefined, from, transfer, amount, currency,
+        return new BankTransferToken(undefined, from, instructions, amount, currency,
             redeemer, description);
     }
 
-    constructor(id, from, transfer, amount, currency, redeemer, description,
+    constructor(id, from, instructions, amount, currency, redeemer, description,
                 version = paymentTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
         this._id = id;
         this._from = from;
-        this._transfer = transfer;
+        this._instructions = instructions;
         this._amount = amount;
         this._currency = currency;
         this._redeemer = redeemer;
@@ -107,14 +107,14 @@ export default class BankTransferToken {
             version: this._version,
             nonce: this._nonce,
             from: this._from,
-            bankTransfer: {
+            transfer: {
                 currency: this._currency,
                 amount: this._amount.toString(),
-                transfer: this._transfer
+                instructions: this._instructions
             }
         };
         if (this._redeemer !== undefined) {
-            json.bankTransfer.redeemer = this._redeemer;
+            json.transfer.redeemer = this._redeemer;
         }
         if (this._description !== '') {
             json.description = this._description;

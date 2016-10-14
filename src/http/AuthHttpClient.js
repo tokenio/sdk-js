@@ -234,7 +234,7 @@ class AuthHttpClient {
     createPaymentToken(payload) {
         const config = {
             method: 'post',
-            url: `/payment-tokens`,
+            url: `/transfer-tokens`,
             data: {
                 payload: payload
             }
@@ -275,7 +275,7 @@ class AuthHttpClient {
         const tokenId = paymentToken.id;
         const config = {
             method: 'put',
-            url: `/payment-tokens/${tokenId}/${operation}`,
+            url: `/transfer-tokens/${tokenId}/${operation}`,
             data: req
         };
         Auth.addAuthorizationHeaderMemberId(
@@ -307,7 +307,7 @@ class AuthHttpClient {
         };
         const config = {
             method: 'post',
-            url: `/payments`,
+            url: `/transfers`,
             data: req
         };
 
@@ -322,7 +322,7 @@ class AuthHttpClient {
     getPaymentToken(tokenId) {
         const config = {
             method: 'get',
-            url: `/payment-tokens/${tokenId}`
+            url: `/transfer-tokens/${tokenId}`
         };
 
         Auth.addAuthorizationHeaderMemberId(
@@ -336,7 +336,7 @@ class AuthHttpClient {
     getPaymentTokens(offset, limit) {
         const config = {
             method: 'get',
-            url: `/payment-tokens?offset=${offset}&limit=${limit}`
+            url: `/transfer-tokens?offset=${offset}&limit=${limit}`
         };
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
@@ -352,7 +352,7 @@ class AuthHttpClient {
     getPayment(paymentId) {
         const config = {
             method: 'get',
-            url: `/payments/${paymentId}`
+            url: `/transfers/${paymentId}`
         };
 
         Auth.addAuthorizationHeaderMemberId(
@@ -366,7 +366,7 @@ class AuthHttpClient {
     getPayments(tokenId, offset, limit) {
         const config = {
             method: 'get',
-            url: `/payments?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
+            url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
         };
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
@@ -402,7 +402,7 @@ class AuthHttpClient {
     getMember() {
         const config = {
             method: 'get',
-            url: `/member`
+            url: `/members`
         };
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
@@ -415,7 +415,7 @@ class AuthHttpClient {
     static getMemberByAlias(keys, alias) {
         const config = {
             method: 'get',
-            url: `/member`
+            url: `/members`
         };
         Auth.addAuthorizationHeaderAlias(
             keys,

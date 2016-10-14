@@ -26,8 +26,8 @@ export default class Payment {
         return this._payload.amount.currency;
     }
 
-    get transfer() {
-        return this._payload.transfer;
+    get instructions() {
+        return this._payload.instructions;
     }
 
     get payloadSignatures() {

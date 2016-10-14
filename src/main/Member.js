@@ -415,15 +415,15 @@ export default class Member {
         return this._resolveToken(token)
             .then(finalToken => {
                 if (amount === undefined) {
-                    amount = finalToken.payload.bankTransfer.amount;
+                    amount = finalToken.payload.transfer.amount;
                 }
                 if (currency === undefined) {
-                    currency = finalToken.payload.bankTransfer.currency;
+                    currency = finalToken.payload.transfer.currency;
                 }
                 return this._client
                     .redeemPaymentToken(finalToken, amount, currency)
                     .then(res => {
-                        return new Payment(res.data.payment);
+                        return new Payment(res.data.transfer);
                     });
             });
     }
@@ -437,7 +437,7 @@ export default class Member {
         return this._client
             .getPayment(paymentId)
             .then(res => {
-                return new Payment(res.data.payment);
+                return new Payment(res.data.transfer);
             });
     }
 
@@ -452,7 +452,7 @@ export default class Member {
         return this._client
             .getPayments(tokenId, offset, limit)
             .then(res => {
-                return res.data.payments.map(pt => new Payment(pt));
+                return res.data.transfers.map(pt => new Payment(pt));
             });
     }
 

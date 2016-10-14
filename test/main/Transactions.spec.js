@@ -91,7 +91,7 @@ describe('Transactions and payments', () => {
             assert.isOk(transactions[0].amount);
             assert.isOk(transactions[0].description);
             assert.isOk(transactions[0].tokenId);
-            assert.isOk(transactions[0].tokenPaymentId);
+            assert.isOk(transactions[0].tokenTransferId);
         });
     });
 });

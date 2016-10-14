@@ -6,7 +6,7 @@ export default class Transaction {
         this._amount = parseFloat(transctionObj.amount.value);
         this._description = transctionObj.description;
         this._tokenId = transctionObj.tokenId;
-        this._tokenPaymentId = transctionObj.tokenPaymentId;
+        this._tokenTransferId = transctionObj.tokenTransferId;
     }
 
     get id() {
@@ -33,7 +33,7 @@ export default class Transaction {
         return this._tokenId;
     }
 
-    get tokenPaymentId() {
-        return this._tokenPaymentId;
+    get tokenTransferId() {
+        return this._tokenTransferId;
     }
 }
