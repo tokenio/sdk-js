@@ -21,8 +21,7 @@
     "buildBrowser": "API_ENV=prd webpack --config config/webpack.config.js",
     "buildBrowserw": "API_ENV=prd webpack --config config/webpack.config.js --progress --colors -w",
     "buildNode": "API_ENV=prd webpack --config config/webpack.config.node.js",
-    "buildNodew": "API_ENV=prd webpack --config config/webpack.config.node.js --progress --colors -w",
-    "publishNpm": "npm version patch && npm publish ./"
+    "buildNodew": "API_ENV=prd webpack --config config/webpack.config.node.js --progress --colors -w"
   },
   "author": "",
   "license": "ISC",

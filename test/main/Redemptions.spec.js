@@ -52,7 +52,7 @@ const setUp3 = () => {
     });
 };
 
-describe('Tokens', () => {
+describe('Token Redemptions', () => {
     beforeEach(() => {
         return Promise.all([setUp1(), setUp2()])
             .then(setUp3);
