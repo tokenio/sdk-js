@@ -1,12 +1,12 @@
 export default class Transaction {
-    constructor(transctionObj) {
-        this._id = transctionObj.id;
-        this._type = transctionObj.type;
-        this._currency = transctionObj.amount.currency;
-        this._amount = parseFloat(transctionObj.amount.value);
-        this._description = transctionObj.description;
-        this._tokenId = transctionObj.tokenId;
-        this._tokenPaymentId = transctionObj.tokenPaymentId;
+    constructor(transactionObj) {
+        this._id = transactionObj.id;
+        this._type = transactionObj.type;
+        this._currency = transactionObj.amount.currency;
+        this._amount = parseFloat(transactionObj.amount.value);
+        this._description = transactionObj.description;
+        this._tokenId = transactionObj.tokenId;
+        this._tokenTransferId = transactionObj.tokenTransferId;
     }
 
     get id() {
@@ -33,7 +33,7 @@ export default class Transaction {
         return this._tokenId;
     }
 
-    get tokenPaymentId() {
-        return this._tokenPaymentId;
+    get tokenTransferId() {
+        return this._tokenTransferId;
     }
 }

@@ -2,7 +2,7 @@ import Token from "../src";
 import BankClient from "./sample/BankClient";
 
 describe('Token library', () => {
-    it("should perform a payment flow", () => {
+    it("should perform a transfer flow", () => {
         var alias1 = Token.Crypto.generateKeys().keyId;
         var alias2 = Token.Crypto.generateKeys().keyId;
 
@@ -34,17 +34,17 @@ describe('Token library', () => {
                 });
 
         var createAndEndorse = () => member1
-                .createPaymentToken(account.id, 9.24, 'EUR', alias2)
+                .createTransferToken(account.id, 9.24, 'EUR', alias2)
                 .then(token => {
                     tokenId = token.id;
                     return member1
-                        .endorsePaymentToken(tokenId);
+                        .endorseTransferToken(tokenId);
                 });
 
         return setUpMem1()
             .then(setUpMem2)
             .then(createAndEndorse)
-            .then(() => member2.redeemPaymentToken(tokenId, 5, 'EUR'))
-            .then(() => member1.getPayments(tokenId));
+            .then(() => member2.redeemTransferToken(tokenId, 5, 'EUR'))
+            .then(() => member1.getTransfers(tokenId));
     });
 });

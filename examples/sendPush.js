@@ -129,21 +129,21 @@ var stepUp = () => {
                         .loginWithAlias(keys, alias1)
                         .then(memberNew => {
                             return memberNew
-                                .createPaymentToken(account1.id, 900.24, "EUR", alias2)
-                                .then(token => memberNew.endorsePaymentToken(token.id));
+                                .createTransferToken(account1.id, 900.24, "EUR", alias2)
+                                .then(token => memberNew.endorseTransferToken(token.id));
                         });
                 });
         })
         .catch(() => {});
 };
-var paymentProcessed = () => {
+var transferProcessed = () => {
     return setUp1()
         .then(() => setUp2())
         .then(() => {
-            return member1.createPaymentToken(account1.id, 38.71, 'EUR', alias2).then(token => {
-                return member1.endorsePaymentToken(token.id).then(() => {
-                    return member2.getPaymentToken(token.id).then(lookedUp => {
-                        return member2.redeemPaymentToken(lookedUp, 10.21, 'EUR');
+            return member1.createTransferToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+                return member1.endorseTransferToken(token.id).then(() => {
+                    return member2.getTransferToken(token.id).then(lookedUp => {
+                        return member2.redeemTransferToken(lookedUp, 10.21, 'EUR');
                     });
                 });
             });
@@ -155,6 +155,6 @@ var paymentProcessed = () => {
 // notifyAddKey();
 // notifyBoth();
 stepUp();
-// paymentProcessed().catch(err => console.log(err));
+// transferProcessed().catch(err => console.log(err));
 
 // Do only one at a time! race conditions :)

@@ -5,10 +5,10 @@ const signatureScheme = 'Token-Ed25519-SHA512';
 const uriHost = URI_HOST;             // populates with webpack
 const uriHostBank = URI_HOST_BANK;    // ''
 
-// Scheme for payment tokens
-const paymentTokenVersion = '1.0';
+// Scheme for transfer tokens
+const transferTokenVersion = '1.0';
 
-// Scheme for payment tokens
+// Scheme for transfer tokens
 const accessTokenVersion = '1.0';
 
 // Default currency to use
@@ -18,6 +18,6 @@ const defaultCurrency = 'EUR';
 const defaultNotificationProvider = 'Token';
 
 export {
-    signatureScheme, uriHost, uriHostBank, paymentTokenVersion, accessTokenVersion,
+    signatureScheme, uriHost, uriHostBank, transferTokenVersion, accessTokenVersion,
     defaultCurrency, defaultNotificationProvider
 };

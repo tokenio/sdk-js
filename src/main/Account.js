@@ -63,22 +63,20 @@ export default class Account {
             });
     }
 
-    // TODO(mariano): Fix me.
-    // /**
-    //  * Looks up a transaction for the account
-    //  * @param {string} transactionId - which transaction to look up
-    //  * @return {Promise} transaction - the Transaction
-    //  */
-    // getTransaction(transactionId) {
-    //   return AuthHttpClient.getTransaction(this._member.keys, this._member.id,
-    //     this._id, transactionId)
-    //   .then(res => {
-    //     return new Transaction(res.data);
-    //   });
-    // }
+    /**
+     * Looks up a transaction for the account
+     * @param {string} transactionId - which transaction to look up
+     * @return {Promise} transaction - the Transaction
+     */
+    getTransaction(transactionId) {
+      return this._member._client.getTransaction(this._id, transactionId)
+      .then(res => {
+        return new Transaction(res.data);
+      });
+    }
 
     /**
-     * Looks up all of the member's payments
+     * Looks up all of the member's transactions
      * @param {int} offset - where to start looking
      * @param {int} limit - how many to retrieve
      * @return {Promise} transactions - Transactions

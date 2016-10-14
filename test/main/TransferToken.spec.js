@@ -4,7 +4,7 @@ const assert = chai.assert;
 const Token = require('../../src');
 import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
-import PaymentToken from "../../src/main/PaymentToken";
+import TransferToken from "../../src/main/TransferToken";
 import {defaultCurrency} from "../../src/constants";
 
 let member1 = {};
@@ -29,20 +29,20 @@ const setUp1 = () => {
         });
 };
 
-describe('PaymentTokens', () => {
+describe('TransferTokens', () => {
     before(() => {
         return setUp1();
     });
 
-    it('create a bank transfer token object', () => {
-        const token = PaymentToken
+    it('create a transfer token object', () => {
+        const token = TransferToken
             .create(member1, account1.id, 12.54, defaultCurrency, alias1, 'desc');
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
         assert.equal(json.from.id, member1.id);
-        assert.equal(json.bankTransfer.currency, defaultCurrency);
-        assert.equal(json.bankTransfer.amount, '12.54');
-        assert.equal(json.bankTransfer.transfer.source.accountId, account1.id);
+        assert.equal(json.transfer.currency, defaultCurrency);
+        assert.equal(json.transfer.amount, '12.54');
+        assert.equal(json.transfer.instructions.source.accountId, account1.id);
     });
 });
