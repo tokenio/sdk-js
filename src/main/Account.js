@@ -78,7 +78,7 @@ export default class Account {
     // }
 
     /**
-     * Looks up all of the member's payments
+     * Looks up all of the member's transfers
      * @param {int} offset - where to start looking
      * @param {int} limit - how many to retrieve
      * @return {Promise} transactions - Transactions

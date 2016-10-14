@@ -1,12 +1,12 @@
 export default class Transaction {
-    constructor(transctionObj) {
-        this._id = transctionObj.id;
-        this._type = transctionObj.type;
-        this._currency = transctionObj.amount.currency;
-        this._amount = parseFloat(transctionObj.amount.value);
-        this._description = transctionObj.description;
-        this._tokenId = transctionObj.tokenId;
-        this._tokenTransferId = transctionObj.tokenTransferId;
+    constructor(transferObj) {
+        this._id = transferObj.id;
+        this._type = transferObj.type;
+        this._currency = transferObj.amount.currency;
+        this._amount = parseFloat(transferObj.amount.value);
+        this._description = transferObj.description;
+        this._tokenId = transferObj.tokenId;
+        this._tokenTransferId = transferObj.tokenTransferId;
     }
 
     get id() {

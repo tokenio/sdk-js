@@ -5,9 +5,9 @@ import Subscriber from "./Subscriber";
 import Address from "./Address";
 import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
-import PaymentToken from "./PaymentToken";
+import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
-import Payment from "./Payment";
+import Transfer from "./Transfer";
 import {defaultNotificationProvider} from "../constants";
 
 /**
@@ -149,7 +149,7 @@ export default class Member {
 
     /**
      * Creates a subscriber to receive notifications of member events, such as step up auth,
-     * new device requests, linking account requests, or payment notifications
+     * new device requests, linking account requests, or transfer notifications
      * @param {string} target - the notification target for this device. (e.g iOS push token)
      * @param {string} provider - provider to send the notification (default Token)
      * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
@@ -319,35 +319,35 @@ export default class Member {
     }
 
     /**
-     * Creates an unendorsed Payment Token
+     * Creates an unendorsed Transfer Token
      *
      * @param {string} accountId - id of the source account
      * @param {double} amount - amount limit on the token
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
      * @param {string} alias - alias of the redeemer of this token
      * @param {string} description - optional description for the token
-     * @return {Promise} token - promise of a created PaymentToken
+     * @return {Promise} token - promise of a created TransferToken
      */
-    createPaymentToken(accountId, amount, currency, alias, description = undefined) {
-        const token = PaymentToken.create(this, accountId, amount,
+    createTransferToken(accountId, amount, currency, alias, description = undefined) {
+        const token = TransferToken.create(this, accountId, amount,
             currency, alias, description);
         return this._client
-            .createPaymentToken(token.json)
+            .createTransferToken(token.json)
             .then(res => {
-                return PaymentToken.createFromToken(res.data.token);
+                return TransferToken.createFromToken(res.data.token);
             });
     }
 
     /**
      * Looks up a token by its Id
      * @param {string} tokenId - id of the token
-     * @return {Promise} token - PaymentToken
+     * @return {Promise} token - TransferToken
      */
-    getPaymentToken(tokenId) {
+    getTransferToken(tokenId) {
         return this._client
-            .getPaymentToken(tokenId)
+            .getTransferToken(tokenId)
             .then(res => {
-                return PaymentToken.createFromToken(res.data.token);
+                return TransferToken.createFromToken(res.data.token);
             });
     }
 
@@ -355,29 +355,29 @@ export default class Member {
      * Looks up all tokens (not just for this account)
      * @param {int} offset - where to start looking
      * @param {int} limit - how many to look for
-     * @return {PaymentToken} tokens - returns a list of Payment Tokens
+     * @return {TransferToken} tokens - returns a list of Transfer Tokens
      */
-    getPaymentTokens(offset = 0, limit = 100) {
+    getTransferTokens(offset = 0, limit = 100) {
         return this._client
-            .getPaymentTokens(offset, limit)
+            .getTransferTokens(offset, limit)
             .then(res => {
                 if (res.data.tokens === undefined) return [];
                 return res.data.tokens
-                    .map(tk => PaymentToken.createFromToken(tk));
+                    .map(tk => TransferToken.createFromToken(tk));
             });
     }
 
     /**
      * Endorses a token
-     * @param {BankTransferToken} token - Payment token to endorse. Can also be a {string} tokenId
-     * @return {Promise} token - Promise of endorsed payment token
+     * @param {BankTransferToken} token - Transfer token to endorse. Can also be a {string} tokenId
+     * @return {Promise} token - Promise of endorsed transfer token
      */
-    endorsePaymentToken(token) {
+    endorseTransferToken(token) {
         return this
             ._resolveToken(token)
             .then(finalToken => {
                 return this._client
-                    .endorsePaymentToken(finalToken)
+                    .endorseTransferToken(finalToken)
                     .then(res => {
                         if (typeof token !== 'string' && !(token instanceof String)) {
                             token.payloadSignatures = res.data.token.payloadSignatures;
@@ -391,11 +391,11 @@ export default class Member {
      * @param {BankTransferToken} token - token to cancel. Can also be a {string} tokenId
      * @return {BankTransferToken} token - cancelled token
      */
-    cancelPaymentToken(token) {
+    cancelTransferToken(token) {
         return this._resolveToken(token)
             .then(finalToken => {
                 return this._client
-                    .cancelPaymentToken(finalToken)
+                    .cancelTransferToken(finalToken)
                     .then(res => {
                         if (typeof token !== 'string' && !(token instanceof String)) {
                             token.payloadSignatures = res.data.token.payloadSignatures;
@@ -409,9 +409,9 @@ export default class Member {
      * @param {BankTransferToken} token - token to redeem. Can also be a {string} tokenId
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
-     * @return {Promise} payment - Payment created as a result of this redeem call
+     * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
-    redeemPaymentToken(token, amount, currency) {
+    redeemTransferToken(token, amount, currency) {
         return this._resolveToken(token)
             .then(finalToken => {
                 if (amount === undefined) {
@@ -421,38 +421,38 @@ export default class Member {
                     currency = finalToken.payload.transfer.currency;
                 }
                 return this._client
-                    .redeemPaymentToken(finalToken, amount, currency)
+                    .redeemTransferToken(finalToken, amount, currency)
                     .then(res => {
-                        return new Payment(res.data.transfer);
+                        return new Transfer(res.data.transfer);
                     });
             });
     }
 
     /**
-     * Looks up a payment
-     * @param {string} paymentId - id to look up
-     * @return {Payment} payment - payment if found
+     * Looks up a transfer
+     * @param {string} transferId - id to look up
+     * @return {Transfer} transfer - transfer if found
      */
-    getPayment(paymentId) {
+    getTransfer(transferId) {
         return this._client
-            .getPayment(paymentId)
+            .getTransfer(transferId)
             .then(res => {
-                return new Payment(res.data.transfer);
+                return new Transfer(res.data.transfer);
             });
     }
 
     /**
-     * Looks up all of the member's payments
+     * Looks up all of the member's transfers
      * @param {string} tokenId - token to use for lookup
      * @param {int} offset - where to start looking
      * @param {int} limit - how many to retrieve
-     * @return {Promise} payments - Payments
+     * @return {Promise} transfers - Transfers
      */
-    getPayments(tokenId, offset = 0, limit = 100) {
+    getTransfers(tokenId, offset = 0, limit = 100) {
         return this._client
-            .getPayments(tokenId, offset, limit)
+            .getTransfers(tokenId, offset, limit)
             .then(res => {
-                return res.data.transfers.map(pt => new Payment(pt));
+                return res.data.transfers.map(pt => new Transfer(pt));
             });
     }
 
@@ -483,7 +483,7 @@ export default class Member {
     _resolveToken(token) {
         return new Promise((resolve, reject) => {
             if (typeof token === 'string' || token instanceof String) {
-                this.getPaymentToken(token).then(lookedUp => resolve(lookedUp));
+                this.getTransferToken(token).then(lookedUp => resolve(lookedUp));
             } else {
                 resolve(token);
             }

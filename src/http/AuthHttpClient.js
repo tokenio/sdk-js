@@ -229,9 +229,9 @@ class AuthHttpClient {
     }
 
     //
-    // Payment Tokens
+    // Transfer Tokens
     //
-    createPaymentToken(payload) {
+    createTransferToken(payload) {
         const config = {
             method: 'post',
             url: `/transfer-tokens`,
@@ -248,31 +248,31 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    endorsePaymentToken(token) {
-        return this._paymentTokenOperation(
+    endorseTransferToken(token) {
+        return this._transferTokenOperation(
             token,
             'endorse',
             'endorsed');
     }
 
-    cancelPaymentToken(paymentToken) {
-        return this._paymentTokenOperation(
-            paymentToken,
+    cancelTransferToken(transferToken) {
+        return this._transferTokenOperation(
+            transferToken,
             'cancel',
             'cancelled');
     }
 
-    _paymentTokenOperation(paymentToken, operation, suffix) {
-        const payload = stringify(paymentToken.json) + `.${suffix}`;
+    _transferTokenOperation(transferToken, operation, suffix) {
+        const payload = stringify(transferToken.json) + `.${suffix}`;
         const req = {
-            tokenId: paymentToken.id,
+            tokenId: transferToken.id,
             signature: {
                 keyId: this._keys.keyId,
                 signature: Crypto.sign(payload, this._keys),
                 timestampMs: new Date().getTime()
             }
         };
-        const tokenId = paymentToken.id;
+        const tokenId = transferToken.id;
         const config = {
             method: 'put',
             url: `/transfer-tokens/${tokenId}/${operation}`,
@@ -286,15 +286,15 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    redeemPaymentToken(paymentToken, amount, currency) {
+    redeemTransferToken(transferToken, amount, currency) {
         const payload = {
             nonce: Util.generateNonce(),
-            tokenId: paymentToken.id,
+            tokenId: transferToken.id,
             amount: {
                 value: amount.toString(),
                 currency
             },
-            transfer: paymentToken.transfer
+            transfer: transferToken.transfer
         };
 
         const req = {
@@ -319,7 +319,7 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    getPaymentToken(tokenId) {
+    getTransferToken(tokenId) {
         const config = {
             method: 'get',
             url: `/transfer-tokens/${tokenId}`
@@ -333,7 +333,7 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    getPaymentTokens(offset, limit) {
+    getTransferTokens(offset, limit) {
         const config = {
             method: 'get',
             url: `/transfer-tokens?offset=${offset}&limit=${limit}`
@@ -347,12 +347,12 @@ class AuthHttpClient {
     }
 
     //
-    // Payments
+    // Transfers
     //
-    getPayment(paymentId) {
+    getTransfer(transferId) {
         const config = {
             method: 'get',
-            url: `/transfers/${paymentId}`
+            url: `/transfers/${transferId}`
         };
 
         Auth.addAuthorizationHeaderMemberId(
@@ -363,7 +363,7 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    getPayments(tokenId, offset, limit) {
+    getTransfers(tokenId, offset, limit) {
         const config = {
             method: 'get',
             url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`

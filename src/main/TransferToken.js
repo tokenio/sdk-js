@@ -1,5 +1,5 @@
 import Util from "../Util";
-import {paymentTokenVersion} from "../constants";
+import {transferTokenVersion} from "../constants";
 
 export default class BankTransferToken {
 
@@ -36,7 +36,7 @@ export default class BankTransferToken {
     }
 
     constructor(id, from, instructions, amount, currency, redeemer, description,
-                version = paymentTokenVersion, issuer = undefined, nonce = undefined,
+                version = transferTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
         this._id = id;
         this._from = from;
@@ -101,7 +101,7 @@ export default class BankTransferToken {
         return this._payloadSignatures;
     }
 
-    // Creates a standardized json object for the PaymentToken, to be used for signing
+    // Creates a standardized json object for the TransferToken, to be used for signing
     get json() {
         const json = {
             version: this._version,

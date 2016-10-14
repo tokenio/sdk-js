@@ -74,15 +74,15 @@ member.getAllAliases() => Promise(string[])
 member.getPublicKeys() => Promise(key[])
 member.addAddress(name, address) => Promise()
 member.getAddresses() => Promise(Address[])
-member.createPaymentToken(amount, currency, alias, description)
-  => Promise(PaymentToken)
-member.getPaymentToken(tokenId) => Promise(PaymentToken)
-member.getPaymentTokens() => Promise(PaymentToken[])
-member.endorsePaymentToken(token or tokenId) => Promise()
-member.cancelPaymentToken(token or tokenId) => Promise()
-member.redeemPaymentToken(tokenId, amount, currency) => Promise(Payment)
-member.getPayment(paymentId) => Promise(Payment)
-member.getPayments() => Promise(Payment[])
+member.createTransferToken(amount, currency, alias, description)
+  => Promise(TransferToken)
+member.getTransferToken(tokenId) => Promise(TransferToken)
+member.getTransferTokens() => Promise(TransferToken[])
+member.endorseTransferToken(token or tokenId) => Promise()
+member.cancelTransferToken(token or tokenId) => Promise()
+member.redeemTransferToken(tokenId, amount, currency) => Promise(Transfer)
+member.getTransfer(transferId) => Promise(Transfer)
+member.getTransfers() => Promise(Transfer[])
 member.id => memberid
 member.keys => keys
 ```
@@ -115,7 +115,7 @@ Token.KeyLevel.STANDARD => string
 Token.KeyLevel.LOW => string
 ```
 
-#### PaymentToken
+#### TransferToken
 ```
 token.json => Json representation of token
 token.id => token id
@@ -130,15 +130,15 @@ token.issuer => issuer
 token.nonce => nonce
 token.payloadSignatures => signatures
 ```
-### Payment
+### Transfer
 ```
-payment.id => payment Id;
-payment.referenceId => reference Id;
-payment.payload => payload
-payment.amount => amount
-payment.currency => currency
-payment.transfer => transfer
-payment.payloadSignatures => signatures
+transfer.id => transfer Id;
+transfer.referenceId => reference Id;
+transfer.payload => payload
+transfer.amount => amount
+transfer.currency => currency
+transfer.transfer => transfer
+transfer.payloadSignatures => signatures
 ```
 
 ## Sales Demo
@@ -159,15 +159,15 @@ Then
 * ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
 * ```member.getAccounts()```
 * ```member.getAddresses()```
-* ```member.createPaymentToken(accountId, amount, currency)```
-* ```member.endorsePaymentToken(token)```
+* ```member.createTransferToken(accountId, amount, currency)```
+* ```member.endorseTransferToken(token)```
 
 If fails:
 * ```member.getTokens()``` (until you find the correct endorsed token)
 
 
 Either way: return tokenID to merchant, who does:
-* ```member.redeemPaymentToken(token, 15, ‘EUR’)```
+* ```member.redeemTransferToken(token, 15, ‘EUR’)```
 
 ### AISP (Backend still in progress)
 * ```Token.loginFromLocalStorage()```
@@ -181,4 +181,4 @@ Then
 * ```member.endorseAccessToken(token)```
 
 Return tokenID to AISP, who does:
-* ```account.redeemPaymentToken(token, ‘transactions’)```
+* ```account.redeemTransferToken(token, ‘transactions’)```

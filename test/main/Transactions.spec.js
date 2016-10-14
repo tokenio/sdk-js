@@ -14,7 +14,7 @@ let alias2 = '';
 let account2 = {};
 
 let token1 = {};
-let payment1 = {};
+let transfer1 = {};
 
 // Set up a first member
 const setUp1 = () => {
@@ -49,37 +49,37 @@ const setUp2 = () => {
         });
 };
 
-// Set up an endorsed payment token
+// Set up an endorsed transfer token
 const setUp3 = () => {
-    return member1.createPaymentToken(account1.id, 38.71, 'EUR', alias2).then(token => {
-        return member1.endorsePaymentToken(token.id).then(() => {
-            return member2.getPaymentToken(token.id).then(lookedUp => {
-                return member2.redeemPaymentToken(lookedUp, 10.21, 'EUR').then(payment => {
+    return member1.createTransferToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+        return member1.endorseTransferToken(token.id).then(() => {
+            return member2.getTransferToken(token.id).then(lookedUp => {
+                return member2.redeemTransferToken(lookedUp, 10.21, 'EUR').then(transfer => {
                     token1 = lookedUp;
-                    payment1 = payment;
+                    transfer1 = transfer;
                 });
             });
         });
     });
 };
 
-describe('Transactions and payments', () => {
+describe('Transactions and transfers', () => {
     beforeEach(() => {
         return Promise.all([setUp1(), setUp2()])
             .then(setUp3);
     });
 
-    it('should see a payment', () => {
-        return member1.getPayment(payment1.id).then(payment => {
-            assert.equal(payment.id, payment1.id);
-            assert.equal(payment.payload.tokenId, token1.id);
+    it('should see a transfer', () => {
+        return member1.getTransfer(transfer1.id).then(transfer => {
+            assert.equal(transfer.id, transfer1.id);
+            assert.equal(transfer.payload.tokenId, token1.id);
         });
     });
 
-    it('should get all payments', () => {
-        return member1.getPayments(token1.id).then(payments => {
-            assert.equal(payments.length, 1);
-            assert.isOk(payments[0].payload.amount);
+    it('should get all transfers', () => {
+        return member1.getTransfers(token1.id).then(transfers => {
+            assert.equal(transfers.length, 1);
+            assert.isOk(transfers[0].payload.amount);
         });
     });
 

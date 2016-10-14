@@ -1,9 +1,9 @@
-export default class Payment {
-    constructor(paymentObj) {
-        this._id = paymentObj.id;
-        this._referenceId = paymentObj.referenceId;
-        this._payload = JSON.parse(JSON.stringify(paymentObj.payload));
-        this._payloadSignatures = JSON.parse(JSON.stringify(paymentObj.payloadSignatures));
+export default class Transfer {
+    constructor(transferObj) {
+        this._id = transferObj.id;
+        this._referenceId = transferObj.referenceId;
+        this._payload = JSON.parse(JSON.stringify(transferObj.payload));
+        this._payloadSignatures = JSON.parse(JSON.stringify(transferObj.payloadSignatures));
     }
 
     get id() {
