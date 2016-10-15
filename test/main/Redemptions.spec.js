@@ -42,9 +42,9 @@ const setUp2 = () => {
 
 // Set up an endorsed transfer token
 const setUp3 = () => {
-    return member1.createTransferToken(account1.id, 38.71, 'EUR', alias2).then(token => {
-        return member1.endorseTransferToken(token.id).then(() => {
-            return member2.getTransferToken(token.id).then(lookedUp => {
+    return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+        return member1.endorseToken(token.id).then(() => {
+            return member2.getToken(token.id).then(lookedUp => {
                 token1 = lookedUp;
             });
         });
@@ -60,7 +60,7 @@ describe('Token Redemptions', () => {
     });
 
     it('should redeem a basic token', () => {
-        return member2.redeemTransferToken(token1, 10.21, 'EUR').then(transfer => {
+        return member2.createTransfer(token1, 10.21, 'EUR').then(transfer => {
             assert.equal(10.21, transfer.amount);
             assert.equal('EUR', transfer.currency);
             assert.isAtLeast(transfer.payloadSignatures.length, 1);
@@ -68,7 +68,7 @@ describe('Token Redemptions', () => {
     });
 
     it('should redeem a basic token by id', () => {
-        return member2.redeemTransferToken(token1.id, 15.28, 'EUR').then(transfer => {
+        return member2.createTransfer(token1.id, 15.28, 'EUR').then(transfer => {
             assert.equal(15.28, transfer.amount);
             assert.equal('EUR', transfer.currency);
             assert.isAtLeast(transfer.payloadSignatures.length, 1);
@@ -79,21 +79,21 @@ describe('Token Redemptions', () => {
     });
 
     it('should fail if redeem amount is too high', done => {
-        member2.redeemTransferToken(token1.id, 1242.28, 'EUR').then(transfer => {
+        member2.createTransfer(token1.id, 1242.28, 'EUR').then(transfer => {
             done(new Error("should fail"));
         })
             .catch(() => done());
     });
 
     it('should fail if redeemer is wrong', done => {
-        member1.redeemTransferToken(token1.id, 10.28, 'EUR').then(transfer => {
+        member1.createTransfer(token1.id, 10.28, 'EUR').then(transfer => {
             done(new Error("should fail"));
         })
             .catch(() => done());
     });
 
     it('should fail if wrong currency', done => {
-        member1.redeemTransferToken(token1.id, 10.28, 'USD').then(transfer => {
+        member1.createTransfer(token1.id, 10.28, 'USD').then(transfer => {
             done(new Error("should fail"));
         })
             .catch(() => done());
@@ -102,7 +102,7 @@ describe('Token Redemptions', () => {
     it('should should redeem a token with notifications', () => {
         return member1.subscribeToNotifications('36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a105355' +
             '81f97900000') // Remove 0s to notify iphone
-            .then(() => member2.redeemTransferToken(token1, 10.21, 'EUR').then(transfer => {
+            .then(() => member2.createTransfer(token1, 10.21, 'EUR').then(transfer => {
                 assert.equal(10.21, transfer.amount);
                 assert.equal('EUR', transfer.currency);
                 assert.isAtLeast(transfer.payloadSignatures.length, 1);
