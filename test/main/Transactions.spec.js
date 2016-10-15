@@ -51,10 +51,10 @@ const setUp2 = () => {
 
 // Set up an endorsed transfer token
 const setUp3 = () => {
-    return member1.createTransferToken(account1.id, 38.71, 'EUR', alias2).then(token => {
-        return member1.endorseTransferToken(token.id).then(() => {
-            return member2.getTransferToken(token.id).then(lookedUp => {
-                return member2.redeemTransferToken(lookedUp, 10.21, 'EUR').then(transfer => {
+    return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+        return member1.endorseToken(token.id).then(() => {
+            return member2.getToken(token.id).then(lookedUp => {
+                return member2.redeemToken(lookedUp, 10.21, 'EUR').then(transfer => {
                     token1 = lookedUp;
                     transfer1 = transfer;
                 });

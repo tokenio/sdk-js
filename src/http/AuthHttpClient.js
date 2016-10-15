@@ -229,12 +229,12 @@ class AuthHttpClient {
     }
 
     //
-    // Transfer Tokens
+    // Tokens
     //
-    createTransferToken(payload) {
+    createToken(payload) {
         const config = {
             method: 'post',
-            url: `/transfer-tokens`,
+            url: `/tokens`,
             data: {
                 payload: payload
             }
@@ -248,21 +248,21 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    endorseTransferToken(token) {
-        return this._transferTokenOperation(
+    endorseToken(token) {
+        return this._tokenOperation(
             token,
             'endorse',
             'endorsed');
     }
 
-    cancelTransferToken(transferToken) {
-        return this._transferTokenOperation(
+    cancelToken(transferToken) {
+        return this._tokenOperation(
             transferToken,
             'cancel',
             'cancelled');
     }
 
-    _transferTokenOperation(transferToken, operation, suffix) {
+    _tokenOperation(transferToken, operation, suffix) {
         const payload = stringify(transferToken.json) + `.${suffix}`;
         const req = {
             tokenId: transferToken.id,
@@ -275,7 +275,7 @@ class AuthHttpClient {
         const tokenId = transferToken.id;
         const config = {
             method: 'put',
-            url: `/transfer-tokens/${tokenId}/${operation}`,
+            url: `/tokens/${tokenId}/${operation}`,
             data: req
         };
         Auth.addAuthorizationHeaderMemberId(
@@ -286,7 +286,7 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    redeemTransferToken(transferToken, amount, currency) {
+    createTransfer(transferToken, amount, currency) {
         const payload = {
             nonce: Util.generateNonce(),
             tokenId: transferToken.id,
@@ -319,10 +319,10 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    getTransferToken(tokenId) {
+    getToken(tokenId) {
         const config = {
             method: 'get',
-            url: `/transfer-tokens/${tokenId}`
+            url: `/tokens/${tokenId}`
         };
 
         Auth.addAuthorizationHeaderMemberId(
@@ -333,10 +333,10 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    getTransferTokens(offset, limit) {
+    getTokens(offset, limit) {
         const config = {
             method: 'get',
-            url: `/transfer-tokens?offset=${offset}&limit=${limit}`
+            url: `/tokens?offset=${offset}&limit=${limit}`
         };
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
@@ -368,26 +368,6 @@ class AuthHttpClient {
             method: 'get',
             url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
         };
-        Auth.addAuthorizationHeaderMemberId(
-            this._keys,
-            this._memberId,
-            config,
-            this._context);
-        return instance(config);
-    }
-
-    //
-    // Access Tokens
-    //
-    createAccessToken(accessToken) {
-        const config = {
-            method: 'post',
-            url: `/access-tokens`,
-            data: {
-                payload: accessToken
-            }
-        };
-
         Auth.addAuthorizationHeaderMemberId(
             this._keys,
             this._memberId,

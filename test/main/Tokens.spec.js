@@ -67,7 +67,7 @@ describe('Tokens', () => {
 
     it('should create a token, look it up, and endorse it', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 assert.isAtLeast(token.id.length, 5);
                 assert.equal(token.version, '1.0');
@@ -78,11 +78,11 @@ describe('Tokens', () => {
                 assert.equal(token.amount, 9.24);
                 assert.equal(token.currency, defaultCurrency);
                 return member1
-                    .getTransferToken(token.id)
+                    .getToken(token.id)
                     .then(tokenLookedUp => {
                         assert.equal(token.id, tokenLookedUp.id);
                         return member1
-                            .endorseTransferToken(token)
+                            .endorseToken(token)
                             .then(() => {
                                 assert.equal(token.payloadSignatures.length, 2);
                             });
@@ -92,13 +92,13 @@ describe('Tokens', () => {
 
     it('should create a token and endorse it by id', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 return member1
-                    .endorseTransferToken(token.id)
+                    .endorseToken(token.id)
                     .then(() => {
                         return member1
-                            .getTransferToken(token.id)
+                            .getToken(token.id)
                             .then(lookedUp => {
                                 assert.equal(lookedUp.payloadSignatures.length, 2);
                                 assert.equal(lookedUp.payloadSignatures[0].action, 'ENDORSED');
@@ -109,10 +109,10 @@ describe('Tokens', () => {
 
     it('should create a token and cancel it', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 return member1
-                    .cancelTransferToken(token)
+                    .cancelToken(token)
                     .then(() => {
                         assert.equal(token.payloadSignatures.length, 2);
                         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
@@ -122,13 +122,13 @@ describe('Tokens', () => {
 
     it('should create token and cancel it by id', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 return member1
-                    .cancelTransferToken(token.id)
+                    .cancelToken(token.id)
                     .then(() => {
                         return member1
-                            .getTransferToken(token.id)
+                            .getToken(token.id)
                             .then(lookedUp => {
                                 assert.equal(lookedUp.payloadSignatures.length, 2);
                                 const actions = map(lookedUp.payloadSignatures, sig => sig.action);
@@ -140,13 +140,13 @@ describe('Tokens', () => {
 
     it('should create token, and look it up', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 return member1
-                    .endorseTransferToken(token.id)
+                    .endorseToken(token.id)
                     .then(() => {
                         return member1
-                            .getTransferTokens()
+                            .getTokens()
                             .then(tokens => {
                                 assert.isAtLeast(tokens.length, 1);
                             });
@@ -157,13 +157,13 @@ describe('Tokens', () => {
 
     it('should create token, and look it up, second member', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 return member1
-                    .endorseTransferToken(token.id)
+                    .endorseToken(token.id)
                     .then(() => {
                         return member2
-                            .getTransferTokens()
+                            .getTokens()
                             .then(tokens => {
                                 assert.equal(tokens.length, 0);
                             });
@@ -173,13 +173,13 @@ describe('Tokens', () => {
 
     it('should create token, and look it up, second member, tokenId', () => {
         return member1
-            .createTransferToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, alias2)
             .then(token => {
                 return member1
-                    .endorseTransferToken(token.id)
+                    .endorseToken(token.id)
                     .then(() => {
                         return member2
-                            .getTransferToken(token.id)
+                            .getToken(token.id)
                             .then(t => {
                                 assert.equal(t.id, token.id);
                             });
@@ -199,11 +199,11 @@ describe('Tokens', () => {
                         .loginWithAlias(keys, alias1)
                         .then(memberNew => {
                             return memberNew
-                                .createTransferToken(account1.id, 900.24, defaultCurrency, alias2)
+                                .createToken(account1.id, 900.24, defaultCurrency, alias2)
                                 .then(
                                     token => {
                                         return memberNew
-                                            .endorseTransferToken(token.id)
+                                            .endorseToken(token.id)
                                             .then(() => {
                                                 done(new Error("should fail"));
                                             })

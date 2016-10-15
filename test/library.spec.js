@@ -34,17 +34,17 @@ describe('Token library', () => {
                 });
 
         var createAndEndorse = () => member1
-                .createTransferToken(account.id, 9.24, 'EUR', alias2)
+                .createToken(account.id, 9.24, 'EUR', alias2)
                 .then(token => {
                     tokenId = token.id;
                     return member1
-                        .endorseTransferToken(tokenId);
+                        .endorseToken(tokenId);
                 });
 
         return setUpMem1()
             .then(setUpMem2)
             .then(createAndEndorse)
-            .then(() => member2.redeemTransferToken(tokenId, 5, 'EUR'))
+            .then(() => member2.redeemToken(tokenId, 5, 'EUR'))
             .then(() => member1.getTransfers(tokenId));
     });
 });
