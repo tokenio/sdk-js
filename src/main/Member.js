@@ -352,14 +352,30 @@ export default class Member {
     }
 
     /**
-     * Looks up all tokens (not just for this account)
+     * Looks up all transfer tokens (not just for this account)
      * @param {int} offset - where to start looking
      * @param {int} limit - how many to look for
      * @return {TransferToken} tokens - returns a list of Transfer Tokens
      */
-    getTokens(offset = 0, limit = 100) {
+    getTransferTokens(offset = 0, limit = 100) {
         return this._client
-            .getTokens(offset, limit)
+            .getTokens('TRANSFER', offset, limit)
+            .then(res => {
+                if (res.data.tokens === undefined) return [];
+                return res.data.tokens
+                    .map(tk => TransferToken.createFromToken(tk));
+            });
+    }
+
+    /**
+     * Looks up all access tokens (not just for this account)
+     * @param {int} offset - where to start looking
+     * @param {int} limit - how many to look for
+     * @return {TransferToken} tokens - returns a list of Transfer Tokens
+     */
+    getAccessTokens(offset = 0, limit = 100) {
+        return this._client
+            .getTokens('ACCESS', offset, limit)
             .then(res => {
                 if (res.data.tokens === undefined) return [];
                 return res.data.tokens

@@ -44,7 +44,7 @@ describe('Token library', () => {
         return setUpMem1()
             .then(setUpMem2)
             .then(createAndEndorse)
-            .then(() => member2.redeemToken(tokenId, 5, 'EUR'))
+            .then(() => member2.createTransfer(tokenId, 5, 'EUR'))
             .then(() => member1.getTransfers(tokenId));
     });
 });

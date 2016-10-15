@@ -333,10 +333,10 @@ class AuthHttpClient {
         return instance(config);
     }
 
-    getTokens(offset, limit) {
+    getTokens(type, offset, limit) {
         const config = {
             method: 'get',
-            url: `/tokens?offset=${offset}&limit=${limit}`
+            url: `/tokens?type=${type}&offset=${offset}&limit=${limit}`
         };
         Auth.addAuthorizationHeaderMemberId(
             this._keys,

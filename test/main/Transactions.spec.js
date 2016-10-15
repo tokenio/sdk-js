@@ -54,7 +54,7 @@ const setUp3 = () => {
     return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
         return member1.endorseToken(token.id).then(() => {
             return member2.getToken(token.id).then(lookedUp => {
-                return member2.redeemToken(lookedUp, 10.21, 'EUR').then(transfer => {
+                return member2.createTransfer(lookedUp, 10.21, 'EUR').then(transfer => {
                     token1 = lookedUp;
                     transfer1 = transfer;
                 });

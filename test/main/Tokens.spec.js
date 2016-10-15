@@ -146,7 +146,7 @@ describe('Tokens', () => {
                     .endorseToken(token.id)
                     .then(() => {
                         return member1
-                            .getTokens()
+                            .getTransferTokens()
                             .then(tokens => {
                                 assert.isAtLeast(tokens.length, 1);
                             });
@@ -163,7 +163,7 @@ describe('Tokens', () => {
                     .endorseToken(token.id)
                     .then(() => {
                         return member2
-                            .getTokens()
+                            .getTransferTokens()
                             .then(tokens => {
                                 assert.equal(tokens.length, 0);
                             });
