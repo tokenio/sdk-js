@@ -1,35 +1,40 @@
 const stringify = require('json-stable-stringify');
 
-import {uriHost, signatureScheme} from "../constants";
+import {signatureScheme} from "../constants";
 import Crypto from "../Crypto";
 
-class Auth {
+class AuthHeader {
+
+    constructor(baseUrl, keys) {
+        this._baseUrl = baseUrl;
+        this._keys = keys;
+    }
     /*
      * Adds an authorization header with the identity set as the memberId. This is preferrable
      * to alias identity, because it reduces trust required (no alias lookup)
      */
-    static addAuthorizationHeaderMemberId(keys, memberId, config, uriParam, context) {
+    addAuthorizationHeaderMemberId(memberId, config, context) {
         const identity = 'member-id=' + memberId;
-        Auth.addAuthorizationHeader(keys, identity, config, uriParam, context);
+        this.addAuthorizationHeader(identity, config, context);
     }
 
     /*
      * Adds an authorization header with identity set as the alias. Useful when
      * on a browser that doesn't yet have a memberId
      */
-    static addAuthorizationHeaderAlias(keys, alias, config, uriParam, context) {
+    addAuthorizationHeaderAlias(alias, config, context) {
         const identity = 'alias=' + alias;
-        Auth.addAuthorizationHeader(keys, identity, config, uriParam, context);
+        this.addAuthorizationHeader(identity, config, context);
     }
 
     /*
      * Adds an authorization header to an HTTP request. The header is built
-     * using the request info and the keys. The config is the axios request configutration,
+     * using the request info and the keys. The config is the axios request configuration,
      * right before it is sent to the server
      */
-    static addAuthorizationHeader(keys, identity, config, context) {
+    addAuthorizationHeader(identity, config, context) {
         // Parses out the base uri
-        let uriPath = config.url.replace(uriHost, '');
+        let uriPath = config.url.replace(this._baseUrl, '');
 
         // Makes sure the uri is formatted correctly
         uriPath = uriPath.substring(0, 1) === '/' ? uriPath : uriPath + '/';
@@ -44,7 +49,7 @@ class Auth {
         // Creates the payload from the config info
         const payload = {
             method: config.method.toUpperCase(),
-            uriHost: uriHost.replace('http://', '').replace('https://', ''),
+            uriHost: this._baseUrl.replace('http://', '').replace('https://', ''),
             uriPath
         };
 
@@ -58,14 +63,14 @@ class Auth {
         }
 
         // Signs the Json string
-        const signature = Crypto.signJson(payload, keys);
+        const signature = Crypto.signJson(payload, this._keys);
 
         // Creates the authorization header, ands adds it to the request
         const header = signatureScheme + ' ' +
             identity + ',' +
-            'key-id=' + keys.keyId + ',' +
+            'key-id=' + this._keys.keyId + ',' +
             'signature=' + signature +
-            Auth._onBehalfOfHeader(context);
+            AuthHeader._onBehalfOfHeader(context);
 
         config.headers = {
             Authorization: header
@@ -82,4 +87,4 @@ class Auth {
     }
 }
 
-export default Auth;
+export default AuthHeader;

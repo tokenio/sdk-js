@@ -1,7 +1,8 @@
 const chai = require('chai');
 const assert = chai.assert;
+const tokenIo = require('../../src');
+const Token = new tokenIo(TEST_ENV);
 
-const Token = require('../../src');
 import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
 
@@ -44,7 +45,6 @@ describe('Notifications', () => {
             });
     });
     it('should subscribe and unsubscribe device', done => {
-      const randomStr = Crypto.generateKeys().keyId;
       member1.subscribeToNotifications("8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554")
       .then(subscriber => {
         member1.unsubscribeFromNotifications(subscriber.id)

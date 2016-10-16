@@ -1,7 +1,9 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Token = require('../../src');
+const tokenIo = require('../../src');
+const Token = new tokenIo(TEST_ENV);
+
 import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
 
@@ -65,11 +67,8 @@ const setUp3 = () => {
 
 describe('Transactions and transfers', () => {
     before(() => {
-        return Promise.all([setUp1(), setUp2()]);
-    });
-
-    beforeEach(() => {
-       return setUp3();
+        return Promise.all([setUp1(), setUp2()])
+            .then(setUp3);
     });
 
     it('should see a transfer', () => {
@@ -86,15 +85,20 @@ describe('Transactions and transfers', () => {
         });
     });
 
-    it('should see the transaction', () => {
-        return account1.getTransactions().then(transactions => {
-            assert.equal(transactions[0].type, 'DEBIT');
-            assert.isOk(transactions[0].id);
-            assert.isOk(transactions[0].currency);
-            assert.isOk(transactions[0].amount);
-            assert.isOk(transactions[0].description);
-            assert.isOk(transactions[0].tokenId);
-            assert.isOk(transactions[0].tokenTransferId);
+    it('should see transaction', () => {
+        return account1.getTransactions()
+            .then(transactions => {
+                assert.equal(transactions[0].type, 'DEBIT');
+                assert.isOk(transactions[0].id);
+                assert.isOk(transactions[0].currency);
+                assert.isOk(transactions[0].amount);
+                assert.isOk(transactions[0].description);
+                assert.isOk(transactions[0].tokenId);
+                assert.isOk(transactions[0].tokenTransferId);
+                return account1.getTransaction(transactions[0].id)
+                    .then(transaction => {
+                        assert.equal(transaction.tokenId, token1.id);
+                    });
         });
     });
 });

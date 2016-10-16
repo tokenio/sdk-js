@@ -3,45 +3,54 @@ import Util from "./Util";
 import Member from "./main/Member";
 import KeyLevel from "./main/KeyLevel";
 import LocalStorage from "./LocalStorage";
-import UnauthenticatedClient from "./http/UnauthenticatedClient";
-import AuthHttpClient from "./http/AuthHttpClient";
+import HttpClient from "./http/HttpClient";
+import AuthHttpClientAlias from "./http/AuthHttpClientAlias";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
 
 // Main entry object
-const Token = {
+class Token {
+
+    constructor(env = 'prd') {
+        this._env = env;
+        this._unauthenticatedClient = new HttpClient(env);
+        this.Crypto = Crypto;
+        this.Util = Util;
+        this.KeyLevel = KeyLevel;
+    }
+
     /**
      * Checks if a given alias already exists
      * @param {string} alias - alias to check
      * @return {Promise} result - true if alias exists, false otherwise
      */
     aliasExists(alias) {
-        return UnauthenticatedClient
+        return this._unauthenticatedClient
             .aliasExists(alias)
             // Workaround for a default value case when protobuf does not serialize it.
             .then(res => res.data.exists ? res.data.exists : false);
-    },
+    }
 
     /**
      * Creates a member with an alias and a keypair
      * @param  {string} alias - alias to set for member
      * @return {Promise} member - Promise of created Member
      */
-    createMember: alias => {
+    createMember(alias) {
         const keys = Crypto.generateKeys();
-        return UnauthenticatedClient
+        return this._unauthenticatedClient
             .createMemberId()
-            .then(response => UnauthenticatedClient
+            .then(response => this._unauthenticatedClient
                 .addFirstKey(keys, response.data.memberId)
                 .then(() => {
-                    const member = new Member(response.data.memberId, keys);
+                    const member = new Member(this._env, response.data.memberId, keys);
                     return member
                         .addAlias(alias)
                         .then(() => member);
                 })
             );
-    },
+    }
 
     /**
      * Log in a member (Instantiate a member object from keys and Id)
@@ -49,9 +58,9 @@ const Token = {
      * @param  {object} keys - member's keys
      * @return {Promise} member - Promise of instantiated Member
      */
-    login: (memberId, keys) => {
-        return Promise.resolve(new Member(memberId, keys));
-    },
+    login(memberId, keys) {
+        return Promise.resolve(new Member(this._env, memberId, keys));
+    }
 
     /**
      * Log in a member by keys and alias. This is useful for checking whether we are
@@ -61,19 +70,19 @@ const Token = {
      * @param  {string} alias - alias to authenticate with
      * @return {Promise} member - instantiated Member, if successful
      */
-    loginWithAlias: (keys, alias) => {
-        return AuthHttpClient
-          .getMemberByAlias(keys, alias)
-          .then(res => new Member(res.data.member.id, keys));
-    },
+    loginWithAlias(keys, alias) {
+        return new AuthHttpClientAlias(this._env, alias, keys)
+          .getMemberByAlias()
+          .then(res => new Member(this._env, res.data.member.id, keys));
+    }
 
     /**
      * Logs a member in from keys stored in localStorage
      * @return {Promise} member - instantiated member
      */
-    loginFromLocalStorage: () => {
+    loginFromLocalStorage() {
         return Promise.resolve(LocalStorage.loadMember());
-    },
+    }
 
     /**
      * Notifies subscribers that accounts should be linked, and passes the bank id and
@@ -90,8 +99,8 @@ const Token = {
                 accountsLinkPayload
             }
         };
-        return UnauthenticatedClient.notify(alias, notification);
-    },
+        return this._unauthenticatedClient.notify(alias, notification);
+    }
 
     /**
      * Notifies subscribers that a key should be added and passes the public Key and
@@ -108,8 +117,8 @@ const Token = {
                 name
             }
         };
-        return UnauthenticatedClient.notify(alias, notification);
-    },
+        return this._unauthenticatedClient.notify(alias, notification);
+    }
 
     /**
      * Notifies subscribed devices that accounts should be linked, and passes the bank id and
@@ -134,12 +143,9 @@ const Token = {
                 }
             }
         };
-        return UnauthenticatedClient.notify(alias, notification);
-    },
-
-    Crypto,
-    Util,
-    KeyLevel
+        return this._unauthenticatedClient.notify(alias, notification);
+    }
 };
 
 module.exports = Token;
+

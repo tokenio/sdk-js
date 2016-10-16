@@ -22,10 +22,10 @@ export default class Member {
      * @param {string} memberId - The id of this memberId
      * @param {object} keys - An object representing the keypair of the user
      */
-    constructor(memberId, keys) {
+    constructor(env, memberId, keys) {
         this._id = memberId;
         this._keys = keys;
-        this._client = new AuthHttpClient(memberId, keys);
+        this._client = new AuthHttpClient(env, memberId, keys);
     }
 
     /**

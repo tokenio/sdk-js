@@ -71,7 +71,7 @@ export default class Account {
     getTransaction(transactionId) {
       return this._member._client.getTransaction(this._id, transactionId)
       .then(res => {
-        return new Transaction(res.data);
+        return new Transaction(res.data.transaction);
       });
     }
 

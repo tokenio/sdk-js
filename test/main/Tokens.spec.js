@@ -1,7 +1,9 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Token = require('../../src');
+const tokenIo = require('../../src');
+const Token = new tokenIo(TEST_ENV);
+
 import Crypto from "../../src/Crypto";
 import KeyLevel from "../../src/main/KeyLevel";
 import BankClient from "../sample/BankClient";

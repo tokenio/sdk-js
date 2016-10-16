@@ -1,4 +1,6 @@
-import Token from "../src";
+import tokenIo from "../src";
+const Token = new tokenIo(TEST_ENV);
+
 import BankClient from "./sample/BankClient";
 
 describe('Token library', () => {

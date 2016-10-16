@@ -9,10 +9,8 @@ module.exports = {
 
     "globals": {
         "define": true,
-        "API_URL": true,
         "BROWSER": true,
-        "URI_HOST": true,
-        "URI_HOST_BANK": true
+        "TEST_ENV": true,
     },
     "rules": {
         "no-unused-vars": "warn",

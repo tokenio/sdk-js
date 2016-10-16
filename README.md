@@ -15,8 +15,10 @@ $ npm install token-io
 To use in a browser:
 
 ```sh
-$ var Token = require("token-io")
+$ var tokenIo = require("token-io");
+$ var Token = tokenIo(env = "prd");
 ```
+
 
 Works in a node as well, but have to directly require the node file from token-io/dist.
 Minified files available in dist as well.

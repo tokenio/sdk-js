@@ -1,8 +1,15 @@
-import {uriHostBank, defaultCurrency} from "../../src/constants";
+import {defaultCurrency} from "../../src/constants";
 import Sample from "./Sample";
 const axios = require('axios');
+
+const urls = {
+    local: 'http://localhost:8100',
+    dev: 'http://dev.api.token.io:81',
+    stg: 'http://stg.api.token.io:81',
+    prd: 'http://prd.api.token.io:81',
+}
 const instance = axios.create({
-    baseURL: uriHostBank
+    baseURL: urls[TEST_ENV]
 });
 
 export default {

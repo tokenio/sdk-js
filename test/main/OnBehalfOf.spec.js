@@ -3,7 +3,8 @@ import Sample from "../sample/Sample";
 const chai = require('chai');
 const assert = chai.assert;
 
-const Token = require('../../src');
+const tokenIo = require('../../src');
+const Token = new tokenIo(TEST_ENV);
 
 let grantorAlias = '';
 let granteeAlias = '';

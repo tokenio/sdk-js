@@ -1,21 +1,25 @@
 import Crypto from "../Crypto";
 import KeyLevel from "../main/KeyLevel";
-import {uriHost} from "../constants";
+import {urls} from "../constants";
 
 const axios = require('axios');
-const instance = axios.create({
-    baseURL: uriHost
-});
 
-class UnauthenticatedClient {
-    static createMemberId() {
-        return instance({
-            method: 'post',
-            url: '/members'
+class HttpClient {
+    constructor(env){
+        this._instance = axios.create({
+            baseURL: urls[env]
         });
     }
 
-    static notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
+    createMemberId() {
+        const config = {
+            method: 'post',
+            url: '/members'
+        };
+        return this._instance(config);
+    }
+
+    notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
         const req = {
             alias,
             bankId,
@@ -26,10 +30,10 @@ class UnauthenticatedClient {
             url: `/devices/notifyLinkAccounts`,
             data: req
         };
-        return instance(config);
+        return this._instance(config);
     }
 
-    static notifyAddKey(alias, publicKey, name) {
+    notifyAddKey(alias, publicKey, name) {
         const req = {
             alias,
             publicKey: Crypto.strKey(publicKey),
@@ -40,18 +44,18 @@ class UnauthenticatedClient {
             url: `/devices/notifyAddKey`,
             data: req
         };
-        return instance(config);
+        return this._instance(config);
     }
 
-    static aliasExists(alias) {
+    aliasExists(alias) {
         const config = {
             method: 'get',
             url: `/alias-exists?alias=${alias}`
         }
-        return instance(config);
+        return this._instance(config);
      }
 
-    static notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload,
+    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload,
                                        publicKey, name) {
         const req = {
             alias,
@@ -65,10 +69,10 @@ class UnauthenticatedClient {
             url: `/devices/notifyLinkAccountsAndAddKey`,
             data: req
         };
-        return instance(config);
+        return this._instance(config);
     }
 
-    static notify(alias, notification) {
+    notify(alias, notification) {
         const req = {
             alias,
             notification
@@ -78,10 +82,10 @@ class UnauthenticatedClient {
             url: `/notify`,
             data: req
         };
-        return instance(config);
+        return this._instance(config);
     }
 
-    static addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED) {
+    addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED) {
         const update = {
             memberId: memberId,
             addKey: {
@@ -106,8 +110,8 @@ class UnauthenticatedClient {
             url: `/members/${memberId}`,
             data: req
         };
-        return instance(config);
+        return this._instance(config);
     }
 }
 
-export default UnauthenticatedClient;
+export default HttpClient;
