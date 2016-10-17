@@ -78,7 +78,8 @@ export default class Member {
             .then(prevHash =>
                 this._client
                     .addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel)
-                    .then(res => undefined));
+                    .then(res => undefined))
+            .catch(err => this._reject(this.approveKey, err));
     }
 
     /**
@@ -91,7 +92,8 @@ export default class Member {
             .then(prevHash =>
                 this._client
                     .removeKey(prevHash, keyId)
-                    .then(res => undefined));
+                    .then(res => undefined))
+            .catch(err => this._reject(this.removeKey, err));
     }
 
     /**
@@ -104,7 +106,8 @@ export default class Member {
             .then(prevHash =>
                 this._client
                     .addAlias(prevHash, alias)
-                    .then(res => undefined));
+                    .then(res => undefined))
+            .catch(err => this._reject(this.addAlias, err));
     }
 
     /**
@@ -118,7 +121,8 @@ export default class Member {
             .then(prevHash =>
                 this._client
                     .removeAlias(prevHash, alias)
-                    .then(res => undefined));
+                    .then(res => undefined))
+            .catch(err => this._reject(this.removeAlias, err));
     }
 
     /**
@@ -132,7 +136,8 @@ export default class Member {
             .linkAccounts(bankId, accountsLinkPayload)
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
-            });
+            })
+            .catch(err => this._reject(this.linkAccounts, err));
     }
 
     /**
@@ -144,7 +149,8 @@ export default class Member {
             .getAccounts()
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
-            });
+            })
+            .catch(err => this._reject(this.getAccounts, err));
     }
 
     /**
@@ -163,7 +169,8 @@ export default class Member {
             .subscribeToNotifications(target, provider, platform)
             .then(res => {
                 return new Subscriber(res.data.subscriber);
-            });
+            })
+            .catch(err => this._reject(this.subscribeToNotifications, err));
     }
 
     /**
@@ -176,7 +183,8 @@ export default class Member {
             .getSubscribers()
             .then(res => {
                 return res.data.subscribers.map(s => new Subscriber(s));
-            });
+            })
+            .catch(err => this._reject(this.getSubscribers, err));
     }
 
     /**
@@ -190,7 +198,8 @@ export default class Member {
             .getSubscriber(subscriberId)
             .then(res => {
                 return new Subscriber(res.data.subscriber);
-            });
+            })
+            .catch(err => this._reject(this.getSubscriber, err));
     }
 
     /**
@@ -200,7 +209,8 @@ export default class Member {
      */
     unsubscribeFromNotifications(subscriberId) {
         return this._client
-            .unsubscribeFromNotifications(subscriberId);
+            .unsubscribeFromNotifications(subscriberId)
+            .catch(err => this._reject(this.unsubscribeFromNotifications, err));
     }
 
     /**
@@ -214,7 +224,8 @@ export default class Member {
             .addAddress(name, data)
             .then(res => {
                 return new Address(res.data.address);
-            });
+            })
+            .catch(err => this._reject(this.addAddress, err));
     }
 
     /**
@@ -228,7 +239,8 @@ export default class Member {
             .getAddress(addressId)
             .then(res => {
                 return new Address(res.data.address);
-            });
+            })
+            .catch(err => this._reject(this.getAddress, err));
     }
 
     /**
@@ -241,7 +253,8 @@ export default class Member {
             .then(res => {
                 return res.data.addresses
                     .map(address => new Address(address));
-            });
+            })
+            .catch(err => this._reject(this.getAddresses, err));
     }
 
     /**
@@ -251,7 +264,8 @@ export default class Member {
     getAllAliases() {
         return this
             ._getMember()
-            .then(member => member.aliases);
+            .then(member => member.aliases)
+            .catch(err => this._reject(this.getAllAliases, err));
     }
 
     /**
@@ -267,7 +281,8 @@ export default class Member {
             .createToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
-            });
+            })
+            .catch(err => this._reject(this.createAccessToken, err));
     }
 
     /**
@@ -283,7 +298,8 @@ export default class Member {
             .createToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
-            });
+            })
+            .catch(err => this._reject(this.createAddressAccessToken, err));
     }
 
     /**
@@ -299,7 +315,8 @@ export default class Member {
             .createToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
-            });
+            })
+            .catch(err => this._reject(this.createAccountAccessToken, err));
     }
 
     /**
@@ -315,7 +332,8 @@ export default class Member {
             .createToken(token.json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
-            });
+            })
+            .catch(err => this._reject(this.createTransactionAccessToken, err));
     }
 
     /**
@@ -335,7 +353,8 @@ export default class Member {
             .createToken(token.json)
             .then(res => {
                 return TransferToken.createFromToken(res.data.token);
-            });
+            })
+            .catch(err => this._reject(this.createToken, err));
     }
 
     /**
@@ -348,7 +367,8 @@ export default class Member {
             .getToken(tokenId)
             .then(res => {
                 return TransferToken.createFromToken(res.data.token);
-            });
+            })
+            .catch(err => this._reject(this.getToken, err));
     }
 
     /**
@@ -364,7 +384,8 @@ export default class Member {
                 if (res.data.tokens === undefined) return [];
                 return res.data.tokens
                     .map(tk => TransferToken.createFromToken(tk));
-            });
+            })
+            .catch(err => this._reject(this.getTransferTokens, err));
     }
 
     /**
@@ -380,7 +401,8 @@ export default class Member {
                 if (res.data.tokens === undefined) return [];
                 return res.data.tokens
                     .map(tk => TransferToken.createFromToken(tk));
-            });
+            })
+            .catch(err => this._reject(this.getAccessTokens, err));
     }
 
     /**
@@ -400,13 +422,7 @@ export default class Member {
                         }
                     });
             })
-            .catch(err => {
-                return Promise.reject({
-                    type: "ENDORSE_TOKEN_ERROR",
-                    error: err,
-                    reason: err.response.data ? err.response.data : "UNKNOWN"
-                });
-            });
+            .catch(err => this._reject(this.endorseToken, err));
     }
 
     /**
@@ -425,8 +441,11 @@ export default class Member {
                             token.payloadSignatures = res.data.token.payloadSignatures;
                         }
                     });
-            });
+            })
+            .catch(err => this._reject(this.cancelToken, err));
     }
+
+
 
     /**
      * Redeems a token. (Called by the payee or redeemer)
@@ -451,13 +470,7 @@ export default class Member {
                         return new Transfer(res.data.transfer);
                     });
             })
-            .catch(err => {
-                return Promise.reject({
-                    type: "CREATE_TRANSFER",
-                    error: err,
-                    reason: err.response.data ? err.response.data : "UNKNOWN"
-                });
-            });
+            .catch(err => this._reject(this.createTransfer, err));
     }
 
     /**
@@ -470,7 +483,8 @@ export default class Member {
             .getTransfer(transferId)
             .then(res => {
                 return new Transfer(res.data.transfer);
-            });
+            })
+            .catch(err => this._reject(this.getTransfer, err));
     }
 
     /**
@@ -485,7 +499,8 @@ export default class Member {
             .getTransfers(tokenId, offset, limit)
             .then(res => {
                 return res.data.transfers.map(pt => new Transfer(pt));
-            });
+            })
+            .catch(err => this._reject(this.getTransfers, err));
     }
 
     /**
@@ -495,13 +510,15 @@ export default class Member {
     getPublicKeys() {
         return this
             ._getMember()
-            .then(member => member.keys);
+            .then(member => member.keys)
+            .catch(err => this._reject(this.getPublicKeys, err));
     }
 
     _getPreviousHash() {
         return this
             ._getMember()
-            .then(member => member.lastHash);
+            .then(member => member.lastHash)
+            .catch(err => this._reject(this._getPreviousHash, err));
     }
 
     _getMember() {
@@ -509,16 +526,26 @@ export default class Member {
             .getMember()
             .then(res => {
                 return res.data.member;
-            });
+            })
+            .catch(err => this._reject(this._getMember, err));
     }
 
     _resolveToken(token) {
         return new Promise((resolve, reject) => {
             if (typeof token === 'string' || token instanceof String) {
-                this.getToken(token).then(lookedUp => resolve(lookedUp));
+                this.getToken(token)
+                    .then(lookedUp => resolve(lookedUp));
             } else {
                 resolve(token);
             }
+        });
+
+    }
+    _reject(method, err) {
+        return Promise.reject({
+            type: method.name,
+            error: err,
+            reason: (err.response.data !== undefined) ? err.response.data : "UNKNOWN"
         });
     }
 }

@@ -45,11 +45,12 @@ export default class Account {
      * @param {string} name - accountName
      * @return {Promise} empty - empty promise
      */
-    setAccountName(name) {
+    setName(name) {
         return this._member._client.setAccountName(this._id, name)
-            .then(res => {
+            .then(() => {
                 this._name = name;
-            });
+            })
+            .catch(err => this._reject(this.setName, err));
     }
 
     /**
@@ -60,7 +61,8 @@ export default class Account {
         return this._member._client.getBalance(this._id)
             .then(res => {
                 return res.data;
-            });
+            })
+            .catch(err => this._reject(this.getBalance, err));
     }
 
     /**
@@ -70,9 +72,10 @@ export default class Account {
      */
     getTransaction(transactionId) {
       return this._member._client.getTransaction(this._id, transactionId)
-      .then(res => {
-        return new Transaction(res.data.transaction);
-      });
+          .then(res => {
+              return new Transaction(res.data.transaction);
+          })
+          .catch(err => this._reject(this.getTransaction, err));
     }
 
     /**
@@ -85,6 +88,15 @@ export default class Account {
         return this._member._client.getTransactions(this._id, offset, limit)
             .then(res => {
                 return res.data.transactions.map(tr => new Transaction(tr));
-            });
+            })
+            .catch(err => this._reject(this.getTransactions, err));
+    }
+
+    _reject(method, err) {
+        return Promise.reject({
+            type: method.name,
+            error: err,
+            reason: (err.response.data !== undefined) ? err.response.data : "UNKNOWN"
+        });
     }
 }

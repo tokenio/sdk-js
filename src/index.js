@@ -29,7 +29,8 @@ class Token {
         return this._unauthenticatedClient
             .aliasExists(alias)
             // Workaround for a default value case when protobuf does not serialize it.
-            .then(res => res.data.exists ? res.data.exists : false);
+            .then(res => res.data.exists ? res.data.exists : false)
+            .catch(err => this._reject(this.aliasExists, err));
     }
 
     /**
@@ -49,7 +50,8 @@ class Token {
                         .addAlias(alias)
                         .then(() => member);
                 })
-            );
+            )
+            .catch(err => this._reject(this.createMember, err));
     }
 
     /**
@@ -59,7 +61,8 @@ class Token {
      * @return {Promise} member - Promise of instantiated Member
      */
     login(memberId, keys) {
-        return Promise.resolve(new Member(this._env, memberId, keys));
+        return Promise.resolve(new Member(this._env, memberId, keys))
+            .catch(err => this._reject(this.login, err));
     }
 
     /**
@@ -72,8 +75,9 @@ class Token {
      */
     loginWithAlias(keys, alias) {
         return new AuthHttpClientAlias(this._env, alias, keys)
-          .getMemberByAlias()
-          .then(res => new Member(this._env, res.data.member.id, keys));
+            .getMemberByAlias()
+            .then(res => new Member(this._env, res.data.member.id, keys))
+            .catch(err => this._reject(this.loginWithAlias, err));
     }
 
     /**
@@ -81,7 +85,8 @@ class Token {
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage() {
-        return Promise.resolve(LocalStorage.loadMember());
+        return Promise.resolve(LocalStorage.loadMember())
+            .catch(err => this._reject(this.loginFromLocalStorage, err));
     }
 
     /**
@@ -99,7 +104,8 @@ class Token {
                 accountsLinkPayload
             }
         };
-        return this._unauthenticatedClient.notify(alias, notification);
+        return this._unauthenticatedClient.notify(alias, notification)
+            .catch(err => this._reject(this.notifyLinkAccounts, err));
     }
 
     /**
@@ -117,7 +123,8 @@ class Token {
                 name
             }
         };
-        return this._unauthenticatedClient.notify(alias, notification);
+        return this._unauthenticatedClient.notify(alias, notification)
+            .catch(err => this._reject(this.notifyAddKey, err));
     }
 
     /**
@@ -143,7 +150,17 @@ class Token {
                 }
             }
         };
-        return this._unauthenticatedClient.notify(alias, notification);
+        return this._unauthenticatedClient.notify(alias, notification)
+            .catch(err => this._reject(this.notifyLinkAccountsAndAddKey, err));
+;
+    }
+
+    _reject(method, err) {
+        return Promise.reject({
+            type: method.name,
+            error: err,
+            reason: (err.response.data !== undefined) ? err.response.data : "UNKNOWN"
+        });
     }
 };
 

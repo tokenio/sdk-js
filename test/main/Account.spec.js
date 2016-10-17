@@ -55,13 +55,17 @@ describe('Account tests', () => {
         });
 
         it('should get the balance', () => {
-            return account.getBalance().then(bal => {
-                assert.equal(parseFloat(bal.current.value), 100000);
-            });
+            return account.getBalance()
+                .then(bal => {
+                    assert.equal(parseFloat(bal.current.value), 100000);
+                });
         });
 
-        it('should get transactions', () => {
-            assert.equal(1 + 1, 2);
+        it('should set the name', () => {
+            return account.setName("newAccName")
+                .then(() => {
+                    assert.equal(account.name, "newAccName");
+                });
         });
     });
 });
