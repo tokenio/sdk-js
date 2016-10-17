@@ -1,4 +1,5 @@
-var Token = require("../dist/token-io.node.js");
+var TokenIo = require("../dist/token-io.node.js");
+var Token = new TokenIo("prd");
 var axios = require("axios");
 
 

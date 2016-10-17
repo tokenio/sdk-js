@@ -40,7 +40,6 @@ $ npm run testNodeStg
 
 ### API
 Note that information token support has not yet been added to this sdk.
-(X) Not implemented yet
 
 #### Token
 ```
@@ -91,7 +90,7 @@ member.keys => keys
 
 #### Account
 ```
-(X) account.setAccountName(name) => Promise()
+account.setAccountName(name) => Promise()
 account.getBalance() => Promise(balance)
 account.getTransactions() => Promise(Transaction[])
 ```
