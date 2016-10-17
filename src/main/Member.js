@@ -5,6 +5,7 @@ import Subscriber from "./Subscriber";
 import Address from "./Address";
 import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
+import PagedResult from "./PagedResult";
 import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
 import Transfer from "./Transfer";
@@ -353,33 +354,38 @@ export default class Member {
 
     /**
      * Looks up all transfer tokens (not just for this account)
-     * @param {int} offset - where to start looking
+     * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
      * @return {TransferToken} tokens - returns a list of Transfer Tokens
      */
-    getTransferTokens(offset = 0, limit = 100) {
+    getTransferTokens(offset, limit) {
         return this._client
             .getTokens('TRANSFER', offset, limit)
             .then(res => {
-                if (res.data.tokens === undefined) return [];
-                return res.data.tokens
-                    .map(tk => TransferToken.createFromToken(tk));
+
+                return new PagedResult(
+                    res.data.tokens === undefined
+                        ? []
+                        :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
+                    res.data.offset);
             });
     }
 
     /**
      * Looks up all access tokens (not just for this account)
-     * @param {int} offset - where to start looking
+     * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
      * @return {TransferToken} tokens - returns a list of Transfer Tokens
      */
-    getAccessTokens(offset = 0, limit = 100) {
+    getAccessTokens(offset, limit) {
         return this._client
             .getTokens('ACCESS', offset, limit)
             .then(res => {
-                if (res.data.tokens === undefined) return [];
-                return res.data.tokens
-                    .map(tk => TransferToken.createFromToken(tk));
+                return new PagedResult(
+                    res.data.tokens === undefined
+                        ? []
+                        :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
+                    res.data.offset);
             });
     }
 
@@ -462,15 +468,17 @@ export default class Member {
     /**
      * Looks up all of the member's transfers
      * @param {string} tokenId - token to use for lookup
-     * @param {int} offset - where to start looking
+     * @param {string} offset - where to start looking
      * @param {int} limit - how many to retrieve
      * @return {Promise} transfers - Transfers
      */
-    getTransfers(tokenId, offset = 0, limit = 100) {
+    getTransfers(tokenId, offset, limit) {
         return this._client
             .getTransfers(tokenId, offset, limit)
             .then(res => {
-                return res.data.transfers.map(pt => new Transfer(pt));
+                return new PagedResult(
+                    res.data.transfers.map(pt => new Transfer(pt)),
+                    res.data.offset);
             });
     }
 

@@ -1,3 +1,4 @@
+import PagedResult from "./PagedResult";
 import Transaction from "./Transaction";
 
 /**
@@ -77,14 +78,16 @@ export default class Account {
 
     /**
      * Looks up all of the member's transactions
-     * @param {int} offset - where to start looking
+     * @param {string} offset - where to start looking
      * @param {int} limit - how many to retrieve
      * @return {Promise} transactions - Transactions
      */
-    getTransactions(offset = 0, limit = 100) {
+    getTransactions(offset, limit) {
         return this._member._client.getTransactions(this._id, offset, limit)
             .then(res => {
-                return res.data.transactions.map(tr => new Transaction(tr));
+                return new PagedResult(
+                    res.data.transactions.map(tr => new Transaction(tr)),
+                    res.data.offset);
             });
     }
 }
