@@ -56,7 +56,7 @@ const setUp3 = () => {
 describe('Token Redemptions', () => {
     before(() => {
         return Promise.all([setUp1(), setUp2()]);
-    })
+    });
     beforeEach(() => {
         return setUp3();
     });

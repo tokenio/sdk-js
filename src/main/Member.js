@@ -399,6 +399,13 @@ export default class Member {
                             token.payloadSignatures = res.data.token.payloadSignatures;
                         }
                     });
+            })
+            .catch(err => {
+                return Promise.reject({
+                    type: "ENDORSE_TOKEN_ERROR",
+                    error: err,
+                    reason: err.response.data ? err.response.data : "UNKNOWN"
+                });
             });
     }
 
@@ -443,6 +450,13 @@ export default class Member {
                     .then(res => {
                         return new Transfer(res.data.transfer);
                     });
+            })
+            .catch(err => {
+                return Promise.reject({
+                    type: "CREATE_TRANSFER",
+                    error: err,
+                    reason: err.response.data ? err.response.data : "UNKNOWN"
+                });
             });
     }
 
