@@ -79,23 +79,25 @@ describe('Transactions and transfers', () => {
     });
 
     it('should get all transfers', () => {
-        return member1.getTransfers(token1.id).then(transfers => {
-            assert.isAtLeast(transfers.length, 1);
-            assert.isOk(transfers[0].payload.amount);
+        return member1.getTransfers(token1.id, null, 100).then(pagedResult => {
+            assert.isAtLeast(pagedResult.data.length, 1);
+            assert.isOk(pagedResult.data[0].payload.amount);
+            assert.isString(pagedResult.offset);
         });
     });
 
     it('should see transaction', () => {
-        return account1.getTransactions()
-            .then(transactions => {
-                assert.equal(transactions[0].type, 'DEBIT');
-                assert.isOk(transactions[0].id);
-                assert.isOk(transactions[0].currency);
-                assert.isOk(transactions[0].amount);
-                assert.isOk(transactions[0].description);
-                assert.isOk(transactions[0].tokenId);
-                assert.isOk(transactions[0].tokenTransferId);
-                return account1.getTransaction(transactions[0].id)
+        return account1.getTransactions(null, 100)
+            .then(pagedResult => {
+                assert.equal(pagedResult.data[0].type, 'DEBIT');
+                assert.isOk(pagedResult.data[0].id);
+                assert.isOk(pagedResult.data[0].currency);
+                assert.isOk(pagedResult.data[0].amount);
+                assert.isOk(pagedResult.data[0].description);
+                assert.isOk(pagedResult.data[0].tokenId);
+                assert.isOk(pagedResult.data[0].tokenTransferId);
+                assert.isString(pagedResult.offset);
+                return account1.getTransaction(pagedResult.data[0].id)
                     .then(transaction => {
                         assert.equal(transaction.tokenId, token1.id);
                     });

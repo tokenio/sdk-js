@@ -148,9 +148,10 @@ describe('Tokens', () => {
                     .endorseToken(token.id)
                     .then(() => {
                         return member1
-                            .getTransferTokens()
-                            .then(tokens => {
-                                assert.isAtLeast(tokens.length, 1);
+                            .getTransferTokens(null, 100)
+                            .then(pagedResult => {
+                                assert.isAtLeast(pagedResult.data.length, 1);
+                                assert.isString(pagedResult.offset);
                             });
                     });
             })
@@ -165,9 +166,9 @@ describe('Tokens', () => {
                     .endorseToken(token.id)
                     .then(() => {
                         return member2
-                            .getTransferTokens()
-                            .then(tokens => {
-                                assert.equal(tokens.length, 0);
+                            .getTransferTokens(null, 100)
+                            .then(pagedResult => {
+                                assert.equal(pagedResult.data.length, 0);
                             });
                     });
             });

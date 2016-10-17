@@ -4,7 +4,7 @@ var axios = require("axios");
 
 
 // Define your device push token here
-var pushToken = '8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554';
+var pushToken = '26C1DE4F20AA51EB45D7BFF70F1CD7D32823441CFCCAE71CD07CB24B35984917';
 
 // And choose the type of notification at the bottom
 
@@ -144,7 +144,7 @@ var transferProcessed = () => {
             return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
                 return member1.endorseToken(token.id).then(() => {
                     return member2.getToken(token.id).then(lookedUp => {
-                        return member2.redeemToken(lookedUp, 10.21, 'EUR');
+                        return member2.createTransfer(lookedUp, 10.21, 'EUR');
                     });
                 });
             });
@@ -155,7 +155,7 @@ var transferProcessed = () => {
 // notifyLinkAccounts();
 // notifyAddKey();
 // notifyBoth();
-stepUp();
-// transferProcessed().catch(err => console.log(err));
+// stepUp();
+transferProcessed();
 
 // Do only one at a time! race conditions :)

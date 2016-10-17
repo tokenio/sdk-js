@@ -47,6 +47,6 @@ describe('Token library', () => {
             .then(setUpMem2)
             .then(createAndEndorse)
             .then(() => member2.createTransfer(tokenId, 5, 'EUR'))
-            .then(() => member1.getTransfers(tokenId));
+            .then(() => member1.getTransfers(tokenId, null, 100));
     });
 });
