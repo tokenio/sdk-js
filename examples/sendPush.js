@@ -1,5 +1,5 @@
 var TokenIo = require("../dist/token-io.node.js");
-var Token = new TokenIo("prd");
+var Token = new TokenIo("local");
 var axios = require("axios");
 
 
@@ -155,7 +155,7 @@ var transferProcessed = () => {
 // notifyLinkAccounts();
 // notifyAddKey();
 // notifyBoth();
-// stepUp();
-transferProcessed();
+stepUp();
+// transferProcessed();
 
 // Do only one at a time! race conditions :)

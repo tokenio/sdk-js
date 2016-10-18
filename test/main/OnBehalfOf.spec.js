@@ -35,15 +35,22 @@ const setupGrantee = () => {
         });
 };
 
+const setupToken = () => {
+    return grantor.createAddressAccessToken(granteeAlias, address.id)
+        .then(token => grantor
+            .endorseToken(token)
+            .then(res => token))
+
+}
+
 describe('On-Behalf-Of', () => {
-    before(() => {
+    beforeEach(() => {
         return setUpGrantor().then(res =>
             setupGrantee());
     });
 
     it('address access token flow', () => {
-        return grantor
-            .createAddressAccessToken(granteeAlias, address.id)
+        return setupToken()
             .then(token => {
                 grantee.useAccessToken(token.id);
                 return grantee
@@ -53,6 +60,22 @@ describe('On-Behalf-Of', () => {
                         assert.equal(result.name, address.name);
                         assert.equal(result.data, address.data);
                     });
-            });
+                ;
+            })
+    });
+
+    it('address access token should not work if cleared token', done => {
+        setupToken()
+            .then(token => {
+                grantee.useAccessToken(token.id);
+                grantee.clearAccessToken();
+                return grantee
+                    .getAddress(address.id)
+                    .then(() => {
+                        done(new Error("Should not succeed"))
+                    })
+                    .catch(err => done());
+                ;
+            })
     });
 });
