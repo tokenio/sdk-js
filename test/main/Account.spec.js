@@ -7,13 +7,13 @@ import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
 
 let member = {};
-let alias = '';
+let username = '';
 
 describe('Account tests', () => {
     beforeEach(() => {
         const keys = Crypto.generateKeys();
-        alias = Crypto.generateKeys().keyId;
-        return Token.createMember(alias)
+        username = Crypto.generateKeys().keyId;
+        return Token.createMember(username)
             .then(res => {
                 member = res;
                 return member.approveKey(Crypto.strKey(keys.publicKey));
@@ -21,7 +21,7 @@ describe('Account tests', () => {
     });
 
     it('should get accounts', () => {
-        return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
+        return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
             return member.linkAccounts('bank-id', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
@@ -31,7 +31,7 @@ describe('Account tests', () => {
     });
 
     it('should have name and id', () => {
-        return BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp => {
+        return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
             return member.linkAccounts('bank-id', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
@@ -46,7 +46,7 @@ describe('Account tests', () => {
 
     describe('advances', () => {
         beforeEach(() => {
-            return BankClient.requestLinkAccounts(alias, 100000, 'EUR')
+            return BankClient.requestLinkAccounts(username, 100000, 'EUR')
                 .then(alp => {
                     return member.linkAccounts('bank-id', alp).then(accs => {
                         account = accs[0];

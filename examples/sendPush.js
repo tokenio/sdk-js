@@ -10,8 +10,8 @@ var pushToken = '26C1DE4F20AA51EB45D7BFF70F1CD7D32823441CFCCAE71CD07CB24B3598491
 
 
 
-var alias1 = Token.Crypto.generateKeys().keyId;
-var alias2 = Token.Crypto.generateKeys().keyId;
+var username1 = Token.Crypto.generateKeys().keyId;
+var username2 = Token.Crypto.generateKeys().keyId;
 var member1 = {};
 var member2 = {};
 var account1 = {};
@@ -22,7 +22,7 @@ const instance = axios.create({
 });
 
 var requestLinkAccounts = (
-    alias,
+    username,
     balance = 100000,
     currency = "EUR",
     accountName = "123") => {
@@ -60,7 +60,7 @@ var requestLinkAccounts = (
                 method: 'put',
                 url: `/clients/${client.id}/link-accounts`,
                 data: {
-                    alias: alias1,
+                    username: username1,
                     secret: "",
                     accounts: [randomAccNumber]
                 }
@@ -72,10 +72,10 @@ var requestLinkAccounts = (
 // Set up a first member
 const setUp1 = () => {
     return Token
-        .createMember(alias1)
+        .createMember(username1)
         .then(res => {
             member1 = res;
-            return requestLinkAccounts(alias1, 100000, 'EUR')
+            return requestLinkAccounts(username1, 100000, 'EUR')
                 .then(alp => {
                     return member1
                         .linkAccounts('bank-id', alp)
@@ -89,9 +89,9 @@ const setUp1 = () => {
 
 // Set up a second member
 const setUp2 = () => {
-    alias2 = Token.Crypto.generateKeys().keyId;
+    username2 = Token.Crypto.generateKeys().keyId;
     return Token
-        .createMember(alias2)
+        .createMember(username2)
         .then(member => {
             member2 = member;
         });
@@ -99,21 +99,21 @@ const setUp2 = () => {
 
 var notifyLinkAccounts = () => {
     return setUp1().then(() => {
-        Token.notifyLinkAccounts(alias1, 'bank-id', accountsLinkPayload);
+        Token.notifyLinkAccounts(username1, 'bank-id', accountsLinkPayload);
     });
 };
 
 var notifyAddKey = () => {
     var keys = Token.Crypto.generateKeys();
     return setUp1().then(() => {
-        Token.notifyAddKey(alias1, keys.publicKey, "Chrome 53.0");
+        Token.notifyAddKey(username1, keys.publicKey, "Chrome 53.0");
     });
 };
 
 var notifyBoth = () => {
     var keys = Token.Crypto.generateKeys();
     return setUp1().then(() => {
-        Token.notifyLinkAccountsAndAddKey(alias1, 'bank-id', accountsLinkPayload,
+        Token.notifyLinkAccountsAndAddKey(username1, 'bank-id', accountsLinkPayload,
             keys.publicKey, "Chrome 53.0");
     });
 };
@@ -127,10 +127,10 @@ var stepUp = () => {
                 .approveKey(Token.Crypto.strKey(keys.publicKey), "LOW")
                 .then(() => {
                     return Token
-                        .loginWithAlias(keys, alias1)
+                        .loginWithUsername(keys, username1)
                         .then(memberNew => {
                             return memberNew
-                                .createToken(account1.id, 900.24, "EUR", alias2)
+                                .createToken(account1.id, 900.24, "EUR", username2)
                                 .then(token => memberNew.endorseToken(token.id));
                         });
                 });
@@ -141,7 +141,7 @@ var transferProcessed = () => {
     return setUp1()
         .then(() => setUp2())
         .then(() => {
-            return member1.createToken(account1.id, 38.71, 'EUR', alias2).then(token => {
+            return member1.createToken(account1.id, 38.71, 'EUR', username2).then(token => {
                 return member1.endorseToken(token.id).then(() => {
                     return member2.getToken(token.id).then(lookedUp => {
                         return member2.createTransfer(lookedUp, 10.21, 'EUR');

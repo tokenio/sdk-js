@@ -319,21 +319,21 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
-    addAlias(prevHash, alias) {
+    addUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
-            addAlias: {
-                alias
+            addUsername: {
+                username
             }
         };
         return this._memberUpdate(update, prevHash);
     }
 
-    removeAlias(prevHash, alias) {
+    removeUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
-            removeAlias: {
-                alias
+            removeUsername: {
+                username
             }
         };
         return this._memberUpdate(update, prevHash);

@@ -8,13 +8,13 @@ import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
 
 let member = {};
-let alias = '';
+let username = '';
 
 describe('member tests', () => {
     before(() => {
         const keys = Crypto.generateKeys();
-        alias = Crypto.generateKeys().keyId;
-        return Token.createMember(alias)
+        username = Crypto.generateKeys().keyId;
+        return Token.createMember(username)
             .then(res => {
                 member = res;
                 return member.approveKey(Crypto.strKey(keys.publicKey));
@@ -35,27 +35,27 @@ describe('member tests', () => {
                 .then(keys => assert.isAtLeast(keys.length, 2));
         });
 
-        it('should add an alias', () => {
-            const alias = Crypto.generateKeys().keyId;
-            return member.addAlias(alias)
-                .then(() => member.getAllAliases())
-                .then(aliases => assert.isAtLeast(aliases.length, 2));
+        it('should add an username', () => {
+            const username = Crypto.generateKeys().keyId;
+            return member.addUsername(username)
+                .then(() => member.getAllUsernames())
+                .then(usernames => assert.isAtLeast(usernames.length, 2));
         });
 
-        it('should add and remove an alias', () => {
-            const newAlias = Crypto.generateKeys().keyId;
-            return member.addAlias(newAlias)
-                .then(() => member.removeAlias(newAlias))
-                .then(() => member.getAllAliases())
-                .then(aliases => {
-                    assert.include(aliases, alias);
-                    assert.notInclude(aliases, newAlias);
+        it('should add and remove an username', () => {
+            const newUsername = Crypto.generateKeys().keyId;
+            return member.addUsername(newUsername)
+                .then(() => member.removeUsername(newUsername))
+                .then(() => member.getAllUsernames())
+                .then(usernames => {
+                    assert.include(usernames, username);
+                    assert.notInclude(usernames, newUsername);
                 });
         });
 
-        it('should get all aliases', () => {
-            return member.getAllAliases().then(aliases => {
-                assert.isAtLeast(aliases.length, 1);
+        it('should get all usernames', () => {
+            return member.getAllUsernames().then(usernames => {
+                assert.isAtLeast(usernames.length, 1);
             });
         });
 
@@ -66,7 +66,7 @@ describe('member tests', () => {
         });
 
         it('should link an account', () => {
-            BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
+            BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(accs => {
                     assert.isAtLeast(accs.length, 2);
                 })
@@ -74,7 +74,7 @@ describe('member tests', () => {
         });
 
         it('should get accounts', () => {
-            BankClient.requestLinkAccounts(alias, 100000, 'EUR').then(alp =>
+            BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(() => {
                     return member.getAccounts().then(accs => {
                         assert.isAtLeast(accs.length, 2);

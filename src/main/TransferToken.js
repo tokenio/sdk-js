@@ -19,12 +19,12 @@ export default class BankTransferToken {
             redeemer, description, version, issuer, nonce, payloadSignatures);
     }
 
-    static create(member, accountId, amount, currency, alias, description) {
+    static create(member, accountId, amount, currency, username, description) {
         const from = {
             id: member.id
         };
         const redeemer = {
-            alias: alias
+            username: username
         };
         const instructions = {
             source: {

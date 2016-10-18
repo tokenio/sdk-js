@@ -8,13 +8,13 @@ import Crypto from "../../src/Crypto";
 import KeyLevel from "../../src/main/KeyLevel";
 
 let member = {};
-let alias = '';
+let username = '';
 describe('Key levels', () => {
     before(() => {
         const keys = Crypto.generateKeys();
-        alias = Crypto.generateKeys().keyId;
+        username = Crypto.generateKeys().keyId;
         return Token
-            .createMember(alias)
+            .createMember(username)
             .then(res => {
                 member = res;
                 return member.approveKey(Crypto.strKey(keys.publicKey));
@@ -25,7 +25,7 @@ describe('Key levels', () => {
         const keys = Crypto.generateKeys();
         return member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD).then(() => {
             return Token
-                .loginWithAlias(keys, alias)
+                .loginWithUsername(keys, username)
                 .then(memberNew => {
                     assert.equal(member.id, memberNew.id);
                 });
@@ -36,7 +36,7 @@ describe('Key levels', () => {
         const keys = Crypto.generateKeys();
         return member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
             return Token
-                .loginWithAlias(keys, alias)
+                .loginWithUsername(keys, username)
                 .then(memberNew => {
                     assert.equal(member.id, memberNew.id);
                 });
@@ -47,7 +47,7 @@ describe('Key levels', () => {
         const keys = Crypto.generateKeys();
         member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD).then(() => {
             return Token
-                .loginWithAlias(keys, alias)
+                .loginWithUsername(keys, username)
                 .then(memberNew => {
                     const keys2 = Crypto.generateKeys();
                     return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
@@ -61,7 +61,7 @@ describe('Key levels', () => {
         const keys = Crypto.generateKeys();
         member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
             return Token
-                .loginWithAlias(keys, alias)
+                .loginWithUsername(keys, username)
                 .then(memberNew => {
                     const keys2 = Crypto.generateKeys();
                     return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {

@@ -6,16 +6,16 @@ const assert = chai.assert;
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-let grantorAlias = '';
-let granteeAlias = '';
+let grantorUsername = '';
+let granteeUsername = '';
 let grantor = {};
 let grantee = {};
 let address = {};
 
 const setUpGrantor = () => {
-    grantorAlias = Sample.string();
+    grantorUsername = Sample.string();
     return Token
-        .createMember(grantorAlias)
+        .createMember(grantorUsername)
         .then(res => {
             grantor = res;
             grantor
@@ -27,16 +27,16 @@ const setUpGrantor = () => {
 };
 
 const setupGrantee = () => {
-    granteeAlias = Sample.string();
+    granteeUsername = Sample.string();
     return Token
-        .createMember(granteeAlias)
+        .createMember(granteeUsername)
         .then(res => {
             grantee = res;
         });
 };
 
 const setupToken = () => {
-    return grantor.createAddressAccessToken(granteeAlias, address.id)
+    return grantor.createAddressAccessToken(granteeUsername, address.id)
         .then(token => grantor
             .endorseToken(token)
             .then(res => token))

@@ -98,32 +98,32 @@ export default class Member {
     }
 
     /**
-     * Adds an alias to this member
-     * @param {string} alias - alias to add
+     * Adds an username to this member
+     * @param {string} username - username to add
      * @return {Promise} empty empty promise
      */
-    addAlias(alias) {
+    addUsername(username) {
         return this._getPreviousHash()
             .then(prevHash =>
                 this._client
-                    .addAlias(prevHash, alias)
+                    .addUsername(prevHash, username)
                     .then(res => undefined))
-            .catch(err => this._reject(this.addAlias, err));
+            .catch(err => this._reject(this.addUsername, err));
     }
 
     /**
-     * Removes an alias from the memberId
-     * @param {string} alias - alias to remove
+     * Removes an username from the memberId
+     * @param {string} username - username to remove
      * @return {Promise} empty - empty promise
      */
-    removeAlias(alias) {
+    removeUsername(username) {
         return this
             ._getPreviousHash()
             .then(prevHash =>
                 this._client
-                    .removeAlias(prevHash, alias)
+                    .removeUsername(prevHash, username)
                     .then(res => undefined))
-            .catch(err => this._reject(this.removeAlias, err));
+            .catch(err => this._reject(this.removeUsername, err));
     }
 
     /**
@@ -259,20 +259,20 @@ export default class Member {
     }
 
     /**
-     * Gets all of the member's aliases
-     * @return {Promise} aliases - member's aliases
+     * Gets all of the member's usernames
+     * @return {Promise} usernames - member's usernames
      */
-    getAllAliases() {
+    getAllUsernames() {
         return this
             ._getMember()
-            .then(member => member.aliases)
-            .catch(err => this._reject(this.getAllAliases, err));
+            .then(member => member.usernames)
+            .catch(err => this._reject(this.getAllUsernames, err));
     }
 
     /**
      * Creates a new unendorsed Access Token
      *
-     * @param {string} grantee - the alias of the grantee
+     * @param {string} grantee - the username of the grantee
      * @param {object} resources - an array of resources
      * @return {Promise} token - promise of a created AccessToken
      */
@@ -289,7 +289,7 @@ export default class Member {
     /**
      * Creates a new Address Access Token
      *
-     * @param {string} grantee - the alias of the grantee
+     * @param {string} grantee - the username of the grantee
      * @param {string} addressId - an optional addressId
      * @return {Promise} token - promise of a created AccessToken
      */
@@ -306,7 +306,7 @@ export default class Member {
     /**
      * Creates a new Account Access Token
      *
-     * @param {string} grantee - the alias of the grantee
+     * @param {string} grantee - the username of the grantee
      * @param {string} accountId - an optional accountId
      * @return {Promise} token - promise of a created AccessToken
      */
@@ -323,7 +323,7 @@ export default class Member {
     /**
      * Creates a new Transaction Access Token
      *
-     * @param {string} grantee - the alias of the grantee
+     * @param {string} grantee - the username of the grantee
      * @param {string} accountId - an optional accountId
      * @return {Promise} token - promise of a created AccessToken
      */
@@ -343,13 +343,13 @@ export default class Member {
      * @param {string} accountId - id of the source account
      * @param {double} amount - amount limit on the token
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
-     * @param {string} alias - alias of the redeemer of this token
+     * @param {string} username - username of the redeemer of this token
      * @param {string} description - optional description for the token
      * @return {Promise} token - promise of a created TransferToken
      */
-    createToken(accountId, amount, currency, alias, description = undefined) {
+    createToken(accountId, amount, currency, username, description = undefined) {
         const token = TransferToken.create(this, accountId, amount,
-            currency, alias, description);
+            currency, username, description);
         return this._client
             .createToken(token.json)
             .then(res => {
@@ -449,8 +449,6 @@ export default class Member {
             })
             .catch(err => this._reject(this.cancelToken, err));
     }
-
-
 
     /**
      * Redeems a token. (Called by the payee or redeemer)

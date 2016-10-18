@@ -43,14 +43,14 @@ Note that information token support has not yet been added to this sdk.
 
 #### Token
 ```
-static Token.aliasExists(alias) => Promise(boolean)
-static Token.createMember(alias) => Promise(Member)
+static Token.usernameExists(username) => Promise(boolean)
+static Token.createMember(username) => Promise(Member)
 static Token.loginMember(memberId, keys) => Promise(Member)
 static Token.loginFromLocalStorage() => Promise(Member)
-static Token.loginWithAlias(keys, alias) => Promise(Member)
-static Token.notifyAddKey(alias, publicKey, name="") => Promise()
-static Token.notifyLinkAccounts(alias, bankCode, accountsLinkPayload) => Promise()
-static Token.notifyLinkAccountsAndAddKey(alias, bankCode, accountsLinkPayload, publicKey, name="")
+static Token.loginWithUsername(keys, username) => Promise(Member)
+static Token.notifyAddKey(username, publicKey, name="") => Promise()
+static Token.notifyLinkAccounts(username, bankCode, accountsLinkPayload) => Promise()
+static Token.notifyLinkAccountsAndAddKey(username, bankCode, accountsLinkPayload, publicKey, name="")
   => Promise()
 ```
 
@@ -61,8 +61,8 @@ member.approveKey(publicKey, level="PRIVILEGED")
   => Promise()
 member.removeKey(keyId)
   => Promise()
-member.addAlias(alias) => Promise()
-member.removeAlias(alias) => Promise()
+member.addUsername(username) => Promise()
+member.removeUsername(username) => Promise()
 member.linkAccounts(bankId, accountsLinkPayload)
   => Promise(Account[])
 member.getAccounts() => Promise(Account[])
@@ -71,11 +71,11 @@ member.subscribeToNotifications(notificationUri, provider=“Token”,
 member.getSubscribers() =>  Promise(Subscriber [])
 member.getSubscriber(subscriberId) =>  Promise(Subscriber)
 member.unsubscribeFromNotifications(subscriberId) =>  Promise()
-member.getAllAliases() => Promise(string[])
+member.getAllUsernames() => Promise(string[])
 member.getPublicKeys() => Promise(key[])
 member.addAddress(name, address) => Promise()
 member.getAddresses() => Promise(Address[])
-member.createTransferToken(amount, currency, alias, description)
+member.createTransferToken(amount, currency, username, description)
   => Promise(TransferToken)
 member.getTransferToken(tokenId) => Promise(TransferToken)
 member.getTransferTokens() => Promise(TransferToken[])
@@ -145,19 +145,19 @@ transfer.payloadSignatures => signatures
 ## Sales Demo
 
 ### Bank
-* ```Token.requestLinkAccounts(alias, accountsLinkPayload)```
-* ```Token.notifyLinkAccountsAndAddKey(alias, bank-id, accountsLinkPayload, publicKey, name)```
-* ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.requestLinkAccounts(username, accountsLinkPayload)```
+* ```Token.notifyLinkAccountsAndAddKey(username, bank-id, accountsLinkPayload, publicKey, name)```
+* ```Token.loginWithUsername(keys, username)``` (loop, for seeing if we’re authenticated)
 * ```member.saveToLocalStorage()```
 
 ### Merchant
 * ```Token.loginFromLocalStorage()```
 
 If fails:
-* ```member.notifyAddKey(alias, publicKey)```
+* ```member.notifyAddKey(username, publicKey)```
 
 Then
-* ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.loginWithUsername(keys, username)``` (loop, for seeing if we’re authenticated)
 * ```member.getAccounts()```
 * ```member.getAddresses()```
 * ```member.createTransferToken(accountId, amount, currency)```
@@ -174,10 +174,10 @@ Either way: return tokenID to merchant, who does:
 * ```Token.loginFromLocalStorage()```
 
 If fails:
-* ```member.notifyAddKey(alias, publicKey)```
+* ```member.notifyAddKey(username, publicKey)```
 
 Then
-* ```Token.loginWithAlias(keys, alias)``` (loop, for seeing if we’re authenticated)
+* ```Token.loginWithUsername(keys, username)``` (loop, for seeing if we’re authenticated)
 * ```member.createAccessToken(acl list...)```
 * ```member.endorseAccessToken(token)```
 

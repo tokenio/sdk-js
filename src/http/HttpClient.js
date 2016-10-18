@@ -19,9 +19,9 @@ class HttpClient {
         return this._instance(config);
     }
 
-    notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
+    notifyLinkAccounts(username, bankId, accountsLinkPayload) {
         const req = {
-            alias,
+            username,
             bankId,
             accountsLinkPayload
         };
@@ -33,9 +33,9 @@ class HttpClient {
         return this._instance(config);
     }
 
-    notifyAddKey(alias, publicKey, name) {
+    notifyAddKey(username, publicKey, name) {
         const req = {
-            alias,
+            username,
             publicKey: Crypto.strKey(publicKey),
             name
         };
@@ -47,18 +47,18 @@ class HttpClient {
         return this._instance(config);
     }
 
-    aliasExists(alias) {
+    usernameExists(username) {
         const config = {
             method: 'get',
-            url: `/alias-exists?alias=${alias}`
+            url: `/username-exists?username=${username}`
         }
         return this._instance(config);
      }
 
-    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload,
+    notifyLinkAccountsAndAddKey(username, bankId, accountsLinkPayload,
                                        publicKey, name) {
         const req = {
-            alias,
+            username,
             bankId,
             accountsLinkPayload,
             publicKey: Crypto.strKey(publicKey),
@@ -72,9 +72,9 @@ class HttpClient {
         return this._instance(config);
     }
 
-    notify(alias, notification) {
+    notify(username, notification) {
         const req = {
-            alias,
+            username,
             notification
         };
         const config = {

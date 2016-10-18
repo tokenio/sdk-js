@@ -51,7 +51,7 @@ describe('AuthHttpClient', () => {
             });
     });
 
-    it('should add aliases', () => {
+    it('should add usernames', () => {
         const unauthenticatedClient = new HttpClient(TEST_ENV);
         const keys = Crypto.generateKeys();
         return unauthenticatedClient
@@ -62,20 +62,20 @@ describe('AuthHttpClient', () => {
                     .addFirstKey(keys, res.data.memberId)
                     .then(res2 => {
                         const client = new AuthHttpClient(TEST_ENV, res.data.memberId, keys);
-                        client.addAlias(res2.data.member.lastHash, Crypto.generateKeys().keyId)
+                        client.addUsername(res2.data.member.lastHash, Crypto.generateKeys().keyId)
                             .then(res3 => {
-                                assert.equal(res3.data.member.aliases.length, 1);
+                                assert.equal(res3.data.member.usernames.length, 1);
                                 return client
-                                    .addAlias(res3.data.member.lastHash, Crypto.generateKeys().keyId)
+                                    .addUsername(res3.data.member.lastHash, Crypto.generateKeys().keyId)
                                     .then(res4 => {
-                                        assert.equal(res4.data.member.aliases.length, 2);
+                                        assert.equal(res4.data.member.usernames.length, 2);
                                     });
                             })
                     });
             });
     });
 
-    it('should remove aliases', () => {
+    it('should remove usernames', () => {
         const unauthenticatedClient = new HttpClient(TEST_ENV);
         const keys = Crypto.generateKeys();
         return unauthenticatedClient
@@ -87,18 +87,18 @@ describe('AuthHttpClient', () => {
                     .then(res2 => {
                         const client = new AuthHttpClient(TEST_ENV, res.data.memberId, keys);
                         client
-                            .addAlias(res2.data.member.lastHash, Crypto.generateKeys().keyId)
+                            .addUsername(res2.data.member.lastHash, Crypto.generateKeys().keyId)
                             .then(res3 => {
-                                assert.equal(res3.data.member.aliases.length, 1);
-                                const secondAlias = Crypto.generateKeys().keyId;
+                                assert.equal(res3.data.member.usernames.length, 1);
+                                const secondUsername = Crypto.generateKeys().keyId;
                                 return client
-                                    .addAlias(res3.data.member.lastHash, secondAlias)
+                                    .addUsername(res3.data.member.lastHash, secondUsername)
                                     .then(res4 => {
-                                        assert.equal(res4.data.member.aliases.length, 2);
+                                        assert.equal(res4.data.member.usernames.length, 2);
                                         return client
-                                            .removeAlias(res4.data.member.lastHash, secondAlias)
+                                            .removeUsername(res4.data.member.lastHash, secondUsername)
                                             .then(res5 => {
-                                                assert.equal(res5.data.member.aliases.length, 1);
+                                                assert.equal(res5.data.member.usernames.length, 1);
                                             });
                                     });
                             })

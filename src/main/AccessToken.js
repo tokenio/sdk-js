@@ -6,13 +6,13 @@ export default class AccessToken {
      * Creates an Address AccessToken
      *
      * @param {Member} member - the member granting resource access
-     * @param {string} toAlias - the alias of the grantee
+     * @param {string} toUsername - the username of the grantee
      * @param {string} addressId - an optional address id
      * @returns {AccessToken} - the access token created
      */
-    static addressAccessToken(member, toAlias, addressId) {
+    static addressAccessToken(member, toUsername, addressId) {
         const from = {id: member.id};
-        const to = {alias: toAlias};
+        const to = {username: toUsername};
         const resource = {
             address: {
                 addressId: addressId
@@ -30,13 +30,13 @@ export default class AccessToken {
      * Creates an Account AccessToken
      *
      * @param {Member} member - the member granting resource access
-     * @param {string} toAlias - the alias of the grantee
+     * @param {string} toUsername - the username of the grantee
      * @param {string} accountId - an optional account id
      * @returns {AccessToken} - the access token created
      */
-    static accountAccessToken(member, toAlias, accountId) {
+    static accountAccessToken(member, toUsername, accountId) {
         const from = {id: member.id};
-        const to = {alias: toAlias};
+        const to = {username: toUsername};
         const resource = {
             account: {
                 accountId: accountId
@@ -54,13 +54,13 @@ export default class AccessToken {
      * Creates a Transaction AccessToken
      *
      * @param {Member} member - the member granting resource access
-     * @param {string} toAlias - the alias of the grantee
+     * @param {string} toUsername - the username of the grantee
      * @param {string} accountId - an optional account id
      * @returns {AccessToken} - the access token created
      */
-    static transactionAccessToken(member, toAlias, accountId) {
+    static transactionAccessToken(member, toUsername, accountId) {
         const from = {id: member.id};
-        const to = {alias: toAlias};
+        const to = {username: toUsername};
         const resource = {
             transaction: {
                 accountId: accountId

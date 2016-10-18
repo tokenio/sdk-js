@@ -6,8 +6,8 @@ const axios = require('axios');
 /**
  * Authenticated client for making requests to the Token gateway
  */
-class AuthHttpClientAlias {
-    constructor(env, alias, keys){
+class AuthHttpClientUsername {
+    constructor(env, username, keys){
         this._instance = axios.create({
             baseURL: urls[env]
         });
@@ -15,12 +15,12 @@ class AuthHttpClientAlias {
         const authHeader = new AuthHeader(urls[env], keys);
 
         this._instance.interceptors.request.use((config) => {
-            authHeader.addAuthorizationHeaderAlias(alias, config, undefined);
+            authHeader.addAuthorizationHeaderUsername(username, config, undefined);
             return config;
         });
     }
 
-    getMemberByAlias() {
+    getMemberByUsername() {
         const config = {
             method: 'get',
             url: `/members`
@@ -29,4 +29,4 @@ class AuthHttpClientAlias {
     }
 }
 
-export default AuthHttpClientAlias;
+export default AuthHttpClientUsername;

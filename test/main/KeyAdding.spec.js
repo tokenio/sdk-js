@@ -6,15 +6,15 @@ const Token = new tokenIo(TEST_ENV);
 import Crypto from "../../src/Crypto";
 
 let member = {};
-let alias = '';
+let username = '';
 
 describe('Key addition detection', () => {
 
     beforeEach(() => {
         const keys = Crypto.generateKeys();
-        alias = Crypto.generateKeys().keyId;
+        username = Crypto.generateKeys().keyId;
         return Token
-            .createMember(alias)
+            .createMember(username)
             .then(res => {
                 member = res;
                 return member.approveKey(Crypto.strKey(keys.publicKey));
@@ -24,7 +24,7 @@ describe('Key addition detection', () => {
     it('should not have access before being added', done => {
         const keys = Crypto.generateKeys();
         Token
-            .loginWithAlias(keys, alias)
+            .loginWithUsername(keys, username)
             .then(ignored => { done(new Error("should fail")); })
             .catch(() => done());
     });
@@ -34,7 +34,7 @@ describe('Key addition detection', () => {
         return member
             .approveKey(Crypto.strKey(keys.publicKey))
             .then(() => {
-                return Token.loginWithAlias(keys, alias);
+                return Token.loginWithUsername(keys, username);
             })
             .then(memberNew => {
                 assert.equal(member.id, memberNew.id);

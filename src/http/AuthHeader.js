@@ -11,7 +11,7 @@ class AuthHeader {
     }
     /*
      * Adds an authorization header with the identity set as the memberId. This is preferrable
-     * to alias identity, because it reduces trust required (no alias lookup)
+     * to username identity, because it reduces trust required (no username lookup)
      */
     addAuthorizationHeaderMemberId(memberId, config, context) {
         const identity = 'member-id=' + memberId;
@@ -19,11 +19,11 @@ class AuthHeader {
     }
 
     /*
-     * Adds an authorization header with identity set as the alias. Useful when
+     * Adds an authorization header with identity set as the username. Useful when
      * on a browser that doesn't yet have a memberId
      */
-    addAuthorizationHeaderAlias(alias, config, context) {
-        const identity = 'alias=' + alias;
+    addAuthorizationHeaderUsername(username, config, context) {
+        const identity = 'username=' + username;
         this.addAuthorizationHeader(identity, config, context);
     }
 

@@ -12,21 +12,21 @@ const some = require('lodash/some');
 const map = require('lodash/map');
 
 let member1 = {};
-let alias1 = '';
+let username1 = '';
 let account1 = {};
 
-let alias2 = '';
+let username2 = '';
 let member2 = {};
 
 // Set up a first member
 const setUp1 = () => {
-    alias1 = Crypto.generateKeys().keyId;
+    username1 = Crypto.generateKeys().keyId;
     return Token
-        .createMember(alias1)
+        .createMember(username1)
         .then(res => {
             member1 = res;
             return BankClient
-                .requestLinkAccounts(alias1, 100000, 'EUR')
+                .requestLinkAccounts(username1, 100000, 'EUR')
                 .then(alp => {
                     return member1
                         .linkAccounts('bank-id', alp)
@@ -39,9 +39,9 @@ const setUp1 = () => {
 
 // Set up a second member
 const setUp2 = () => {
-    alias2 = Crypto.generateKeys().keyId;
+    username2 = Crypto.generateKeys().keyId;
     return Token
-        .createMember(alias2)
+        .createMember(username2)
         .then(member => {
             member2 = member;
         });
@@ -52,31 +52,31 @@ describe('Tokens', () => {
         return Promise.all([setUp1(), setUp2()]);
     });
 
-    it('should confirm alias does not exist', () => {
+    it('should confirm username does not exist', () => {
       return Token
-          .aliasExists(Crypto.generateKeys().keyId)
+          .usernameExists(Crypto.generateKeys().keyId)
           .then(exists => assert.equal(exists, false));
     });
 
-    it('should confirm alias exists', () => {
-      const alias = Crypto.generateKeys().keyId;
+    it('should confirm username exists', () => {
+      const username = Crypto.generateKeys().keyId;
       member1
-          .addAlias(alias)
+          .addUsername(username)
           .then(() => Token
-              .aliasExists(alias))
+              .usernameExists(username))
               .then(exists => assert.equal(exists, true));
     });
 
     it('should create a token, look it up, and endorse it', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 assert.isAtLeast(token.id.length, 5);
                 assert.equal(token.version, '1.0');
                 assert.equal(token.issuer.id, 'iron-bank');
                 assert.equal(token.from.id, member1.id);
                 assert.equal(token.description, undefined);
-                assert.equal(token.redeemer.alias, alias2);
+                assert.equal(token.redeemer.username, username2);
                 assert.equal(token.amount, 9.24);
                 assert.equal(token.currency, defaultCurrency);
                 return member1
@@ -94,7 +94,7 @@ describe('Tokens', () => {
 
     it('should create a token and endorse it by id', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 return member1
                     .endorseToken(token.id)
@@ -111,7 +111,7 @@ describe('Tokens', () => {
 
     it('should create a token and cancel it', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 return member1
                     .cancelToken(token)
@@ -124,7 +124,7 @@ describe('Tokens', () => {
 
     it('should create token and cancel it by id', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 return member1
                     .cancelToken(token.id)
@@ -142,7 +142,7 @@ describe('Tokens', () => {
 
     it('should create token, and look it up', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 return member1
                     .endorseToken(token.id)
@@ -160,7 +160,7 @@ describe('Tokens', () => {
 
     it('should create token, and look it up, second member', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 return member1
                     .endorseToken(token.id)
@@ -176,7 +176,7 @@ describe('Tokens', () => {
 
     it('should create token, and look it up, second member, tokenId', () => {
         return member1
-            .createToken(account1.id, 9.24, defaultCurrency, alias2)
+            .createToken(account1.id, 9.24, defaultCurrency, username2)
             .then(token => {
                 return member1
                     .endorseToken(token.id)
@@ -199,10 +199,10 @@ describe('Tokens', () => {
                 .approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD)
                 .then(() => {
                     return Token
-                        .loginWithAlias(keys, alias1)
+                        .loginWithUsername(keys, username1)
                         .then(memberNew => {
                             return memberNew
-                                .createToken(account1.id, 900.24, defaultCurrency, alias2)
+                                .createToken(account1.id, 900.24, defaultCurrency, username2)
                                 .then(
                                     token => {
                                         return memberNew

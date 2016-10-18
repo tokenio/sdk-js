@@ -11,17 +11,17 @@ import {defaultCurrency} from "../../src/constants";
 
 let member1 = {};
 let account1 = {};
-let alias1 = {};
+let username1 = {};
 
 // Set up a first member
 const setUp1 = () => {
-    alias1 = Crypto.generateKeys().keyId;
+    username1 = Crypto.generateKeys().keyId;
     return Token
-        .createMember(alias1)
+        .createMember(username1)
         .then(res => {
             member1 = res;
             BankClient
-                .requestLinkAccounts(alias1, 100000, 'EUR')
+                .requestLinkAccounts(username1, 100000, 'EUR')
                 .then(alp => member1
                     .linkAccounts('bank-id', alp)
                     .then(accs => {
@@ -38,7 +38,7 @@ describe('TransferTokens', () => {
 
     it('create a transfer token object', () => {
         const token = TransferToken
-            .create(member1, account1.id, 12.54, defaultCurrency, alias1, 'desc');
+            .create(member1, account1.id, 12.54, defaultCurrency, username1, 'desc');
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);

@@ -4,7 +4,7 @@ import Member from "./main/Member";
 import KeyLevel from "./main/KeyLevel";
 import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
-import AuthHttpClientAlias from "./http/AuthHttpClientAlias";
+import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
@@ -21,24 +21,24 @@ class Token {
     }
 
     /**
-     * Checks if a given alias already exists
-     * @param {string} alias - alias to check
-     * @return {Promise} result - true if alias exists, false otherwise
+     * Checks if a given username already exists
+     * @param {string} username - username to check
+     * @return {Promise} result - true if username exists, false otherwise
      */
-    aliasExists(alias) {
+    usernameExists(username) {
         return this._unauthenticatedClient
-            .aliasExists(alias)
+            .usernameExists(username)
             // Workaround for a default value case when protobuf does not serialize it.
             .then(res => res.data.exists ? res.data.exists : false)
-            .catch(err => this._reject(this.aliasExists, err));
+            .catch(err => this._reject(this.usernameExists, err));
     }
 
     /**
-     * Creates a member with an alias and a keypair
-     * @param  {string} alias - alias to set for member
+     * Creates a member with an username and a keypair
+     * @param  {string} username - username to set for member
      * @return {Promise} member - Promise of created Member
      */
-    createMember(alias) {
+    createMember(username) {
         const keys = Crypto.generateKeys();
         return this._unauthenticatedClient
             .createMemberId()
@@ -47,7 +47,7 @@ class Token {
                 .then(() => {
                     const member = new Member(this._env, response.data.memberId, keys);
                     return member
-                        .addAlias(alias)
+                        .addUsername(username)
                         .then(() => member);
                 })
             )
@@ -66,18 +66,18 @@ class Token {
     }
 
     /**
-     * Log in a member by keys and alias. This is useful for checking whether we are
+     * Log in a member by keys and username. This is useful for checking whether we are
      * authenticated, after requesting to add a key (by notification). Can call this
      * every n seconds until it succeeds
      * @param  {object} keys - Member keys
-     * @param  {string} alias - alias to authenticate with
+     * @param  {string} username - username to authenticate with
      * @return {Promise} member - instantiated Member, if successful
      */
-    loginWithAlias(keys, alias) {
-        return new AuthHttpClientAlias(this._env, alias, keys)
-            .getMemberByAlias()
+    loginWithUsername(keys, username) {
+        return new AuthHttpClientUsername(this._env, username, keys)
+            .getMemberByUsername()
             .then(res => new Member(this._env, res.data.member.id, keys))
-            .catch(err => this._reject(this.loginWithAlias, err));
+            .catch(err => this._reject(this.loginWithUsername, err));
     }
 
     /**
@@ -92,52 +92,52 @@ class Token {
     /**
      * Notifies subscribers that accounts should be linked, and passes the bank id and
      * payload
-     * @param {string} alias - alias to notify
+     * @param {string} username - username to notify
      * @param {string} bankId - If of the bank owning the accounts
      * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
      * @return {Promise} empty - empty
      */
-    notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
+    notifyLinkAccounts(username, bankId, accountsLinkPayload) {
         const notification = {
             linkAccounts: {
                 bankId,
                 accountsLinkPayload
             }
         };
-        return this._unauthenticatedClient.notify(alias, notification)
+        return this._unauthenticatedClient.notify(username, notification)
             .catch(err => this._reject(this.notifyLinkAccounts, err));
     }
 
     /**
      * Notifies subscribers that a key should be added and passes the public Key and
      * optional name
-     * @param {string} alias - alias to notify
+     * @param {string} username - username to notify
      * @param {string} publicKey - public
      * @param {string} name - name for the new key, (e.g Chrome 53.0)
      * @return {Promise} empty - empty
      */
-    notifyAddKey(alias, publicKey, name = '') {
+    notifyAddKey(username, publicKey, name = '') {
         const notification = {
             addKey: {
                 publicKey: Crypto.strKey(publicKey),
                 name
             }
         };
-        return this._unauthenticatedClient.notify(alias, notification)
+        return this._unauthenticatedClient.notify(username, notification)
             .catch(err => this._reject(this.notifyAddKey, err));
     }
 
     /**
      * Notifies subscribed devices that accounts should be linked, and passes the bank id and
      * payload
-     * @param {string} alias - alias to notify
+     * @param {string} username - username to notify
      * @param {string} bankId - If of the bank owning the accounts
      * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
      * @param {string} publicKey - public
      * @param {array} name - name for the new key, (e.g Chrome 53.0)
      * @return {Promise} empty - empty
      */
-    notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey, name = "") {
+    notifyLinkAccountsAndAddKey(username, bankId, accountsLinkPayload, publicKey, name = "") {
         const notification = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
@@ -150,7 +150,7 @@ class Token {
                 }
             }
         };
-        return this._unauthenticatedClient.notify(alias, notification)
+        return this._unauthenticatedClient.notify(username, notification)
             .catch(err => this._reject(this.notifyLinkAccountsAndAddKey, err));
 ;
     }

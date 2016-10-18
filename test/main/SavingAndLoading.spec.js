@@ -7,14 +7,14 @@ const Token = new tokenIo(TEST_ENV);
 import Crypto from "../../src/Crypto";
 
 let member1 = {};
-let alias1 = '';
+let username1 = '';
 
 // Set up a first member
 const setUp1 = () => {
-    alias1 = Crypto.generateKeys().keyId;
+    username1 = Crypto.generateKeys().keyId;
 
     return Token
-        .createMember(alias1)
+        .createMember(username1)
         .then(res => {
             member1 = res;
             return true;
