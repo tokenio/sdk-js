@@ -49,7 +49,7 @@ describe('Notifications', () => {
       .then(subscriber => {
         member1.unsubscribeFromNotifications(subscriber.id)
           .then(() => {
-              Token.notifyLinkAccounts(username1, "bank-id", "alp...")
+              Token.notifyLinkAccounts(username1, "bank-id", 'bank-name', "alp...")
                   .then(() => {
                       done(new Error("Should fail"));
                   }).catch(() => done());
@@ -61,8 +61,7 @@ describe('Notifications', () => {
         const target = Crypto.generateKeys().keyId;
         return member1.subscribeToNotifications(target)
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-            .then(alp => Token.notifyLinkAccounts(username1,
-                'bank-id', alp));
+            .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));
     });
 
     it('should send a push for adding key', () => {
@@ -78,14 +77,19 @@ describe('Notifications', () => {
         const keys = Crypto.generateKeys();
         return member1.subscribeToNotifications(randomStr)
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-            .then(alp => Token.notifyLinkAccountsAndAddKey(username1, 'bank-id', alp,
-                keys.publicKey, "Chrome 51.0"));
+            .then(alp => Token.notifyLinkAccountsAndAddKey(
+                username1,
+                'bank-id',
+                'bank-name',
+                alp,
+                keys.publicKey,
+                'Chrome 51.0'));
     });
 
     it('should send an actual push to device', () => {
         return member1.subscribeToNotifications('8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B' +
             '8E5F9402554000')
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-            .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', alp));
+            .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));
     });
 });

@@ -93,14 +93,16 @@ class Token {
      * Notifies subscribers that accounts should be linked, and passes the bank id and
      * payload
      * @param {string} username - username to notify
-     * @param {string} bankId - If of the bank owning the accounts
+     * @param {string} bankId - ID of the bank owning the accounts
+     * @param {string} bankName - name of the bank owning the accounts
      * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
      * @return {Promise} empty - empty
      */
-    notifyLinkAccounts(username, bankId, accountsLinkPayload) {
+    notifyLinkAccounts(username, bankId, bankName, accountsLinkPayload) {
         const notification = {
             linkAccounts: {
                 bankId,
+                bankName,
                 accountsLinkPayload
             }
         };
@@ -131,17 +133,19 @@ class Token {
      * Notifies subscribed devices that accounts should be linked, and passes the bank id and
      * payload
      * @param {string} username - username to notify
-     * @param {string} bankId - If of the bank owning the accounts
+     * @param {string} bankId - ID of the bank owning the accounts
+     * @param {string} bankName - name of the bank owning the accounts
      * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
      * @param {string} publicKey - public
      * @param {array} name - name for the new key, (e.g Chrome 53.0)
      * @return {Promise} empty - empty
      */
-    notifyLinkAccountsAndAddKey(username, bankId, accountsLinkPayload, publicKey, name = "") {
+    notifyLinkAccountsAndAddKey(username, bankId, bankName, accountsLinkPayload, publicKey, name = "") {
         const notification = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
                     bankId,
+                    bankName,
                     accountsLinkPayload
                 },
                 addKey: {

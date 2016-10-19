@@ -99,7 +99,7 @@ const setUp2 = () => {
 
 var notifyLinkAccounts = () => {
     return setUp1().then(() => {
-        Token.notifyLinkAccounts(username1, 'bank-id', accountsLinkPayload);
+        Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', accountsLinkPayload);
     });
 };
 
@@ -113,8 +113,13 @@ var notifyAddKey = () => {
 var notifyBoth = () => {
     var keys = Token.Crypto.generateKeys();
     return setUp1().then(() => {
-        Token.notifyLinkAccountsAndAddKey(username1, 'bank-id', accountsLinkPayload,
-            keys.publicKey, "Chrome 53.0");
+        Token.notifyLinkAccountsAndAddKey(
+            username1,
+            'bank-id',
+            'bank-name',
+            accountsLinkPayload,
+            keys.publicKey,
+            "Chrome 53.0");
     });
 };
 
