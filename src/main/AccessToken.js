@@ -3,7 +3,28 @@ import {accessTokenVersion} from "../constants";
 
 export default class AccessToken {
     /**
-     * Creates an Address AccessToken
+     * Creates Addresses AccessToken.
+     *
+     * @param {Member} member - the member granting resource access
+     * @param {string} toUsername - the username of the grantee
+     * @returns {AccessToken} - the access token created
+     */
+    static addressesAccessToken(member, toUsername) {
+        const from = {id: member.id};
+        const to = {username: toUsername};
+        const resource = {
+            allAddresses: {}
+        };
+
+        return new AccessToken(
+            undefined,
+            from,
+            to,
+            [resource]);
+    }
+
+    /**
+     * Creates Address AccessToken.
      *
      * @param {Member} member - the member granting resource access
      * @param {string} toUsername - the username of the grantee
@@ -27,7 +48,28 @@ export default class AccessToken {
     }
 
     /**
-     * Creates an Account AccessToken
+     * Creates Accounts AccessToken.
+     *
+     * @param {Member} member - the member granting resource access
+     * @param {string} toUsername - the username of the grantee
+     * @returns {AccessToken} - the access token created
+     */
+    static accountsAccessToken(member, toUsername) {
+        const from = {id: member.id};
+        const to = {username: toUsername};
+        const resource = {
+            allAccounts: {}
+        };
+
+        return new AccessToken(
+            undefined,
+            from,
+            to,
+            [resource]);
+    }
+
+    /**
+     * Creates an Account AccessToken.
      *
      * @param {Member} member - the member granting resource access
      * @param {string} toUsername - the username of the grantee
@@ -51,18 +93,84 @@ export default class AccessToken {
     }
 
     /**
-     * Creates a Transaction AccessToken
+     * Creates Account Transactions AccessToken.
+     *
+     * @param {Member} member - the member granting resource access
+     * @param {string} toUsername - the username of the grantee
+     * @returns {AccessToken} - the access token created
+     */
+    static accountsTransactionsAccessToken(member, toUsername) {
+        const from = {id: member.id};
+        const to = {username: toUsername};
+        const resource = {
+            allTransactions: {}
+        };
+
+        return new AccessToken(
+            undefined,
+            from,
+            to,
+            [resource]);
+    }
+
+    /**
+     * Creates an Account Transaction AccessToken.
      *
      * @param {Member} member - the member granting resource access
      * @param {string} toUsername - the username of the grantee
      * @param {string} accountId - an optional account id
      * @returns {AccessToken} - the access token created
      */
-    static transactionAccessToken(member, toUsername, accountId) {
+    static accountTransactionsAccessToken(member, toUsername, accountId) {
         const from = {id: member.id};
         const to = {username: toUsername};
         const resource = {
-            transaction: {
+            transactions: {
+                accountId: accountId
+            }
+        };
+
+        return new AccessToken(
+            undefined,
+            from,
+            to,
+            [resource]);
+    }
+
+    /**
+     * Creates Balances AccessToken.
+     *
+     * @param {Member} member - the member granting resource access
+     * @param {string} toUsername - the username of the grantee
+     * @returns {AccessToken} - the access token created
+     */
+    static balancesAccessToken(member, toUsername) {
+        const from = {id: member.id};
+        const to = {username: toUsername};
+        const resource = {
+            allBalances: {}
+        };
+
+        return new AccessToken(
+            undefined,
+            from,
+            to,
+            [resource]);
+    }
+
+    /**
+     * Creates a Balance AccessToken.
+     *
+     * @param {Member} member - the member granting resource access
+     * @param {string} toUsername - the username of the grantee
+     * @param {string} accountId - an optional account id
+     * @returns {AccessToken} - the access token created
+     */
+    static balanceAccessToken(member, toUsername, accountId) {
+        const from = {id: member.id};
+        const to = {username: toUsername};
+        const resource = {
+            balance: {
                 accountId: accountId
             }
         };

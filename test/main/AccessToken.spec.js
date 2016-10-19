@@ -38,6 +38,17 @@ describe('AccessTokens', () => {
         assert.equal(json.access.resources[0].address.addressId, addressId)
     });
 
+    it('create an all addresses access token object', () => {
+        const username = Sample.string();
+        const token = AccessToken.addressesAccessToken(member, username);
+        const json = token.json;
+        assert.equal(json.version, '1.0');
+        assert.isOk(json.nonce);
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.username, username);
+        assert.isNotNull(json.access.resources[0].allAddresses)
+    });
+
     it('create an account access token object', () => {
         const username = Sample.string();
         const accountId = Sample.string();
@@ -50,15 +61,60 @@ describe('AccessTokens', () => {
         assert.equal(json.access.resources[0].account.accountId, accountId)
     });
 
-    it('create a transaction access token object', () => {
+    it('create an all accounts access token object', () => {
         const username = Sample.string();
-        const accountId = Sample.string();
-        const token = AccessToken.transactionAccessToken(member, username, accountId);
+        const token = AccessToken.accountsAccessToken(member, username);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
         assert.equal(json.from.id, member.id);
         assert.equal(json.to.username, username);
-        assert.equal(json.access.resources[0].transaction.accountId, accountId)
+        assert.isNotNull(json.access.resources[0].allAccounts)
+    });
+
+    it('create a transaction access token object', () => {
+        const username = Sample.string();
+        const accountId = Sample.string();
+        const token = AccessToken.accountTransactionsAccessToken(member, username, accountId);
+        const json = token.json;
+        assert.equal(json.version, '1.0');
+        assert.isOk(json.nonce);
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.username, username);
+        assert.equal(json.access.resources[0].transactions.accountId, accountId)
+    });
+
+    it('create an all account transactions access token object', () => {
+        const username = Sample.string();
+        const token = AccessToken.accountsTransactionsAccessToken(member, username);
+        const json = token.json;
+        assert.equal(json.version, '1.0');
+        assert.isOk(json.nonce);
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.username, username);
+        assert.isNotNull(json.access.resources[0].allTransactions)
+    });
+
+    it('create a balance access token object', () => {
+        const username = Sample.string();
+        const accountId = Sample.string();
+        const token = AccessToken.balanceAccessToken(member, username, accountId);
+        const json = token.json;
+        assert.equal(json.version, '1.0');
+        assert.isOk(json.nonce);
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.username, username);
+        assert.equal(json.access.resources[0].balance.accountId, accountId)
+    });
+
+    it('create an all account balance access token object', () => {
+        const username = Sample.string();
+        const token = AccessToken.balanceAccessToken(member, username);
+        const json = token.json;
+        assert.equal(json.version, '1.0');
+        assert.isOk(json.nonce);
+        assert.equal(json.from.id, member.id);
+        assert.equal(json.to.username, username);
+        assert.isNotNull(json.access.resources[0].allBalances)
     });
 });
