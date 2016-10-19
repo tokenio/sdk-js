@@ -42,19 +42,6 @@ export default class Account {
     }
 
     /**
-     * Sets the account name
-     * @param {string} name - accountName
-     * @return {Promise} empty - empty promise
-     */
-    setName(name) {
-        return this._member._client.setAccountName(this._id, name)
-            .then(() => {
-                this._name = name;
-            })
-            .catch(err => this._reject(this.setName, err));
-    }
-
-    /**
      * Looks up the balance of the account
      * @return {Promise} balance - Promise of balance object
      */

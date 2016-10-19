@@ -60,12 +60,5 @@ describe('Account tests', () => {
                     assert.equal(parseFloat(bal.current.value), 100000);
                 });
         });
-
-        it('should set the name', () => {
-            return account.setName("newAccName")
-                .then(() => {
-                    assert.equal(account.name, "newAccName");
-                });
-        });
     });
 });
