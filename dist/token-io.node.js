@@ -7,7 +7,7 @@
 		exports["token-io.node"] = factory(require("fast-sha256"), require("base64url"), require("supercop.js"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
 	else
 		root["token-io.node"] = factory(root["fast-sha256"], root["base64url"], root["supercop.js"], root["json-stable-stringify"], root["axios"], root["es6-promise"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_18__, __WEBPACK_EXTERNAL_MODULE_24__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_25__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Member2 = _interopRequireDefault(_Member);
 
-	var _KeyLevel = __webpack_require__(13);
+	var _KeyLevel = __webpack_require__(14);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
@@ -78,20 +78,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _HttpClient = __webpack_require__(22);
+	var _HttpClient = __webpack_require__(23);
 
 	var _HttpClient2 = _interopRequireDefault(_HttpClient);
 
-	var _AuthHttpClientAlias = __webpack_require__(23);
+	var _AuthHttpClientUsername = __webpack_require__(24);
 
-	var _AuthHttpClientAlias2 = _interopRequireDefault(_AuthHttpClientAlias);
+	var _AuthHttpClientUsername2 = _interopRequireDefault(_AuthHttpClientUsername);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	// Promise polyfill for IE and older browsers
-	__webpack_require__(24).polyfill();
+	__webpack_require__(25).polyfill();
 
 	// Main entry object
 
@@ -109,42 +109,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Checks if a given alias already exists
-	     * @param {string} alias - alias to check
-	     * @return {Promise} result - true if alias exists, false otherwise
+	     * Checks if a given username already exists
+	     * @param {string} username - username to check
+	     * @return {Promise} result - true if username exists, false otherwise
 	     */
 
 
 	    _createClass(Token, [{
-	        key: "aliasExists",
-	        value: function aliasExists(alias) {
+	        key: "usernameExists",
+	        value: function usernameExists(username) {
 	            var _this = this;
 
-	            return this._unauthenticatedClient.aliasExists(alias)
+	            return this._unauthenticatedClient.usernameExists(username)
 	            // Workaround for a default value case when protobuf does not serialize it.
 	            .then(function (res) {
 	                return res.data.exists ? res.data.exists : false;
 	            }).catch(function (err) {
-	                return _this._reject(_this.aliasExists, err);
+	                return _this._reject(_this.usernameExists, err);
 	            });
 	        }
 
 	        /**
-	         * Creates a member with an alias and a keypair
-	         * @param  {string} alias - alias to set for member
+	         * Creates a member with an username and a keypair
+	         * @param  {string} username - username to set for member
 	         * @return {Promise} member - Promise of created Member
 	         */
 
 	    }, {
 	        key: "createMember",
-	        value: function createMember(alias) {
+	        value: function createMember(username) {
 	            var _this2 = this;
 
 	            var keys = _Crypto2.default.generateKeys();
 	            return this._unauthenticatedClient.createMemberId().then(function (response) {
 	                return _this2._unauthenticatedClient.addFirstKey(keys, response.data.memberId).then(function () {
 	                    var member = new _Member2.default(_this2._env, response.data.memberId, keys);
-	                    return member.addAlias(alias).then(function () {
+	                    return member.addUsername(username).then(function () {
 	                        return member;
 	                    });
 	                });
@@ -171,23 +171,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        /**
-	         * Log in a member by keys and alias. This is useful for checking whether we are
+	         * Log in a member by keys and username. This is useful for checking whether we are
 	         * authenticated, after requesting to add a key (by notification). Can call this
 	         * every n seconds until it succeeds
 	         * @param  {object} keys - Member keys
-	         * @param  {string} alias - alias to authenticate with
+	         * @param  {string} username - username to authenticate with
 	         * @return {Promise} member - instantiated Member, if successful
 	         */
 
 	    }, {
-	        key: "loginWithAlias",
-	        value: function loginWithAlias(keys, alias) {
+	        key: "loginWithUsername",
+	        value: function loginWithUsername(keys, username) {
 	            var _this4 = this;
 
-	            return new _AuthHttpClientAlias2.default(this._env, alias, keys).getMemberByAlias().then(function (res) {
+	            return new _AuthHttpClientUsername2.default(this._env, username, keys).getMemberByUsername().then(function (res) {
 	                return new _Member2.default(_this4._env, res.data.member.id, keys);
 	            }).catch(function (err) {
-	                return _this4._reject(_this4.loginWithAlias, err);
+	                return _this4._reject(_this4.loginWithUsername, err);
 	            });
 	        }
 
@@ -209,24 +209,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Notifies subscribers that accounts should be linked, and passes the bank id and
 	         * payload
-	         * @param {string} alias - alias to notify
-	         * @param {string} bankId - If of the bank owning the accounts
+	         * @param {string} username - username to notify
+	         * @param {string} bankId - ID of the bank owning the accounts
+	         * @param {string} bankName - name of the bank owning the accounts
 	         * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
 	         * @return {Promise} empty - empty
 	         */
 
 	    }, {
 	        key: "notifyLinkAccounts",
-	        value: function notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
+	        value: function notifyLinkAccounts(username, bankId, bankName, accountsLinkPayload) {
 	            var _this6 = this;
 
 	            var notification = {
 	                linkAccounts: {
 	                    bankId: bankId,
+	                    bankName: bankName,
 	                    accountsLinkPayload: accountsLinkPayload
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(alias, notification).catch(function (err) {
+	            return this._unauthenticatedClient.notify(username, notification).catch(function (err) {
 	                return _this6._reject(_this6.notifyLinkAccounts, err);
 	            });
 	        }
@@ -234,7 +236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Notifies subscribers that a key should be added and passes the public Key and
 	         * optional name
-	         * @param {string} alias - alias to notify
+	         * @param {string} username - username to notify
 	         * @param {string} publicKey - public
 	         * @param {string} name - name for the new key, (e.g Chrome 53.0)
 	         * @return {Promise} empty - empty
@@ -242,7 +244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    }, {
 	        key: "notifyAddKey",
-	        value: function notifyAddKey(alias, publicKey) {
+	        value: function notifyAddKey(username, publicKey) {
 	            var _this7 = this;
 
 	            var name = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
@@ -253,7 +255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    name: name
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(alias, notification).catch(function (err) {
+	            return this._unauthenticatedClient.notify(username, notification).catch(function (err) {
 	                return _this7._reject(_this7.notifyAddKey, err);
 	            });
 	        }
@@ -261,8 +263,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Notifies subscribed devices that accounts should be linked, and passes the bank id and
 	         * payload
-	         * @param {string} alias - alias to notify
-	         * @param {string} bankId - If of the bank owning the accounts
+	         * @param {string} username - username to notify
+	         * @param {string} bankId - ID of the bank owning the accounts
+	         * @param {string} bankName - name of the bank owning the accounts
 	         * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
 	         * @param {string} publicKey - public
 	         * @param {array} name - name for the new key, (e.g Chrome 53.0)
@@ -271,15 +274,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    }, {
 	        key: "notifyLinkAccountsAndAddKey",
-	        value: function notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey) {
+	        value: function notifyLinkAccountsAndAddKey(username, bankId, bankName, accountsLinkPayload, publicKey) {
 	            var _this8 = this;
 
-	            var name = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "";
+	            var name = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : "";
 
 	            var notification = {
 	                linkAccountsAndAddKey: {
 	                    linkAccounts: {
 	                        bankId: bankId,
+	                        bankName: bankName,
 	                        accountsLinkPayload: accountsLinkPayload
 	                    },
 	                    addKey: {
@@ -288,7 +292,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(alias, notification).catch(function (err) {
+	            return this._unauthenticatedClient.notify(username, notification).catch(function (err) {
 	                return _this8._reject(_this8.notifyLinkAccountsAndAddKey, err);
 	            });
 	            ;
@@ -497,35 +501,39 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Account2 = _interopRequireDefault(_Account);
 
-	var _Subscriber = __webpack_require__(11);
+	var _Subscriber = __webpack_require__(12);
 
 	var _Subscriber2 = _interopRequireDefault(_Subscriber);
 
-	var _Address = __webpack_require__(12);
+	var _Address = __webpack_require__(13);
 
 	var _Address2 = _interopRequireDefault(_Address);
 
-	var _KeyLevel = __webpack_require__(13);
+	var _KeyLevel = __webpack_require__(14);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _AuthHttpClient = __webpack_require__(14);
+	var _AuthHttpClient = __webpack_require__(15);
 
 	var _AuthHttpClient2 = _interopRequireDefault(_AuthHttpClient);
 
-	var _TransferToken = __webpack_require__(19);
+	var _PagedResult = __webpack_require__(10);
+
+	var _PagedResult2 = _interopRequireDefault(_PagedResult);
+
+	var _TransferToken = __webpack_require__(20);
 
 	var _TransferToken2 = _interopRequireDefault(_TransferToken);
 
-	var _AccessToken = __webpack_require__(20);
+	var _AccessToken = __webpack_require__(21);
 
 	var _AccessToken2 = _interopRequireDefault(_AccessToken);
 
-	var _Transfer = __webpack_require__(21);
+	var _Transfer = __webpack_require__(22);
 
 	var _Transfer2 = _interopRequireDefault(_Transfer);
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -634,42 +642,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        /**
-	         * Adds an alias to this member
-	         * @param {string} alias - alias to add
+	         * Adds an username to this member
+	         * @param {string} username - username to add
 	         * @return {Promise} empty empty promise
 	         */
 
 	    }, {
-	        key: "addAlias",
-	        value: function addAlias(alias) {
+	        key: "addUsername",
+	        value: function addUsername(username) {
 	            var _this3 = this;
 
 	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this3._client.addAlias(prevHash, alias).then(function (res) {
+	                return _this3._client.addUsername(prevHash, username).then(function (res) {
 	                    return undefined;
 	                });
 	            }).catch(function (err) {
-	                return _this3._reject(_this3.addAlias, err);
+	                return _this3._reject(_this3.addUsername, err);
 	            });
 	        }
 
 	        /**
-	         * Removes an alias from the memberId
-	         * @param {string} alias - alias to remove
+	         * Removes an username from the memberId
+	         * @param {string} username - username to remove
 	         * @return {Promise} empty - empty promise
 	         */
 
 	    }, {
-	        key: "removeAlias",
-	        value: function removeAlias(alias) {
+	        key: "removeUsername",
+	        value: function removeUsername(username) {
 	            var _this4 = this;
 
 	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this4._client.removeAlias(prevHash, alias).then(function (res) {
+	                return _this4._client.removeUsername(prevHash, username).then(function (res) {
 	                    return undefined;
 	                });
 	            }).catch(function (err) {
-	                return _this4._reject(_this4.removeAlias, err);
+	                return _this4._reject(_this4.removeUsername, err);
 	            });
 	        }
 
@@ -850,26 +858,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        /**
-	         * Gets all of the member's aliases
-	         * @return {Promise} aliases - member's aliases
+	         * Gets all of the member's usernames
+	         * @return {Promise} usernames - member's usernames
 	         */
 
 	    }, {
-	        key: "getAllAliases",
-	        value: function getAllAliases() {
+	        key: "getAllUsernames",
+	        value: function getAllUsernames() {
 	            var _this14 = this;
 
 	            return this._getMember().then(function (member) {
-	                return member.aliases;
+	                return member.usernames;
 	            }).catch(function (err) {
-	                return _this14._reject(_this14.getAllAliases, err);
+	                return _this14._reject(_this14.getAllUsernames, err);
 	            });
 	        }
 
 	        /**
 	         * Creates a new unendorsed Access Token
 	         *
-	         * @param {string} grantee - the alias of the grantee
+	         * @param {string} grantee - the username of the grantee
 	         * @param {object} resources - an array of resources
 	         * @return {Promise} token - promise of a created AccessToken
 	         */
@@ -890,7 +898,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Creates a new Address Access Token
 	         *
-	         * @param {string} grantee - the alias of the grantee
+	         * @param {string} grantee - the username of the grantee
 	         * @param {string} addressId - an optional addressId
 	         * @return {Promise} token - promise of a created AccessToken
 	         */
@@ -911,7 +919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Creates a new Account Access Token
 	         *
-	         * @param {string} grantee - the alias of the grantee
+	         * @param {string} grantee - the username of the grantee
 	         * @param {string} accountId - an optional accountId
 	         * @return {Promise} token - promise of a created AccessToken
 	         */
@@ -932,7 +940,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Creates a new Transaction Access Token
 	         *
-	         * @param {string} grantee - the alias of the grantee
+	         * @param {string} grantee - the username of the grantee
 	         * @param {string} accountId - an optional accountId
 	         * @return {Promise} token - promise of a created AccessToken
 	         */
@@ -956,19 +964,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {string} accountId - id of the source account
 	         * @param {double} amount - amount limit on the token
 	         * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
-	         * @param {string} alias - alias of the redeemer of this token
+	         * @param {string} username - username of the redeemer of this token
 	         * @param {string} description - optional description for the token
 	         * @return {Promise} token - promise of a created TransferToken
 	         */
 
 	    }, {
 	        key: "createToken",
-	        value: function createToken(accountId, amount, currency, alias) {
+	        value: function createToken(accountId, amount, currency, username) {
 	            var _this19 = this;
 
 	            var description = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : undefined;
 
-	            var token = _TransferToken2.default.create(this, accountId, amount, currency, alias, description);
+	            var token = _TransferToken2.default.create(this, accountId, amount, currency, username, description);
 	            return this._client.createToken(token.json).then(function (res) {
 	                return _TransferToken2.default.createFromToken(res.data.token);
 	            }).catch(function (err) {
@@ -996,24 +1004,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /**
 	         * Looks up all transfer tokens (not just for this account)
-	         * @param {int} offset - where to start looking
+	         * @param {string} offset - where to start looking
 	         * @param {int} limit - how many to look for
 	         * @return {TransferToken} tokens - returns a list of Transfer Tokens
 	         */
 
 	    }, {
 	        key: "getTransferTokens",
-	        value: function getTransferTokens() {
+	        value: function getTransferTokens(offset, limit) {
 	            var _this21 = this;
 
-	            var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	            var limit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-
 	            return this._client.getTokens('TRANSFER', offset, limit).then(function (res) {
-	                if (res.data.tokens === undefined) return [];
-	                return res.data.tokens.map(function (tk) {
+	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
 	                    return _TransferToken2.default.createFromToken(tk);
-	                });
+	                }), res.data.offset);
 	            }).catch(function (err) {
 	                return _this21._reject(_this21.getTransferTokens, err);
 	            });
@@ -1021,24 +1025,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /**
 	         * Looks up all access tokens (not just for this account)
-	         * @param {int} offset - where to start looking
+	         * @param {string} offset - where to start looking
 	         * @param {int} limit - how many to look for
 	         * @return {TransferToken} tokens - returns a list of Transfer Tokens
 	         */
 
 	    }, {
 	        key: "getAccessTokens",
-	        value: function getAccessTokens() {
+	        value: function getAccessTokens(offset, limit) {
 	            var _this22 = this;
 
-	            var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	            var limit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-
 	            return this._client.getTokens('ACCESS', offset, limit).then(function (res) {
-	                if (res.data.tokens === undefined) return [];
-	                return res.data.tokens.map(function (tk) {
+	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
 	                    return _TransferToken2.default.createFromToken(tk);
-	                });
+	                }), res.data.offset);
 	            }).catch(function (err) {
 	                return _this22._reject(_this22.getAccessTokens, err);
 	            });
@@ -1137,23 +1137,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Looks up all of the member's transfers
 	         * @param {string} tokenId - token to use for lookup
-	         * @param {int} offset - where to start looking
+	         * @param {string} offset - where to start looking
 	         * @param {int} limit - how many to retrieve
 	         * @return {Promise} transfers - Transfers
 	         */
 
 	    }, {
 	        key: "getTransfers",
-	        value: function getTransfers(tokenId) {
+	        value: function getTransfers(tokenId, offset, limit) {
 	            var _this27 = this;
 
-	            var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-	            var limit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 100;
-
 	            return this._client.getTransfers(tokenId, offset, limit).then(function (res) {
-	                return res.data.transfers.map(function (pt) {
+	                return new _PagedResult2.default(res.data.transfers.map(function (pt) {
 	                    return new _Transfer2.default(pt);
-	                });
+	                }), res.data.offset);
 	            }).catch(function (err) {
 	                return _this27._reject(_this27.getTransfers, err);
 	            });
@@ -1322,7 +1319,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Transaction = __webpack_require__(10);
+	var _PagedResult = __webpack_require__(10);
+
+	var _PagedResult2 = _interopRequireDefault(_PagedResult);
+
+	var _Transaction = __webpack_require__(11);
 
 	var _Transaction2 = _interopRequireDefault(_Transaction);
 
@@ -1355,38 +1356,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	    _createClass(Account, [{
-	        key: "setName",
+	        key: "getBalance",
 
-
-	        /**
-	         * Sets the account name
-	         * @param {string} name - accountName
-	         * @return {Promise} empty - empty promise
-	         */
-	        value: function setName(name) {
-	            var _this = this;
-
-	            return this._member._client.setAccountName(this._id, name).then(function () {
-	                _this._name = name;
-	            }).catch(function (err) {
-	                return _this._reject(_this.setName, err);
-	            });
-	        }
 
 	        /**
 	         * Looks up the balance of the account
 	         * @return {Promise} balance - Promise of balance object
 	         */
-
-	    }, {
-	        key: "getBalance",
 	        value: function getBalance() {
-	            var _this2 = this;
+	            var _this = this;
 
 	            return this._member._client.getBalance(this._id).then(function (res) {
 	                return res.data;
 	            }).catch(function (err) {
-	                return _this2._reject(_this2.getBalance, err);
+	                return _this._reject(_this.getBalance, err);
 	            });
 	        }
 
@@ -1399,36 +1382,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getTransaction",
 	        value: function getTransaction(transactionId) {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            return this._member._client.getTransaction(this._id, transactionId).then(function (res) {
 	                return new _Transaction2.default(res.data.transaction);
 	            }).catch(function (err) {
-	                return _this3._reject(_this3.getTransaction, err);
+	                return _this2._reject(_this2.getTransaction, err);
 	            });
 	        }
 
 	        /**
 	         * Looks up all of the member's transactions
-	         * @param {int} offset - where to start looking
+	         * @param {string} offset - where to start looking
 	         * @param {int} limit - how many to retrieve
 	         * @return {Promise} transactions - Transactions
 	         */
 
 	    }, {
 	        key: "getTransactions",
-	        value: function getTransactions() {
-	            var _this4 = this;
-
-	            var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	            var limit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+	        value: function getTransactions(offset, limit) {
+	            var _this3 = this;
 
 	            return this._member._client.getTransactions(this._id, offset, limit).then(function (res) {
-	                return res.data.transactions.map(function (tr) {
+	                return new _PagedResult2.default(res.data.transactions.map(function (tr) {
 	                    return new _Transaction2.default(tr);
-	                });
+	                }), res.data.offset);
 	            }).catch(function (err) {
-	                return _this4._reject(_this4.getTransactions, err);
+	                return _this3._reject(_this3.getTransactions, err);
 	            });
 	        }
 	    }, {
@@ -1476,6 +1456,45 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 10 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var PagedResult = function () {
+	  function PagedResult(data, offset) {
+	    _classCallCheck(this, PagedResult);
+
+	    this._data = data;
+	    this._offset = offset;
+	  }
+
+	  _createClass(PagedResult, [{
+	    key: "data",
+	    get: function get() {
+	      return this._data;
+	    }
+	  }, {
+	    key: "offset",
+	    get: function get() {
+	      return this._offset;
+	    }
+	  }]);
+
+	  return PagedResult;
+	}();
+
+	exports.default = PagedResult;
+
+/***/ },
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1544,7 +1563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transaction;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1589,7 +1608,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Subscriber;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1640,7 +1659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Address;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1655,7 +1674,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1674,17 +1693,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _AuthHeader = __webpack_require__(15);
+	var _AuthHeader = __webpack_require__(16);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _AuthContext = __webpack_require__(17);
+	var _AuthContext = __webpack_require__(18);
 
 	var _AuthContext2 = _interopRequireDefault(_AuthContext);
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
-	var _KeyLevel = __webpack_require__(13);
+	var _KeyLevel = __webpack_require__(14);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
@@ -1693,7 +1712,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var stringify = __webpack_require__(5);
-	var axios = __webpack_require__(18);
+	var axios = __webpack_require__(19);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -2044,23 +2063,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._memberUpdate(update, prevHash);
 	        }
 	    }, {
-	        key: "addAlias",
-	        value: function addAlias(prevHash, alias) {
+	        key: "addUsername",
+	        value: function addUsername(prevHash, username) {
 	            var update = {
 	                memberId: this._memberId,
-	                addAlias: {
-	                    alias: alias
+	                addUsername: {
+	                    username: username
 	                }
 	            };
 	            return this._memberUpdate(update, prevHash);
 	        }
 	    }, {
-	        key: "removeAlias",
-	        value: function removeAlias(prevHash, alias) {
+	        key: "removeUsername",
+	        value: function removeUsername(prevHash, username) {
 	            var update = {
 	                memberId: this._memberId,
-	                removeAlias: {
-	                    alias: alias
+	                removeUsername: {
+	                    username: username
 	                }
 	            };
 	            return this._memberUpdate(update, prevHash);
@@ -2082,7 +2101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            };
 	            var config = {
 	                method: 'post',
-	                url: "/members/" + this._memberId,
+	                url: "/members/" + this._memberId + "/updates",
 	                data: req
 	            };
 	            return this._instance(config);
@@ -2095,7 +2114,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClient;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2106,7 +2125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
 	var _Crypto = __webpack_require__(1);
 
@@ -2127,7 +2146,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    /*
 	     * Adds an authorization header with the identity set as the memberId. This is preferrable
-	     * to alias identity, because it reduces trust required (no alias lookup)
+	     * to username identity, because it reduces trust required (no username lookup)
 	     */
 
 
@@ -2139,14 +2158,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        /*
-	         * Adds an authorization header with identity set as the alias. Useful when
+	         * Adds an authorization header with identity set as the username. Useful when
 	         * on a browser that doesn't yet have a memberId
 	         */
 
 	    }, {
-	        key: "addAuthorizationHeaderAlias",
-	        value: function addAuthorizationHeaderAlias(alias, config, context) {
-	            var identity = 'alias=' + alias;
+	        key: "addAuthorizationHeaderUsername",
+	        value: function addAuthorizationHeaderUsername(username, config, context) {
+	            var identity = 'username=' + username;
 	            this.addAuthorizationHeader(identity, config, context);
 	        }
 
@@ -2213,7 +2232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHeader;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2252,7 +2271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.defaultNotificationProvider = defaultNotificationProvider;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2288,13 +2307,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthContext;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = require("axios");
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2309,7 +2328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2334,12 +2353,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: "create",
-	        value: function create(member, accountId, amount, currency, alias, description) {
+	        value: function create(member, accountId, amount, currency, username, description) {
 	            var from = {
 	                id: member.id
 	            };
 	            var redeemer = {
-	                alias: alias
+	                username: username
 	            };
 	            var instructions = {
 	                source: {
@@ -2486,7 +2505,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = BankTransferToken;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2501,7 +2520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2515,13 +2534,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Creates an Address AccessToken
 	         *
 	         * @param {Member} member - the member granting resource access
-	         * @param {string} toAlias - the alias of the grantee
+	         * @param {string} toUsername - the username of the grantee
 	         * @param {string} addressId - an optional address id
 	         * @returns {AccessToken} - the access token created
 	         */
-	        value: function addressAccessToken(member, toAlias, addressId) {
+	        value: function addressAccessToken(member, toUsername, addressId) {
 	            var from = { id: member.id };
-	            var to = { alias: toAlias };
+	            var to = { username: toUsername };
 	            var resource = {
 	                address: {
 	                    addressId: addressId
@@ -2535,16 +2554,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Creates an Account AccessToken
 	         *
 	         * @param {Member} member - the member granting resource access
-	         * @param {string} toAlias - the alias of the grantee
+	         * @param {string} toUsername - the username of the grantee
 	         * @param {string} accountId - an optional account id
 	         * @returns {AccessToken} - the access token created
 	         */
 
 	    }, {
 	        key: "accountAccessToken",
-	        value: function accountAccessToken(member, toAlias, accountId) {
+	        value: function accountAccessToken(member, toUsername, accountId) {
 	            var from = { id: member.id };
-	            var to = { alias: toAlias };
+	            var to = { username: toUsername };
 	            var resource = {
 	                account: {
 	                    accountId: accountId
@@ -2558,16 +2577,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Creates a Transaction AccessToken
 	         *
 	         * @param {Member} member - the member granting resource access
-	         * @param {string} toAlias - the alias of the grantee
+	         * @param {string} toUsername - the username of the grantee
 	         * @param {string} accountId - an optional account id
 	         * @returns {AccessToken} - the access token created
 	         */
 
 	    }, {
 	        key: "transactionAccessToken",
-	        value: function transactionAccessToken(member, toAlias, accountId) {
+	        value: function transactionAccessToken(member, toUsername, accountId) {
 	            var from = { id: member.id };
-	            var to = { alias: toAlias };
+	            var to = { username: toUsername };
 	            var resource = {
 	                transaction: {
 	                    accountId: accountId
@@ -2697,7 +2716,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AccessToken;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2763,7 +2782,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transfer;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2778,17 +2797,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _KeyLevel = __webpack_require__(13);
+	var _KeyLevel = __webpack_require__(14);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var axios = __webpack_require__(18);
+	var axios = __webpack_require__(19);
 
 	var HttpClient = function () {
 	    function HttpClient(env) {
@@ -2809,66 +2828,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._instance(config);
 	        }
 	    }, {
-	        key: "notifyLinkAccounts",
-	        value: function notifyLinkAccounts(alias, bankId, accountsLinkPayload) {
-	            var req = {
-	                alias: alias,
-	                bankId: bankId,
-	                accountsLinkPayload: accountsLinkPayload
-	            };
-	            var config = {
-	                method: 'put',
-	                url: "/devices/notifyLinkAccounts",
-	                data: req
-	            };
-	            return this._instance(config);
-	        }
-	    }, {
-	        key: "notifyAddKey",
-	        value: function notifyAddKey(alias, publicKey, name) {
-	            var req = {
-	                alias: alias,
-	                publicKey: _Crypto2.default.strKey(publicKey),
-	                name: name
-	            };
-	            var config = {
-	                method: 'put',
-	                url: "/devices/notifyAddKey",
-	                data: req
-	            };
-	            return this._instance(config);
-	        }
-	    }, {
-	        key: "aliasExists",
-	        value: function aliasExists(alias) {
+	        key: "usernameExists",
+	        value: function usernameExists(username) {
 	            var config = {
 	                method: 'get',
-	                url: "/alias-exists?alias=" + alias
-	            };
-	            return this._instance(config);
-	        }
-	    }, {
-	        key: "notifyLinkAccountsAndAddKey",
-	        value: function notifyLinkAccountsAndAddKey(alias, bankId, accountsLinkPayload, publicKey, name) {
-	            var req = {
-	                alias: alias,
-	                bankId: bankId,
-	                accountsLinkPayload: accountsLinkPayload,
-	                publicKey: _Crypto2.default.strKey(publicKey),
-	                name: name
-	            };
-	            var config = {
-	                method: 'put',
-	                url: "/devices/notifyLinkAccountsAndAddKey",
-	                data: req
+	                url: "/username-exists?username=" + username
 	            };
 	            return this._instance(config);
 	        }
 	    }, {
 	        key: "notify",
-	        value: function notify(alias, notification) {
+	        value: function notify(username, notification) {
 	            var req = {
-	                alias: alias,
+	                username: username,
 	                notification: notification
 	            };
 	            var config = {
@@ -2904,7 +2876,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            };
 	            var config = {
 	                method: 'post',
-	                url: "/members/" + memberId,
+	                url: "/members/" + memberId + "/updates",
 	                data: req
 	            };
 	            return this._instance(config);
@@ -2917,7 +2889,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = HttpClient;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2928,26 +2900,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _AuthHeader = __webpack_require__(15);
+	var _AuthHeader = __webpack_require__(16);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _constants = __webpack_require__(16);
+	var _constants = __webpack_require__(17);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var stringify = __webpack_require__(5);
-	var axios = __webpack_require__(18);
+	var axios = __webpack_require__(19);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
 	 */
 
-	var AuthHttpClientAlias = function () {
-	    function AuthHttpClientAlias(env, alias, keys) {
-	        _classCallCheck(this, AuthHttpClientAlias);
+	var AuthHttpClientUsername = function () {
+	    function AuthHttpClientUsername(env, username, keys) {
+	        _classCallCheck(this, AuthHttpClientUsername);
 
 	        this._instance = axios.create({
 	            baseURL: _constants.urls[env]
@@ -2956,14 +2928,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var authHeader = new _AuthHeader2.default(_constants.urls[env], keys);
 
 	        this._instance.interceptors.request.use(function (config) {
-	            authHeader.addAuthorizationHeaderAlias(alias, config, undefined);
+	            authHeader.addAuthorizationHeaderUsername(username, config, undefined);
 	            return config;
 	        });
 	    }
 
-	    _createClass(AuthHttpClientAlias, [{
-	        key: "getMemberByAlias",
-	        value: function getMemberByAlias() {
+	    _createClass(AuthHttpClientUsername, [{
+	        key: "getMemberByUsername",
+	        value: function getMemberByUsername() {
 	            var config = {
 	                method: 'get',
 	                url: "/members"
@@ -2972,13 +2944,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }]);
 
-	    return AuthHttpClientAlias;
+	    return AuthHttpClientUsername;
 	}();
 
-	exports.default = AuthHttpClientAlias;
+	exports.default = AuthHttpClientUsername;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = require("es6-promise");
