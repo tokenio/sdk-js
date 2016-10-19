@@ -5,6 +5,7 @@
   "main": "dist/token-io.js",
   "scripts": {
     "test": "npm run testNode",
+    "preinstall": "npm run build",
     "testBrowser": "./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserDev": "TEST_ENV=dev ./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserStg": "TEST_ENV=stg ./node_modules/karma/bin/karma start test/karma.config.js",
