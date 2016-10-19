@@ -34,16 +34,17 @@ describe('Addresses', () => {
     });
 
     it('Add and lookup an address', () => {
+        const address = { city: 'San Francisco', country: 'US' };
         return member1
-            .addAddress("Home", "125 Broadway rd")
+            .addAddress("Home", address)
             .then(() => {
                 return member1
                     .getAddresses()
                     .then(res => {
                         assert.equal(res.length, 1);
                         assert.equal(res[0].name, "Home");
-                        assert.equal(res[0].data, "125 Broadway rd");
-                        assert.isOk(res[0].dataSignature);
+                        assert.deepEqual(res[0].address, address);
+                        assert.isOk(res[0].addressSignature);
                         assert.isOk(res[0].id);
                     });
         });

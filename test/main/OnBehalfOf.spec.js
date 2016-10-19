@@ -19,7 +19,7 @@ const setUpGrantor = () => {
         .then(res => {
             grantor = res;
             grantor
-                .addAddress("name", "address")
+                .addAddress("name", { city: 'San Francisco', country: 'US' })
                 .then(res => {
                     address = res;
                 });
@@ -41,7 +41,7 @@ const setupToken = () => {
             .endorseToken(token)
             .then(res => token))
 
-}
+};
 
 describe('On-Behalf-Of', () => {
     beforeEach(() => {
@@ -58,10 +58,9 @@ describe('On-Behalf-Of', () => {
                     .then(result => {
                         assert.equal(result.id, address.id);
                         assert.equal(result.name, address.name);
-                        assert.equal(result.data, address.data);
+                        assert.deepEqual(result.address, address.address);
                     });
-                ;
-            })
+            });
     });
 
     it('address access token should not work if cleared token', done => {
@@ -75,7 +74,6 @@ describe('On-Behalf-Of', () => {
                         done(new Error("Should not succeed"))
                     })
                     .catch(err => done());
-                ;
-            })
+            });
     });
 });

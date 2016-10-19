@@ -82,13 +82,13 @@ class AuthHttpClient {
     //
     // ADDRESSES
     //
-    addAddress(name, data) {
+    addAddress(name, address) {
         const req = {
             name,
-            data,
-            dataSignature: {
+            address,
+            addressSignature: {
                 keyId: this._keys.keyId,
-                signature: Crypto.sign(data, this._keys),
+                signature: Crypto.signJson(address, this._keys),
                 timestampMs: new Date().getTime()
             }
         };
