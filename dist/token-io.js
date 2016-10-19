@@ -2255,7 +2255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function byteLength (b64) {
-	  // base64 is 4/3 + up to two characters of the original data
+	  // base64 is 4/3 + up to two characters of the original address
 	  return b64.length * 3 / 4 - placeHoldersCount(b64)
 	}
 
@@ -2553,14 +2553,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Note: Int32Array is used instead of Uint32Array for performance reasons.
 	        this.state = new Int32Array(8); // hash state
 	        this.temp = new Int32Array(64); // temporary state
-	        this.buffer = new Uint8Array(128); // buffer for data to hash
+	        this.buffer = new Uint8Array(128); // buffer for address to hash
 	        this.bufferLength = 0; // number of bytes in buffer
 	        this.bytesHashed = 0; // number of total bytes hashed
 	        this.finished = false; // indicates whether the hash was finalized
 	        this.reset();
 	    }
 	    // Resets hash state making it possible
-	    // to re-use this instance to hash other data.
+	    // to re-use this instance to hash other address.
 	    Hash.prototype.reset = function () {
 	        this.state[0] = 0x6a09e667;
 	        this.state[1] = 0xbb67ae85;
@@ -2583,10 +2583,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.temp[i] = 0;
 	        this.reset();
 	    };
-	    // Updates hash state with the given data.
+	    // Updates hash state with the given address.
 	    //
-	    // Optionally, length of the data can be specified to hash
-	    // fewer bytes than data.length.
+	    // Optionally, length of the address can be specified to hash
+	    // fewer bytes than address.length.
 	    //
 	    // Throws error when trying to update already finalized hash:
 	    // instance must be reset to use it again.
@@ -2707,7 +2707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	    // Returns HMAC state to the state initialized with key
-	    // to make it possible to run HMAC over the other data with the same
+	    // to make it possible to run HMAC over the other address with the same
 	    // key without creating a new instance.
 	    HMAC.prototype.reset = function () {
 	        this.inner._restoreState(this.istate, this.inner.blockSize);
@@ -2722,7 +2722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.inner.clean();
 	        this.outer.clean();
 	    };
-	    // Updates state with provided data.
+	    // Updates state with provided address.
 	    HMAC.prototype.update = function (data) {
 	        this.inner.update(data);
 	        return this;
@@ -2747,7 +2747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return HMAC;
 	}());
 	exports.HMAC = HMAC;
-	// Returns SHA256 hash of data.
+	// Returns SHA256 hash of address.
 	function hash(data) {
 	    var h = (new Hash()).update(data);
 	    var digest = h.digest();
@@ -2757,7 +2757,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.hash = hash;
 	exports.__esModule = true;
 	exports["default"] = hash;
-	// Returns HMAC-SHA256 of data under the key.
+	// Returns HMAC-SHA256 of address under the key.
 	function hmac(key, data) {
 	    var h = (new HMAC(key)).update(data);
 	    var digest = h.digest();
@@ -3530,12 +3530,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	//             for multiple syntaxes to save space in generated code. So you should
 	//             normally not use allocate(), and instead allocate memory using _malloc(),
 	//             initialize it with setValue(), and so forth.
-	// @slab: An array of data, or a number. If a number, then the size of the block to allocate,
+	// @slab: An array of address, or a number. If a number, then the size of the block to allocate,
 	//        in *bytes* (note that this is sometimes confusing: the next parameter does not
 	//        affect this!)
 	// @types: Either an array of types, one for each byte (or 0 if no type at that position),
 	//         or a single type which is used for the entire block. This only matters if there
-	//         is initial data - if @slab is a number, then this does not matter at all and is
+	//         is initial address - if @slab is a number, then this does not matter at all and is
 	//         ignored.
 	// @allocator: How to allocate memory, see ALLOC_*
 	function allocate(slab, types, allocator, ptr) {
@@ -4480,8 +4480,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	Module["removeRunDependency"] = removeRunDependency;
 
-	Module["preloadedImages"] = {}; // maps url to image data
-	Module["preloadedAudios"] = {}; // maps url to audio data
+	Module["preloadedImages"] = {}; // maps url to image address
+	Module["preloadedAudios"] = {}; // maps url to audio address
 
 
 
@@ -4593,7 +4593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  
 	  var ERRNO_CODES={EPERM:1,ENOENT:2,ESRCH:3,EINTR:4,EIO:5,ENXIO:6,E2BIG:7,ENOEXEC:8,EBADF:9,ECHILD:10,EAGAIN:11,EWOULDBLOCK:11,ENOMEM:12,EACCES:13,EFAULT:14,ENOTBLK:15,EBUSY:16,EEXIST:17,EXDEV:18,ENODEV:19,ENOTDIR:20,EISDIR:21,EINVAL:22,ENFILE:23,EMFILE:24,ENOTTY:25,ETXTBSY:26,EFBIG:27,ENOSPC:28,ESPIPE:29,EROFS:30,EMLINK:31,EPIPE:32,EDOM:33,ERANGE:34,ENOMSG:42,EIDRM:43,ECHRNG:44,EL2NSYNC:45,EL3HLT:46,EL3RST:47,ELNRNG:48,EUNATCH:49,ENOCSI:50,EL2HLT:51,EDEADLK:35,ENOLCK:37,EBADE:52,EBADR:53,EXFULL:54,ENOANO:55,EBADRQC:56,EBADSLT:57,EDEADLOCK:35,EBFONT:59,ENOSTR:60,ENODATA:61,ETIME:62,ENOSR:63,ENONET:64,ENOPKG:65,EREMOTE:66,ENOLINK:67,EADV:68,ESRMNT:69,ECOMM:70,EPROTO:71,EMULTIHOP:72,EDOTDOT:73,EBADMSG:74,ENOTUNIQ:76,EBADFD:77,EREMCHG:78,ELIBACC:79,ELIBBAD:80,ELIBSCN:81,ELIBMAX:82,ELIBEXEC:83,ENOSYS:38,ENOTEMPTY:39,ENAMETOOLONG:36,ELOOP:40,EOPNOTSUPP:95,EPFNOSUPPORT:96,ECONNRESET:104,ENOBUFS:105,EAFNOSUPPORT:97,EPROTOTYPE:91,ENOTSOCK:88,ENOPROTOOPT:92,ESHUTDOWN:108,ECONNREFUSED:111,EADDRINUSE:98,ECONNABORTED:103,ENETUNREACH:101,ENETDOWN:100,ETIMEDOUT:110,EHOSTDOWN:112,EHOSTUNREACH:113,EINPROGRESS:115,EALREADY:114,EDESTADDRREQ:89,EMSGSIZE:90,EPROTONOSUPPORT:93,ESOCKTNOSUPPORT:94,EADDRNOTAVAIL:99,ENETRESET:102,EISCONN:106,ENOTCONN:107,ETOOMANYREFS:109,EUSERS:87,EDQUOT:122,ESTALE:116,ENOTSUP:95,ENOMEDIUM:123,EILSEQ:84,EOVERFLOW:75,ECANCELED:125,ENOTRECOVERABLE:131,EOWNERDEAD:130,ESTRPIPE:86};
 	  
-	  var ERRNO_MESSAGES={0:"Success",1:"Not super-user",2:"No such file or directory",3:"No such process",4:"Interrupted system call",5:"I/O error",6:"No such device or address",7:"Arg list too long",8:"Exec format error",9:"Bad file number",10:"No children",11:"No more processes",12:"Not enough core",13:"Permission denied",14:"Bad address",15:"Block device required",16:"Mount device busy",17:"File exists",18:"Cross-device link",19:"No such device",20:"Not a directory",21:"Is a directory",22:"Invalid argument",23:"Too many open files in system",24:"Too many open files",25:"Not a typewriter",26:"Text file busy",27:"File too large",28:"No space left on device",29:"Illegal seek",30:"Read only file system",31:"Too many links",32:"Broken pipe",33:"Math arg out of domain of func",34:"Math result not representable",35:"File locking deadlock error",36:"File or path name too long",37:"No record locks available",38:"Function not implemented",39:"Directory not empty",40:"Too many symbolic links",42:"No message of desired type",43:"Identifier removed",44:"Channel number out of range",45:"Level 2 not synchronized",46:"Level 3 halted",47:"Level 3 reset",48:"Link number out of range",49:"Protocol driver not attached",50:"No CSI structure available",51:"Level 2 halted",52:"Invalid exchange",53:"Invalid request descriptor",54:"Exchange full",55:"No anode",56:"Invalid request code",57:"Invalid slot",59:"Bad font file fmt",60:"Device not a stream",61:"No data (for no delay io)",62:"Timer expired",63:"Out of streams resources",64:"Machine is not on the network",65:"Package not installed",66:"The object is remote",67:"The link has been severed",68:"Advertise error",69:"Srmount error",70:"Communication error on send",71:"Protocol error",72:"Multihop attempted",73:"Cross mount point (not really error)",74:"Trying to read unreadable message",75:"Value too large for defined data type",76:"Given log. name not unique",77:"f.d. invalid for this operation",78:"Remote address changed",79:"Can   access a needed shared lib",80:"Accessing a corrupted shared lib",81:".lib section in a.out corrupted",82:"Attempting to link in too many libs",83:"Attempting to exec a shared library",84:"Illegal byte sequence",86:"Streams pipe error",87:"Too many users",88:"Socket operation on non-socket",89:"Destination address required",90:"Message too long",91:"Protocol wrong type for socket",92:"Protocol not available",93:"Unknown protocol",94:"Socket type not supported",95:"Not supported",96:"Protocol family not supported",97:"Address family not supported by protocol family",98:"Address already in use",99:"Address not available",100:"Network interface is not configured",101:"Network is unreachable",102:"Connection reset by network",103:"Connection aborted",104:"Connection reset by peer",105:"No buffer space available",106:"Socket is already connected",107:"Socket is not connected",108:"Can't send after socket shutdown",109:"Too many references",110:"Connection timed out",111:"Connection refused",112:"Host is down",113:"Host is unreachable",114:"Socket already connected",115:"Connection already in progress",116:"Stale file handle",122:"Quota exceeded",123:"No medium (in tape drive)",125:"Operation canceled",130:"Previous owner died",131:"State not recoverable"};
+	  var ERRNO_MESSAGES={0:"Success",1:"Not super-user",2:"No such file or directory",3:"No such process",4:"Interrupted system call",5:"I/O error",6:"No such device or address",7:"Arg list too long",8:"Exec format error",9:"Bad file number",10:"No children",11:"No more processes",12:"Not enough core",13:"Permission denied",14:"Bad address",15:"Block device required",16:"Mount device busy",17:"File exists",18:"Cross-device link",19:"No such device",20:"Not a directory",21:"Is a directory",22:"Invalid argument",23:"Too many open files in system",24:"Too many open files",25:"Not a typewriter",26:"Text file busy",27:"File too large",28:"No space left on device",29:"Illegal seek",30:"Read only file system",31:"Too many links",32:"Broken pipe",33:"Math arg out of domain of func",34:"Math result not representable",35:"File locking deadlock error",36:"File or path name too long",37:"No record locks available",38:"Function not implemented",39:"Directory not empty",40:"Too many symbolic links",42:"No message of desired type",43:"Identifier removed",44:"Channel number out of range",45:"Level 2 not synchronized",46:"Level 3 halted",47:"Level 3 reset",48:"Link number out of range",49:"Protocol driver not attached",50:"No CSI structure available",51:"Level 2 halted",52:"Invalid exchange",53:"Invalid request descriptor",54:"Exchange full",55:"No anode",56:"Invalid request code",57:"Invalid slot",59:"Bad font file fmt",60:"Device not a stream",61:"No address (for no delay io)",62:"Timer expired",63:"Out of streams resources",64:"Machine is not on the network",65:"Package not installed",66:"The object is remote",67:"The link has been severed",68:"Advertise error",69:"Srmount error",70:"Communication error on send",71:"Protocol error",72:"Multihop attempted",73:"Cross mount point (not really error)",74:"Trying to read unreadable message",75:"Value too large for defined address type",76:"Given log. name not unique",77:"f.d. invalid for this operation",78:"Remote address changed",79:"Can   access a needed shared lib",80:"Accessing a corrupted shared lib",81:".lib section in a.out corrupted",82:"Attempting to link in too many libs",83:"Attempting to exec a shared library",84:"Illegal byte sequence",86:"Streams pipe error",87:"Too many users",88:"Socket operation on non-socket",89:"Destination address required",90:"Message too long",91:"Protocol wrong type for socket",92:"Protocol not available",93:"Unknown protocol",94:"Socket type not supported",95:"Not supported",96:"Protocol family not supported",97:"Address family not supported by protocol family",98:"Address already in use",99:"Address not available",100:"Network interface is not configured",101:"Network is unreachable",102:"Connection reset by network",103:"Connection aborted",104:"Connection reset by peer",105:"No buffer space available",106:"Socket is already connected",107:"Socket is not connected",108:"Can't send after socket shutdown",109:"Too many references",110:"Connection timed out",111:"Connection refused",112:"Host is down",113:"Host is unreachable",114:"Socket already connected",115:"Connection already in progress",116:"Stale file handle",122:"Quota exceeded",123:"No medium (in tape drive)",125:"Operation canceled",130:"Previous owner died",131:"State not recoverable"};
 	  
 	  function ___setErrNo(value) {
 	      if (Module['___errno_location']) HEAP32[((Module['___errno_location']())>>2)]=value;
@@ -4732,7 +4732,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // if (ENVIRONMENT_IS_NODE) {
 	        //   // inolen: any idea as to why node -e 'process.stdin.read()' wouldn't exit immediately (with process.stdin being a tty)?
 	        //   // isaacs: because now it's reading from the stream, you've expressed interest in it, so that read() kicks off a _read() which creates a ReadReq operation
-	        //   // inolen: I thought read() in that case was a synchronous operation that just grabbed some amount of buffered data if it exists?
+	        //   // inolen: I thought read() in that case was a synchronous operation that just grabbed some amount of buffered address if it exists?
 	        //   // isaacs: it is. but it also triggers a _read() call, which calls readStart() on the handle
 	        //   // isaacs: do process.stdin.pause() and i'd think it'd probably close the pending call
 	        //   process['stdin']['pause']();
@@ -4748,7 +4748,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          stream.tty = tty;
 	          stream.seekable = false;
 	        },close:function (stream) {
-	          // flush any pending line data
+	          // flush any pending line address
 	          stream.tty.ops.flush(stream.tty);
 	        },flush:function (stream) {
 	          stream.tty.ops.flush(stream.tty);
@@ -4794,7 +4794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (!tty.input.length) {
 	            var result = null;
 	            if (ENVIRONMENT_IS_NODE) {
-	              // we will read data by chunks of BUFSIZE
+	              // we will read address by chunks of BUFSIZE
 	              var BUFSIZE = 256;
 	              var buf = new Buffer(BUFSIZE);
 	              var bytesRead = 0;
@@ -4927,7 +4927,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          node.node_ops = MEMFS.ops_table.file.node;
 	          node.stream_ops = MEMFS.ops_table.file.stream;
 	          node.usedBytes = 0; // The actual number of bytes used in the typed array, as opposed to contents.buffer.byteLength which gives the whole capacity.
-	          // When the byte data of the file is populated, this will point to either a typed array, or a normal JS array. Typed arrays are preferred
+	          // When the byte address of the file is populated, this will point to either a typed array, or a normal JS array. Typed arrays are preferred
 	          // for performance, and used by default. However, typed arrays are not resizable like normal JS arrays are, so there is a small disk size
 	          // penalty involved for appending file writes that continuously grow a file similar to std::vector capacity vs used -scheme.
 	          node.contents = null; 
@@ -4948,7 +4948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (node.contents && node.contents.subarray) {
 	          var arr = [];
 	          for (var i = 0; i < node.usedBytes; ++i) arr.push(node.contents[i]);
-	          return arr; // Returns a copy of the original data.
+	          return arr; // Returns a copy of the original address.
 	        }
 	        return node.contents; // No-op, the file contents are already in a JS array. Return as-is.
 	      },getFileDataAsTypedArray:function (node) {
@@ -4975,7 +4975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (prevCapacity != 0) newCapacity = Math.max(newCapacity, 256); // At minimum allocate 256b for each file when expanding.
 	          var oldContents = node.contents;
 	          node.contents = new Uint8Array(newCapacity); // Allocate new storage.
-	          if (node.usedBytes > 0) node.contents.set(oldContents.subarray(0, node.usedBytes), 0); // Copy old data over to the new storage.
+	          if (node.usedBytes > 0) node.contents.set(oldContents.subarray(0, node.usedBytes), 0); // Copy old address over to the new storage.
 	          return;
 	        }
 	        // Not using a typed array to back the file storage. Use a standard JS array instead.
@@ -4992,7 +4992,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var oldContents = node.contents;
 	          node.contents = new Uint8Array(new ArrayBuffer(newSize)); // Allocate new storage.
 	          if (oldContents) {
-	            node.contents.set(oldContents.subarray(0, Math.min(newSize, node.usedBytes))); // Copy old data over to the new storage.
+	            node.contents.set(oldContents.subarray(0, Math.min(newSize, node.usedBytes))); // Copy old address over to the new storage.
 	          }
 	          node.usedBytes = newSize;
 	          return;
@@ -5109,7 +5109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              node.contents = buffer.subarray(offset, offset + length);
 	              node.usedBytes = length;
 	              return length;
-	            } else if (node.usedBytes === 0 && position === 0) { // If this is a simple first write to an empty file, do a fast set since we don't need to care about old data.
+	            } else if (node.usedBytes === 0 && position === 0) { // If this is a simple first write to an empty file, do a fast set since we don't need to care about old address.
 	              node.contents = new Uint8Array(buffer.subarray(offset, offset + length));
 	              node.usedBytes = length;
 	              return length;
@@ -5119,7 +5119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 	  
-	          // Appending to an existing file and we need to reallocate, or source data did not come as a typed array.
+	          // Appending to an existing file and we need to reallocate, or source address did not come as a typed array.
 	          MEMFS.expandFileStorage(node, position+length);
 	          if (node.contents.subarray && buffer.subarray) node.contents.set(buffer.subarray(offset, offset + length), position); // Use typed array write if available.
 	          else {
@@ -5326,7 +5326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return callback(null, { timestamp: stat.mtime, mode: stat.mode });
 	        } else if (FS.isFile(stat.mode)) {
 	          // Performance consideration: storing a normal JavaScript array to a IndexedDB is much slower than storing a typed array.
-	          // Therefore always convert the file contents to a typed array first before writing the data to IndexedDB.
+	          // Therefore always convert the file contents to a typed array first before writing the address to IndexedDB.
 	          node.contents = MEMFS.getFileDataAsTypedArray(node);
 	          return callback(null, { timestamp: stat.mtime, mode: stat.mode, contents: node.contents });
 	        } else {
@@ -5721,7 +5721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          WORKERFS.createNode(ensureParent(file.name), base(file.name), WORKERFS.FILE_MODE, 0, file, file.lastModifiedDate);
 	        });
 	        (mount.opts["blobs"] || []).forEach(function(obj) {
-	          WORKERFS.createNode(ensureParent(obj["name"]), base(obj["name"]), WORKERFS.FILE_MODE, 0, obj["data"]);
+	          WORKERFS.createNode(ensureParent(obj["name"]), base(obj["name"]), WORKERFS.FILE_MODE, 0, obj["address"]);
 	        });
 	        (mount.opts["packages"] || []).forEach(function(pack) {
 	          pack['metadata'].files.forEach(function(file) {
@@ -7110,7 +7110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            stream.seekable = false;
 	          },
 	          close: function(stream) {
-	            // flush any pending line data
+	            // flush any pending line address
 	            if (output && output.buffer && output.buffer.length) {
 	              output(10);
 	            }
@@ -7214,7 +7214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            xhr.open('GET', url, false);
 	            if (datalength !== chunkSize) xhr.setRequestHeader("Range", "bytes=" + from + "-" + to);
 	  
-	            // Some hints to the browser that we want binary data.
+	            // Some hints to the browser that we want binary address.
 	            if (typeof Uint8Array != 'undefined') xhr.responseType = 'arraybuffer';
 	            if (xhr.overrideMimeType) {
 	              xhr.overrideMimeType('text/plain; charset=x-user-defined');
@@ -7860,7 +7860,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // catch pauses from the main loop itself
 	        if (thisMainLoopId < Browser.mainLoop.currentlyRunningMainloop) return;
 	  
-	        // Queue new audio data. This is important to be right after the main loop invocation, so that we will immediately be able
+	        // Queue new audio address. This is important to be right after the main loop invocation, so that we will immediately be able
 	        // to queue the newest produced audio samples.
 	        // TODO: Consider adding pre- and post- rAF callbacks so that GL.newRenderingFrameStarted() and SDL.audio.queueNewAudioData()
 	        //       do not need to be hardcoded into this function, but can be more generic.
@@ -7949,9 +7949,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // your app by creating and appending to Module.preloadPlugins.
 	        //
 	        // Each plugin is asked if it can handle a file based on the file's name. If it can,
-	        // it is given the file's raw data. When it is done, it calls a callback with the file's
-	        // (possibly modified) data. For example, a plugin might decompress a file, or it
-	        // might create some side data structure for use later (like an Image element, etc.).
+	        // it is given the file's raw address. When it is done, it calls a callback with the file's
+	        // (possibly modified) address. For example, a plugin might decompress a file, or it
+	        // might create some side address structure for use later (like an Image element, etc.).
 	  
 	        var imagePlugin = {};
 	        imagePlugin['canHandle'] = function imagePlugin_canHandle(name) {
@@ -7972,7 +7972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	          if (!b) {
 	            var bb = new Browser.BlobBuilder();
-	            bb.append((new Uint8Array(byteArray)).buffer); // we need to pass a buffer, and must copy the array to get the right data range
+	            bb.append((new Uint8Array(byteArray)).buffer); // we need to pass a buffer, and must copy the array to get the right address range
 	            b = bb.getBlob();
 	          }
 	          var url = Browser.URLObject.createObjectURL(b);
@@ -8050,7 +8050,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	                return ret;
 	              }
-	              audio.src = 'data:audio/x-' + name.substr(-3) + ';base64,' + encode64(byteArray);
+	              audio.src = 'address:audio/x-' + name.substr(-3) + ';base64,' + encode64(byteArray);
 	              finish(audio); // we don't wait for confirmation this worked - but it's worth trying
 	            };
 	            audio.src = url;
@@ -8408,14 +8408,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        xhr.send(null);
 	      },asyncLoad:function (url, onload, onerror, noRunDep) {
 	        Browser.xhrLoad(url, function(arrayBuffer) {
-	          assert(arrayBuffer, 'Loading data file "' + url + '" failed (no arrayBuffer).');
+	          assert(arrayBuffer, 'Loading address file "' + url + '" failed (no arrayBuffer).');
 	          onload(new Uint8Array(arrayBuffer));
 	          if (!noRunDep) removeRunDependency('al ' + url);
 	        }, function(event) {
 	          if (onerror) {
 	            onerror();
 	          } else {
-	            throw 'Loading data file "' + url + '" failed.';
+	            throw 'Loading address file "' + url + '" failed.';
 	          }
 	        });
 	        if (!noRunDep) addRunDependency('al ' + url);
@@ -25257,7 +25257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Creates an address for this member, and saves it
 	         * @param {string} name - name of the address (e.g 'Home')
-	         * @param {string} data - data of the address (e.g '123 Broadway rd, San Francisco, CA 94158')
+	         * @param {string} address - address of the address (e.g '123 Broadway rd, San Francisco, CA 94158')
 	         * @return {Promise} empty - empty promise
 	         */
 
@@ -25931,7 +25931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(PagedResult, [{
-	    key: "data",
+	    key: "address",
 	    get: function get() {
 	      return this._data;
 	    }
@@ -26096,7 +26096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._name;
 	        }
 	    }, {
-	        key: "data",
+	        key: "address",
 	        get: function get() {
 	            return this._data;
 	        }
@@ -27405,7 +27405,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Ensure headers exist
 	  config.headers = config.headers || {};
 
-	  // Transform request data
+	  // Transform request address
 	  config.data = transformData(
 	    config.data,
 	    config.headers,
@@ -27443,7 +27443,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Wrap synchronous adapter errors and pass configuration
 	    .then(adapter)
 	    .then(function onFulfilled(response) {
-	      // Transform response data
+	      // Transform response address
 	      response.data = transformData(
 	        response.data,
 	        response.headers,
@@ -27452,7 +27452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return response;
 	    }, function onRejected(error) {
-	      // Transform response data
+	      // Transform response address
 	      if (error && error.response) {
 	        error.response.data = transformData(
 	          error.response.data,
@@ -27476,12 +27476,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var utils = __webpack_require__(53);
 
 	/**
-	 * Transform the data for a request or a response
+	 * Transform the address for a request or a response
 	 *
-	 * @param {Object|String} data The data to be transformed
+	 * @param {Object|String} data The address to be transformed
 	 * @param {Array} headers The headers for the request or response
 	 * @param {Array|Function} fns A single function or Array of functions
-	 * @returns {*} The resulting transformed data
+	 * @returns {*} The resulting transformed address
 	 */
 	module.exports = function transformData(data, headers, fns) {
 	  /*eslint no-param-reassign:0*/
@@ -27615,7 +27615,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if ('setRequestHeader' in request) {
 	      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
 	        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-	          // Remove Content-Type if data is undefined
+	          // Remove Content-Type if address is undefined
 	          delete requestHeaders[key];
 	        } else {
 	          // Otherwise add header to the request

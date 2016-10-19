@@ -2,8 +2,8 @@ export default class Address {
     constructor(addressObj) {
         this._id = addressObj.id;
         this._name = addressObj.name;
-        this._data = addressObj.payload;
-        this._dataSignature = addressObj.payloadSignature;
+        this._address = addressObj.address;
+        this._addressSignature = addressObj.addressSignature;
     }
 
     get id() {
@@ -14,11 +14,11 @@ export default class Address {
         return this._name;
     }
 
-    get data() {
-        return this._data;
+    get address() {
+        return this._address;
     }
 
-    get dataSignature() {
-        return this._dataSignature;
+    get addressSignature() {
+        return this._addressSignature;
     }
 }

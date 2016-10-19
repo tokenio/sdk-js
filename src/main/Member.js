@@ -217,12 +217,12 @@ export default class Member {
     /**
      * Creates an address for this member, and saves it
      * @param {string} name - name of the address (e.g 'Home')
-     * @param {string} data - data of the address (e.g '123 Broadway rd, San Francisco, CA 94158')
+     * @param {object} address - address
      * @return {Promise} empty - empty promise
      */
-    addAddress(name, data) {
+    addAddress(name, address) {
         return this._client
-            .addAddress(name, data)
+            .addAddress(name, address)
             .then(res => {
                 return new Address(res.data.address);
             })

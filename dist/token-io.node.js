@@ -803,7 +803,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Creates an address for this member, and saves it
 	         * @param {string} name - name of the address (e.g 'Home')
-	         * @param {string} data - data of the address (e.g '123 Broadway rd, San Francisco, CA 94158')
+	         * @param {string} address - address of the address (e.g '123 Broadway rd, San Francisco, CA 94158')
 	         * @return {Promise} empty - empty promise
 	         */
 
@@ -1477,7 +1477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(PagedResult, [{
-	    key: "data",
+	    key: "address",
 	    get: function get() {
 	      return this._data;
 	    }
@@ -1642,7 +1642,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._name;
 	        }
 	    }, {
-	        key: "data",
+	        key: "address",
 	        get: function get() {
 	            return this._data;
 	        }
