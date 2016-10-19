@@ -19,56 +19,11 @@ class HttpClient {
         return this._instance(config);
     }
 
-    notifyLinkAccounts(username, bankId, accountsLinkPayload) {
-        const req = {
-            username,
-            bankId,
-            accountsLinkPayload
-        };
-        const config = {
-            method: 'put',
-            url: `/devices/notifyLinkAccounts`,
-            data: req
-        };
-        return this._instance(config);
-    }
-
-    notifyAddKey(username, publicKey, name) {
-        const req = {
-            username,
-            publicKey: Crypto.strKey(publicKey),
-            name
-        };
-        const config = {
-            method: 'put',
-            url: `/devices/notifyAddKey`,
-            data: req
-        };
-        return this._instance(config);
-    }
-
     usernameExists(username) {
         const config = {
             method: 'get',
             url: `/username-exists?username=${username}`
         }
-        return this._instance(config);
-     }
-
-    notifyLinkAccountsAndAddKey(username, bankId, accountsLinkPayload,
-                                       publicKey, name) {
-        const req = {
-            username,
-            bankId,
-            accountsLinkPayload,
-            publicKey: Crypto.strKey(publicKey),
-            name
-        };
-        const config = {
-            method: 'put',
-            url: `/devices/notifyLinkAccountsAndAddKey`,
-            data: req
-        };
         return this._instance(config);
     }
 
