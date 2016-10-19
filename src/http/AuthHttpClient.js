@@ -354,7 +354,7 @@ class AuthHttpClient {
         };
         const config = {
             method: 'post',
-            url: `/members/${this._memberId}`,
+            url: `/members/${this._memberId}/updates`,
             data: req
         };
         return this._instance(config);

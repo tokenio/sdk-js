@@ -62,7 +62,7 @@ class HttpClient {
         };
         const config = {
             method: 'post',
-            url: `/members/${memberId}`,
+            url: `/members/${memberId}/updates`,
             data: req
         };
         return this._instance(config);
