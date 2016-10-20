@@ -9,6 +9,7 @@ import PagedResult from "./PagedResult";
 import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
 import Transfer from "./Transfer";
+import Util from "../Util";
 import {defaultNotificationProvider} from "../constants";
 
 /**
@@ -80,7 +81,7 @@ export default class Member {
                 this._client
                     .addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel)
                     .then(res => undefined))
-            .catch(err => this._reject(this.approveKey, err));
+            .catch(err => Util.reject(this.approveKey, err));
     }
 
     /**
@@ -94,7 +95,7 @@ export default class Member {
                 this._client
                     .removeKey(prevHash, keyId)
                     .then(res => undefined))
-            .catch(err => this._reject(this.removeKey, err));
+            .catch(err => Util.reject(this.removeKey, err));
     }
 
     /**
@@ -108,7 +109,7 @@ export default class Member {
                 this._client
                     .addUsername(prevHash, username)
                     .then(res => undefined))
-            .catch(err => this._reject(this.addUsername, err));
+            .catch(err => Util.reject(this.addUsername, err));
     }
 
     /**
@@ -123,7 +124,7 @@ export default class Member {
                 this._client
                     .removeUsername(prevHash, username)
                     .then(res => undefined))
-            .catch(err => this._reject(this.removeUsername, err));
+            .catch(err => Util.reject(this.removeUsername, err));
     }
 
     /**
@@ -138,7 +139,7 @@ export default class Member {
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
             })
-            .catch(err => this._reject(this.linkAccounts, err));
+            .catch(err => Util.reject(this.linkAccounts, err));
     }
 
     /**
@@ -151,7 +152,7 @@ export default class Member {
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
             })
-            .catch(err => this._reject(this.getAccounts, err));
+            .catch(err => Util.reject(this.getAccounts, err));
     }
 
     /**
@@ -171,7 +172,7 @@ export default class Member {
             .then(res => {
                 return new Subscriber(res.data.subscriber);
             })
-            .catch(err => this._reject(this.subscribeToNotifications, err));
+            .catch(err => Util.reject(this.subscribeToNotifications, err));
     }
 
     /**
@@ -185,7 +186,7 @@ export default class Member {
             .then(res => {
                 return res.data.subscribers.map(s => new Subscriber(s));
             })
-            .catch(err => this._reject(this.getSubscribers, err));
+            .catch(err => Util.reject(this.getSubscribers, err));
     }
 
     /**
@@ -200,7 +201,7 @@ export default class Member {
             .then(res => {
                 return new Subscriber(res.data.subscriber);
             })
-            .catch(err => this._reject(this.getSubscriber, err));
+            .catch(err => Util.reject(this.getSubscriber, err));
     }
 
     /**
@@ -211,7 +212,7 @@ export default class Member {
     unsubscribeFromNotifications(subscriberId) {
         return this._client
             .unsubscribeFromNotifications(subscriberId)
-            .catch(err => this._reject(this.unsubscribeFromNotifications, err));
+            .catch(err => Util.reject(this.unsubscribeFromNotifications, err));
     }
 
     /**
@@ -226,7 +227,7 @@ export default class Member {
             .then(res => {
                 return new Address(res.data.address);
             })
-            .catch(err => this._reject(this.addAddress, err));
+            .catch(err => Util.reject(this.addAddress, err));
     }
 
     /**
@@ -241,7 +242,7 @@ export default class Member {
             .then(res => {
                 return new Address(res.data.address);
             })
-            .catch(err => this._reject(this.getAddress, err));
+            .catch(err => Util.reject(this.getAddress, err));
     }
 
     /**
@@ -255,7 +256,7 @@ export default class Member {
                 return res.data.addresses
                     .map(address => new Address(address));
             })
-            .catch(err => this._reject(this.getAddresses, err));
+            .catch(err => Util.reject(this.getAddresses, err));
     }
 
     /**
@@ -266,7 +267,7 @@ export default class Member {
         return this
             ._getMember()
             .then(member => member.usernames)
-            .catch(err => this._reject(this.getAllUsernames, err));
+            .catch(err => Util.reject(this.getAllUsernames, err));
     }
 
     /**
@@ -283,7 +284,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAccessToken, err));
+            .catch(err => Util.reject(this.createAccessToken, err));
     }
 
     /**
@@ -299,7 +300,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAddressesAccessToken, err));
+            .catch(err => Util.reject(this.createAddressesAccessToken, err));
     }
 
     /**
@@ -316,7 +317,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAddressAccessTokenn, err));
+            .catch(err => Util.reject(this.createAddressAccessTokenn, err));
     }
 
     /**
@@ -332,7 +333,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAccountsAccessToken, err));
+            .catch(err => Util.reject(this.createAccountsAccessToken, err));
     }
 
     /**
@@ -349,7 +350,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAccountAccessToken, err));
+            .catch(err => Util.reject(this.createAccountAccessToken, err));
     }
 
     /**
@@ -365,7 +366,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAccountsTransactionsAccessToken, err));
+            .catch(err => Util.reject(this.createAccountsTransactionsAccessToken, err));
     }
 
     /**
@@ -382,7 +383,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createAccountTransactionsAccessToken, err));
+            .catch(err => Util.reject(this.createAccountTransactionsAccessToken, err));
     }
 
     /**
@@ -398,7 +399,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.balancesAccessToken, err));
+            .catch(err => Util.reject(this.balancesAccessToken, err));
     }
 
     /**
@@ -415,7 +416,7 @@ export default class Member {
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createBalanceAccessToken, err));
+            .catch(err => Util.reject(this.createBalanceAccessToken, err));
     }
 
     /**
@@ -436,7 +437,7 @@ export default class Member {
             .then(res => {
                 return TransferToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.createToken, err));
+            .catch(err => Util.reject(this.createToken, err));
     }
 
     /**
@@ -450,7 +451,7 @@ export default class Member {
             .then(res => {
                 return TransferToken.createFromToken(res.data.token);
             })
-            .catch(err => this._reject(this.getToken, err));
+            .catch(err => Util.reject(this.getToken, err));
     }
 
     /**
@@ -469,7 +470,7 @@ export default class Member {
                         :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
                     res.data.offset);
             })
-            .catch(err => this._reject(this.getTransferTokens, err));
+            .catch(err => Util.reject(this.getTransferTokens, err));
     }
 
     /**
@@ -488,7 +489,7 @@ export default class Member {
                         :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
                     res.data.offset);
             })
-            .catch(err => this._reject(this.getAccessTokens, err));
+            .catch(err => Util.reject(this.getAccessTokens, err));
     }
 
     /**
@@ -508,7 +509,7 @@ export default class Member {
                         }
                     });
             })
-            .catch(err => this._reject(this.endorseToken, err));
+            .catch(err => Util.reject(this.endorseToken, err));
     }
 
     /**
@@ -528,7 +529,7 @@ export default class Member {
                         }
                     });
             })
-            .catch(err => this._reject(this.cancelToken, err));
+            .catch(err => Util.reject(this.cancelToken, err));
     }
 
     /**
@@ -554,7 +555,7 @@ export default class Member {
                         return new Transfer(res.data.transfer);
                     });
             })
-            .catch(err => this._reject(this.createTransfer, err));
+            .catch(err => Util.reject(this.createTransfer, err));
     }
 
     /**
@@ -568,7 +569,7 @@ export default class Member {
             .then(res => {
                 return new Transfer(res.data.transfer);
             })
-            .catch(err => this._reject(this.getTransfer, err));
+            .catch(err => Util.reject(this.getTransfer, err));
     }
 
     /**
@@ -586,7 +587,7 @@ export default class Member {
                     res.data.transfers.map(pt => new Transfer(pt)),
                     res.data.offset);
             })
-            .catch(err => this._reject(this.getTransfers, err));
+            .catch(err => Util.reject(this.getTransfers, err));
     }
 
     /**
@@ -597,14 +598,14 @@ export default class Member {
         return this
             ._getMember()
             .then(member => member.keys)
-            .catch(err => this._reject(this.getPublicKeys, err));
+            .catch(err => Util.reject(this.getPublicKeys, err));
     }
 
     _getPreviousHash() {
         return this
             ._getMember()
             .then(member => member.lastHash)
-            .catch(err => this._reject(this._getPreviousHash, err));
+            .catch(err => Util.reject(this._getPreviousHash, err));
     }
 
     _getMember() {
@@ -613,7 +614,7 @@ export default class Member {
             .then(res => {
                 return res.data.member;
             })
-            .catch(err => this._reject(this._getMember, err));
+            .catch(err => Util.reject(this._getMember, err));
     }
 
     _resolveToken(token) {
@@ -626,12 +627,5 @@ export default class Member {
             }
         });
 
-    }
-    _reject(method, err) {
-        return Promise.reject({
-            type: method.name,
-            error: err,
-            reason: (err.response.data !== undefined) ? err.response.data : "UNKNOWN"
-        });
     }
 }

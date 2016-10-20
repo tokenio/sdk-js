@@ -65,7 +65,7 @@ describe('Notifications', () => {
     });
 
     it('should send a push for adding key', () => {
-        const target = Crypto.generateKeys().keyId;
+        const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
         return member1.subscribeToNotifications(target)
             .then(alp => Token.notifyAddKey(username1,
@@ -73,7 +73,7 @@ describe('Notifications', () => {
     });
 
     it('should send a push for adding a key and linking accounts', () => {
-        const randomStr = '8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554000';
+        const randomStr = 'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900';
         const keys = Crypto.generateKeys();
         return member1.subscribeToNotifications(randomStr)
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
@@ -87,7 +87,7 @@ describe('Notifications', () => {
     });
 
     it('should send an actual push to device', () => {
-        return member1.subscribeToNotifications('8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B' +
+        return member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000')
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));

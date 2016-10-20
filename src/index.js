@@ -30,7 +30,7 @@ class Token {
             .usernameExists(username)
             // Workaround for a default value case when protobuf does not serialize it.
             .then(res => res.data.exists ? res.data.exists : false)
-            .catch(err => this._reject(this.usernameExists, err));
+            .catch(err => Util.reject(this.usernameExists, err));
     }
 
     /**
@@ -51,7 +51,7 @@ class Token {
                         .then(() => member);
                 })
             )
-            .catch(err => this._reject(this.createMember, err));
+            .catch(err => Util.reject(this.createMember, err));
     }
 
     /**
@@ -62,7 +62,7 @@ class Token {
      */
     login(memberId, keys) {
         return Promise.resolve(new Member(this._env, memberId, keys))
-            .catch(err => this._reject(this.login, err));
+            .catch(err => Util.reject(this.login, err));
     }
 
     /**
@@ -77,7 +77,7 @@ class Token {
         return new AuthHttpClientUsername(this._env, username, keys)
             .getMemberByUsername()
             .then(res => new Member(this._env, res.data.member.id, keys))
-            .catch(err => this._reject(this.loginWithUsername, err));
+            .catch(err => Util.reject(this.loginWithUsername, err));
     }
 
     /**
@@ -85,8 +85,12 @@ class Token {
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage() {
-        return Promise.resolve(LocalStorage.loadMember())
-            .catch(err => this._reject(this.loginFromLocalStorage, err));
+        try {
+            const member = LocalStorage.loadMember();
+            return Promise.resolve(member);
+        } catch (err) {
+            return Util.reject(this.loginFromLocalStorage, err)
+        }
     }
 
     /**
@@ -107,7 +111,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
-            .catch(err => this._reject(this.notifyLinkAccounts, err));
+            .catch(err => Util.reject(this.notifyLinkAccounts, err));
     }
 
     /**
@@ -126,7 +130,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
-            .catch(err => this._reject(this.notifyAddKey, err));
+            .catch(err => Util.reject(this.notifyAddKey, err));
     }
 
     /**
@@ -155,16 +159,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
-            .catch(err => this._reject(this.notifyLinkAccountsAndAddKey, err));
-;
-    }
-
-    _reject(method, err) {
-        return Promise.reject({
-            type: method.name,
-            error: err,
-            reason: (err.response.data !== undefined) ? err.response.data : "UNKNOWN"
-        });
+            .catch(err => Util.reject(this.notifyLinkAccountsAndAddKey, err));
     }
 };
 

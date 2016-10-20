@@ -1,5 +1,6 @@
 import PagedResult from "./PagedResult";
 import Transaction from "./Transaction";
+import Util from "../Util";
 
 /**
  * Account class. Allows the member to make account specific operations, move money, etc
@@ -50,7 +51,7 @@ export default class Account {
             .then(res => {
                 return res.data;
             })
-            .catch(err => this._reject(this.getBalance, err));
+            .catch(err => Util.reject(this.getBalance, err));
     }
 
     /**
@@ -63,7 +64,7 @@ export default class Account {
           .then(res => {
               return new Transaction(res.data.transaction);
           })
-          .catch(err => this._reject(this.getTransaction, err));
+          .catch(err => Util.reject(this.getTransaction, err));
     }
 
     /**
@@ -79,14 +80,6 @@ export default class Account {
                     res.data.transactions.map(tr => new Transaction(tr)),
                     res.data.offset);
             })
-            .catch(err => this._reject(this.getTransactions, err));
-    }
-
-    _reject(method, err) {
-        return Promise.reject({
-            type: method.name,
-            error: err,
-            reason: (err.response.data !== undefined) ? err.response.data : "UNKNOWN"
-        });
+            .catch(err => Util.reject(this.getTransactions, err));
     }
 }
