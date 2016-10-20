@@ -1,4 +1,4 @@
-# Token-io SDK  (Readme not up to date, view source)
+# Token-io SDK  (Readme may not up to date, view source)
 
 A javascript SDK for interacting with the Token System. Visit Token at http://token.io.
 
