@@ -25,21 +25,27 @@ Minified files available in dist as well.
 
 To build:
 ```sh
-$ npm run build
+$ yarn run build
 ```
 
 To test in the browser:
 ```sh
-$ npm run testBrowserStg
+$ yarn run testBrowserStg
 ```
 
 To test in node:
 ```sh
-$ npm run testNodeStg
+$ yarn run testNodeStg
 ```
 
+To update the version
+```sh
+$ npm version patch
+```
+
+Make sure to update the version before pushing a change
+
 ### API
-Note that information token support has not yet been added to this sdk.
 
 #### Token
 ```
