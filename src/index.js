@@ -86,7 +86,7 @@ class Token {
      */
     loginFromLocalStorage() {
         try {
-            const member = LocalStorage.loadMember();
+            const member = LocalStorage.loadMember(this._env);
             return Promise.resolve(member);
         } catch (err) {
             return Util.reject(this.loginFromLocalStorage, err)

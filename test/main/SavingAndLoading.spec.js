@@ -30,11 +30,9 @@ describe('Saving and loading Members', () => {
         if (BROWSER) {
             member1.saveToLocalStorage();
 
-            Token
+            return Token
                 .loginFromLocalStorage()
-                .then(member => {
-                   return member.getPublicKeys();
-                })
+                .then(member => member.getPublicKeys())
                 .then(keys => {
                     assert.isAtLeast(keys.length, 1);
                 });

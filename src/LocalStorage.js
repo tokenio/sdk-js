@@ -17,7 +17,7 @@ class LocalStorage {
         window.localStorage.member = JSON.stringify(payload);
     }
 
-    static loadMember() {
+    static loadMember(env) {
         if (!BROWSER) {
             throw new Error("Browser Only");
         }
@@ -27,7 +27,7 @@ class LocalStorage {
             secretKey: Crypto.bufferKey(loaded.keys.secretKey),
             keyId: loaded.keys.keyId
         };
-        return new Member(loaded.memberId, correctKeys);
+        return new Member(env, loaded.memberId, correctKeys);
     }
 }
 export default LocalStorage;
