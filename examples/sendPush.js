@@ -4,7 +4,7 @@ var axios = require("axios");
 
 
 // Define your device push token here
-var pushToken = '26C1DE4F20AA51EB45D7BFF70F1CD7D32823441CFCCAE71CD07CB24B35984917';
+var pushToken = '268B10F95C3EEFF862B5E1E2215E9B2557FBFE7919F4730440F244EDC51169A1';
 
 // And choose the type of notification at the bottom
 
