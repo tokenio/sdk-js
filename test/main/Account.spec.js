@@ -21,7 +21,7 @@ describe('Account tests', () => {
     });
 
     it('should get accounts', () => {
-        return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
+        return BankClient.requestLinkAccounts(100000, 'EUR').then(alp => {
             return member.linkAccounts('bank-id', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
@@ -31,7 +31,7 @@ describe('Account tests', () => {
     });
 
     it('should have name and id', () => {
-        return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
+        return BankClient.requestLinkAccounts(100000, 'EUR').then(alp => {
             return member.linkAccounts('bank-id', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
@@ -46,7 +46,7 @@ describe('Account tests', () => {
 
     describe('advances', () => {
         beforeEach(() => {
-            return BankClient.requestLinkAccounts(username, 100000, 'EUR')
+            return BankClient.requestLinkAccounts(100000, 'EUR')
                 .then(alp => {
                     return member.linkAccounts('bank-id', alp).then(accs => {
                         account = accs[0];
