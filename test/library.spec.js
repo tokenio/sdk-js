@@ -22,7 +22,7 @@ describe('Token library', () => {
                     member1 = member;
                     return member1
                         .subscribeToNotifications(pushToken)
-                        .then(() => BankClient.requestLinkAccounts(100000, 'EUR'))
+                        .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
                         .then(alp => member1.linkAccounts("bank-id", alp))
                         .then(accounts => {
                             account = accounts[0];
