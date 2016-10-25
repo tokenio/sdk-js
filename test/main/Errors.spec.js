@@ -64,7 +64,6 @@ describe('Error handling', () => {
     it('Promise should reject', done => {
         member2.createTransfer(token1, 10000, 'EUR')
             .then(() => {
-                console.log("here1");
                 done(new Error("Call should fail"));
             })
             .catch(err => {

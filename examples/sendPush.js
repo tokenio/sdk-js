@@ -81,7 +81,6 @@ const setUp1 = () => {
                         .linkAccounts('bank-id', alp)
                         .then(accs => {
                             account1 = accs[0];
-                            return member1.subscribeToNotifications(pushToken);
                         });
                 });
         });
@@ -159,8 +158,8 @@ var transferProcessed = () => {
 
 // notifyLinkAccounts();
 // notifyAddKey();
-// notifyBoth();
-stepUp();
-// transferProcessed();
+// // notifyBoth();
+// stepUp();
+transferProcessed();
 
-// Do only one at a time! race conditions :)
+// Do only one at a time! (they all share the same global vars)

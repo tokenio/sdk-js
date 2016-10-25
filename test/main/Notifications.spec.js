@@ -39,7 +39,6 @@ describe('Notifications', () => {
             .then(subscriber => {
                 return member1.getSubscriber(subscriber.id)
                     .then(subscriber2 => {
-                        console.log("Subs is:", subscriber, subscriber2)
                         assert.equal(subscriber.platform, subscriber2.platform);
                         assert.equal(subscriber.platform, "ANDROID");
                     });
