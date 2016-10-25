@@ -41,12 +41,12 @@ class AuthHttpClient {
         this._resetInterceptor();
     }
 
-    subscribeToNotifications(target, provider, platform) {
+    subscribeToNotifications(target, platform) {
         const req = {
-            provider,
             target,
             platform
         };
+        console.log("Request:", req)
         const config = {
             method: 'post',
             url: `/subscribers`,

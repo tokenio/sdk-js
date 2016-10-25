@@ -10,7 +10,6 @@ import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
 import Transfer from "./Transfer";
 import Util from "../Util";
-import {defaultNotificationProvider} from "../constants";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -159,16 +158,14 @@ export default class Member {
      * Creates a subscriber to receive notifications of member events, such as step up auth,
      * new device requests, linking account requests, or transfer notifications
      * @param {string} target - the notification target for this device. (e.g iOS push token)
-     * @param {string} provider - provider to send the notification (default Token)
      * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
      * @return {Promise} subscriber - Subscriber object
      */
     subscribeToNotifications(
         target,
-        provider = defaultNotificationProvider,
         platform = "IOS") {
         return this._client
-            .subscribeToNotifications(target, provider, platform)
+            .subscribeToNotifications(target, platform)
             .then(res => {
                 return new Subscriber(res.data.subscriber);
             })

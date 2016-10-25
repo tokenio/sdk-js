@@ -35,10 +35,11 @@ describe('Notifications', () => {
     });
     it('should create and get subscriber by Id', () => {
         const randomStr = Crypto.generateKeys().keyId;
-        return member1.subscribeToNotifications(randomStr, "Token", "ANDROID")
+        return member1.subscribeToNotifications(randomStr, "ANDROID")
             .then(subscriber => {
                 return member1.getSubscriber(subscriber.id)
                     .then(subscriber2 => {
+                        console.log("Subs is:", subscriber, subscriber2)
                         assert.equal(subscriber.platform, subscriber2.platform);
                         assert.equal(subscriber.platform, "ANDROID");
                     });

@@ -18,14 +18,10 @@ const accessTokenVersion = '1.0';
 // Default currency to use
 const defaultCurrency = 'EUR';
 
-// Default notification provider to use
-const defaultNotificationProvider = 'Token';
-
 export {
     signatureScheme,
     urls,
     transferTokenVersion,
     accessTokenVersion,
-    defaultCurrency,
-    defaultNotificationProvider
+    defaultCurrency
 };
