@@ -46,7 +46,6 @@ class AuthHttpClient {
             target,
             platform
         };
-        console.log("Request:", req)
         const config = {
             method: 'post',
             url: `/subscribers`,
