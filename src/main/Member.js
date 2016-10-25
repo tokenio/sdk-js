@@ -129,12 +129,12 @@ export default class Member {
     /**
      * Links bank accounts to the member
      * @param {string} bankId - bank to link
-     * @param {string} accountsLinkPayload - accountLinkPayload obtained from bank
+     * @param {string} accountLinkPayloads - accountLinkPayload obtained from bank
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
-    linkAccounts(bankId, accountsLinkPayload) {
+    linkAccounts(bankId, accountLinkPayloads) {
         return this._client
-            .linkAccounts(bankId, accountsLinkPayload)
+            .linkAccounts(bankId, accountLinkPayloads)
             .then(res => {
                 return res.data.accounts.map(acc => new Account(this, acc));
             })

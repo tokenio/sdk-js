@@ -119,10 +119,10 @@ class AuthHttpClient {
     //
     // ACCOUNTS
     //
-    linkAccounts(bankId, accountsLinkPayload) {
+    linkAccounts(bankId, accountLinkPayloads) {
         const req = {
             bankId,
-            accountsLinkPayload
+            accountLinkPayloads
         };
         const config = {
             method: 'post',

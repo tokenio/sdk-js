@@ -99,15 +99,15 @@ class Token {
      * @param {string} username - username to notify
      * @param {string} bankId - ID of the bank owning the accounts
      * @param {string} bankName - name of the bank owning the accounts
-     * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
+     * @param {string} accountLinkPayloads - accountLinkPayloads retrieved from the bank
      * @return {Promise} empty - empty
      */
-    notifyLinkAccounts(username, bankId, bankName, accountsLinkPayload) {
+    notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
         const notification = {
             linkAccounts: {
                 bankId,
                 bankName,
-                accountsLinkPayload
+                accountLinkPayloads
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
@@ -139,18 +139,18 @@ class Token {
      * @param {string} username - username to notify
      * @param {string} bankId - ID of the bank owning the accounts
      * @param {string} bankName - name of the bank owning the accounts
-     * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
+     * @param {string} accountLinkPayloads - accountsLinkPayload retrieved from the bank
      * @param {string} publicKey - public
      * @param {array} name - name for the new key, (e.g Chrome 53.0)
      * @return {Promise} empty - empty
      */
-    notifyLinkAccountsAndAddKey(username, bankId, bankName, accountsLinkPayload, publicKey, name = "") {
+    notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey, name = "") {
         const notification = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
                     bankId,
                     bankName,
-                    accountsLinkPayload
+                    accountLinkPayloads
                 },
                 addKey: {
                     publicKey: Crypto.strKey(publicKey),
