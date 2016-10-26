@@ -14,6 +14,7 @@ const instance = axios.create({
 
 export default {
     requestLinkAccounts: (
+        username,
         balance = 100000,
         currency = defaultCurrency,
         accountName = "123") => {
@@ -51,6 +52,7 @@ export default {
                     method: 'put',
                     url: `/clients/${client.id}/link-accounts`,
                     data: {
+                        username: username,
                         accounts: [ randomAccNumber ]
                     }
                 });

@@ -66,7 +66,7 @@ describe('member tests', () => {
         });
 
         it('should link an account', () => {
-            BankClient.requestLinkAccounts(100000, 'EUR').then(alp =>
+            BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(accs => {
                     assert.isAtLeast(accs.length, 2);
                 })
@@ -74,7 +74,7 @@ describe('member tests', () => {
         });
 
         it('should get accounts', () => {
-            BankClient.requestLinkAccounts(100000, 'EUR').then(alp =>
+            BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp =>
                 member.linkAccounts('bank-id', alp).then(() => {
                     return member.getAccounts().then(accs => {
                         assert.isAtLeast(accs.length, 2);

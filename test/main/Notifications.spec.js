@@ -60,7 +60,7 @@ describe('Notifications', () => {
     it('should send a push for linking accounts', () => {
         const target = Crypto.generateKeys().keyId;
         return member1.subscribeToNotifications(target)
-            .then(() => BankClient.requestLinkAccounts(100000, 'EUR'))
+            .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));
     });
 
@@ -76,7 +76,7 @@ describe('Notifications', () => {
         const randomStr = 'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900';
         const keys = Crypto.generateKeys();
         return member1.subscribeToNotifications(randomStr)
-            .then(() => BankClient.requestLinkAccounts(100000, 'EUR'))
+            .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccountsAndAddKey(
                 username1,
                 'bank-id',
@@ -89,7 +89,7 @@ describe('Notifications', () => {
     it('should send an actual push to device', () => {
         return member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000')
-            .then(() => BankClient.requestLinkAccounts(100000, 'EUR'))
+            .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));
     });
 });
