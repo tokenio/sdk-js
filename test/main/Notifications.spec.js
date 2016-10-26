@@ -73,7 +73,7 @@ describe('Notifications', () => {
     });
 
     it('should send a push for adding a key and linking accounts', () => {
-        const randomStr = 'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900';
+        const randomStr = 'DEV:268B10F95C3EEFF862B5E1E2215E9B2557FBFE7919F4730440F244EDC51169A10';
         const keys = Crypto.generateKeys();
         return member1.subscribeToNotifications(randomStr)
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))

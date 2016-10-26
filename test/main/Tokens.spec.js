@@ -193,7 +193,7 @@ describe('Tokens', () => {
     it('should fail to endorse a high value token with a low value key', done => {
         const keys = Crypto.generateKeys();
 
-        member1.subscribeToNotifications("DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC779").then(() =>
+        member1.subscribeToNotifications("268B10F95C3EEFF862B5E1E2215E9B2557FBFE7919F4730440F244EDC51169A1").then(() =>
             member1
                 .approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD)
                 .then(() => {
@@ -209,7 +209,10 @@ describe('Tokens', () => {
                                             .then(() => {
                                                 done(new Error("should fail"));
                                             })
-                                            .catch(() => done());
+                                            .catch((err) => {
+                                                assert.include(err.reason, "Step up");
+                                                done();
+                                            });
                                     });
                         });
                 }));
