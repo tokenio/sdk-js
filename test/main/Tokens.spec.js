@@ -6,6 +6,7 @@ const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
 import KeyLevel from "../../src/main/KeyLevel";
+import TokenOperationResult from "../../src/main/TokenOperationResult";
 import BankClient from "../sample/BankClient";
 import {defaultCurrency} from "../../src/constants";
 const some = require('lodash/some');
@@ -85,8 +86,10 @@ describe('Tokens', () => {
                         assert.equal(token.id, tokenLookedUp.id);
                         return member1
                             .endorseToken(token)
-                            .then(() => {
+                            .then(res => {
                                 assert.equal(token.payloadSignatures.length, 2);
+                                assert.equal(res.token.payloadSignatures.length, 2);
+                                assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
                             });
                     });
             });
@@ -98,7 +101,8 @@ describe('Tokens', () => {
             .then(token => {
                 return member1
                     .endorseToken(token.id)
-                    .then(() => {
+                    .then(res => {
+                        assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
                         return member1
                             .getToken(token.id)
                             .then(lookedUp => {
@@ -115,9 +119,10 @@ describe('Tokens', () => {
             .then(token => {
                 return member1
                     .cancelToken(token)
-                    .then(() => {
+                    .then(res => {
                         assert.equal(token.payloadSignatures.length, 2);
                         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
+                        assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
                     });
             });
     });
@@ -128,7 +133,8 @@ describe('Tokens', () => {
             .then(token => {
                 return member1
                     .cancelToken(token.id)
-                    .then(() => {
+                    .then(res => {
+                        assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
                         return member1
                             .getToken(token.id)
                             .then(lookedUp => {
@@ -190,11 +196,11 @@ describe('Tokens', () => {
             });
     });
 
-    it('should fail to endorse a high value token with a low value key', done => {
+    it('should fail to endorse a high value token with a low value key', () => {
         const keys = Crypto.generateKeys();
 
-        member1.subscribeToNotifications("268B10F95C3EEFF862B5E1E2215E9B2557FBFE7919F4730440F244EDC51169A100").then(() =>
-            member1
+        return member1.subscribeToNotifications("4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5B00")
+            .then(() => member1
                 .approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD)
                 .then(() => {
                     return Token
@@ -206,15 +212,11 @@ describe('Tokens', () => {
                                     token => {
                                         return memberNew
                                             .endorseToken(token.id)
-                                            .then(() => {
-                                                done(new Error("should fail"));
-                                            })
-                                            .catch((err) => {
-                                                assert.include(err.reason, "Step up");
-                                                done();
+                                            .then(res => {
+                                                assert.equal(res.status, TokenOperationResult.STATUS.MORE_SIGNATURES_NEEDED);
                                             });
                                     });
                         });
-                }));
+                }))
     });
 });

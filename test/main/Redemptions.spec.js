@@ -102,8 +102,8 @@ describe('Token Redemptions', () => {
     });
 
     it('should should redeem a token with notifications', () => {
-        return member1.subscribeToNotifications('268B10F95C3EEFF862B5E1E2215E9B2557FBFE7919F4730440F244EDC51169A1' +
-            '000') // Remove 0s to notify iphone
+        return member1.subscribeToNotifications('4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5' +
+            'B000') // Remove 0s to notify iphone
             .then(() => member2.createTransfer(token1, 10.21, 'EUR').then(transfer => {
                 assert.equal(10.21, transfer.amount);
                 assert.equal('EUR', transfer.currency);

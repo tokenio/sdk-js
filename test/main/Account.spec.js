@@ -32,7 +32,7 @@ describe('Account tests', () => {
 
     it('should have name and id', () => {
         return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
-            return member.linkAccounts('bank-id', alp).then(() => {
+            return member.linkAccounts('fnk', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
                     assert.isOk(accs[0].name);

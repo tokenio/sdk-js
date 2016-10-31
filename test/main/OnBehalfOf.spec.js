@@ -16,9 +16,9 @@ const setUpGrantor = () => {
     grantorUsername = Sample.string();
     return Token
         .createMember(grantorUsername)
-        .then(res => {
-            grantor = res;
-            grantor
+        .then(member => {
+            grantor = member;
+            return grantor
                 .addAddress("name", { city: 'San Francisco', country: 'US' })
                 .then(res => {
                     address = res;
@@ -30,8 +30,8 @@ const setupGrantee = () => {
     granteeUsername = Sample.string();
     return Token
         .createMember(granteeUsername)
-        .then(res => {
-            grantee = res;
+        .then(member => {
+            grantee = member;
         });
 };
 
@@ -45,8 +45,8 @@ const setupToken = () => {
 
 describe('On-Behalf-Of', () => {
     beforeEach(() => {
-        return setUpGrantor().then(res =>
-            setupGrantee());
+        return setUpGrantor()
+            .then(res => setupGrantee());
     });
 
     it('address access token flow', () => {

@@ -6,6 +6,7 @@ import Address from "./Address";
 import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
 import PagedResult from "./PagedResult";
+import TokenOperationResult from "./TokenOperationResult";
 import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
 import Transfer from "./Transfer";
@@ -446,7 +447,11 @@ export default class Member {
         return this._client
             .getToken(tokenId)
             .then(res => {
-                return TransferToken.createFromToken(res.data.token);
+                if (res.data.token.payload.access !== undefined) {
+                    return AccessToken.createFromToken(res.data.token);
+                } else {
+                    return TransferToken.createFromToken(res.data.token);
+                }
             })
             .catch(err => Util.reject(this.getToken, err));
     }
@@ -474,7 +479,7 @@ export default class Member {
      * Looks up all access tokens (not just for this account)
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
-     * @return {TransferToken} tokens - returns a list of Transfer Tokens
+     * @return {Promise} AccessTokens - returns a list of Access Tokens
      */
     getAccessTokens(offset, limit) {
         return this._client
@@ -483,7 +488,7 @@ export default class Member {
                 return new PagedResult(
                     res.data.tokens === undefined
                         ? []
-                        :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
+                        :res.data.tokens.map(tk => AccessToken.createFromToken(tk)),
                     res.data.offset);
             })
             .catch(err => Util.reject(this.getAccessTokens, err));
@@ -491,7 +496,7 @@ export default class Member {
 
     /**
      * Endorses a token
-     * @param {BankTransferToken} token - Transfer token to endorse. Can also be a {string} tokenId
+     * @param {Token} token - Transfer token to endorse. Can also be a {string} tokenId
      * @return {Promise} token - Promise of endorsed transfer token
      */
     endorseToken(token) {
@@ -502,8 +507,9 @@ export default class Member {
                     .endorseToken(finalToken)
                     .then(res => {
                         if (typeof token !== 'string' && !(token instanceof String)) {
-                            token.payloadSignatures = res.data.token.payloadSignatures;
+                            token.payloadSignatures = res.data.result.token.payloadSignatures;
                         }
+                        return new TokenOperationResult(res.data.result, token);
                     });
             })
             .catch(err => Util.reject(this.endorseToken, err));
@@ -511,8 +517,8 @@ export default class Member {
 
     /**
      * Cancels a token. (Called by the payer or the redeemer)
-     * @param {BankTransferToken} token - token to cancel. Can also be a {string} tokenId
-     * @return {BankTransferToken} token - cancelled token
+     * @param {Token} token - token to cancel. Can also be a {string} tokenId
+     * @return {Promise} TokenOperationResult.js - cancelled token
      */
     cancelToken(token) {
         return this
@@ -522,8 +528,9 @@ export default class Member {
                     .cancelToken(finalToken)
                     .then(res => {
                         if (typeof token !== 'string' && !(token instanceof String)) {
-                            token.payloadSignatures = res.data.token.payloadSignatures;
+                            token.payloadSignatures = res.data.result.token.payloadSignatures;
                         }
+                        return new TokenOperationResult(res.data.result, token);
                     });
             })
             .catch(err => Util.reject(this.cancelToken, err));

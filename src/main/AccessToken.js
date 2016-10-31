@@ -189,11 +189,18 @@ export default class AccessToken {
         const resources = token.payload.access.resources;
         const version = token.payload.version;
         const nonce = token.payload.nonce;
+        const issuer = token.payload.issuer;
         const payloadSignatures = token.payloadSignatures;
 
         return new AccessToken(
-            id, version, nonce, from, to,
-            resources, payloadSignatures);
+            id,
+            from,
+            to,
+            resources,
+            version,
+            nonce,
+            issuer,
+            payloadSignatures);
     }
 
     constructor(
@@ -203,6 +210,7 @@ export default class AccessToken {
         resources,
         version = accessTokenVersion,
         nonce = undefined,
+        issuer,
         payloadSignatures = []) {
         this._id = id;
         this._from = from;
@@ -210,6 +218,7 @@ export default class AccessToken {
         this._resources = resources;
         this._version = version;
         this._nonce = nonce;
+        this._issuer = issuer;
         this._payloadSignatures = payloadSignatures;
 
         if (nonce === undefined) {
@@ -244,6 +253,10 @@ export default class AccessToken {
         return this._to;
     }
 
+    get issuer() {
+        return this._issuer;
+    }
+
     get resources() {
         return this._resources;
     }
@@ -259,6 +272,7 @@ export default class AccessToken {
             nonce: this._nonce,
             from: this._from,
             to: this._to,
+            issuer: this._issuer,
             access: {
                 resources: this._resources
             }

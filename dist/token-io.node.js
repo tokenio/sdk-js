@@ -7,7 +7,7 @@
 		exports["token-io.node"] = factory(require("fast-sha256"), require("base64url"), require("supercop.js"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
 	else
 		root["token-io.node"] = factory(root["fast-sha256"], root["base64url"], root["supercop.js"], root["json-stable-stringify"], root["axios"], root["es6-promise"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_25__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_26__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -78,11 +78,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _HttpClient = __webpack_require__(23);
+	var _HttpClient = __webpack_require__(24);
 
 	var _HttpClient2 = _interopRequireDefault(_HttpClient);
 
-	var _AuthHttpClientUsername = __webpack_require__(24);
+	var _AuthHttpClientUsername = __webpack_require__(25);
 
 	var _AuthHttpClientUsername2 = _interopRequireDefault(_AuthHttpClientUsername);
 
@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	// Promise polyfill for IE and older browsers
-	__webpack_require__(25).polyfill();
+	__webpack_require__(26).polyfill();
 
 	// Main entry object
 
@@ -213,20 +213,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {string} username - username to notify
 	         * @param {string} bankId - ID of the bank owning the accounts
 	         * @param {string} bankName - name of the bank owning the accounts
-	         * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
+	         * @param {string} accountLinkPayloads - accountLinkPayloads retrieved from the bank
 	         * @return {Promise} empty - empty
 	         */
 
 	    }, {
 	        key: "notifyLinkAccounts",
-	        value: function notifyLinkAccounts(username, bankId, bankName, accountsLinkPayload) {
+	        value: function notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
 	            var _this5 = this;
 
 	            var notification = {
 	                linkAccounts: {
 	                    bankId: bankId,
 	                    bankName: bankName,
-	                    accountsLinkPayload: accountsLinkPayload
+	                    accountLinkPayloads: accountLinkPayloads
 	                }
 	            };
 	            return this._unauthenticatedClient.notify(username, notification).catch(function (err) {
@@ -267,7 +267,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {string} username - username to notify
 	         * @param {string} bankId - ID of the bank owning the accounts
 	         * @param {string} bankName - name of the bank owning the accounts
-	         * @param {string} accountsLinkPayload - accountsLinkPayload retrieved from the bank
+	         * @param {string} accountLinkPayloads - accountsLinkPayload retrieved from the bank
 	         * @param {string} publicKey - public
 	         * @param {array} name - name for the new key, (e.g Chrome 53.0)
 	         * @return {Promise} empty - empty
@@ -275,7 +275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    }, {
 	        key: "notifyLinkAccountsAndAddKey",
-	        value: function notifyLinkAccountsAndAddKey(username, bankId, bankName, accountsLinkPayload, publicKey) {
+	        value: function notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey) {
 	            var _this7 = this;
 
 	            var name = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : "";
@@ -285,7 +285,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    linkAccounts: {
 	                        bankId: bankId,
 	                        bankName: bankName,
-	                        accountsLinkPayload: accountsLinkPayload
+	                        accountLinkPayloads: accountLinkPayloads
 	                    },
 	                    addKey: {
 	                        publicKey: _Crypto2.default.strKey(publicKey),
@@ -521,15 +521,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _TransferToken = __webpack_require__(20);
+	var _TokenOperationResult = __webpack_require__(20);
+
+	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
+
+	var _TransferToken = __webpack_require__(21);
 
 	var _TransferToken2 = _interopRequireDefault(_TransferToken);
 
-	var _AccessToken = __webpack_require__(21);
+	var _AccessToken = __webpack_require__(22);
 
 	var _AccessToken2 = _interopRequireDefault(_AccessToken);
 
-	var _Transfer = __webpack_require__(22);
+	var _Transfer = __webpack_require__(23);
 
 	var _Transfer2 = _interopRequireDefault(_Transfer);
 
@@ -686,16 +690,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Links bank accounts to the member
 	         * @param {string} bankId - bank to link
-	         * @param {string} accountsLinkPayload - accountLinkPayload obtained from bank
+	         * @param {string} accountLinkPayloads - accountLinkPayload obtained from bank
 	         * @return {Promise} accounts - Promise resolving the the Accounts linked
 	         */
 
 	    }, {
 	        key: "linkAccounts",
-	        value: function linkAccounts(bankId, accountsLinkPayload) {
+	        value: function linkAccounts(bankId, accountLinkPayloads) {
 	            var _this5 = this;
 
-	            return this._client.linkAccounts(bankId, accountsLinkPayload).then(function (res) {
+	            return this._client.linkAccounts(bankId, accountLinkPayloads).then(function (res) {
 	                return res.data.accounts.map(function (acc) {
 	                    return new _Account2.default(_this5, acc);
 	                });
@@ -1147,7 +1151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /**
 	         * Endorses a token
-	         * @param {BankTransferToken} token - Transfer token to endorse. Can also be a {string} tokenId
+	         * @param {Token} token - Transfer token to endorse. Can also be a {string} tokenId
 	         * @return {Promise} token - Promise of endorsed transfer token
 	         */
 
@@ -1159,8 +1163,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._resolveToken(token).then(function (finalToken) {
 	                return _this28._client.endorseToken(finalToken).then(function (res) {
 	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.token.payloadSignatures;
+	                        token.payloadSignatures = res.data.tokenOperationResult.token.payloadSignatures;
 	                    }
+	                    return new _TokenOperationResult2.default(res.data.tokenOperationResult, token);
 	                });
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this28.endorseToken, err);
@@ -1169,8 +1174,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /**
 	         * Cancels a token. (Called by the payer or the redeemer)
-	         * @param {BankTransferToken} token - token to cancel. Can also be a {string} tokenId
-	         * @return {BankTransferToken} token - cancelled token
+	         * @param {Token} token - token to cancel. Can also be a {string} tokenId
+	         * @return {Promise} TokenOperationResult.js - cancelled token
 	         */
 
 	    }, {
@@ -1181,8 +1186,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._resolveToken(token).then(function (finalToken) {
 	                return _this29._client.cancelToken(finalToken).then(function (res) {
 	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.token.payloadSignatures;
+	                        token.payloadSignatures = res.data.tokenOperationResult.token.payloadSignatures;
 	                    }
+	                    return new _TokenOperationResult2.default(res.data.tokenOperationResult, token);
 	                });
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this29.cancelToken, err);
@@ -1850,7 +1856,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                target: target,
 	                platform: platform
 	            };
-	            console.log("Request:", req);
 	            var config = {
 	                method: 'post',
 	                url: "/subscribers",
@@ -1934,10 +1939,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    }, {
 	        key: "linkAccounts",
-	        value: function linkAccounts(bankId, accountsLinkPayload) {
+	        value: function linkAccounts(bankId, accountLinkPayloads) {
 	            var req = {
 	                bankId: bankId,
-	                accountsLinkPayload: accountsLinkPayload
+	                accountLinkPayloads: accountLinkPayloads
 	            };
 	            var config = {
 	                method: 'post',
@@ -2397,6 +2402,53 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 20 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TokenOperationResult = function () {
+	    function TokenOperationResult(resultObj, newToken) {
+	        _classCallCheck(this, TokenOperationResult);
+
+	        this._status = resultObj.status;
+	        this._token = newToken;
+	    }
+
+	    _createClass(TokenOperationResult, [{
+	        key: 'status',
+	        get: function get() {
+	            return this._status;
+	        }
+	    }, {
+	        key: 'token',
+	        get: function get() {
+	            return this._token;
+	        }
+	    }], [{
+	        key: 'STATUS',
+	        get: function get() {
+	            return {
+	                SUCCESS: 'SUCCESS',
+	                MORE_SIGNATURES_NEEDED: 'MORE_SIGNATURES_NEEDED'
+	            };
+	        }
+	    }]);
+
+	    return TokenOperationResult;
+	}();
+
+	exports.default = TokenOperationResult;
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2588,7 +2640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = BankTransferToken;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2902,7 +2954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AccessToken;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2968,7 +3020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transfer;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3075,7 +3127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = HttpClient;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3136,7 +3188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClientUsername;
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = require("es6-promise");
