@@ -6,7 +6,7 @@ const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
 import KeyLevel from "../../src/main/KeyLevel";
-import Status from "../../src/main/TokenOperationStatus";
+import TokenOperationResult from "../../src/main/TokenOperationResult";
 import BankClient from "../sample/BankClient";
 import {defaultCurrency} from "../../src/constants";
 const some = require('lodash/some');
@@ -89,7 +89,7 @@ describe('Tokens', () => {
                             .then(res => {
                                 assert.equal(token.payloadSignatures.length, 2);
                                 assert.equal(res.token.payloadSignatures.length, 2);
-                                assert.equal(res.status, Status.SUCCESS)
+                                assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
                             });
                     });
             });
@@ -102,7 +102,7 @@ describe('Tokens', () => {
                 return member1
                     .endorseToken(token.id)
                     .then(res => {
-                        assert.equal(res.status, Status.SUCCESS)
+                        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
                         return member1
                             .getToken(token.id)
                             .then(lookedUp => {
@@ -122,7 +122,7 @@ describe('Tokens', () => {
                     .then(res => {
                         assert.equal(token.payloadSignatures.length, 2);
                         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
-                        assert.equal(res.status, Status.SUCCESS)
+                        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
                     });
             });
     });
@@ -134,7 +134,7 @@ describe('Tokens', () => {
                 return member1
                     .cancelToken(token.id)
                     .then(res => {
-                        assert.equal(res.status, Status.SUCCESS)
+                        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
                         return member1
                             .getToken(token.id)
                             .then(lookedUp => {
@@ -213,7 +213,7 @@ describe('Tokens', () => {
                                         return memberNew
                                             .endorseToken(token.id)
                                             .then(res => {
-                                                assert.equal(res.status, Status.MORE_SIGNATURES_NEEDED);
+                                                assert.equal(res.status, TokenOperationResult.Status.MORE_SIGNATURES_NEEDED);
                                             });
                                     });
                         });

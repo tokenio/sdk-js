@@ -4,6 +4,14 @@ export default class TokenOperationResult {
         this._token = newToken;
     }
 
+    static get Status() {
+        return {
+            INVALID: 'INVALID',
+            SUCCESS: 'SUCCESS',
+            MORE_SIGNATURES_NEEDED: 'MORE_SIGNATURES_NEEDED'
+        }
+    }
+
     get status() {
         return this._status;
     }
