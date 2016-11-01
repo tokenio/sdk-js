@@ -6,7 +6,7 @@ const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
 import KeyLevel from "../../src/main/KeyLevel";
-import TokenOperationResult from "../../src/main/TokenOperationResult";
+import Status from "../../src/main/TokenOperationStatus";
 import BankClient from "../sample/BankClient";
 import {defaultCurrency} from "../../src/constants";
 const some = require('lodash/some');
@@ -89,7 +89,7 @@ describe('Tokens', () => {
                             .then(res => {
                                 assert.equal(token.payloadSignatures.length, 2);
                                 assert.equal(res.token.payloadSignatures.length, 2);
-                                assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
+                                assert.equal(res.status, Status.SUCCESS)
                             });
                     });
             });
@@ -102,7 +102,7 @@ describe('Tokens', () => {
                 return member1
                     .endorseToken(token.id)
                     .then(res => {
-                        assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
+                        assert.equal(res.status, Status.SUCCESS)
                         return member1
                             .getToken(token.id)
                             .then(lookedUp => {
@@ -122,7 +122,7 @@ describe('Tokens', () => {
                     .then(res => {
                         assert.equal(token.payloadSignatures.length, 2);
                         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
-                        assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
+                        assert.equal(res.status, Status.SUCCESS)
                     });
             });
     });
@@ -134,7 +134,7 @@ describe('Tokens', () => {
                 return member1
                     .cancelToken(token.id)
                     .then(res => {
-                        assert.equal(res.status, TokenOperationResult.STATUS.SUCCESS)
+                        assert.equal(res.status, Status.SUCCESS)
                         return member1
                             .getToken(token.id)
                             .then(lookedUp => {
@@ -199,7 +199,7 @@ describe('Tokens', () => {
     it('should fail to endorse a high value token with a low value key', () => {
         const keys = Crypto.generateKeys();
 
-        return member1.subscribeToNotifications("4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5B00")
+        return member1.subscribeToNotifications("0F7BF07748A12DE0C2393FD3731BFEB1484693DFA47A5C9614428BDF724548CD")
             .then(() => member1
                 .approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD)
                 .then(() => {
@@ -213,7 +213,7 @@ describe('Tokens', () => {
                                         return memberNew
                                             .endorseToken(token.id)
                                             .then(res => {
-                                                assert.equal(res.status, TokenOperationResult.STATUS.MORE_SIGNATURES_NEEDED);
+                                                assert.equal(res.status, Status.MORE_SIGNATURES_NEEDED);
                                             });
                                     });
                         });

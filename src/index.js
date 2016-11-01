@@ -4,6 +4,7 @@ import Member from "./main/Member";
 import KeyLevel from "./main/KeyLevel";
 import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
+import TokenOperationStatus from "./main/TokenOperationStatus";
 import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
 
 // Promise polyfill for IE and older browsers
@@ -18,6 +19,7 @@ class Token {
         this.Crypto = Crypto;
         this.Util = Util;
         this.KeyLevel = KeyLevel;
+        this.TokenOperationStatus = TokenOperationStatus;
     }
 
     /**
