@@ -42,7 +42,7 @@ class AuthHeader {
             uriPath.substring(0, uriPath.length - 1) : uriPath;
 
         // Path should not include query parameters
-        if (uriPath.includes("?")) {
+        if (uriPath.indexOf("?") >= 0) {
             uriPath = uriPath.substring(0, uriPath.indexOf("?"));
         }
 

@@ -43,13 +43,13 @@ const setupToken = () => {
 
 };
 
-describe('On-Behalf-Of', () => {
+describe('Using access tokens', () => {
     beforeEach(() => {
         return setUpGrantor()
             .then(res => setupGrantee());
     });
 
-    it('address access token flow', () => {
+    it('On-Behalf-Of address token', () => {
         return setupToken()
             .then(token => {
                 grantee.useAccessToken(token.id);
@@ -60,7 +60,7 @@ describe('On-Behalf-Of', () => {
                         assert.equal(result.name, address.name);
                         assert.deepEqual(result.address, address.address);
                     });
-            });
+            });``
     });
 
     it('address access token should not work if cleared token', done => {
