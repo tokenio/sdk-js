@@ -30,7 +30,7 @@ const setUp1 = () => {
                 .requestLinkAccounts(username1, 100000, 'EUR')
                 .then(alp => {
                     return member1
-                        .linkAccounts('bank-id', alp)
+                        .linkAccounts('iron', alp)
                         .then(accs => {
                             account1 = accs[0];
                         });
@@ -74,7 +74,7 @@ describe('Tokens', () => {
             .then(token => {
                 assert.isAtLeast(token.id.length, 5);
                 assert.equal(token.version, '1.0');
-                assert.equal(token.issuer.id, 'iron-bank');
+                assert.equal(token.issuer.id, 'iron');
                 assert.equal(token.from.id, member1.id);
                 assert.equal(token.description, undefined);
                 assert.equal(token.redeemer.username, username2);

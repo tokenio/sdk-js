@@ -49,7 +49,7 @@ describe('Notifications', () => {
       .then(subscriber => {
         member1.unsubscribeFromNotifications(subscriber.id)
           .then(() => {
-              Token.notifyLinkAccounts(username1, "bank-id", 'bank-name', "alp...")
+              Token.notifyLinkAccounts(username1, "iron", 'bank-name', "alp...")
                   .then(() => {
                       done(new Error("Should fail"));
                   }).catch(() => done());
@@ -61,7 +61,7 @@ describe('Notifications', () => {
         const target = Crypto.generateKeys().keyId;
         return member1.subscribeToNotifications(target)
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-            .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));
+            .then(alp => Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp));
     });
 
     it('should send a push for adding key', () => {
@@ -79,7 +79,7 @@ describe('Notifications', () => {
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
             .then(alp => Token.notifyLinkAccountsAndAddKey(
                 username1,
-                'bank-id',
+                'iron',
                 'bank-name',
                 alp,
                 keys.publicKey,
@@ -90,6 +90,6 @@ describe('Notifications', () => {
         return member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000')
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-            .then(alp => Token.notifyLinkAccounts(username1, 'bank-id', 'bank-name', alp));
+            .then(alp => Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp));
     });
 });
