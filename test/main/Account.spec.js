@@ -22,7 +22,7 @@ describe('Account tests', () => {
 
     it('should get accounts', () => {
         return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
-            return member.linkAccounts('bank-id', alp).then(() => {
+            return member.linkAccounts('iron', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
                 });
@@ -32,7 +32,7 @@ describe('Account tests', () => {
 
     it('should have name and id', () => {
         return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
-            return member.linkAccounts('fnk', alp).then(() => {
+            return member.linkAccounts('iron', alp).then(() => {
                 return member.getAccounts().then(accs => {
                     assert.equal(accs.length, 1);
                     assert.isOk(accs[0].name);
@@ -48,7 +48,7 @@ describe('Account tests', () => {
         beforeEach(() => {
             return BankClient.requestLinkAccounts(username, 100000, 'EUR')
                 .then(alp => {
-                    return member.linkAccounts('bank-id', alp).then(accs => {
+                    return member.linkAccounts('iron', alp).then(accs => {
                         account = accs[0];
                     });
                 });
