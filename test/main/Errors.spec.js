@@ -23,7 +23,7 @@ const setUp1 = () => {
         .then(res => {
             member1 = res;
             return BankClient.requestLinkAccounts(username1, 100000, 'EUR').then(alp => {
-                return member1.linkAccounts('bank-id', alp).then(accs => {
+                return member1.linkAccounts('iron', alp).then(accs => {
                     account1 = accs[0];
                 });
             });
@@ -37,7 +37,7 @@ const setUp2 = () => {
         .then(res => {
             member2 = res;
             return BankClient.requestLinkAccounts(username2, 100000, 'EUR').then(alp => {
-                return member2.linkAccounts('bank-id', alp);
+                return member2.linkAccounts('iron', alp);
             });
         });
 };

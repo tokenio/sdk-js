@@ -23,7 +23,7 @@ const setUp1 = () => {
             BankClient
                 .requestLinkAccounts(username1, 100000, 'EUR')
                 .then(alp => member1
-                    .linkAccounts('bank-id', alp)
+                    .linkAccounts('iron', alp)
                     .then(accs => {
                         account1 = accs[0];
                 })
