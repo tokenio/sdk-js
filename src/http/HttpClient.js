@@ -23,7 +23,7 @@ class HttpClient {
         const config = {
             method: 'get',
             url: `/username-exists?username=${username}`
-        }
+        };
         return this._instance(config);
     }
 
@@ -55,9 +55,9 @@ class HttpClient {
         const req = {
             update,
             updateSignature: {
+                memberId: memberId,
                 keyId: keys.keyId,
-                signature: Crypto.signJson(update, keys),
-                timestampMs: new Date().getTime()
+                signature: Crypto.signJson(update, keys)
             }
         };
         const config = {

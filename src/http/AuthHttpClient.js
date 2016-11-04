@@ -86,9 +86,9 @@ class AuthHttpClient {
             name,
             address,
             addressSignature: {
+                memberId: this._memberId,
                 keyId: this._keys.keyId,
-                signature: Crypto.signJson(address, this._keys),
-                timestampMs: new Date().getTime()
+                signature: Crypto.signJson(address, this._keys)
             }
         };
         const config = {
@@ -204,9 +204,9 @@ class AuthHttpClient {
         const req = {
             tokenId: transferToken.id,
             signature: {
+                memberId: this._memberId,
                 keyId: this._keys.keyId,
-                signature: Crypto.sign(payload, this._keys),
-                timestampMs: new Date().getTime()
+                signature: Crypto.sign(payload, this._keys)
             }
         };
         const tokenId = transferToken.id;
@@ -232,9 +232,9 @@ class AuthHttpClient {
         const req = {
             payload,
             payloadSignature: {
+                memberId: this._memberId,
                 keyId: this._keys.keyId,
-                signature: Crypto.signJson(payload, this._keys),
-                timestampMs: new Date().getTime()
+                signature: Crypto.signJson(payload, this._keys)
             }
         };
         const config = {
@@ -346,9 +346,9 @@ class AuthHttpClient {
         const req = {
             update,
             updateSignature: {
+                memberId: this._memberId,
                 keyId: this._keys.keyId,
-                signature: Crypto.signJson(update, this._keys),
-                timestampMs: new Date().getTime()
+                signature: Crypto.signJson(update, this._keys)
             }
         };
         const config = {
