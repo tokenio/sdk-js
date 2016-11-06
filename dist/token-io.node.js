@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("fast-sha256"), require("base64url"), require("supercop.js"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
+		module.exports = factory(require("tweetnacl"), require("fast-sha256"), require("base64url"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
 	else if(typeof define === 'function' && define.amd)
-		define("token-io.node", ["fast-sha256", "base64url", "supercop.js", "json-stable-stringify", "axios", "es6-promise"], factory);
+		define("token-io.node", ["tweetnacl", "fast-sha256", "base64url", "json-stable-stringify", "axios", "es6-promise"], factory);
 	else if(typeof exports === 'object')
-		exports["token-io.node"] = factory(require("fast-sha256"), require("base64url"), require("supercop.js"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
+		exports["token-io.node"] = factory(require("tweetnacl"), require("fast-sha256"), require("base64url"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
 	else
-		root["token-io.node"] = factory(root["fast-sha256"], root["base64url"], root["supercop.js"], root["json-stable-stringify"], root["axios"], root["es6-promise"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_26__) {
+		root["token-io.node"] = factory(root["tweetnacl"], root["fast-sha256"], root["base64url"], root["json-stable-stringify"], root["axios"], root["es6-promise"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_22__, __WEBPACK_EXTERNAL_MODULE_29__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -66,23 +66,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _Member = __webpack_require__(7);
+	var _Member = __webpack_require__(10);
 
 	var _Member2 = _interopRequireDefault(_Member);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(17);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _LocalStorage = __webpack_require__(8);
+	var _LocalStorage = __webpack_require__(11);
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _HttpClient = __webpack_require__(24);
+	var _HttpClient = __webpack_require__(27);
 
 	var _HttpClient2 = _interopRequireDefault(_HttpClient);
 
-	var _AuthHttpClientUsername = __webpack_require__(25);
+	var _TokenOperationResult = __webpack_require__(23);
+
+	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
+
+	var _AuthHttpClientUsername = __webpack_require__(28);
 
 	var _AuthHttpClientUsername2 = _interopRequireDefault(_AuthHttpClientUsername);
 
@@ -91,7 +95,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	// Promise polyfill for IE and older browsers
-	__webpack_require__(26).polyfill();
+	__webpack_require__(29).polyfill();
 
 	// Main entry object
 
@@ -106,6 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.Crypto = _Crypto2.default;
 	        this.Util = _Util2.default;
 	        this.KeyLevel = _KeyLevel2.default;
+	        this.TokenOperationResult = _TokenOperationResult2.default;
 	    }
 
 	    /**
@@ -318,21 +323,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _fastSha = __webpack_require__(2);
+	var _tweetnacl = __webpack_require__(2);
+
+	var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
+
+	var _fastSha = __webpack_require__(3);
 
 	var _fastSha2 = _interopRequireDefault(_fastSha);
 
-	var _base64url = __webpack_require__(3);
+	var _base64url = __webpack_require__(4);
 
 	var _base64url2 = _interopRequireDefault(_base64url);
+
+	var _jsonStableStringify = __webpack_require__(5);
+
+	var _jsonStableStringify2 = _interopRequireDefault(_jsonStableStringify);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var lib = __webpack_require__(4);
-
-	var stringify = __webpack_require__(5);
 
 	var Crypto = function () {
 	    function Crypto() {
@@ -342,14 +351,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(Crypto, null, [{
 	        key: "generateKeys",
 
-
 	        /**
 	         * Generates a keypair to use with the token System
 	         * @return {object} keyPair - keyPair
 	         */
 	        value: function generateKeys() {
-	            var seed = lib.createSeed();
-	            var keyPair = lib.createKeyPair(seed);
+	            var keyPair = _tweetnacl2.default.sign.keyPair();
 	            keyPair.keyId = (0, _base64url2.default)((0, _fastSha2.default)(keyPair.publicKey)).substring(0, 16);
 	            return keyPair;
 	        }
@@ -364,7 +371,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "signJson",
 	        value: function signJson(json, keys) {
-	            return Crypto.sign(stringify(json), keys);
+	            return Crypto.sign((0, _jsonStableStringify2.default)(json), keys);
 	        }
 
 	        /**
@@ -378,7 +385,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "sign",
 	        value: function sign(message, keys) {
 	            var msg = new Buffer(message);
-	            return (0, _base64url2.default)(lib.sign(msg, keys.publicKey, keys.secretKey));
+	            return (0, _base64url2.default)(_tweetnacl2.default.sign.detached(msg, keys.secretKey));
 	        }
 
 	        /**
@@ -415,19 +422,19 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = require("fast-sha256");
+	module.exports = require("tweetnacl");
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = require("base64url");
+	module.exports = require("fast-sha256");
 
 /***/ },
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = require("supercop.js");
+	module.exports = require("base64url");
 
 /***/ },
 /* 5 */
@@ -439,7 +446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -447,9 +454,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var _tweetnacl = __webpack_require__(2);
 
-	var lib = __webpack_require__(4);
+	var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
+
+	var _base64Url = __webpack_require__(7);
+
+	var _base64Url2 = _interopRequireDefault(_base64Url);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Util = function () {
 	    function Util() {
@@ -457,12 +472,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(Util, null, [{
-	        key: 'generateNonce',
+	        key: "generateNonce",
 	        value: function generateNonce() {
-	            return lib.createSeed().toString('base64');
+	            return (0, _base64Url2.default)(_tweetnacl2.default.sign.keyPair().publicKey);
 	        }
 	    }, {
-	        key: 'reject',
+	        key: "reject",
 	        value: function reject(method, err) {
 	            return Promise.reject({
 	                type: method.name,
@@ -481,6 +496,83 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = __webpack_require__(8).default;
+	module.exports.default = module.exports;
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var pad_string_1 = __webpack_require__(9);
+	function encode(input, encoding) {
+	    if (encoding === void 0) { encoding = "utf8"; }
+	    if (Buffer.isBuffer(input)) {
+	        return fromBase64(input.toString("base64"));
+	    }
+	    return fromBase64(new Buffer(input, encoding).toString("base64"));
+	}
+	;
+	function decode(base64url, encoding) {
+	    if (encoding === void 0) { encoding = "utf8"; }
+	    return new Buffer(toBase64(base64url), "base64").toString(encoding);
+	}
+	function toBase64(base64url) {
+	    base64url = base64url.toString();
+	    return pad_string_1.default(base64url)
+	        .replace(/\-/g, "+")
+	        .replace(/_/g, "/");
+	}
+	function fromBase64(base64) {
+	    return base64
+	        .replace(/=/g, "")
+	        .replace(/\+/g, "-")
+	        .replace(/\//g, "_");
+	}
+	function toBuffer(base64url) {
+	    return new Buffer(toBase64(base64url), "base64");
+	}
+	var base64url = encode;
+	base64url.encode = encode;
+	base64url.decode = decode;
+	base64url.toBase64 = toBase64;
+	base64url.fromBase64 = fromBase64;
+	base64url.toBuffer = toBuffer;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = base64url;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+	function padString(input) {
+	    var segmentLength = 4;
+	    var stringLength = input.length;
+	    var diff = stringLength % segmentLength;
+	    if (!diff) {
+	        return input;
+	    }
+	    var position = stringLength;
+	    var padLength = segmentLength - diff;
+	    var paddedStringLength = stringLength + padLength;
+	    var buffer = new Buffer(paddedStringLength);
+	    buffer.write(input);
+	    while (padLength--) {
+	        buffer.write("=", position++);
+	    }
+	    return buffer.toString();
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = padString;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -493,47 +585,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _LocalStorage = __webpack_require__(8);
+	var _LocalStorage = __webpack_require__(11);
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _Account = __webpack_require__(9);
+	var _Account = __webpack_require__(12);
 
 	var _Account2 = _interopRequireDefault(_Account);
 
-	var _Subscriber = __webpack_require__(12);
+	var _Subscriber = __webpack_require__(15);
 
 	var _Subscriber2 = _interopRequireDefault(_Subscriber);
 
-	var _Address = __webpack_require__(13);
+	var _Address = __webpack_require__(16);
 
 	var _Address2 = _interopRequireDefault(_Address);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(17);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _AuthHttpClient = __webpack_require__(15);
+	var _AuthHttpClient = __webpack_require__(18);
 
 	var _AuthHttpClient2 = _interopRequireDefault(_AuthHttpClient);
 
-	var _PagedResult = __webpack_require__(10);
+	var _PagedResult = __webpack_require__(13);
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _TokenOperationResult = __webpack_require__(20);
+	var _TokenOperationResult = __webpack_require__(23);
 
 	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
 
-	var _TransferToken = __webpack_require__(21);
+	var _TransferToken = __webpack_require__(24);
 
 	var _TransferToken2 = _interopRequireDefault(_TransferToken);
 
-	var _AccessToken = __webpack_require__(22);
+	var _AccessToken = __webpack_require__(25);
 
 	var _AccessToken2 = _interopRequireDefault(_AccessToken);
 
-	var _Transfer = __webpack_require__(23);
+	var _Transfer = __webpack_require__(26);
 
 	var _Transfer2 = _interopRequireDefault(_Transfer);
 
@@ -1101,7 +1193,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var _this25 = this;
 
 	            return this._client.getToken(tokenId).then(function (res) {
-	                return _TransferToken2.default.createFromToken(res.data.token);
+	                if (res.data.token.payload.access !== undefined) {
+	                    return _AccessToken2.default.createFromToken(res.data.token);
+	                } else {
+	                    return _TransferToken2.default.createFromToken(res.data.token);
+	                }
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this25.getToken, err);
 	            });
@@ -1132,7 +1228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Looks up all access tokens (not just for this account)
 	         * @param {string} offset - where to start looking
 	         * @param {int} limit - how many to look for
-	         * @return {TransferToken} tokens - returns a list of Transfer Tokens
+	         * @return {Promise} AccessTokens - returns a list of Access Tokens
 	         */
 
 	    }, {
@@ -1142,7 +1238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            return this._client.getTokens('ACCESS', offset, limit).then(function (res) {
 	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
-	                    return _TransferToken2.default.createFromToken(tk);
+	                    return _AccessToken2.default.createFromToken(tk);
 	                }), res.data.offset);
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this27.getAccessTokens, err);
@@ -1163,9 +1259,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._resolveToken(token).then(function (finalToken) {
 	                return _this28._client.endorseToken(finalToken).then(function (res) {
 	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.tokenOperationResult.token.payloadSignatures;
+	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
 	                    }
-	                    return new _TokenOperationResult2.default(res.data.tokenOperationResult, token);
+	                    return new _TokenOperationResult2.default(res.data.result, token);
 	                });
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this28.endorseToken, err);
@@ -1186,9 +1282,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._resolveToken(token).then(function (finalToken) {
 	                return _this29._client.cancelToken(finalToken).then(function (res) {
 	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.tokenOperationResult.token.payloadSignatures;
+	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
 	                    }
-	                    return new _TokenOperationResult2.default(res.data.tokenOperationResult, token);
+	                    return new _TokenOperationResult2.default(res.data.result, token);
 	                });
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this29.cancelToken, err);
@@ -1340,7 +1436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Member;
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1351,7 +1447,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Member = __webpack_require__(7);
+	var _Member = __webpack_require__(10);
 
 	var _Member2 = _interopRequireDefault(_Member);
 
@@ -1406,7 +1502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = LocalStorage;
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1417,11 +1513,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _PagedResult = __webpack_require__(10);
+	var _PagedResult = __webpack_require__(13);
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _Transaction = __webpack_require__(11);
+	var _Transaction = __webpack_require__(14);
 
 	var _Transaction2 = _interopRequireDefault(_Transaction);
 
@@ -1548,7 +1644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Account;
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1587,7 +1683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PagedResult;
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1656,7 +1752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transaction;
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1701,7 +1797,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Subscriber;
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1752,7 +1848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Address;
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1767,7 +1863,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1786,17 +1882,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _AuthHeader = __webpack_require__(16);
+	var _AuthHeader = __webpack_require__(19);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _AuthContext = __webpack_require__(18);
+	var _AuthContext = __webpack_require__(21);
 
 	var _AuthContext2 = _interopRequireDefault(_AuthContext);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(20);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(17);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
@@ -1805,7 +1901,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var stringify = __webpack_require__(5);
-	var axios = __webpack_require__(19);
+	var axios = __webpack_require__(22);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -1902,9 +1998,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                name: name,
 	                address: address,
 	                addressSignature: {
+	                    memberId: this._memberId,
 	                    keyId: this._keys.keyId,
-	                    signature: _Crypto2.default.signJson(address, this._keys),
-	                    timestampMs: new Date().getTime()
+	                    signature: _Crypto2.default.signJson(address, this._keys)
 	                }
 	            };
 	            var config = {
@@ -2030,9 +2126,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var req = {
 	                tokenId: transferToken.id,
 	                signature: {
+	                    memberId: this._memberId,
 	                    keyId: this._keys.keyId,
-	                    signature: _Crypto2.default.sign(payload, this._keys),
-	                    timestampMs: new Date().getTime()
+	                    signature: _Crypto2.default.sign(payload, this._keys)
 	                }
 	            };
 	            var tokenId = transferToken.id;
@@ -2059,9 +2155,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var req = {
 	                payload: payload,
 	                payloadSignature: {
+	                    memberId: this._memberId,
 	                    keyId: this._keys.keyId,
-	                    signature: _Crypto2.default.signJson(payload, this._keys),
-	                    timestampMs: new Date().getTime()
+	                    signature: _Crypto2.default.signJson(payload, this._keys)
 	                }
 	            };
 	            var config = {
@@ -2186,9 +2282,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var req = {
 	                update: update,
 	                updateSignature: {
+	                    memberId: this._memberId,
 	                    keyId: this._keys.keyId,
-	                    signature: _Crypto2.default.signJson(update, this._keys),
-	                    timestampMs: new Date().getTime()
+	                    signature: _Crypto2.default.signJson(update, this._keys)
 	                }
 	            };
 	            var config = {
@@ -2206,7 +2302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClient;
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2217,7 +2313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(20);
 
 	var _Crypto = __webpack_require__(1);
 
@@ -2278,7 +2374,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            uriPath = uriPath.substring(uriPath.length - 1) === '/' ? uriPath.substring(0, uriPath.length - 1) : uriPath;
 
 	            // Path should not include query parameters
-	            if (uriPath.includes("?")) {
+	            if (uriPath.indexOf("?") >= 0) {
 	                uriPath = uriPath.substring(0, uriPath.indexOf("?"));
 	            }
 
@@ -2324,7 +2420,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHeader;
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2359,7 +2455,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.defaultCurrency = defaultCurrency;
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2395,13 +2491,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthContext;
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports) {
 
 	module.exports = require("axios");
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2433,9 +2529,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._token;
 	        }
 	    }], [{
-	        key: 'STATUS',
+	        key: 'Status',
 	        get: function get() {
 	            return {
+	                INVALID: 'INVALID',
 	                SUCCESS: 'SUCCESS',
 	                MORE_SIGNATURES_NEEDED: 'MORE_SIGNATURES_NEEDED'
 	            };
@@ -2448,7 +2545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = TokenOperationResult;
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2463,7 +2560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(20);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2640,7 +2737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = BankTransferToken;
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2655,7 +2752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(20);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2842,16 +2939,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var resources = token.payload.access.resources;
 	            var version = token.payload.version;
 	            var nonce = token.payload.nonce;
+	            var issuer = token.payload.issuer;
 	            var payloadSignatures = token.payloadSignatures;
 
-	            return new AccessToken(id, version, nonce, from, to, resources, payloadSignatures);
+	            return new AccessToken(id, from, to, resources, version, nonce, issuer, payloadSignatures);
 	        }
 	    }]);
 
 	    function AccessToken(id, from, to, resources) {
 	        var version = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : _constants.accessTokenVersion;
 	        var nonce = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : undefined;
-	        var payloadSignatures = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : [];
+	        var issuer = arguments[6];
+	        var payloadSignatures = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : [];
 
 	        _classCallCheck(this, AccessToken);
 
@@ -2861,6 +2960,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._resources = resources;
 	        this._version = version;
 	        this._nonce = nonce;
+	        this._issuer = issuer;
 	        this._payloadSignatures = payloadSignatures;
 
 	        if (nonce === undefined) {
@@ -2929,6 +3029,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._to;
 	        }
 	    }, {
+	        key: "issuer",
+	        get: function get() {
+	            return this._issuer;
+	        }
+	    }, {
 	        key: "resources",
 	        get: function get() {
 	            return this._resources;
@@ -2941,6 +3046,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                nonce: this._nonce,
 	                from: this._from,
 	                to: this._to,
+	                issuer: this._issuer,
 	                access: {
 	                    resources: this._resources
 	                }
@@ -2954,7 +3060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AccessToken;
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3020,7 +3126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transfer;
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3035,17 +3141,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(17);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(20);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var axios = __webpack_require__(19);
+	var axios = __webpack_require__(22);
 
 	var HttpClient = function () {
 	    function HttpClient(env) {
@@ -3107,9 +3213,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var req = {
 	                update: update,
 	                updateSignature: {
+	                    memberId: memberId,
 	                    keyId: keys.keyId,
-	                    signature: _Crypto2.default.signJson(update, keys),
-	                    timestampMs: new Date().getTime()
+	                    signature: _Crypto2.default.signJson(update, keys)
 	                }
 	            };
 	            var config = {
@@ -3127,7 +3233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = HttpClient;
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3138,18 +3244,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _AuthHeader = __webpack_require__(16);
+	var _AuthHeader = __webpack_require__(19);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(20);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var stringify = __webpack_require__(5);
-	var axios = __webpack_require__(19);
+	var axios = __webpack_require__(22);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -3188,7 +3294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClientUsername;
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = require("es6-promise");

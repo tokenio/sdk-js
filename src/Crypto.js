@@ -1,17 +1,15 @@
-const lib = require('supercop.js');
+import nacl from "tweetnacl";
 import sha256 from "fast-sha256";
 import base64Url from "base64url";
-const stringify = require('json-stable-stringify');
+import stringify from "json-stable-stringify";
 
 class Crypto {
-
     /**
      * Generates a keypair to use with the token System
      * @return {object} keyPair - keyPair
      */
     static generateKeys() {
-        const seed = lib.createSeed();
-        const keyPair = lib.createKeyPair(seed);
+        const keyPair = nacl.sign.keyPair();
         keyPair.keyId = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         return keyPair;
     }
@@ -34,7 +32,7 @@ class Crypto {
      */
     static sign(message, keys) {
         const msg = new Buffer(message);
-        return base64Url(lib.sign(msg, keys.publicKey, keys.secretKey));
+        return base64Url(nacl.sign.detached(msg, keys.secretKey));
     }
 
     /**

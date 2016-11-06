@@ -1,8 +1,9 @@
-const lib = require('supercop.js');
+import nacl from "tweetnacl";
+import base64Url from "base64Url";
 
 class Util {
     static generateNonce() {
-        return lib.createSeed().toString('base64');
+        return base64Url(nacl.sign.keyPair().publicKey);
     }
 
     static reject(method, err) {
