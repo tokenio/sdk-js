@@ -1,5 +1,5 @@
 import nacl from "tweetnacl";
-import base64Url from "base64Url";
+import base64Url from "base64url";
 
 class Util {
     static generateNonce() {
