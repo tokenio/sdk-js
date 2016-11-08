@@ -11,6 +11,7 @@ import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
 import Transfer from "./Transfer";
 import Util from "../Util";
+import {maxDecimals} from "../constants";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -553,7 +554,7 @@ export default class Member {
                 if (currency === undefined) {
                     currency = finalToken.payload.transfer.currency;
                 }
-                if (Util.countDecimals(amount) > 4) {
+                if (Util.countDecimals(amount) > maxDecimals) {
                     throw new Error("Number of decimals in amount should be at most 4");
                 }
                 return this._client

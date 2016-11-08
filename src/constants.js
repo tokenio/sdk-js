@@ -18,10 +18,14 @@ const accessTokenVersion = '1.0';
 // Default currency to use
 const defaultCurrency = 'EUR';
 
+// Max number of decimal points to accept for amounts
+const maxDecimals = 4;
+
 export {
     signatureScheme,
     urls,
     transferTokenVersion,
     accessTokenVersion,
-    defaultCurrency
+    defaultCurrency,
+    maxDecimals
 };
