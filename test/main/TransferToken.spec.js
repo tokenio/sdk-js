@@ -46,5 +46,16 @@ describe('TransferTokens', () => {
         assert.equal(json.transfer.currency, defaultCurrency);
         assert.equal(json.transfer.amount, '12.54');
         assert.equal(json.transfer.instructions.source.accountId, account1.id);
+
+    });
+
+    it('should throw an error when there are too many decimals', done => {
+        try {
+            const token = TransferToken
+                .create(member1, account1.id, 12.545325, defaultCurrency, username1, 'desc');
+            done(new Error("should fail"))
+        } catch (e) {
+            done();
+        }
     });
 });

@@ -6,6 +6,13 @@ class Util {
         return base64Url(nacl.sign.keyPair().publicKey);
     }
 
+   static countDecimals(value) {
+       if(Math.floor(value) === value) {
+           return 0;
+       }
+       return value.toString().split(".")[1].length || 0;
+    }
+
     static reject(method, err) {
         return Promise.reject({
             type: method.name,

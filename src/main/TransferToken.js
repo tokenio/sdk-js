@@ -38,6 +38,9 @@ export default class BankTransferToken {
     constructor(id, from, instructions, amount, currency, redeemer, description,
                 version = transferTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
+        if (Util.countDecimals(amount) > 4) {
+            throw new Error("Number of decimals in amount should be at most 4");
+        }
         this._id = id;
         this._from = from;
         this._instructions = instructions;

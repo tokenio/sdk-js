@@ -553,6 +553,9 @@ export default class Member {
                 if (currency === undefined) {
                     currency = finalToken.payload.transfer.currency;
                 }
+                if (Util.countDecimals(amount) > 4) {
+                    throw new Error("Number of decimals in amount should be at most 4");
+                }
                 return this._client
                     .createTransfer(finalToken, amount, currency)
                     .then(res => {
