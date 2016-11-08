@@ -1,5 +1,5 @@
 import Util from "../Util";
-import {transferTokenVersion} from "../constants";
+import {transferTokenVersion, maxDecimals} from "../constants";
 
 export default class BankTransferToken {
 
@@ -38,7 +38,7 @@ export default class BankTransferToken {
     constructor(id, from, instructions, amount, currency, redeemer, description,
                 version = transferTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
-        if (Util.countDecimals(amount) > 4) {
+        if (Util.countDecimals(amount) > maxDecimals) {
             throw new Error("Number of decimals in amount should be at most 4");
         }
         this._id = id;
