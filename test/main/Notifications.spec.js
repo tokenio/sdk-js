@@ -4,6 +4,7 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
+import NotifyStatus from "../../src/main/NotifyStatus";
 import BankClient from "../sample/BankClient";
 
 let member1 = {};
@@ -61,7 +62,8 @@ describe('Notifications', () => {
         const target = Crypto.generateKeys().keyId;
         return member1.subscribeToNotifications(target)
             .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-            .then(alp => Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp));
+            .then(alp => Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp))
+            .then(status => assert.equal(status, NotifyStatus.SENT));
     });
 
     it('should send a push for adding key', () => {
