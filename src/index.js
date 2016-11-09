@@ -102,7 +102,7 @@ class Token {
      * @param {string} bankId - ID of the bank owning the accounts
      * @param {string} bankName - name of the bank owning the accounts
      * @param {string} accountLinkPayloads - accountLinkPayloads retrieved from the bank
-     * @return {Promise} empty - empty
+     * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
         const notification = {
@@ -113,6 +113,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
+            .then(res => res.status)
             .catch(err => Util.reject(this.notifyLinkAccounts, err));
     }
 
@@ -122,7 +123,7 @@ class Token {
      * @param {string} username - username to notify
      * @param {string} publicKey - public
      * @param {string} name - name for the new key, (e.g Chrome 53.0)
-     * @return {Promise} empty - empty
+     * @return {Promise} NotifyStatus - status
      */
     notifyAddKey(username, publicKey, name = '') {
         const notification = {
@@ -132,6 +133,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
+            .then(res => res.status)
             .catch(err => Util.reject(this.notifyAddKey, err));
     }
 
@@ -144,7 +146,7 @@ class Token {
      * @param {string} accountLinkPayloads - accountsLinkPayload retrieved from the bank
      * @param {string} publicKey - public
      * @param {array} name - name for the new key, (e.g Chrome 53.0)
-     * @return {Promise} empty - empty
+     * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey, name = "") {
         const notification = {
@@ -161,6 +163,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
+            .then(res => res.status)
             .catch(err => Util.reject(this.notifyLinkAccountsAndAddKey, err));
     }
 };
