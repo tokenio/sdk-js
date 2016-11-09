@@ -113,7 +113,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
-            .then(res => res.status)
+            .then(res => res.data.status)
             .catch(err => Util.reject(this.notifyLinkAccounts, err));
     }
 
@@ -133,7 +133,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
-            .then(res => res.status)
+            .then(res => res.data.status)
             .catch(err => Util.reject(this.notifyAddKey, err));
     }
 
@@ -163,7 +163,7 @@ class Token {
             }
         };
         return this._unauthenticatedClient.notify(username, notification)
-            .then(res => res.status)
+            .then(res => res.data.status)
             .catch(err => Util.reject(this.notifyLinkAccountsAndAddKey, err));
     }
 };
