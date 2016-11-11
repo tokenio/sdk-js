@@ -444,10 +444,11 @@ export default class Member {
      * @param {BankTransferToken} token - token to redeem. Can also be a {string} tokenId
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
+     * @param {string} description - optional transfer description
      * @param {arr} destinations - transfer destinations
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
-    createTransfer(token, amount, currency, destinations = []) {
+    createTransfer(token, amount, currency, description = '', destinations = []) {
         return this
             ._resolveToken(token)
             .then(finalToken => {
@@ -461,7 +462,7 @@ export default class Member {
                     throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
                 }
                 return this._client
-                    .createTransfer(finalToken, amount, currency, destinations)
+                    .createTransfer(finalToken, amount, currency, description, destinations)
                     .then(res => {
                         return new Transfer(res.data.transfer);
                     });

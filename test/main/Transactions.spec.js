@@ -56,7 +56,7 @@ const setUp3 = () => {
     return member1.createToken(account1.id, 38.71, 'EUR', username2).then(token => {
         return member1.endorseToken(token.id).then(() => {
             return member2.getToken(token.id).then(lookedUp => {
-                return member2.createTransfer(lookedUp, 10.21, 'EUR').then(transfer => {
+                return member2.createTransfer(lookedUp, 10.21, 'EUR', 'giftcard').then(transfer => {
                     token1 = lookedUp;
                     transfer1 = transfer;
                 });
@@ -82,6 +82,7 @@ describe('Transactions and transfers', () => {
         return member1.getTransfers(token1.id, null, 100).then(pagedResult => {
             assert.isAtLeast(pagedResult.data.length, 1);
             assert.isOk(pagedResult.data[0].payload.amount);
+            assert.equal(pagedResult.data[0].payload.description, 'giftcard');
             assert.isString(pagedResult.offset);
         });
     });
