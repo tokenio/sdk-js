@@ -29,7 +29,7 @@ describe('AccessTokens', () => {
     it('create an address access token object', () => {
         const username = Sample.string();
         const addressId = Sample.string();
-        const token = AccessToken.addressAccessToken(member, username, addressId);
+        const token = AccessToken.grantTo(username).from(member).forAddress(addressId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -40,7 +40,7 @@ describe('AccessTokens', () => {
 
     it('create an all addresses access token object', () => {
         const username = Sample.string();
-        const token = AccessToken.addressesAccessToken(member, username);
+        const token = AccessToken.grantTo(username).from(member).forAllAddresses();
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -52,7 +52,7 @@ describe('AccessTokens', () => {
     it('create an account access token object', () => {
         const username = Sample.string();
         const accountId = Sample.string();
-        const token = AccessToken.accountAccessToken(member, username, accountId);
+        const token = AccessToken.grantTo(username).from(member).forAccount(accountId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -63,7 +63,7 @@ describe('AccessTokens', () => {
 
     it('create an all accounts access token object', () => {
         const username = Sample.string();
-        const token = AccessToken.accountsAccessToken(member, username);
+        const token = AccessToken.grantTo(username).from(member).forAllAccounts();
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -75,7 +75,7 @@ describe('AccessTokens', () => {
     it('create a transaction access token object', () => {
         const username = Sample.string();
         const accountId = Sample.string();
-        const token = AccessToken.accountTransactionsAccessToken(member, username, accountId);
+        const token = AccessToken.grantTo(username).from(member).forAccountTransactions(accountId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -86,7 +86,7 @@ describe('AccessTokens', () => {
 
     it('create an all account transactions access token object', () => {
         const username = Sample.string();
-        const token = AccessToken.accountsTransactionsAccessToken(member, username);
+        const token = AccessToken.grantTo(username).from(member).forAllTransactions();
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -98,7 +98,7 @@ describe('AccessTokens', () => {
     it('create a balance access token object', () => {
         const username = Sample.string();
         const accountId = Sample.string();
-        const token = AccessToken.balanceAccessToken(member, username, accountId);
+        const token =AccessToken.grantTo(username).from(member).forAccountBalances(accountId);
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
@@ -109,7 +109,7 @@ describe('AccessTokens', () => {
 
     it('create an all account balance access token object', () => {
         const username = Sample.string();
-        const token = AccessToken.balanceAccessToken(member, username);
+        const token = AccessToken.grantTo(username).from(member).forAllBalances();
         const json = token.json;
         assert.equal(json.version, '1.0');
         assert.isOk(json.nonce);
