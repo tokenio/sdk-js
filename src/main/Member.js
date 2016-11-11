@@ -448,7 +448,7 @@ export default class Member {
      * @param {arr} destinations - transfer destinations
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
-    createTransfer(token, amount, currency, description = '', destinations = []) {
+    createTransfer(token, amount, currency, description, destinations = []) {
         return this
             ._resolveToken(token)
             .then(finalToken => {
