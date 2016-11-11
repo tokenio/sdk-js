@@ -238,7 +238,7 @@ class AuthHttpClient {
             'cancelled');
     }
 
-    createTransfer(transferToken, amount, currency) {
+    createTransfer(transferToken, amount, currency, destinations) {
         const payload = {
             nonce: Util.generateNonce(),
             tokenId: transferToken.id,
