@@ -272,14 +272,12 @@ export default class Member {
     /**
      * Creates a new unendorsed access token.
      *
-     * @param {string} grantee - the username of the grantee
-     * @param {object} resources - an array of resources
+     * @param {AccessToken} accessToken - the access token configuration
      * @return {Promise} token - promise of a created AccessToken
      */
-    createAccessToken(grantee, resources) {
-        const token = new AccessToken(undefined, this, grantee, resources);
+    createAccessToken(accessToken) {
         return this._client
-            .createToken(token.json)
+            .createToken(accessToken.from(this).json)
             .then(res => {
                 return AccessToken.createFromToken(res.data.token);
             })
@@ -287,135 +285,39 @@ export default class Member {
     }
 
     /**
-     * Creates an access token for any address.
+     * Cancels the existing token and creates a replacement for it.
      *
-     * @param {string} grantee - the username of the grantee
-     * @return {Promise} token - promise of a created AccessToken
+     * @param {AccessToken} tokenToCancel - the old token to cancel
+     * @param {AccessToken} tokenToCreate - the new token to create
+     * @returns {Promise} operationResult - the result of the operation
      */
-    createAddressesAccessToken(grantee) {
-        const token = AccessToken.addressesAccessToken(this, grantee);
+    replaceAccessToken(tokenToCancel, tokenToCreate) {
         return this._client
-            .createToken(token.json)
+            .replaceToken(tokenToCancel, tokenToCreate)
             .then(res => {
-                return AccessToken.createFromToken(res.data.token);
+                return new TokenOperationResult(
+                    res.data.result,
+                    AccessToken.createFromToken(res.data.result.token));
             })
-            .catch(err => Util.reject(this.createAddressesAccessToken, err));
+            .catch(err => Util.reject(this.replaceAccessToken, err));
     }
 
     /**
-     * Creates an address access token for a given address id.
+     * Cancels the existing token, creates a replacement and endorses it.
      *
-     * @param {string} grantee - the username of the grantee
-     * @param {string} addressId - an optional addressId
-     * @return {Promise} token - promise of a created AccessToken
+     * @param {AccessToken} tokenToCancel - the old token to cancel
+     * @param {AccessToken} tokenToCreate - the new token to create
+     * @returns {Promise} operationResult - the result of the operation
      */
-    createAddressAccessToken(grantee, addressId) {
-        const token = AccessToken.addressAccessToken(this, grantee, addressId);
+    replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
         return this._client
-            .createToken(token.json)
+            .replaceAndEndorseToken(tokenToCancel, tokenToCreate)
             .then(res => {
-                return AccessToken.createFromToken(res.data.token);
+                return new TokenOperationResult(
+                    res.data.result,
+                    AccessToken.createFromToken(res.data.result.token));
             })
-            .catch(err => Util.reject(this.createAddressAccessTokenn, err));
-    }
-
-    /**
-     * Creates a new accounts access token.
-     *
-     * @param {string} grantee - the username of the grantee
-     * @return {Promise} token - promise of a created AccessToken
-     */
-    createAccountsAccessToken(grantee) {
-        const token = AccessToken.accountsAccessToken(this, grantee);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createAccountsAccessToken, err));
-    }
-
-    /**
-     * Creates a new account access token.
-     *
-     * @param {string} grantee - the username of the grantee
-     * @param {string} accountId - an optional accountId
-     * @return {Promise} token - promise of a created AccessToken
-     */
-    createAccountAccessToken(grantee, accountId) {
-        const token = AccessToken.accountAccessToken(this, grantee, accountId);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createAccountAccessToken, err));
-    }
-
-    /**
-     * Creates a new transactions access token for any account.
-     *
-     * @param {string} grantee - the username of the grantee
-     * @return {Promise} token - promise of a created AccessToken
-     */
-    createAccountsTransactionsAccessToken(grantee) {
-        const token = AccessToken.accountsTransactionsAccessToken(this, grantee);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createAccountsTransactionsAccessToken, err));
-    }
-
-    /**
-     * Creates a new transactions access token for a given account.
-     *
-     * @param {string} grantee - the username of the grantee
-     * @param {string} accountId - an optional accountId
-     * @return {Promise} token - promise of a created AccessToken
-     */
-    createAccountTransactionsAccessToken(grantee, accountId) {
-        const token = AccessToken.accountTransactionsAccessToken(this, grantee, accountId);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createAccountTransactionsAccessToken, err));
-    }
-
-    /**
-     * Creates a new balances token for any account.
-     *
-     * @param {string} grantee - the username of the grantee
-     * @return {Promise} token - promise of a created AccessToken
-     */
-    createBalancesAccessToken(grantee) {
-        const token = AccessToken.balancesAccessToken(this, grantee);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.balancesAccessToken, err));
-    }
-
-    /**
-     * Creates a new balance token for a given account.
-     *
-     * @param {string} grantee - the username of the grantee
-     * @param {string} accountId - an optional accountId
-     * @return {Promise} token - promise of a created AccessToken
-     */
-    createBalanceAccessToken(grantee, accountId) {
-        const token = AccessToken.balanceAccessToken(this, grantee, accountId);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createBalanceAccessToken, err));
+            .catch(err => Util.reject(this.replaceAndEndorseAccessToken, err));
     }
 
     /**

@@ -185,6 +185,45 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    replaceToken(tokenToCancel, tokenToCreate) {
+        const cancelTokenId = tokenToCancel.id;
+        const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+
+        const createReq = {
+            payload: tokenToCreate.json,
+        };
+
+        const config = {
+            method: 'post',
+            url: `/tokens/${cancelTokenId}/replace`,
+            data: {
+                cancel_token: cancelReq,
+                create_token: createReq
+            }
+        };
+        return this._instance(config);
+    }
+
+    replaceAndEndorseToken(tokenToCancel, tokenToCreate) {
+        const cancelTokenId = tokenToCancel.id;
+        const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+
+        const createReq = {
+            payload: tokenToCreate.json,
+            payload_signature: this._tokenOperationSignature(tokenToCreate, 'endorsed')
+        };
+
+        const config = {
+            method: 'post',
+            url: `/tokens/${cancelTokenId}/replace`,
+            data: {
+                cancel_token: cancelReq,
+                create_token: createReq
+            }
+        };
+        return this._instance(config);
+    }
+
     endorseToken(token) {
         return this._tokenOperation(
             token,
@@ -197,25 +236,6 @@ class AuthHttpClient {
             transferToken,
             'cancel',
             'cancelled');
-    }
-
-    _tokenOperation(transferToken, operation, suffix) {
-        const payload = stringify(transferToken.json) + `.${suffix}`;
-        const req = {
-            tokenId: transferToken.id,
-            signature: {
-                memberId: this._memberId,
-                keyId: this._keys.keyId,
-                signature: Crypto.sign(payload, this._keys)
-            }
-        };
-        const tokenId = transferToken.id;
-        const config = {
-            method: 'put',
-            url: `/tokens/${tokenId}/${operation}`,
-            data: req
-        };
-        return this._instance(config);
     }
 
     createTransfer(transferToken, amount, currency, destinations) {
@@ -262,6 +282,32 @@ class AuthHttpClient {
             url: `/tokens?type=${type}&offset=${offset}&limit=${limit}`
         };
         return this._instance(config);
+    }
+
+    _tokenOperation(token, operation, suffix) {
+        const tokenId = token.id;
+        const config = {
+            method: 'put',
+            url: `/tokens/${tokenId}/${operation}`,
+            data: this._tokenOperationRequest(token, suffix)
+        };
+        return this._instance(config);
+    }
+
+    _tokenOperationRequest(token, suffix) {
+        return {
+            tokenId: token.id,
+            signature: this._tokenOperationSignature(token, suffix)
+        };
+    }
+
+    _tokenOperationSignature(token, suffix) {
+        const payload = stringify(token.json) + `.${suffix}`;
+        return {
+            memberId: this._memberId,
+            keyId: this._keys.keyId,
+            signature: Crypto.sign(payload, this._keys)
+        };
     }
 
     //
