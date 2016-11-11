@@ -39,7 +39,7 @@ export default class BankTransferToken {
                 version = transferTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
         if (Util.countDecimals(amount) > maxDecimals) {
-            throw new Error("Number of decimals in amount should be at most 4");
+            throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
         }
         this._id = id;
         this._from = from;

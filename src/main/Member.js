@@ -542,9 +542,10 @@ export default class Member {
      * @param {BankTransferToken} token - token to redeem. Can also be a {string} tokenId
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
+     * @param {arr} destinations - transfer destinations
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
-    createTransfer(token, amount, currency) {
+    createTransfer(token, amount, currency, destinations = []) {
         return this
             ._resolveToken(token)
             .then(finalToken => {
@@ -555,10 +556,10 @@ export default class Member {
                     currency = finalToken.payload.transfer.currency;
                 }
                 if (Util.countDecimals(amount) > maxDecimals) {
-                    throw new Error("Number of decimals in amount should be at most 4");
+                    throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
                 }
                 return this._client
-                    .createTransfer(finalToken, amount, currency)
+                    .createTransfer(finalToken, amount, currency, destinations)
                     .then(res => {
                         return new Transfer(res.data.transfer);
                     });

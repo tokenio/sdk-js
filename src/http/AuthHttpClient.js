@@ -218,7 +218,7 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    createTransfer(transferToken, amount, currency) {
+    createTransfer(transferToken, amount, currency, destinations) {
         const payload = {
             nonce: Util.generateNonce(),
             tokenId: transferToken.id,
@@ -226,8 +226,11 @@ class AuthHttpClient {
                 value: amount.toString(),
                 currency
             },
-            transfer: transferToken.transfer
+            transfer: transferToken.transfer,
         };
+        if (destinations !== undefined && destinations.length > 0) {
+            payload.destinations = destinations
+        }
 
         const req = {
             payload,
