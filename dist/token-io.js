@@ -6752,6 +6752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._member = member;
 	        this._id = acc.id;
 	        this._name = acc.name;
+	        this._bankId = acc.bankId;
 	    }
 
 	    /**
@@ -6842,6 +6843,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "name",
 	        get: function get() {
 	            return this._name;
+	        }
+
+	        /**
+	         * return bank Id
+	         * @returns {string} bankId - bank id
+	         */
+
+	    }, {
+	        key: "bankId",
+	        get: function get() {
+	            return this._bankId;
 	        }
 	    }]);
 
