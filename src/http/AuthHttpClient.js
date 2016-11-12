@@ -238,7 +238,7 @@ class AuthHttpClient {
             'cancelled');
     }
 
-    createTransfer(transferToken, amount, currency, destinations) {
+    createTransfer(transferToken, amount, currency, description, destinations) {
         const payload = {
             nonce: Util.generateNonce(),
             tokenId: transferToken.id,
@@ -246,10 +246,14 @@ class AuthHttpClient {
                 value: amount.toString(),
                 currency
             },
-            transfer: transferToken.transfer,
         };
+
+        if (description) {
+            payload.description = description;
+        }
+
         if (destinations !== undefined && destinations.length > 0) {
-            payload.destinations = destinations
+            payload.destinations = destinations;
         }
 
         const req = {
