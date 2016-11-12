@@ -16,6 +16,7 @@ export default class Account {
         this._member = member;
         this._id = acc.id;
         this._name = acc.name;
+        this._bankId = acc.bankId;
     }
 
     /**
@@ -40,6 +41,14 @@ export default class Account {
      */
     get name() {
         return this._name;
+    }
+
+    /**
+     * return bank Id
+     * @returns {string} bankId - bank id
+     */
+    get bankId() {
+        return this._bankId;
     }
 
     /**

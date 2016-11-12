@@ -37,6 +37,7 @@ describe('Account tests', () => {
                     assert.equal(accs.length, 1);
                     assert.isOk(accs[0].name);
                     assert.isOk(accs[0].id);
+                    assert.equal(accs[0].bankId, 'iron');
                 });
             });
         });
