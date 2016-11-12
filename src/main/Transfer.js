@@ -4,6 +4,7 @@ export default class Transfer {
         this._referenceId = transferObj.referenceId;
         this._payload = JSON.parse(JSON.stringify(transferObj.payload));
         this._payloadSignatures = JSON.parse(JSON.stringify(transferObj.payloadSignatures));
+        this._description = transferObj.description;
     }
 
     get id() {
@@ -32,5 +33,9 @@ export default class Transfer {
 
     get payloadSignatures() {
         return this._payloadSignatures;
+    }
+
+    get description() {
+        return this._description;
     }
 }
