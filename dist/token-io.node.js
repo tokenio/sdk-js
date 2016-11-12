@@ -912,18 +912,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Creates a new unendorsed access token.
 	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @param {object} resources - an array of resources
+	         * @param {AccessToken} accessToken - the access token configuration
 	         * @return {Promise} token - promise of a created AccessToken
 	         */
 
 	    }, {
 	        key: "createAccessToken",
-	        value: function createAccessToken(grantee, resources) {
+	        value: function createAccessToken(accessToken) {
 	            var _this15 = this;
 
-	            var token = new _AccessToken2.default(undefined, this, grantee, resources);
-	            return this._client.createToken(token.json).then(function (res) {
+	            return this._client.createToken(accessToken.from(this).json).then(function (res) {
 	                return _AccessToken2.default.createFromToken(res.data.token);
 	            }).catch(function (err) {
 	                return _Util2.default.reject(_this15.createAccessToken, err);
@@ -931,166 +929,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        /**
-	         * Creates an access token for any address.
+	         * Cancels the existing token and creates a replacement for it.
 	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @return {Promise} token - promise of a created AccessToken
+	         * @param {AccessToken} tokenToCancel - the old token to cancel
+	         * @param {AccessToken} tokenToCreate - the new token to create
+	         * @returns {Promise} operationResult - the result of the operation
 	         */
 
 	    }, {
-	        key: "createAddressesAccessToken",
-	        value: function createAddressesAccessToken(grantee) {
+	        key: "replaceAccessToken",
+	        value: function replaceAccessToken(tokenToCancel, tokenToCreate) {
 	            var _this16 = this;
 
-	            var token = _AccessToken2.default.addressesAccessToken(this, grantee);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
+	            return this._client.replaceToken(tokenToCancel, tokenToCreate).then(function (res) {
+	                return new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token));
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this16.createAddressesAccessToken, err);
+	                return _Util2.default.reject(_this16.replaceAccessToken, err);
 	            });
 	        }
 
 	        /**
-	         * Creates an address access token for a given address id.
+	         * Cancels the existing token, creates a replacement and endorses it.
 	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @param {string} addressId - an optional addressId
-	         * @return {Promise} token - promise of a created AccessToken
+	         * @param {AccessToken} tokenToCancel - the old token to cancel
+	         * @param {AccessToken} tokenToCreate - the new token to create
+	         * @returns {Promise} operationResult - the result of the operation
 	         */
 
 	    }, {
-	        key: "createAddressAccessToken",
-	        value: function createAddressAccessToken(grantee, addressId) {
+	        key: "replaceAndEndorseAccessToken",
+	        value: function replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
 	            var _this17 = this;
 
-	            var token = _AccessToken2.default.addressAccessToken(this, grantee, addressId);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
+	            return this._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate).then(function (res) {
+	                return new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token));
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this17.createAddressAccessTokenn, err);
-	            });
-	        }
-
-	        /**
-	         * Creates a new accounts access token.
-	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @return {Promise} token - promise of a created AccessToken
-	         */
-
-	    }, {
-	        key: "createAccountsAccessToken",
-	        value: function createAccountsAccessToken(grantee) {
-	            var _this18 = this;
-
-	            var token = _AccessToken2.default.accountsAccessToken(this, grantee);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this18.createAccountsAccessToken, err);
-	            });
-	        }
-
-	        /**
-	         * Creates a new account access token.
-	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @param {string} accountId - an optional accountId
-	         * @return {Promise} token - promise of a created AccessToken
-	         */
-
-	    }, {
-	        key: "createAccountAccessToken",
-	        value: function createAccountAccessToken(grantee, accountId) {
-	            var _this19 = this;
-
-	            var token = _AccessToken2.default.accountAccessToken(this, grantee, accountId);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this19.createAccountAccessToken, err);
-	            });
-	        }
-
-	        /**
-	         * Creates a new transactions access token for any account.
-	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @return {Promise} token - promise of a created AccessToken
-	         */
-
-	    }, {
-	        key: "createAccountsTransactionsAccessToken",
-	        value: function createAccountsTransactionsAccessToken(grantee) {
-	            var _this20 = this;
-
-	            var token = _AccessToken2.default.accountsTransactionsAccessToken(this, grantee);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this20.createAccountsTransactionsAccessToken, err);
-	            });
-	        }
-
-	        /**
-	         * Creates a new transactions access token for a given account.
-	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @param {string} accountId - an optional accountId
-	         * @return {Promise} token - promise of a created AccessToken
-	         */
-
-	    }, {
-	        key: "createAccountTransactionsAccessToken",
-	        value: function createAccountTransactionsAccessToken(grantee, accountId) {
-	            var _this21 = this;
-
-	            var token = _AccessToken2.default.accountTransactionsAccessToken(this, grantee, accountId);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this21.createAccountTransactionsAccessToken, err);
-	            });
-	        }
-
-	        /**
-	         * Creates a new balances token for any account.
-	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @return {Promise} token - promise of a created AccessToken
-	         */
-
-	    }, {
-	        key: "createBalancesAccessToken",
-	        value: function createBalancesAccessToken(grantee) {
-	            var _this22 = this;
-
-	            var token = _AccessToken2.default.balancesAccessToken(this, grantee);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this22.balancesAccessToken, err);
-	            });
-	        }
-
-	        /**
-	         * Creates a new balance token for a given account.
-	         *
-	         * @param {string} grantee - the username of the grantee
-	         * @param {string} accountId - an optional accountId
-	         * @return {Promise} token - promise of a created AccessToken
-	         */
-
-	    }, {
-	        key: "createBalanceAccessToken",
-	        value: function createBalanceAccessToken(grantee, accountId) {
-	            var _this23 = this;
-
-	            var token = _AccessToken2.default.balanceAccessToken(this, grantee, accountId);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this23.createBalanceAccessToken, err);
+	                return _Util2.default.reject(_this17.replaceAndEndorseAccessToken, err);
 	            });
 	        }
 
@@ -1108,7 +982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "createToken",
 	        value: function createToken(accountId, amount, currency, username) {
-	            var _this24 = this;
+	            var _this18 = this;
 
 	            var description = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : undefined;
 
@@ -1116,7 +990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._client.createToken(token.json).then(function (res) {
 	                return _TransferToken2.default.createFromToken(res.data.token);
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this24.createToken, err);
+	                return _Util2.default.reject(_this18.createToken, err);
 	            });
 	        }
 
@@ -1129,7 +1003,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getToken",
 	        value: function getToken(tokenId) {
-	            var _this25 = this;
+	            var _this19 = this;
 
 	            return this._client.getToken(tokenId).then(function (res) {
 	                if (res.data.token.payload.access !== undefined) {
@@ -1138,7 +1012,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return _TransferToken2.default.createFromToken(res.data.token);
 	                }
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this25.getToken, err);
+	                return _Util2.default.reject(_this19.getToken, err);
 	            });
 	        }
 
@@ -1152,14 +1026,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getTransferTokens",
 	        value: function getTransferTokens(offset, limit) {
-	            var _this26 = this;
+	            var _this20 = this;
 
 	            return this._client.getTokens('TRANSFER', offset, limit).then(function (res) {
 	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
 	                    return _TransferToken2.default.createFromToken(tk);
 	                }), res.data.offset);
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this26.getTransferTokens, err);
+	                return _Util2.default.reject(_this20.getTransferTokens, err);
 	            });
 	        }
 
@@ -1173,14 +1047,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getAccessTokens",
 	        value: function getAccessTokens(offset, limit) {
-	            var _this27 = this;
+	            var _this21 = this;
 
 	            return this._client.getTokens('ACCESS', offset, limit).then(function (res) {
 	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
 	                    return _AccessToken2.default.createFromToken(tk);
 	                }), res.data.offset);
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this27.getAccessTokens, err);
+	                return _Util2.default.reject(_this21.getAccessTokens, err);
 	            });
 	        }
 
@@ -1193,17 +1067,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "endorseToken",
 	        value: function endorseToken(token) {
-	            var _this28 = this;
+	            var _this22 = this;
 
 	            return this._resolveToken(token).then(function (finalToken) {
-	                return _this28._client.endorseToken(finalToken).then(function (res) {
+	                return _this22._client.endorseToken(finalToken).then(function (res) {
 	                    if (typeof token !== 'string' && !(token instanceof String)) {
 	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
 	                    }
 	                    return new _TokenOperationResult2.default(res.data.result, token);
 	                });
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this28.endorseToken, err);
+	                return _Util2.default.reject(_this22.endorseToken, err);
 	            });
 	        }
 
@@ -1216,17 +1090,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "cancelToken",
 	        value: function cancelToken(token) {
-	            var _this29 = this;
+	            var _this23 = this;
 
 	            return this._resolveToken(token).then(function (finalToken) {
-	                return _this29._client.cancelToken(finalToken).then(function (res) {
+	                return _this23._client.cancelToken(finalToken).then(function (res) {
 	                    if (typeof token !== 'string' && !(token instanceof String)) {
 	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
 	                    }
 	                    return new _TokenOperationResult2.default(res.data.result, token);
 	                });
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this29.cancelToken, err);
+	                return _Util2.default.reject(_this23.cancelToken, err);
 	            });
 	        }
 
@@ -1235,16 +1109,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {BankTransferToken} token - token to redeem. Can also be a {string} tokenId
 	         * @param {int} amount - amount to redeemer
 	         * @param {string} currency - currency to redeem
+	         * @param {string} description - optional transfer description
 	         * @param {arr} destinations - transfer destinations
 	         * @return {Promise} transfer - Transfer created as a result of this redeem call
 	         */
 
 	    }, {
 	        key: "createTransfer",
-	        value: function createTransfer(token, amount, currency) {
-	            var _this30 = this;
+	        value: function createTransfer(token, amount, currency, description) {
+	            var _this24 = this;
 
-	            var destinations = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+	            var destinations = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : [];
 
 	            return this._resolveToken(token).then(function (finalToken) {
 	                if (amount === undefined) {
@@ -1256,11 +1131,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (_Util2.default.countDecimals(amount) > _constants.maxDecimals) {
 	                    throw new Error("Number of decimals in amount should be at most " + _constants.maxDecimals);
 	                }
-	                return _this30._client.createTransfer(finalToken, amount, currency, destinations).then(function (res) {
+	                return _this24._client.createTransfer(finalToken, amount, currency, description, destinations).then(function (res) {
 	                    return new _Transfer2.default(res.data.transfer);
 	                });
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this30.createTransfer, err);
+	                return _Util2.default.reject(_this24.createTransfer, err);
 	            });
 	        }
 
@@ -1273,12 +1148,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getTransfer",
 	        value: function getTransfer(transferId) {
-	            var _this31 = this;
+	            var _this25 = this;
 
 	            return this._client.getTransfer(transferId).then(function (res) {
 	                return new _Transfer2.default(res.data.transfer);
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this31.getTransfer, err);
+	                return _Util2.default.reject(_this25.getTransfer, err);
 	            });
 	        }
 
@@ -1293,14 +1168,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getTransfers",
 	        value: function getTransfers(tokenId, offset, limit) {
-	            var _this32 = this;
+	            var _this26 = this;
 
 	            return this._client.getTransfers(tokenId, offset, limit).then(function (res) {
 	                return new _PagedResult2.default(res.data.transfers.map(function (pt) {
 	                    return new _Transfer2.default(pt);
 	                }), res.data.offset);
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this32.getTransfers, err);
+	                return _Util2.default.reject(_this26.getTransfers, err);
 	            });
 	        }
 
@@ -1312,44 +1187,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "getPublicKeys",
 	        value: function getPublicKeys() {
-	            var _this33 = this;
+	            var _this27 = this;
 
 	            return this._getMember().then(function (member) {
 	                return member.keys;
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this33.getPublicKeys, err);
+	                return _Util2.default.reject(_this27.getPublicKeys, err);
 	            });
 	        }
 	    }, {
 	        key: "_getPreviousHash",
 	        value: function _getPreviousHash() {
-	            var _this34 = this;
+	            var _this28 = this;
 
 	            return this._getMember().then(function (member) {
 	                return member.lastHash;
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this34._getPreviousHash, err);
+	                return _Util2.default.reject(_this28._getPreviousHash, err);
 	            });
 	        }
 	    }, {
 	        key: "_getMember",
 	        value: function _getMember() {
-	            var _this35 = this;
+	            var _this29 = this;
 
 	            return this._client.getMember().then(function (res) {
 	                return res.data.member;
 	            }).catch(function (err) {
-	                return _Util2.default.reject(_this35._getMember, err);
+	                return _Util2.default.reject(_this29._getMember, err);
 	            });
 	        }
 	    }, {
 	        key: "_resolveToken",
 	        value: function _resolveToken(token) {
-	            var _this36 = this;
+	            var _this30 = this;
 
 	            return new Promise(function (resolve, reject) {
 	                if (typeof token === 'string' || token instanceof String) {
-	                    _this36.getToken(token).then(function (lookedUp) {
+	                    _this30.getToken(token).then(function (lookedUp) {
 	                        return resolve(lookedUp);
 	                    });
 	                } else {
@@ -2055,6 +1930,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._instance(config);
 	        }
 	    }, {
+	        key: "replaceToken",
+	        value: function replaceToken(tokenToCancel, tokenToCreate) {
+	            var cancelTokenId = tokenToCancel.id;
+	            var cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+
+	            var createReq = {
+	                payload: tokenToCreate.json
+	            };
+
+	            var config = {
+	                method: 'post',
+	                url: "/tokens/" + cancelTokenId + "/replace",
+	                data: {
+	                    cancel_token: cancelReq,
+	                    create_token: createReq
+	                }
+	            };
+	            return this._instance(config);
+	        }
+	    }, {
+	        key: "replaceAndEndorseToken",
+	        value: function replaceAndEndorseToken(tokenToCancel, tokenToCreate) {
+	            var cancelTokenId = tokenToCancel.id;
+	            var cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+
+	            var createReq = {
+	                payload: tokenToCreate.json,
+	                payload_signature: this._tokenOperationSignature(tokenToCreate, 'endorsed')
+	            };
+
+	            var config = {
+	                method: 'post',
+	                url: "/tokens/" + cancelTokenId + "/replace",
+	                data: {
+	                    cancel_token: cancelReq,
+	                    create_token: createReq
+	                }
+	            };
+	            return this._instance(config);
+	        }
+	    }, {
 	        key: "endorseToken",
 	        value: function endorseToken(token) {
 	            return this._tokenOperation(token, 'endorse', 'endorsed');
@@ -2065,37 +1981,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._tokenOperation(transferToken, 'cancel', 'cancelled');
 	        }
 	    }, {
-	        key: "_tokenOperation",
-	        value: function _tokenOperation(transferToken, operation, suffix) {
-	            var payload = stringify(transferToken.json) + ("." + suffix);
-	            var req = {
-	                tokenId: transferToken.id,
-	                signature: {
-	                    memberId: this._memberId,
-	                    keyId: this._keys.keyId,
-	                    signature: _Crypto2.default.sign(payload, this._keys)
-	                }
-	            };
-	            var tokenId = transferToken.id;
-	            var config = {
-	                method: 'put',
-	                url: "/tokens/" + tokenId + "/" + operation,
-	                data: req
-	            };
-	            return this._instance(config);
-	        }
-	    }, {
 	        key: "createTransfer",
-	        value: function createTransfer(transferToken, amount, currency, destinations) {
+	        value: function createTransfer(transferToken, amount, currency, description, destinations) {
 	            var payload = {
 	                nonce: _Util2.default.generateNonce(),
 	                tokenId: transferToken.id,
 	                amount: {
 	                    value: amount.toString(),
 	                    currency: currency
-	                },
-	                transfer: transferToken.transfer
+	                }
 	            };
+
+	            if (description) {
+	                payload.description = description;
+	            }
+
 	            if (destinations !== undefined && destinations.length > 0) {
 	                payload.destinations = destinations;
 	            }
@@ -2132,6 +2032,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	                url: "/tokens?type=" + type + "&offset=" + offset + "&limit=" + limit
 	            };
 	            return this._instance(config);
+	        }
+	    }, {
+	        key: "_tokenOperation",
+	        value: function _tokenOperation(token, operation, suffix) {
+	            var tokenId = token.id;
+	            var config = {
+	                method: 'put',
+	                url: "/tokens/" + tokenId + "/" + operation,
+	                data: this._tokenOperationRequest(token, suffix)
+	            };
+	            return this._instance(config);
+	        }
+	    }, {
+	        key: "_tokenOperationRequest",
+	        value: function _tokenOperationRequest(token, suffix) {
+	            return {
+	                tokenId: token.id,
+	                signature: this._tokenOperationSignature(token, suffix)
+	            };
+	        }
+	    }, {
+	        key: "_tokenOperationSignature",
+	        value: function _tokenOperationSignature(token, suffix) {
+	            var payload = stringify(token.json) + ("." + suffix);
+	            return {
+	                memberId: this._memberId,
+	                keyId: this._keys.keyId,
+	                signature: _Crypto2.default.sign(payload, this._keys)
+	            };
 	        }
 
 	        //
@@ -2715,193 +2644,50 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var AccessToken = function () {
 	    _createClass(AccessToken, null, [{
-	        key: "addressesAccessToken",
+	        key: "grantTo",
 
 	        /**
-	         * Creates Addresses AccessToken.
+	         * Creates an instance of AccessToken and sets the "to" field on the payload.
 	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
+	         * @param {string} redeemerUsername - redeemer username
 	         * @returns {AccessToken} - the access token created
 	         */
-	        value: function addressesAccessToken(member, toUsername) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                allAddresses: {}
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
+	        value: function grantTo(redeemerUsername) {
+	            return new AccessToken({ username: redeemerUsername });
 	        }
 
 	        /**
-	         * Creates Address AccessToken.
+	         * Creates an instance of AccessToken from a given token.
 	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @param {string} addressId - an optional address id
+	         * @param {Token} token - token to populate from
 	         * @returns {AccessToken} - the access token created
 	         */
 
-	    }, {
-	        key: "addressAccessToken",
-	        value: function addressAccessToken(member, toUsername, addressId) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                address: {
-	                    addressId: addressId
-	                }
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
-
-	        /**
-	         * Creates Accounts AccessToken.
-	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @returns {AccessToken} - the access token created
-	         */
-
-	    }, {
-	        key: "accountsAccessToken",
-	        value: function accountsAccessToken(member, toUsername) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                allAccounts: {}
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
-
-	        /**
-	         * Creates an Account AccessToken.
-	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @param {string} accountId - an optional account id
-	         * @returns {AccessToken} - the access token created
-	         */
-
-	    }, {
-	        key: "accountAccessToken",
-	        value: function accountAccessToken(member, toUsername, accountId) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                account: {
-	                    accountId: accountId
-	                }
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
-
-	        /**
-	         * Creates Account Transactions AccessToken.
-	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @returns {AccessToken} - the access token created
-	         */
-
-	    }, {
-	        key: "accountsTransactionsAccessToken",
-	        value: function accountsTransactionsAccessToken(member, toUsername) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                allTransactions: {}
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
-
-	        /**
-	         * Creates an Account Transaction AccessToken.
-	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @param {string} accountId - an optional account id
-	         * @returns {AccessToken} - the access token created
-	         */
-
-	    }, {
-	        key: "accountTransactionsAccessToken",
-	        value: function accountTransactionsAccessToken(member, toUsername, accountId) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                transactions: {
-	                    accountId: accountId
-	                }
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
-
-	        /**
-	         * Creates Balances AccessToken.
-	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @returns {AccessToken} - the access token created
-	         */
-
-	    }, {
-	        key: "balancesAccessToken",
-	        value: function balancesAccessToken(member, toUsername) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                allBalances: {}
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
-
-	        /**
-	         * Creates a Balance AccessToken.
-	         *
-	         * @param {Member} member - the member granting resource access
-	         * @param {string} toUsername - the username of the grantee
-	         * @param {string} accountId - an optional account id
-	         * @returns {AccessToken} - the access token created
-	         */
-
-	    }, {
-	        key: "balanceAccessToken",
-	        value: function balanceAccessToken(member, toUsername, accountId) {
-	            var from = { id: member.id };
-	            var to = { username: toUsername };
-	            var resource = {
-	                balance: {
-	                    accountId: accountId
-	                }
-	            };
-
-	            return new AccessToken(undefined, from, to, [resource]);
-	        }
 	    }, {
 	        key: "createFromToken",
 	        value: function createFromToken(token) {
-	            var id = token.id;
-	            var from = token.payload.from;
-	            var to = token.payload.to;
-	            var resources = token.payload.access.resources;
-	            var version = token.payload.version;
-	            var nonce = token.payload.nonce;
-	            var issuer = token.payload.issuer;
-	            var payloadSignatures = token.payloadSignatures;
+	            return new AccessToken(token.payload.to, token.payload.from, token.payload.access.resources, token.id, token.payload.version, token.payload.nonce, token.payload.issuer, token.payloadSignatures);
+	        }
 
-	            return new AccessToken(id, from, to, resources, version, nonce, issuer, payloadSignatures);
+	        /**
+	         * Creates a new AccessToken from existing AccessToken by copying fields
+	         * only relevant to the new token.
+	         *
+	         * @param {AccessToken} accessToken - existing access token to copy some fields from.
+	         * @returns {AccessToken} - new access token initialized from the old one.
+	         */
+
+	    }, {
+	        key: "createFromAccessToken",
+	        value: function createFromAccessToken(accessToken) {
+	            return new AccessToken(accessToken.toMember, accessToken.fromMember, [], undefined, _constants.accessTokenVersion, undefined, accessToken.issuer, []);
 	        }
 	    }]);
 
-	    function AccessToken(id, from, to, resources) {
+	    function AccessToken(to) {
+	        var from = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+	        var resources = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+	        var id = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 	        var version = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : _constants.accessTokenVersion;
 	        var nonce = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : undefined;
 	        var issuer = arguments[6];
@@ -2909,10 +2695,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _classCallCheck(this, AccessToken);
 
-	        this._id = id;
-	        this._from = from;
 	        this._to = to;
+	        this._from = from;
 	        this._resources = resources;
+	        this._id = id;
 	        this._version = version;
 	        this._nonce = nonce;
 	        this._issuer = issuer;
@@ -2923,7 +2709,181 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 
+	    /**
+	     * Grants access to all addresses.
+	     *
+	     * @returns {AccessToken} - the access token
+	     */
+
+
 	    _createClass(AccessToken, [{
+	        key: "forAllAddresses",
+	        value: function forAllAddresses() {
+	            var resource = {
+	                allAddresses: {}
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to a given address.
+	         *
+	         * @param {string} addressId - address to grant access to
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAddress",
+	        value: function forAddress(addressId) {
+	            var resource = {
+	                address: {
+	                    addressId: addressId
+	                }
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to all accounts.
+	         *
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAllAccounts",
+	        value: function forAllAccounts() {
+	            var resource = {
+	                allAccounts: {}
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to a given account.
+	         *
+	         * @param {string} accountId - account to grant access to
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAccount",
+	        value: function forAccount(accountId) {
+	            var resource = {
+	                account: {
+	                    accountId: accountId
+	                }
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to all transactions.
+	         *
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAllTransactions",
+	        value: function forAllTransactions() {
+	            var resource = {
+	                allTransactions: {}
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to a given account transactions.
+	         *
+	         * @param {string} accountId - account to grant access to transactions
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAccountTransactions",
+	        value: function forAccountTransactions(accountId) {
+	            var resource = {
+	                transactions: {
+	                    accountId: accountId
+	                }
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to all balances.
+	         *
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAllBalances",
+	        value: function forAllBalances() {
+	            var resource = {
+	                allBalances: {}
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to a given account balances.
+	         *
+	         * @param {string} accountId - account to grant access to balances
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAccountBalances",
+	        value: function forAccountBalances(accountId) {
+	            var resource = {
+	                balance: {
+	                    accountId: accountId
+	                }
+	            };
+
+	            this._resources.push(resource);
+	            return this;
+	        }
+
+	        /**
+	         * Grants access to ALL resources (aka wildcard permissions).
+	         *
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "forAll",
+	        value: function forAll() {
+	            return this.forAllAddresses().forAllAccounts().forAllBalances().forAllTransactions();
+	        }
+
+	        /**
+	         * Sets "from" field on a payload.
+	         *
+	         * @param {Member} member - member granting access
+	         * @returns {AccessToken} - the access token
+	         */
+
+	    }, {
+	        key: "from",
+	        value: function from(member) {
+	            this._from = { id: member.id };
+	            return this;
+	        }
+	    }, {
 	        key: "payloadSignatures",
 	        set: function set(sigs) {
 	            this._payloadSignatures = [];
@@ -2951,13 +2911,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 	            }
-	        },
+	        }
+
+	        /**
+	         * Creates a standardized json object for the AccessToken payload, to be used for signing
+	         *
+	         * @returns json representation of the TokenPayload
+	         */
+	        ,
 	        get: function get() {
 	            return this._payloadSignatures;
 	        }
-
-	        // Creates a standardized json object for the AccessToken, to be used for signing
-
+	    }, {
+	        key: "json",
+	        get: function get() {
+	            return {
+	                version: this._version,
+	                nonce: this._nonce,
+	                from: this._from,
+	                to: this._to,
+	                issuer: this._issuer,
+	                access: {
+	                    resources: this._resources
+	                }
+	            };
+	        }
 	    }, {
 	        key: "id",
 	        get: function get() {
@@ -2974,12 +2952,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return this._nonce;
 	        }
 	    }, {
-	        key: "from",
+	        key: "fromMember",
 	        get: function get() {
 	            return this._from;
 	        }
 	    }, {
-	        key: "to",
+	        key: "toMember",
 	        get: function get() {
 	            return this._to;
 	        }
@@ -2992,20 +2970,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "resources",
 	        get: function get() {
 	            return this._resources;
-	        }
-	    }, {
-	        key: "json",
-	        get: function get() {
-	            return {
-	                version: this._version,
-	                nonce: this._nonce,
-	                from: this._from,
-	                to: this._to,
-	                issuer: this._issuer,
-	                access: {
-	                    resources: this._resources
-	                }
-	            };
 	        }
 	    }]);
 
@@ -3036,6 +3000,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._referenceId = transferObj.referenceId;
 	        this._payload = JSON.parse(JSON.stringify(transferObj.payload));
 	        this._payloadSignatures = JSON.parse(JSON.stringify(transferObj.payloadSignatures));
+	        this._description = transferObj.description;
 	    }
 
 	    _createClass(Transfer, [{
@@ -3072,6 +3037,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "payloadSignatures",
 	        get: function get() {
 	            return this._payloadSignatures;
+	        }
+	    }, {
+	        key: "description",
+	        get: function get() {
+	            return this._description;
 	        }
 	    }]);
 
