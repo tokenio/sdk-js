@@ -32,7 +32,7 @@ class Token {
      * @return {Promise} result - true if username exists, false otherwise
      */
     usernameExists(username) {
-        return Util.tryToDo(this.usernameExists, async () => {
+        return Util.call(this.usernameExists, async () => {
             const res = await this._unauthenticatedClient.usernameExists(username);
             return res.data.exists ? res.data.exists : false;
         });
@@ -44,7 +44,7 @@ class Token {
      * @return {Promise} member - Promise of created Member
      */
     createMember(username) {
-        return Util.tryToDo(this.createMember, async () => {
+        return Util.call(this.createMember, async () => {
             const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
             await this._unauthenticatedClient.addFirstKey(keys, response.data.memberId);
@@ -61,7 +61,7 @@ class Token {
      * @return {Promise} member - Promise of instantiated Member
      */
     login(memberId, keys) {
-        return Util.tryToDo(this.login, async () => {
+        return Util.call(this.login, async () => {
             return new Member(this._env, memberId, keys);
         });
     }
@@ -75,7 +75,7 @@ class Token {
      * @return {Promise} member - instantiated Member, if successful
      */
     loginWithUsername(keys, username) {
-        return Util.tryToDo(this.loginWithUsername, async () => {
+        return Util.call(this.loginWithUsername, async () => {
             const res = await new AuthHttpClientUsername(this._env, username, keys).getMemberByUsername();
             return new Member(this._env, res.data.member.id, keys);
         });
@@ -86,7 +86,7 @@ class Token {
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage() {
-        return Util.tryToDo(this.loginFromLocalStorage, async () => {
+        return Util.call(this.loginFromLocalStorage, async () => {
             return LocalStorage.loadMember(this._env);
         });
     }
@@ -108,7 +108,7 @@ class Token {
                 accountLinkPayloads
             }
         };
-        return Util.tryToDo(this.notifyLinkAccounts, async () => {
+        return Util.call(this.notifyLinkAccounts, async () => {
             const res = await this._unauthenticatedClient.notify(username, notification);
             return res.data.status;
         });
@@ -129,7 +129,7 @@ class Token {
                 name
             }
         };
-        return Util.tryToDo(this.notifyAddKey, async () => {
+        return Util.call(this.notifyAddKey, async () => {
             const res = await this._unauthenticatedClient.notify(username, notification)
             return res.data.status;
         });
@@ -160,7 +160,7 @@ class Token {
                 }
             }
         };
-        return Util.tryToDo(this.notifyLinkAccountsAndAddKey, async () => {
+        return Util.call(this.notifyLinkAccountsAndAddKey, async () => {
             const res = await this._unauthenticatedClient.notify(username, notification)
             return res.data.status;
         });

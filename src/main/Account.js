@@ -56,7 +56,7 @@ export default class Account {
      * @return {Promise} balance - Promise of balance object
      */
     getBalance() {
-        return Util.tryToDo(this.getBalance, async () => {
+        return Util.call(this.getBalance, async () => {
             const res = await this._member._client.getBalance(this._id);
             return res.data;
         });
@@ -68,7 +68,7 @@ export default class Account {
      * @return {Promise} transaction - the Transaction
      */
     getTransaction(transactionId) {
-        return Util.tryToDo(this.getTransaction, async () => {
+        return Util.call(this.getTransaction, async () => {
             const res = await this._member._client.getTransaction(this._id, transactionId);
             return new Transaction(res.data.transaction);
         });
@@ -81,7 +81,7 @@ export default class Account {
      * @return {Promise} transactions - Transactions
      */
     getTransactions(offset, limit) {
-        return Util.tryToDo(this.getTransactions, async () => {
+        return Util.call(this.getTransactions, async () => {
             const res = await this._member._client.getTransactions(this._id, offset, limit);
             return new PagedResult(
                 res.data.transactions.map(tr => new Transaction(tr)),
