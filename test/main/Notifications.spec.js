@@ -52,7 +52,7 @@ describe('Notifications', () => {
         await member1.subscribeToNotifications(target);
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const status = await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
-        assert.equal(status, NotifyStatus.SENT);
+        assert.equal(status, NotifyStatus.ACCEPTED);
     });
 
     it('should send a push for adding key', async () => {

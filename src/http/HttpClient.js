@@ -27,10 +27,10 @@ class HttpClient {
         return this._instance(config);
     }
 
-    notify(username, notification) {
+    notify(username, body) {
         const req = {
             username,
-            notification
+            body
         };
         const config = {
             method: 'post',

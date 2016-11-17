@@ -1,5 +1,5 @@
 export default {
     FAILED: 'FAILED',
-    SENT: 'SENT',
+    ACCEPTED: 'ACCEPTED',
     NO_SUBSCRIBERS: 'NO_SUBSCRIBERS'
 };
