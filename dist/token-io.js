@@ -54,51 +54,910 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(1);
+	module.exports = __webpack_require__(3);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global, process) {/**
+	 * Copyright (c) 2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+	 * additional grant of patent rights can be found in the PATENTS file in
+	 * the same directory.
+	 */
+
+	!(function(global) {
+	  "use strict";
+
+	  var hasOwn = Object.prototype.hasOwnProperty;
+	  var undefined; // More compressible than void 0.
+	  var iteratorSymbol =
+	    typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+	  var inModule = typeof module === "object";
+	  var runtime = global.regeneratorRuntime;
+	  if (runtime) {
+	    if (inModule) {
+	      // If regeneratorRuntime is defined globally and we're in a module,
+	      // make the exports object identical to regeneratorRuntime.
+	      module.exports = runtime;
+	    }
+	    // Don't bother evaluating the rest of this file if the runtime was
+	    // already defined globally.
+	    return;
+	  }
+
+	  // Define the runtime globally (as expected by generated code) as either
+	  // module.exports (if we're in a module) or a new, empty object.
+	  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+	  function wrap(innerFn, outerFn, self, tryLocsList) {
+	    // If outerFn provided, then outerFn.prototype instanceof Generator.
+	    var generator = Object.create((outerFn || Generator).prototype);
+	    var context = new Context(tryLocsList || []);
+
+	    // The ._invoke method unifies the implementations of the .next,
+	    // .throw, and .return methods.
+	    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+	    return generator;
+	  }
+	  runtime.wrap = wrap;
+
+	  // Try/catch helper to minimize deoptimizations. Returns a completion
+	  // record like context.tryEntries[i].completion. This interface could
+	  // have been (and was previously) designed to take a closure to be
+	  // invoked without arguments, but in all the cases we care about we
+	  // already have an existing method we want to call, so there's no need
+	  // to create a new function object. We can even get away with assuming
+	  // the method takes exactly one argument, since that happens to be true
+	  // in every case, so we don't have to touch the arguments object. The
+	  // only additional allocation required is the completion record, which
+	  // has a stable shape and so hopefully should be cheap to allocate.
+	  function tryCatch(fn, obj, arg) {
+	    try {
+	      return { type: "normal", arg: fn.call(obj, arg) };
+	    } catch (err) {
+	      return { type: "throw", arg: err };
+	    }
+	  }
+
+	  var GenStateSuspendedStart = "suspendedStart";
+	  var GenStateSuspendedYield = "suspendedYield";
+	  var GenStateExecuting = "executing";
+	  var GenStateCompleted = "completed";
+
+	  // Returning this object from the innerFn has the same effect as
+	  // breaking out of the dispatch switch statement.
+	  var ContinueSentinel = {};
+
+	  // Dummy constructor functions that we use as the .constructor and
+	  // .constructor.prototype properties for functions that return Generator
+	  // objects. For full spec compliance, you may wish to configure your
+	  // minifier not to mangle the names of these two functions.
+	  function Generator() {}
+	  function GeneratorFunction() {}
+	  function GeneratorFunctionPrototype() {}
+
+	  var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype;
+	  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+	  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+	  GeneratorFunction.displayName = "GeneratorFunction";
+
+	  // Helper for defining the .next, .throw, and .return methods of the
+	  // Iterator interface in terms of a single ._invoke method.
+	  function defineIteratorMethods(prototype) {
+	    ["next", "throw", "return"].forEach(function(method) {
+	      prototype[method] = function(arg) {
+	        return this._invoke(method, arg);
+	      };
+	    });
+	  }
+
+	  runtime.isGeneratorFunction = function(genFun) {
+	    var ctor = typeof genFun === "function" && genFun.constructor;
+	    return ctor
+	      ? ctor === GeneratorFunction ||
+	        // For the native GeneratorFunction constructor, the best we can
+	        // do is to check its .name property.
+	        (ctor.displayName || ctor.name) === "GeneratorFunction"
+	      : false;
+	  };
+
+	  runtime.mark = function(genFun) {
+	    if (Object.setPrototypeOf) {
+	      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+	    } else {
+	      genFun.__proto__ = GeneratorFunctionPrototype;
+	    }
+	    genFun.prototype = Object.create(Gp);
+	    return genFun;
+	  };
+
+	  // Within the body of any async function, `await x` is transformed to
+	  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+	  // `value instanceof AwaitArgument` to determine if the yielded value is
+	  // meant to be awaited. Some may consider the name of this method too
+	  // cutesy, but they are curmudgeons.
+	  runtime.awrap = function(arg) {
+	    return new AwaitArgument(arg);
+	  };
+
+	  function AwaitArgument(arg) {
+	    this.arg = arg;
+	  }
+
+	  function AsyncIterator(generator) {
+	    // This invoke function is written in a style that assumes some
+	    // calling function (or Promise) will handle exceptions.
+	    function invoke(method, arg) {
+	      var result = generator[method](arg);
+	      var value = result.value;
+	      return value instanceof AwaitArgument
+	        ? Promise.resolve(value.arg).then(invokeNext, invokeThrow)
+	        : Promise.resolve(value).then(function(unwrapped) {
+	            // When a yielded Promise is resolved, its final value becomes
+	            // the .value of the Promise<{value,done}> result for the
+	            // current iteration. If the Promise is rejected, however, the
+	            // result for this iteration will be rejected with the same
+	            // reason. Note that rejections of yielded Promises are not
+	            // thrown back into the generator function, as is the case
+	            // when an awaited Promise is rejected. This difference in
+	            // behavior between yield and await is important, because it
+	            // allows the consumer to decide what to do with the yielded
+	            // rejection (swallow it and continue, manually .throw it back
+	            // into the generator, abandon iteration, whatever). With
+	            // await, by contrast, there is no opportunity to examine the
+	            // rejection reason outside the generator function, so the
+	            // only option is to throw it from the await expression, and
+	            // let the generator function handle the exception.
+	            result.value = unwrapped;
+	            return result;
+	          });
+	    }
+
+	    if (typeof process === "object" && process.domain) {
+	      invoke = process.domain.bind(invoke);
+	    }
+
+	    var invokeNext = invoke.bind(generator, "next");
+	    var invokeThrow = invoke.bind(generator, "throw");
+	    var invokeReturn = invoke.bind(generator, "return");
+	    var previousPromise;
+
+	    function enqueue(method, arg) {
+	      function callInvokeWithMethodAndArg() {
+	        return invoke(method, arg);
+	      }
+
+	      return previousPromise =
+	        // If enqueue has been called before, then we want to wait until
+	        // all previous Promises have been resolved before calling invoke,
+	        // so that results are always delivered in the correct order. If
+	        // enqueue has not been called before, then it is important to
+	        // call invoke immediately, without waiting on a callback to fire,
+	        // so that the async generator function has the opportunity to do
+	        // any necessary setup in a predictable way. This predictability
+	        // is why the Promise constructor synchronously invokes its
+	        // executor callback, and why async functions synchronously
+	        // execute code before the first await. Since we implement simple
+	        // async functions in terms of async generators, it is especially
+	        // important to get this right, even though it requires care.
+	        previousPromise ? previousPromise.then(
+	          callInvokeWithMethodAndArg,
+	          // Avoid propagating failures to Promises returned by later
+	          // invocations of the iterator.
+	          callInvokeWithMethodAndArg
+	        ) : new Promise(function (resolve) {
+	          resolve(callInvokeWithMethodAndArg());
+	        });
+	    }
+
+	    // Define the unified helper method that is used to implement .next,
+	    // .throw, and .return (see defineIteratorMethods).
+	    this._invoke = enqueue;
+	  }
+
+	  defineIteratorMethods(AsyncIterator.prototype);
+
+	  // Note that simple async functions are implemented on top of
+	  // AsyncIterator objects; they just return a Promise for the value of
+	  // the final result produced by the iterator.
+	  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+	    var iter = new AsyncIterator(
+	      wrap(innerFn, outerFn, self, tryLocsList)
+	    );
+
+	    return runtime.isGeneratorFunction(outerFn)
+	      ? iter // If outerFn is a generator, return the full iterator.
+	      : iter.next().then(function(result) {
+	          return result.done ? result.value : iter.next();
+	        });
+	  };
+
+	  function makeInvokeMethod(innerFn, self, context) {
+	    var state = GenStateSuspendedStart;
+
+	    return function invoke(method, arg) {
+	      if (state === GenStateExecuting) {
+	        throw new Error("Generator is already running");
+	      }
+
+	      if (state === GenStateCompleted) {
+	        if (method === "throw") {
+	          throw arg;
+	        }
+
+	        // Be forgiving, per 25.3.3.3.3 of the spec:
+	        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+	        return doneResult();
+	      }
+
+	      while (true) {
+	        var delegate = context.delegate;
+	        if (delegate) {
+	          if (method === "return" ||
+	              (method === "throw" && delegate.iterator[method] === undefined)) {
+	            // A return or throw (when the delegate iterator has no throw
+	            // method) always terminates the yield* loop.
+	            context.delegate = null;
+
+	            // If the delegate iterator has a return method, give it a
+	            // chance to clean up.
+	            var returnMethod = delegate.iterator["return"];
+	            if (returnMethod) {
+	              var record = tryCatch(returnMethod, delegate.iterator, arg);
+	              if (record.type === "throw") {
+	                // If the return method threw an exception, let that
+	                // exception prevail over the original return or throw.
+	                method = "throw";
+	                arg = record.arg;
+	                continue;
+	              }
+	            }
+
+	            if (method === "return") {
+	              // Continue with the outer return, now that the delegate
+	              // iterator has been terminated.
+	              continue;
+	            }
+	          }
+
+	          var record = tryCatch(
+	            delegate.iterator[method],
+	            delegate.iterator,
+	            arg
+	          );
+
+	          if (record.type === "throw") {
+	            context.delegate = null;
+
+	            // Like returning generator.throw(uncaught), but without the
+	            // overhead of an extra function call.
+	            method = "throw";
+	            arg = record.arg;
+	            continue;
+	          }
+
+	          // Delegate generator ran and handled its own exceptions so
+	          // regardless of what the method was, we continue as if it is
+	          // "next" with an undefined arg.
+	          method = "next";
+	          arg = undefined;
+
+	          var info = record.arg;
+	          if (info.done) {
+	            context[delegate.resultName] = info.value;
+	            context.next = delegate.nextLoc;
+	          } else {
+	            state = GenStateSuspendedYield;
+	            return info;
+	          }
+
+	          context.delegate = null;
+	        }
+
+	        if (method === "next") {
+	          context._sent = arg;
+
+	          if (state === GenStateSuspendedYield) {
+	            context.sent = arg;
+	          } else {
+	            context.sent = undefined;
+	          }
+	        } else if (method === "throw") {
+	          if (state === GenStateSuspendedStart) {
+	            state = GenStateCompleted;
+	            throw arg;
+	          }
+
+	          if (context.dispatchException(arg)) {
+	            // If the dispatched exception was caught by a catch block,
+	            // then let that catch block handle the exception normally.
+	            method = "next";
+	            arg = undefined;
+	          }
+
+	        } else if (method === "return") {
+	          context.abrupt("return", arg);
+	        }
+
+	        state = GenStateExecuting;
+
+	        var record = tryCatch(innerFn, self, context);
+	        if (record.type === "normal") {
+	          // If an exception is thrown from innerFn, we leave state ===
+	          // GenStateExecuting and loop back for another invocation.
+	          state = context.done
+	            ? GenStateCompleted
+	            : GenStateSuspendedYield;
+
+	          var info = {
+	            value: record.arg,
+	            done: context.done
+	          };
+
+	          if (record.arg === ContinueSentinel) {
+	            if (context.delegate && method === "next") {
+	              // Deliberately forget the last sent value so that we don't
+	              // accidentally pass it on to the delegate.
+	              arg = undefined;
+	            }
+	          } else {
+	            return info;
+	          }
+
+	        } else if (record.type === "throw") {
+	          state = GenStateCompleted;
+	          // Dispatch the exception by looping back around to the
+	          // context.dispatchException(arg) call above.
+	          method = "throw";
+	          arg = record.arg;
+	        }
+	      }
+	    };
+	  }
+
+	  // Define Generator.prototype.{next,throw,return} in terms of the
+	  // unified ._invoke helper method.
+	  defineIteratorMethods(Gp);
+
+	  Gp[iteratorSymbol] = function() {
+	    return this;
+	  };
+
+	  Gp.toString = function() {
+	    return "[object Generator]";
+	  };
+
+	  function pushTryEntry(locs) {
+	    var entry = { tryLoc: locs[0] };
+
+	    if (1 in locs) {
+	      entry.catchLoc = locs[1];
+	    }
+
+	    if (2 in locs) {
+	      entry.finallyLoc = locs[2];
+	      entry.afterLoc = locs[3];
+	    }
+
+	    this.tryEntries.push(entry);
+	  }
+
+	  function resetTryEntry(entry) {
+	    var record = entry.completion || {};
+	    record.type = "normal";
+	    delete record.arg;
+	    entry.completion = record;
+	  }
+
+	  function Context(tryLocsList) {
+	    // The root entry object (effectively a try statement without a catch
+	    // or a finally block) gives us a place to store values thrown from
+	    // locations where there is no enclosing try statement.
+	    this.tryEntries = [{ tryLoc: "root" }];
+	    tryLocsList.forEach(pushTryEntry, this);
+	    this.reset(true);
+	  }
+
+	  runtime.keys = function(object) {
+	    var keys = [];
+	    for (var key in object) {
+	      keys.push(key);
+	    }
+	    keys.reverse();
+
+	    // Rather than returning an object with a next method, we keep
+	    // things simple and return the next function itself.
+	    return function next() {
+	      while (keys.length) {
+	        var key = keys.pop();
+	        if (key in object) {
+	          next.value = key;
+	          next.done = false;
+	          return next;
+	        }
+	      }
+
+	      // To avoid creating an additional object, we just hang the .value
+	      // and .done properties off the next function object itself. This
+	      // also ensures that the minifier will not anonymize the function.
+	      next.done = true;
+	      return next;
+	    };
+	  };
+
+	  function values(iterable) {
+	    if (iterable) {
+	      var iteratorMethod = iterable[iteratorSymbol];
+	      if (iteratorMethod) {
+	        return iteratorMethod.call(iterable);
+	      }
+
+	      if (typeof iterable.next === "function") {
+	        return iterable;
+	      }
+
+	      if (!isNaN(iterable.length)) {
+	        var i = -1, next = function next() {
+	          while (++i < iterable.length) {
+	            if (hasOwn.call(iterable, i)) {
+	              next.value = iterable[i];
+	              next.done = false;
+	              return next;
+	            }
+	          }
+
+	          next.value = undefined;
+	          next.done = true;
+
+	          return next;
+	        };
+
+	        return next.next = next;
+	      }
+	    }
+
+	    // Return an iterator with no values.
+	    return { next: doneResult };
+	  }
+	  runtime.values = values;
+
+	  function doneResult() {
+	    return { value: undefined, done: true };
+	  }
+
+	  Context.prototype = {
+	    constructor: Context,
+
+	    reset: function(skipTempReset) {
+	      this.prev = 0;
+	      this.next = 0;
+	      this.sent = undefined;
+	      this.done = false;
+	      this.delegate = null;
+
+	      this.tryEntries.forEach(resetTryEntry);
+
+	      if (!skipTempReset) {
+	        for (var name in this) {
+	          // Not sure about the optimal order of these conditions:
+	          if (name.charAt(0) === "t" &&
+	              hasOwn.call(this, name) &&
+	              !isNaN(+name.slice(1))) {
+	            this[name] = undefined;
+	          }
+	        }
+	      }
+	    },
+
+	    stop: function() {
+	      this.done = true;
+
+	      var rootEntry = this.tryEntries[0];
+	      var rootRecord = rootEntry.completion;
+	      if (rootRecord.type === "throw") {
+	        throw rootRecord.arg;
+	      }
+
+	      return this.rval;
+	    },
+
+	    dispatchException: function(exception) {
+	      if (this.done) {
+	        throw exception;
+	      }
+
+	      var context = this;
+	      function handle(loc, caught) {
+	        record.type = "throw";
+	        record.arg = exception;
+	        context.next = loc;
+	        return !!caught;
+	      }
+
+	      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+	        var entry = this.tryEntries[i];
+	        var record = entry.completion;
+
+	        if (entry.tryLoc === "root") {
+	          // Exception thrown outside of any try block that could handle
+	          // it, so set the completion value of the entire function to
+	          // throw the exception.
+	          return handle("end");
+	        }
+
+	        if (entry.tryLoc <= this.prev) {
+	          var hasCatch = hasOwn.call(entry, "catchLoc");
+	          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+	          if (hasCatch && hasFinally) {
+	            if (this.prev < entry.catchLoc) {
+	              return handle(entry.catchLoc, true);
+	            } else if (this.prev < entry.finallyLoc) {
+	              return handle(entry.finallyLoc);
+	            }
+
+	          } else if (hasCatch) {
+	            if (this.prev < entry.catchLoc) {
+	              return handle(entry.catchLoc, true);
+	            }
+
+	          } else if (hasFinally) {
+	            if (this.prev < entry.finallyLoc) {
+	              return handle(entry.finallyLoc);
+	            }
+
+	          } else {
+	            throw new Error("try statement without catch or finally");
+	          }
+	        }
+	      }
+	    },
+
+	    abrupt: function(type, arg) {
+	      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+	        var entry = this.tryEntries[i];
+	        if (entry.tryLoc <= this.prev &&
+	            hasOwn.call(entry, "finallyLoc") &&
+	            this.prev < entry.finallyLoc) {
+	          var finallyEntry = entry;
+	          break;
+	        }
+	      }
+
+	      if (finallyEntry &&
+	          (type === "break" ||
+	           type === "continue") &&
+	          finallyEntry.tryLoc <= arg &&
+	          arg <= finallyEntry.finallyLoc) {
+	        // Ignore the finally entry if control is not jumping to a
+	        // location outside the try/catch block.
+	        finallyEntry = null;
+	      }
+
+	      var record = finallyEntry ? finallyEntry.completion : {};
+	      record.type = type;
+	      record.arg = arg;
+
+	      if (finallyEntry) {
+	        this.next = finallyEntry.finallyLoc;
+	      } else {
+	        this.complete(record);
+	      }
+
+	      return ContinueSentinel;
+	    },
+
+	    complete: function(record, afterLoc) {
+	      if (record.type === "throw") {
+	        throw record.arg;
+	      }
+
+	      if (record.type === "break" ||
+	          record.type === "continue") {
+	        this.next = record.arg;
+	      } else if (record.type === "return") {
+	        this.rval = record.arg;
+	        this.next = "end";
+	      } else if (record.type === "normal" && afterLoc) {
+	        this.next = afterLoc;
+	      }
+	    },
+
+	    finish: function(finallyLoc) {
+	      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+	        var entry = this.tryEntries[i];
+	        if (entry.finallyLoc === finallyLoc) {
+	          this.complete(entry.completion, entry.afterLoc);
+	          resetTryEntry(entry);
+	          return ContinueSentinel;
+	        }
+	      }
+	    },
+
+	    "catch": function(tryLoc) {
+	      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+	        var entry = this.tryEntries[i];
+	        if (entry.tryLoc === tryLoc) {
+	          var record = entry.completion;
+	          if (record.type === "throw") {
+	            var thrown = record.arg;
+	            resetTryEntry(entry);
+	          }
+	          return thrown;
+	        }
+	      }
+
+	      // The context.catch method must only be called with a location
+	      // argument that corresponds to a known catch block.
+	      throw new Error("illegal catch attempt");
+	    },
+
+	    delegateYield: function(iterable, resultName, nextLoc) {
+	      this.delegate = {
+	        iterator: values(iterable),
+	        resultName: resultName,
+	        nextLoc: nextLoc
+	      };
+
+	      return ContinueSentinel;
+	    }
+	  };
+	})(
+	  // Among the various tricks for obtaining a reference to the global
+	  // object, this seems to be the most reliable technique that does not
+	  // use indirect eval (which violates Content Security Policy).
+	  typeof global === "object" ? global :
+	  typeof window === "object" ? window :
+	  typeof self === "object" ? self : this
+	);
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(2)))
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(4);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _Util = __webpack_require__(16);
+	var _Util = __webpack_require__(19);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _Member = __webpack_require__(17);
+	var _Member = __webpack_require__(20);
 
 	var _Member2 = _interopRequireDefault(_Member);
 
-	var _KeyLevel = __webpack_require__(24);
+	var _KeyLevel = __webpack_require__(27);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _LocalStorage = __webpack_require__(18);
+	var _LocalStorage = __webpack_require__(21);
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _HttpClient = __webpack_require__(56);
+	var _HttpClient = __webpack_require__(58);
 
 	var _HttpClient2 = _interopRequireDefault(_HttpClient);
 
-	var _TokenOperationResult = __webpack_require__(52);
+	var _TokenOperationResult = __webpack_require__(54);
 
 	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
 
-	var _AuthHttpClientUsername = __webpack_require__(57);
+	var _AuthHttpClientUsername = __webpack_require__(59);
 
 	var _AuthHttpClientUsername2 = _interopRequireDefault(_AuthHttpClientUsername);
+
+	__webpack_require__(1);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	// Promise polyfill for IE and older browsers
-	__webpack_require__(58).polyfill();
+	__webpack_require__(60).polyfill();
 
 	// Main entry object
-
 	var Token = function () {
 	    function Token() {
 	        var env = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'prd';
@@ -125,12 +984,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function usernameExists(username) {
 	            var _this = this;
 
-	            return this._unauthenticatedClient.usernameExists(username)
-	            // Workaround for a default value case when protobuf does not serialize it.
-	            .then(function (res) {
-	                return res.data.exists ? res.data.exists : false;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this.usernameExists, err);
+	            return _Util2.default.tryToDo(this.usernameExists, function _callee() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                _context.next = 2;
+	                                return regeneratorRuntime.awrap(_this._unauthenticatedClient.usernameExists(username));
+
+	                            case 2:
+	                                res = _context.sent;
+	                                return _context.abrupt("return", res.data.exists ? res.data.exists : false);
+
+	                            case 4:
+	                            case "end":
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, null, _this);
 	            });
 	        }
 
@@ -145,16 +1017,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function createMember(username) {
 	            var _this2 = this;
 
-	            var keys = _Crypto2.default.generateKeys();
-	            return this._unauthenticatedClient.createMemberId().then(function (response) {
-	                return _this2._unauthenticatedClient.addFirstKey(keys, response.data.memberId).then(function () {
-	                    var member = new _Member2.default(_this2._env, response.data.memberId, keys);
-	                    return member.addUsername(username).then(function () {
-	                        return member;
-	                    });
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this2.createMember, err);
+	            return _Util2.default.tryToDo(this.createMember, function _callee2() {
+	                var keys, response, member;
+	                return regeneratorRuntime.async(function _callee2$(_context2) {
+	                    while (1) {
+	                        switch (_context2.prev = _context2.next) {
+	                            case 0:
+	                                keys = _Crypto2.default.generateKeys();
+	                                _context2.next = 3;
+	                                return regeneratorRuntime.awrap(_this2._unauthenticatedClient.createMemberId());
+
+	                            case 3:
+	                                response = _context2.sent;
+	                                _context2.next = 6;
+	                                return regeneratorRuntime.awrap(_this2._unauthenticatedClient.addFirstKey(keys, response.data.memberId));
+
+	                            case 6:
+	                                member = new _Member2.default(_this2._env, response.data.memberId, keys);
+	                                _context2.next = 9;
+	                                return regeneratorRuntime.awrap(member.addUsername(username));
+
+	                            case 9:
+	                                return _context2.abrupt("return", member);
+
+	                            case 10:
+	                            case "end":
+	                                return _context2.stop();
+	                        }
+	                    }
+	                }, null, _this2);
 	            });
 	        }
 
@@ -170,8 +1061,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function login(memberId, keys) {
 	            var _this3 = this;
 
-	            return Promise.resolve(new _Member2.default(this._env, memberId, keys)).catch(function (err) {
-	                return _Util2.default.reject(_this3.login, err);
+	            return _Util2.default.tryToDo(this.login, function _callee3() {
+	                return regeneratorRuntime.async(function _callee3$(_context3) {
+	                    while (1) {
+	                        switch (_context3.prev = _context3.next) {
+	                            case 0:
+	                                return _context3.abrupt("return", new _Member2.default(_this3._env, memberId, keys));
+
+	                            case 1:
+	                            case "end":
+	                                return _context3.stop();
+	                        }
+	                    }
+	                }, null, _this3);
 	            });
 	        }
 
@@ -189,10 +1091,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function loginWithUsername(keys, username) {
 	            var _this4 = this;
 
-	            return new _AuthHttpClientUsername2.default(this._env, username, keys).getMemberByUsername().then(function (res) {
-	                return new _Member2.default(_this4._env, res.data.member.id, keys);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this4.loginWithUsername, err);
+	            return _Util2.default.tryToDo(this.loginWithUsername, function _callee4() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee4$(_context4) {
+	                    while (1) {
+	                        switch (_context4.prev = _context4.next) {
+	                            case 0:
+	                                _context4.next = 2;
+	                                return regeneratorRuntime.awrap(new _AuthHttpClientUsername2.default(_this4._env, username, keys).getMemberByUsername());
+
+	                            case 2:
+	                                res = _context4.sent;
+	                                return _context4.abrupt("return", new _Member2.default(_this4._env, res.data.member.id, keys));
+
+	                            case 4:
+	                            case "end":
+	                                return _context4.stop();
+	                        }
+	                    }
+	                }, null, _this4);
 	            });
 	        }
 
@@ -204,12 +1121,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "loginFromLocalStorage",
 	        value: function loginFromLocalStorage() {
-	            try {
-	                var member = _LocalStorage2.default.loadMember(this._env);
-	                return Promise.resolve(member);
-	            } catch (err) {
-	                return _Util2.default.reject(this.loginFromLocalStorage, err);
-	            }
+	            var _this5 = this;
+
+	            return _Util2.default.tryToDo(this.loginFromLocalStorage, function _callee5() {
+	                return regeneratorRuntime.async(function _callee5$(_context5) {
+	                    while (1) {
+	                        switch (_context5.prev = _context5.next) {
+	                            case 0:
+	                                return _context5.abrupt("return", _LocalStorage2.default.loadMember(_this5._env));
+
+	                            case 1:
+	                            case "end":
+	                                return _context5.stop();
+	                        }
+	                    }
+	                }, null, _this5);
+	            });
 	        }
 
 	        /**
@@ -225,7 +1152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "notifyLinkAccounts",
 	        value: function notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
-	            var _this5 = this;
+	            var _this6 = this;
 
 	            var notification = {
 	                linkAccounts: {
@@ -234,10 +1161,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    accountLinkPayloads: accountLinkPayloads
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(username, notification).then(function (res) {
-	                return res.data.status;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this5.notifyLinkAccounts, err);
+	            return _Util2.default.tryToDo(this.notifyLinkAccounts, function _callee6() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee6$(_context6) {
+	                    while (1) {
+	                        switch (_context6.prev = _context6.next) {
+	                            case 0:
+	                                _context6.next = 2;
+	                                return regeneratorRuntime.awrap(_this6._unauthenticatedClient.notify(username, notification));
+
+	                            case 2:
+	                                res = _context6.sent;
+	                                return _context6.abrupt("return", res.data.status);
+
+	                            case 4:
+	                            case "end":
+	                                return _context6.stop();
+	                        }
+	                    }
+	                }, null, _this6);
 	            });
 	        }
 
@@ -253,7 +1195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "notifyAddKey",
 	        value: function notifyAddKey(username, publicKey) {
-	            var _this6 = this;
+	            var _this7 = this;
 
 	            var name = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
@@ -263,10 +1205,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    name: name
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(username, notification).then(function (res) {
-	                return res.data.status;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this6.notifyAddKey, err);
+	            return _Util2.default.tryToDo(this.notifyAddKey, function _callee7() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee7$(_context7) {
+	                    while (1) {
+	                        switch (_context7.prev = _context7.next) {
+	                            case 0:
+	                                _context7.next = 2;
+	                                return regeneratorRuntime.awrap(_this7._unauthenticatedClient.notify(username, notification));
+
+	                            case 2:
+	                                res = _context7.sent;
+	                                return _context7.abrupt("return", res.data.status);
+
+	                            case 4:
+	                            case "end":
+	                                return _context7.stop();
+	                        }
+	                    }
+	                }, null, _this7);
 	            });
 	        }
 
@@ -285,7 +1242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "notifyLinkAccountsAndAddKey",
 	        value: function notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey) {
-	            var _this7 = this;
+	            var _this8 = this;
 
 	            var name = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : "";
 
@@ -302,10 +1259,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(username, notification).then(function (res) {
-	                return res.data.status;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this7.notifyLinkAccountsAndAddKey, err);
+	            return _Util2.default.tryToDo(this.notifyLinkAccountsAndAddKey, function _callee8() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee8$(_context8) {
+	                    while (1) {
+	                        switch (_context8.prev = _context8.next) {
+	                            case 0:
+	                                _context8.next = 2;
+	                                return regeneratorRuntime.awrap(_this8._unauthenticatedClient.notify(username, notification));
+
+	                            case 2:
+	                                res = _context8.sent;
+	                                return _context8.abrupt("return", res.data.status);
+
+	                            case 4:
+	                            case "end":
+	                                return _context8.stop();
+	                        }
+	                    }
+	                }, null, _this8);
 	            });
 	        }
 	    }]);
@@ -318,7 +1290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Token;
 
 /***/ },
-/* 1 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
@@ -329,19 +1301,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _tweetnacl = __webpack_require__(6);
+	var _tweetnacl = __webpack_require__(9);
 
 	var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
 
-	var _fastSha = __webpack_require__(8);
+	var _fastSha = __webpack_require__(11);
 
 	var _fastSha2 = _interopRequireDefault(_fastSha);
 
-	var _base64url = __webpack_require__(9);
+	var _base64url = __webpack_require__(12);
 
 	var _base64url2 = _interopRequireDefault(_base64url);
 
-	var _jsonStableStringify = __webpack_require__(12);
+	var _jsonStableStringify = __webpack_require__(15);
 
 	var _jsonStableStringify2 = _interopRequireDefault(_jsonStableStringify);
 
@@ -423,10 +1395,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	exports.default = Crypto;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ },
-/* 2 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -439,9 +1411,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict'
 
-	var base64 = __webpack_require__(3)
-	var ieee754 = __webpack_require__(4)
-	var isArray = __webpack_require__(5)
+	var base64 = __webpack_require__(6)
+	var ieee754 = __webpack_require__(7)
+	var isArray = __webpack_require__(8)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -2219,10 +3191,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return val !== val // eslint-disable-line no-self-compare
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 3 */
+/* 6 */
 /***/ function(module, exports) {
 
 	'use strict'
@@ -2342,7 +3314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 4 */
+/* 7 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -2432,7 +3404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 5 */
+/* 8 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -2443,7 +3415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function(nacl) {
@@ -4822,7 +5794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  } else if (true) {
 	    // Node.js.
-	    crypto = __webpack_require__(7);
+	    crypto = __webpack_require__(10);
 	    if (crypto && crypto.randomBytes) {
 	      nacl.setPRNG(function(x, n) {
 	        var i, v = crypto.randomBytes(n);
@@ -4837,13 +5809,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -5220,19 +6192,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(10).default;
+	module.exports = __webpack_require__(13).default;
 	module.exports.default = module.exports;
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
-	var pad_string_1 = __webpack_require__(11);
+	var pad_string_1 = __webpack_require__(14);
 	function encode(input, encoding) {
 	    if (encoding === void 0) { encoding = "utf8"; }
 	    if (Buffer.isBuffer(input)) {
@@ -5269,10 +6241,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = base64url;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {"use strict";
@@ -5296,13 +6268,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = padString;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).Buffer))
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var json = typeof JSON !== 'undefined' ? JSON : __webpack_require__(13);
+	var json = typeof JSON !== 'undefined' ? JSON : __webpack_require__(16);
 
 	module.exports = function (obj, opts) {
 	    if (!opts) opts = {};
@@ -5389,15 +6361,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports.parse = __webpack_require__(14);
-	exports.stringify = __webpack_require__(15);
+	exports.parse = __webpack_require__(17);
+	exports.stringify = __webpack_require__(18);
 
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 	var at, // The index of the current character
@@ -5676,7 +6648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports) {
 
 	var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
@@ -5836,7 +6808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5847,11 +6819,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _tweetnacl = __webpack_require__(6);
+	var _tweetnacl = __webpack_require__(9);
 
 	var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
 
-	var _base64url = __webpack_require__(9);
+	var _base64url = __webpack_require__(12);
 
 	var _base64url2 = _interopRequireDefault(_base64url);
 
@@ -5866,9 +6838,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _createClass(Util, null, [{
 	        key: "generateNonce",
+
+	        /**
+	         * Generates a random nonce
+	         *
+	         * @returns string nonce
+	         */
 	        value: function generateNonce() {
 	            return (0, _base64url2.default)(_tweetnacl2.default.sign.keyPair().publicKey);
 	        }
+
+	        /**
+	         * Count the number of decimal points in a number
+	         *
+	         * @param value: number
+	         * @returns {number} number of decimals
+	         */
+
 	    }, {
 	        key: "countDecimals",
 	        value: function countDecimals(value) {
@@ -5877,14 +6863,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            return value.toString().split(".")[1].length || 0;
 	        }
+
+	        /**
+	         * Helper method to handle promise exceptions. The function will be executed, and if
+	         * anything fails, a rejected promise is returned, with the method name that failed,
+	         * included in the rejection.
+	         *
+	         * @param method: outside method that is being executed
+	         * @param fn: function to try to execute
+	         * @returns successful or rejected promise
+	         */
+
 	    }, {
-	        key: "reject",
-	        value: function reject(method, err) {
-	            return Promise.reject({
-	                type: method.name,
-	                error: err,
-	                reason: err.response !== undefined && err.response.data !== undefined ? err.response.data : "UNKNOWN"
-	            });
+	        key: "tryToDo",
+	        value: function tryToDo(method, fn) {
+	            return regeneratorRuntime.async(function tryToDo$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            _context.prev = 0;
+	                            _context.next = 3;
+	                            return regeneratorRuntime.awrap(fn());
+
+	                        case 3:
+	                            return _context.abrupt("return", _context.sent);
+
+	                        case 6:
+	                            _context.prev = 6;
+	                            _context.t0 = _context["catch"](0);
+	                            return _context.abrupt("return", Promise.reject({
+	                                type: method.name,
+	                                error: _context.t0,
+	                                reason: _context.t0.response !== undefined && _context.t0.response.data !== undefined ? _context.t0.response.data : "UNKNOWN"
+	                            }));
+
+	                        case 9:
+	                        case "end":
+	                            return _context.stop();
+	                    }
+	                }
+	            }, null, this, [[0, 6]]);
 	        }
 	    }]);
 
@@ -5894,7 +6912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Util;
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5905,59 +6923,59 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(4);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _LocalStorage = __webpack_require__(18);
+	var _LocalStorage = __webpack_require__(21);
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _Account = __webpack_require__(19);
+	var _Account = __webpack_require__(22);
 
 	var _Account2 = _interopRequireDefault(_Account);
 
-	var _Subscriber = __webpack_require__(22);
+	var _Subscriber = __webpack_require__(25);
 
 	var _Subscriber2 = _interopRequireDefault(_Subscriber);
 
-	var _Address = __webpack_require__(23);
+	var _Address = __webpack_require__(26);
 
 	var _Address2 = _interopRequireDefault(_Address);
 
-	var _KeyLevel = __webpack_require__(24);
+	var _KeyLevel = __webpack_require__(27);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _AuthHttpClient = __webpack_require__(25);
+	var _AuthHttpClient = __webpack_require__(28);
 
 	var _AuthHttpClient2 = _interopRequireDefault(_AuthHttpClient);
 
-	var _PagedResult = __webpack_require__(20);
+	var _PagedResult = __webpack_require__(23);
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _TokenOperationResult = __webpack_require__(52);
+	var _TokenOperationResult = __webpack_require__(54);
 
 	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
 
-	var _TransferToken = __webpack_require__(53);
+	var _TransferToken = __webpack_require__(55);
 
 	var _TransferToken2 = _interopRequireDefault(_TransferToken);
 
-	var _AccessToken = __webpack_require__(54);
+	var _AccessToken = __webpack_require__(56);
 
 	var _AccessToken2 = _interopRequireDefault(_AccessToken);
 
-	var _Transfer = __webpack_require__(55);
+	var _Transfer = __webpack_require__(57);
 
 	var _Transfer2 = _interopRequireDefault(_Transfer);
 
-	var _Util = __webpack_require__(16);
+	var _Util = __webpack_require__(19);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6026,7 +7044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Approves a new key for this member
 	         * @param {Buffer} publicKey - key to add
 	         * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
-	         * @return {Promise} empty empty promise
+	         * @return {Promise} empty - empty promise
 	         */
 
 	    }, {
@@ -6036,12 +7054,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var keyLevel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _KeyLevel2.default.PRIVILEGED;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this._client.addKey(prevHash, _Crypto2.default.bufferKey(publicKey), keyLevel).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this.approveKey, err);
+	            return _Util2.default.tryToDo(this.approveKey, function _callee() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                _context.next = 2;
+	                                return regeneratorRuntime.awrap(_this._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context.sent;
+	                                _context.next = 5;
+	                                return regeneratorRuntime.awrap(_this._client.addKey(prevHash, _Crypto2.default.bufferKey(publicKey), keyLevel));
+
+	                            case 5:
+	                                return _context.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, null, _this);
 	            });
 	        }
 
@@ -6056,12 +7091,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function removeKey(keyId) {
 	            var _this2 = this;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this2._client.removeKey(prevHash, keyId).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this2.removeKey, err);
+	            return _Util2.default.tryToDo(this.removeKey, function _callee2() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee2$(_context2) {
+	                    while (1) {
+	                        switch (_context2.prev = _context2.next) {
+	                            case 0:
+	                                _context2.next = 2;
+	                                return regeneratorRuntime.awrap(_this2._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context2.sent;
+	                                _context2.next = 5;
+	                                return regeneratorRuntime.awrap(_this2._client.removeKey(prevHash, keyId));
+
+	                            case 5:
+	                                return _context2.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context2.stop();
+	                        }
+	                    }
+	                }, null, _this2);
 	            });
 	        }
 
@@ -6076,12 +7128,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function addUsername(username) {
 	            var _this3 = this;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this3._client.addUsername(prevHash, username).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this3.addUsername, err);
+	            return _Util2.default.tryToDo(this.addUsername, function _callee3() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee3$(_context3) {
+	                    while (1) {
+	                        switch (_context3.prev = _context3.next) {
+	                            case 0:
+	                                _context3.next = 2;
+	                                return regeneratorRuntime.awrap(_this3._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context3.sent;
+	                                _context3.next = 5;
+	                                return regeneratorRuntime.awrap(_this3._client.addUsername(prevHash, username));
+
+	                            case 5:
+	                                return _context3.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context3.stop();
+	                        }
+	                    }
+	                }, null, _this3);
 	            });
 	        }
 
@@ -6096,12 +7165,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function removeUsername(username) {
 	            var _this4 = this;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this4._client.removeUsername(prevHash, username).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this4.removeUsername, err);
+	            return _Util2.default.tryToDo(this.removeUsername, function _callee4() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee4$(_context4) {
+	                    while (1) {
+	                        switch (_context4.prev = _context4.next) {
+	                            case 0:
+	                                _context4.next = 2;
+	                                return regeneratorRuntime.awrap(_this4._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context4.sent;
+	                                _context4.next = 5;
+	                                return regeneratorRuntime.awrap(_this4._client.removeUsername(prevHash, username));
+
+	                            case 5:
+	                                return _context4.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context4.stop();
+	                        }
+	                    }
+	                }, null, _this4);
 	            });
 	        }
 
@@ -6117,12 +7203,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function linkAccounts(bankId, accountLinkPayloads) {
 	            var _this5 = this;
 
-	            return this._client.linkAccounts(bankId, accountLinkPayloads).then(function (res) {
-	                return res.data.accounts.map(function (acc) {
-	                    return new _Account2.default(_this5, acc);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this5.linkAccounts, err);
+	            return _Util2.default.tryToDo(this.linkAccounts, function _callee5() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee5$(_context5) {
+	                    while (1) {
+	                        switch (_context5.prev = _context5.next) {
+	                            case 0:
+	                                _context5.next = 2;
+	                                return regeneratorRuntime.awrap(_this5._client.linkAccounts(bankId, accountLinkPayloads));
+
+	                            case 2:
+	                                res = _context5.sent;
+	                                return _context5.abrupt("return", res.data.accounts.map(function (acc) {
+	                                    return new _Account2.default(_this5, acc);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context5.stop();
+	                        }
+	                    }
+	                }, null, _this5);
 	            });
 	        }
 
@@ -6136,12 +7237,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAccounts() {
 	            var _this6 = this;
 
-	            return this._client.getAccounts().then(function (res) {
-	                return res.data.accounts.map(function (acc) {
-	                    return new _Account2.default(_this6, acc);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this6.getAccounts, err);
+	            return _Util2.default.tryToDo(this.getAccounts, function _callee6() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee6$(_context6) {
+	                    while (1) {
+	                        switch (_context6.prev = _context6.next) {
+	                            case 0:
+	                                _context6.next = 2;
+	                                return regeneratorRuntime.awrap(_this6._client.getAccounts());
+
+	                            case 2:
+	                                res = _context6.sent;
+	                                return _context6.abrupt("return", res.data.accounts.map(function (acc) {
+	                                    return new _Account2.default(_this6, acc);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context6.stop();
+	                        }
+	                    }
+	                }, null, _this6);
 	            });
 	        }
 
@@ -6160,10 +7276,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var platform = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "IOS";
 
-	            return this._client.subscribeToNotifications(target, platform).then(function (res) {
-	                return new _Subscriber2.default(res.data.subscriber);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this7.subscribeToNotifications, err);
+	            return _Util2.default.tryToDo(this.subscribeToNotifications, function _callee7() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee7$(_context7) {
+	                    while (1) {
+	                        switch (_context7.prev = _context7.next) {
+	                            case 0:
+	                                _context7.next = 2;
+	                                return regeneratorRuntime.awrap(_this7._client.subscribeToNotifications(target, platform));
+
+	                            case 2:
+	                                res = _context7.sent;
+	                                return _context7.abrupt("return", new _Subscriber2.default(res.data.subscriber));
+
+	                            case 4:
+	                            case "end":
+	                                return _context7.stop();
+	                        }
+	                    }
+	                }, null, _this7);
 	            });
 	        }
 
@@ -6178,12 +7309,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getSubscribers() {
 	            var _this8 = this;
 
-	            return this._client.getSubscribers().then(function (res) {
-	                return res.data.subscribers.map(function (s) {
-	                    return new _Subscriber2.default(s);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this8.getSubscribers, err);
+	            return _Util2.default.tryToDo(this.getSubscribers, function _callee8() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee8$(_context8) {
+	                    while (1) {
+	                        switch (_context8.prev = _context8.next) {
+	                            case 0:
+	                                _context8.next = 2;
+	                                return regeneratorRuntime.awrap(_this8._client.getSubscribers());
+
+	                            case 2:
+	                                res = _context8.sent;
+	                                return _context8.abrupt("return", res.data.subscribers.map(function (s) {
+	                                    return new _Subscriber2.default(s);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context8.stop();
+	                        }
+	                    }
+	                }, null, _this8);
 	            });
 	        }
 
@@ -6199,10 +7345,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getSubscriber(subscriberId) {
 	            var _this9 = this;
 
-	            return this._client.getSubscriber(subscriberId).then(function (res) {
-	                return new _Subscriber2.default(res.data.subscriber);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this9.getSubscriber, err);
+	            return _Util2.default.tryToDo(this.getSubscriber, function _callee9() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee9$(_context9) {
+	                    while (1) {
+	                        switch (_context9.prev = _context9.next) {
+	                            case 0:
+	                                _context9.next = 2;
+	                                return regeneratorRuntime.awrap(_this9._client.getSubscriber(subscriberId));
+
+	                            case 2:
+	                                res = _context9.sent;
+	                                return _context9.abrupt("return", new _Subscriber2.default(res.data.subscriber));
+
+	                            case 4:
+	                            case "end":
+	                                return _context9.stop();
+	                        }
+	                    }
+	                }, null, _this9);
 	            });
 	        }
 
@@ -6217,8 +7378,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function unsubscribeFromNotifications(subscriberId) {
 	            var _this10 = this;
 
-	            return this._client.unsubscribeFromNotifications(subscriberId).catch(function (err) {
-	                return _Util2.default.reject(_this10.unsubscribeFromNotifications, err);
+	            return _Util2.default.tryToDo(this.unsubscribeFromNotifications, function _callee10() {
+	                return regeneratorRuntime.async(function _callee10$(_context10) {
+	                    while (1) {
+	                        switch (_context10.prev = _context10.next) {
+	                            case 0:
+	                                _context10.next = 2;
+	                                return regeneratorRuntime.awrap(_this10._client.unsubscribeFromNotifications(subscriberId));
+
+	                            case 2:
+	                                return _context10.abrupt("return");
+
+	                            case 3:
+	                            case "end":
+	                                return _context10.stop();
+	                        }
+	                    }
+	                }, null, _this10);
 	            });
 	        }
 
@@ -6234,10 +7410,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function addAddress(name, address) {
 	            var _this11 = this;
 
-	            return this._client.addAddress(name, address).then(function (res) {
-	                return new _Address2.default(res.data.address);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this11.addAddress, err);
+	            return _Util2.default.tryToDo(this.addAddress, function _callee11() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee11$(_context11) {
+	                    while (1) {
+	                        switch (_context11.prev = _context11.next) {
+	                            case 0:
+	                                _context11.next = 2;
+	                                return regeneratorRuntime.awrap(_this11._client.addAddress(name, address));
+
+	                            case 2:
+	                                res = _context11.sent;
+	                                return _context11.abrupt("return", new _Address2.default(res.data.address));
+
+	                            case 4:
+	                            case "end":
+	                                return _context11.stop();
+	                        }
+	                    }
+	                }, null, _this11);
 	            });
 	        }
 
@@ -6253,10 +7444,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAddress(addressId) {
 	            var _this12 = this;
 
-	            return this._client.getAddress(addressId).then(function (res) {
-	                return new _Address2.default(res.data.address);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this12.getAddress, err);
+	            return _Util2.default.tryToDo(this.getAddress, function _callee12() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee12$(_context12) {
+	                    while (1) {
+	                        switch (_context12.prev = _context12.next) {
+	                            case 0:
+	                                _context12.next = 2;
+	                                return regeneratorRuntime.awrap(_this12._client.getAddress(addressId));
+
+	                            case 2:
+	                                res = _context12.sent;
+	                                return _context12.abrupt("return", new _Address2.default(res.data.address));
+
+	                            case 4:
+	                            case "end":
+	                                return _context12.stop();
+	                        }
+	                    }
+	                }, null, _this12);
 	            });
 	        }
 
@@ -6270,12 +7476,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAddresses() {
 	            var _this13 = this;
 
-	            return this._client.getAddresses().then(function (res) {
-	                return res.data.addresses.map(function (address) {
-	                    return new _Address2.default(address);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this13.getAddresses, err);
+	            return _Util2.default.tryToDo(this.getAddresses, function _callee13() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee13$(_context13) {
+	                    while (1) {
+	                        switch (_context13.prev = _context13.next) {
+	                            case 0:
+	                                _context13.next = 2;
+	                                return regeneratorRuntime.awrap(_this13._client.getAddresses());
+
+	                            case 2:
+	                                res = _context13.sent;
+	                                return _context13.abrupt("return", res.data.addresses.map(function (address) {
+	                                    return new _Address2.default(address);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context13.stop();
+	                        }
+	                    }
+	                }, null, _this13);
 	            });
 	        }
 
@@ -6289,10 +7510,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAllUsernames() {
 	            var _this14 = this;
 
-	            return this._getMember().then(function (member) {
-	                return member.usernames;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this14.getAllUsernames, err);
+	            return _Util2.default.tryToDo(this.getAllUsernames, function _callee14() {
+	                var member;
+	                return regeneratorRuntime.async(function _callee14$(_context14) {
+	                    while (1) {
+	                        switch (_context14.prev = _context14.next) {
+	                            case 0:
+	                                _context14.next = 2;
+	                                return regeneratorRuntime.awrap(_this14._getMember());
+
+	                            case 2:
+	                                member = _context14.sent;
+	                                return _context14.abrupt("return", member.usernames);
+
+	                            case 4:
+	                            case "end":
+	                                return _context14.stop();
+	                        }
+	                    }
+	                }, null, _this14);
 	            });
 	        }
 
@@ -6308,10 +7544,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function createAccessToken(accessToken) {
 	            var _this15 = this;
 
-	            return this._client.createToken(accessToken.from(this).json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this15.createAccessToken, err);
+	            return _Util2.default.tryToDo(this.createAccessToken, function _callee15() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee15$(_context15) {
+	                    while (1) {
+	                        switch (_context15.prev = _context15.next) {
+	                            case 0:
+	                                _context15.next = 2;
+	                                return regeneratorRuntime.awrap(_this15._client.createToken(accessToken.from(_this15).json));
+
+	                            case 2:
+	                                res = _context15.sent;
+	                                return _context15.abrupt("return", _AccessToken2.default.createFromToken(res.data.token));
+
+	                            case 4:
+	                            case "end":
+	                                return _context15.stop();
+	                        }
+	                    }
+	                }, null, _this15);
 	            });
 	        }
 
@@ -6328,10 +7579,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function replaceAccessToken(tokenToCancel, tokenToCreate) {
 	            var _this16 = this;
 
-	            return this._client.replaceToken(tokenToCancel, tokenToCreate).then(function (res) {
-	                return new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token));
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this16.replaceAccessToken, err);
+	            return _Util2.default.tryToDo(this.replaceAccessToken, function _callee16() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee16$(_context16) {
+	                    while (1) {
+	                        switch (_context16.prev = _context16.next) {
+	                            case 0:
+	                                _context16.next = 2;
+	                                return regeneratorRuntime.awrap(_this16._client.replaceToken(tokenToCancel, tokenToCreate));
+
+	                            case 2:
+	                                res = _context16.sent;
+	                                return _context16.abrupt("return", new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token)));
+
+	                            case 4:
+	                            case "end":
+	                                return _context16.stop();
+	                        }
+	                    }
+	                }, null, _this16);
 	            });
 	        }
 
@@ -6348,10 +7614,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
 	            var _this17 = this;
 
-	            return this._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate).then(function (res) {
-	                return new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token));
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this17.replaceAndEndorseAccessToken, err);
+	            return _Util2.default.tryToDo(this.replaceAndEndorseAccessToken, function _callee17() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee17$(_context17) {
+	                    while (1) {
+	                        switch (_context17.prev = _context17.next) {
+	                            case 0:
+	                                _context17.next = 2;
+	                                return regeneratorRuntime.awrap(_this17._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate));
+
+	                            case 2:
+	                                res = _context17.sent;
+	                                return _context17.abrupt("return", new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token)));
+
+	                            case 4:
+	                            case "end":
+	                                return _context17.stop();
+	                        }
+	                    }
+	                }, null, _this17);
 	            });
 	        }
 
@@ -6374,10 +7655,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var description = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : undefined;
 
 	            var token = _TransferToken2.default.create(this, accountId, amount, currency, username, description);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _TransferToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this18.createToken, err);
+	            return _Util2.default.tryToDo(this.createToken, function _callee18() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee18$(_context18) {
+	                    while (1) {
+	                        switch (_context18.prev = _context18.next) {
+	                            case 0:
+	                                _context18.next = 2;
+	                                return regeneratorRuntime.awrap(_this18._client.createToken(token.json));
+
+	                            case 2:
+	                                res = _context18.sent;
+	                                return _context18.abrupt("return", _TransferToken2.default.createFromToken(res.data.token));
+
+	                            case 4:
+	                            case "end":
+	                                return _context18.stop();
+	                        }
+	                    }
+	                }, null, _this18);
 	            });
 	        }
 
@@ -6392,14 +7688,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getToken(tokenId) {
 	            var _this19 = this;
 
-	            return this._client.getToken(tokenId).then(function (res) {
-	                if (res.data.token.payload.access !== undefined) {
-	                    return _AccessToken2.default.createFromToken(res.data.token);
-	                } else {
-	                    return _TransferToken2.default.createFromToken(res.data.token);
-	                }
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this19.getToken, err);
+	            return _Util2.default.tryToDo(this.getToken, function _callee19() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee19$(_context19) {
+	                    while (1) {
+	                        switch (_context19.prev = _context19.next) {
+	                            case 0:
+	                                _context19.next = 2;
+	                                return regeneratorRuntime.awrap(_this19._client.getToken(tokenId));
+
+	                            case 2:
+	                                res = _context19.sent;
+
+	                                if (!(res.data.token.payload.access !== undefined)) {
+	                                    _context19.next = 7;
+	                                    break;
+	                                }
+
+	                                return _context19.abrupt("return", _AccessToken2.default.createFromToken(res.data.token));
+
+	                            case 7:
+	                                return _context19.abrupt("return", _TransferToken2.default.createFromToken(res.data.token));
+
+	                            case 8:
+	                            case "end":
+	                                return _context19.stop();
+	                        }
+	                    }
+	                }, null, _this19);
 	            });
 	        }
 
@@ -6415,12 +7731,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransferTokens(offset, limit) {
 	            var _this20 = this;
 
-	            return this._client.getTokens('TRANSFER', offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
-	                    return _TransferToken2.default.createFromToken(tk);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this20.getTransferTokens, err);
+	            return _Util2.default.tryToDo(this.getTransferTokens, function _callee20() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee20$(_context20) {
+	                    while (1) {
+	                        switch (_context20.prev = _context20.next) {
+	                            case 0:
+	                                _context20.next = 2;
+	                                return regeneratorRuntime.awrap(_this20._client.getTokens('TRANSFER', offset, limit));
+
+	                            case 2:
+	                                res = _context20.sent;
+	                                return _context20.abrupt("return", new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
+	                                    return _TransferToken2.default.createFromToken(tk);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context20.stop();
+	                        }
+	                    }
+	                }, null, _this20);
 	            });
 	        }
 
@@ -6436,12 +7767,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAccessTokens(offset, limit) {
 	            var _this21 = this;
 
-	            return this._client.getTokens('ACCESS', offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
-	                    return _AccessToken2.default.createFromToken(tk);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this21.getAccessTokens, err);
+	            return _Util2.default.tryToDo(this.getAccessTokens, function _callee21() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee21$(_context21) {
+	                    while (1) {
+	                        switch (_context21.prev = _context21.next) {
+	                            case 0:
+	                                _context21.next = 2;
+	                                return regeneratorRuntime.awrap(_this21._client.getTokens('ACCESS', offset, limit));
+
+	                            case 2:
+	                                res = _context21.sent;
+	                                return _context21.abrupt("return", new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
+	                                    return _AccessToken2.default.createFromToken(tk);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context21.stop();
+	                        }
+	                    }
+	                }, null, _this21);
 	            });
 	        }
 
@@ -6456,15 +7802,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function endorseToken(token) {
 	            var _this22 = this;
 
-	            return this._resolveToken(token).then(function (finalToken) {
-	                return _this22._client.endorseToken(finalToken).then(function (res) {
-	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
+	            return _Util2.default.tryToDo(this.endorseToken, function _callee22() {
+	                var finalToken, endorsed;
+	                return regeneratorRuntime.async(function _callee22$(_context22) {
+	                    while (1) {
+	                        switch (_context22.prev = _context22.next) {
+	                            case 0:
+	                                _context22.next = 2;
+	                                return regeneratorRuntime.awrap(_this22._resolveToken(token));
+
+	                            case 2:
+	                                finalToken = _context22.sent;
+	                                _context22.next = 5;
+	                                return regeneratorRuntime.awrap(_this22._client.endorseToken(finalToken));
+
+	                            case 5:
+	                                endorsed = _context22.sent;
+
+	                                if (typeof token !== 'string' && !(token instanceof String)) {
+	                                    token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
+	                                }
+	                                return _context22.abrupt("return", new _TokenOperationResult2.default(endorsed.data.result, token));
+
+	                            case 8:
+	                            case "end":
+	                                return _context22.stop();
+	                        }
 	                    }
-	                    return new _TokenOperationResult2.default(res.data.result, token);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this22.endorseToken, err);
+	                }, null, _this22);
 	            });
 	        }
 
@@ -6479,15 +7844,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function cancelToken(token) {
 	            var _this23 = this;
 
-	            return this._resolveToken(token).then(function (finalToken) {
-	                return _this23._client.cancelToken(finalToken).then(function (res) {
-	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
+	            return _Util2.default.tryToDo(this.cancelToken, function _callee23() {
+	                var finalToken, cancelled;
+	                return regeneratorRuntime.async(function _callee23$(_context23) {
+	                    while (1) {
+	                        switch (_context23.prev = _context23.next) {
+	                            case 0:
+	                                _context23.next = 2;
+	                                return regeneratorRuntime.awrap(_this23._resolveToken(token));
+
+	                            case 2:
+	                                finalToken = _context23.sent;
+	                                _context23.next = 5;
+	                                return regeneratorRuntime.awrap(_this23._client.cancelToken(finalToken));
+
+	                            case 5:
+	                                cancelled = _context23.sent;
+
+	                                if (typeof token !== 'string' && !(token instanceof String)) {
+	                                    token.payloadSignatures = cancelled.data.result.token.payloadSignatures;
+	                                }
+	                                return _context23.abrupt("return", new _TokenOperationResult2.default(cancelled.data.result, token));
+
+	                            case 8:
+	                            case "end":
+	                                return _context23.stop();
+	                        }
 	                    }
-	                    return new _TokenOperationResult2.default(res.data.result, token);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this23.cancelToken, err);
+	                }, null, _this23);
 	            });
 	        }
 
@@ -6508,21 +7892,46 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var destinations = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : [];
 
-	            return this._resolveToken(token).then(function (finalToken) {
-	                if (amount === undefined) {
-	                    amount = finalToken.payload.transfer.amount;
-	                }
-	                if (currency === undefined) {
-	                    currency = finalToken.payload.transfer.currency;
-	                }
-	                if (_Util2.default.countDecimals(amount) > _constants.maxDecimals) {
-	                    throw new Error("Number of decimals in amount should be at most " + _constants.maxDecimals);
-	                }
-	                return _this24._client.createTransfer(finalToken, amount, currency, description, destinations).then(function (res) {
-	                    return new _Transfer2.default(res.data.transfer);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this24.createTransfer, err);
+	            return _Util2.default.tryToDo(this.createTransfer, function _callee24() {
+	                var finalToken, res;
+	                return regeneratorRuntime.async(function _callee24$(_context24) {
+	                    while (1) {
+	                        switch (_context24.prev = _context24.next) {
+	                            case 0:
+	                                _context24.next = 2;
+	                                return regeneratorRuntime.awrap(_this24._resolveToken(token));
+
+	                            case 2:
+	                                finalToken = _context24.sent;
+
+	                                if (amount === undefined) {
+	                                    amount = finalToken.payload.transfer.amount;
+	                                }
+	                                if (currency === undefined) {
+	                                    currency = finalToken.payload.transfer.currency;
+	                                }
+
+	                                if (!(_Util2.default.countDecimals(amount) > _constants.maxDecimals)) {
+	                                    _context24.next = 7;
+	                                    break;
+	                                }
+
+	                                throw new Error("Number of decimals in amount should be at most " + _constants.maxDecimals);
+
+	                            case 7:
+	                                _context24.next = 9;
+	                                return regeneratorRuntime.awrap(_this24._client.createTransfer(finalToken, amount, currency, description, destinations));
+
+	                            case 9:
+	                                res = _context24.sent;
+	                                return _context24.abrupt("return", new _Transfer2.default(res.data.transfer));
+
+	                            case 11:
+	                            case "end":
+	                                return _context24.stop();
+	                        }
+	                    }
+	                }, null, _this24);
 	            });
 	        }
 
@@ -6537,10 +7946,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransfer(transferId) {
 	            var _this25 = this;
 
-	            return this._client.getTransfer(transferId).then(function (res) {
-	                return new _Transfer2.default(res.data.transfer);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this25.getTransfer, err);
+	            return _Util2.default.tryToDo(this.getTransfer, function _callee25() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee25$(_context25) {
+	                    while (1) {
+	                        switch (_context25.prev = _context25.next) {
+	                            case 0:
+	                                _context25.next = 2;
+	                                return regeneratorRuntime.awrap(_this25._client.getTransfer(transferId));
+
+	                            case 2:
+	                                res = _context25.sent;
+	                                return _context25.abrupt("return", new _Transfer2.default(res.data.transfer));
+
+	                            case 4:
+	                            case "end":
+	                                return _context25.stop();
+	                        }
+	                    }
+	                }, null, _this25);
 	            });
 	        }
 
@@ -6557,12 +7981,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransfers(tokenId, offset, limit) {
 	            var _this26 = this;
 
-	            return this._client.getTransfers(tokenId, offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.transfers.map(function (pt) {
-	                    return new _Transfer2.default(pt);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this26.getTransfers, err);
+	            return _Util2.default.tryToDo(this.getTransfers, function _callee26() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee26$(_context26) {
+	                    while (1) {
+	                        switch (_context26.prev = _context26.next) {
+	                            case 0:
+	                                _context26.next = 2;
+	                                return regeneratorRuntime.awrap(_this26._client.getTransfers(tokenId, offset, limit));
+
+	                            case 2:
+	                                res = _context26.sent;
+	                                return _context26.abrupt("return", new _PagedResult2.default(res.data.transfers.map(function (pt) {
+	                                    return new _Transfer2.default(pt);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context26.stop();
+	                        }
+	                    }
+	                }, null, _this26);
 	            });
 	        }
 
@@ -6576,10 +8015,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getPublicKeys() {
 	            var _this27 = this;
 
-	            return this._getMember().then(function (member) {
-	                return member.keys;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this27.getPublicKeys, err);
+	            return _Util2.default.tryToDo(this.getPublicKeys, function _callee27() {
+	                var member;
+	                return regeneratorRuntime.async(function _callee27$(_context27) {
+	                    while (1) {
+	                        switch (_context27.prev = _context27.next) {
+	                            case 0:
+	                                _context27.next = 2;
+	                                return regeneratorRuntime.awrap(_this27._getMember());
+
+	                            case 2:
+	                                member = _context27.sent;
+	                                return _context27.abrupt("return", member.keys);
+
+	                            case 4:
+	                            case "end":
+	                                return _context27.stop();
+	                        }
+	                    }
+	                }, null, _this27);
 	            });
 	        }
 	    }, {
@@ -6587,10 +8041,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _getPreviousHash() {
 	            var _this28 = this;
 
-	            return this._getMember().then(function (member) {
-	                return member.lastHash;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this28._getPreviousHash, err);
+	            return _Util2.default.tryToDo(this._getPreviousHash, function _callee28() {
+	                var member;
+	                return regeneratorRuntime.async(function _callee28$(_context28) {
+	                    while (1) {
+	                        switch (_context28.prev = _context28.next) {
+	                            case 0:
+	                                _context28.next = 2;
+	                                return regeneratorRuntime.awrap(_this28._getMember());
+
+	                            case 2:
+	                                member = _context28.sent;
+	                                return _context28.abrupt("return", member.lastHash);
+
+	                            case 4:
+	                            case "end":
+	                                return _context28.stop();
+	                        }
+	                    }
+	                }, null, _this28);
 	            });
 	        }
 	    }, {
@@ -6598,10 +8067,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _getMember() {
 	            var _this29 = this;
 
-	            return this._client.getMember().then(function (res) {
-	                return res.data.member;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this29._getMember, err);
+	            return _Util2.default.tryToDo(this._getMember, function _callee29() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee29$(_context29) {
+	                    while (1) {
+	                        switch (_context29.prev = _context29.next) {
+	                            case 0:
+	                                _context29.next = 2;
+	                                return regeneratorRuntime.awrap(_this29._client.getMember());
+
+	                            case 2:
+	                                res = _context29.sent;
+	                                return _context29.abrupt("return", res.data.member);
+
+	                            case 4:
+	                            case "end":
+	                                return _context29.stop();
+	                        }
+	                    }
+	                }, null, _this29);
 	            });
 	        }
 	    }, {
@@ -6643,7 +8127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Member;
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6654,11 +8138,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Member = __webpack_require__(17);
+	var _Member = __webpack_require__(20);
 
 	var _Member2 = _interopRequireDefault(_Member);
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(4);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
@@ -6709,7 +8193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = LocalStorage;
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6720,15 +8204,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _PagedResult = __webpack_require__(20);
+	var _PagedResult = __webpack_require__(23);
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _Transaction = __webpack_require__(21);
+	var _Transaction = __webpack_require__(24);
 
 	var _Transaction2 = _interopRequireDefault(_Transaction);
 
-	var _Util = __webpack_require__(16);
+	var _Util = __webpack_require__(19);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
@@ -6772,10 +8256,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getBalance() {
 	            var _this = this;
 
-	            return this._member._client.getBalance(this._id).then(function (res) {
-	                return res.data;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this.getBalance, err);
+	            return _Util2.default.tryToDo(this.getBalance, function _callee() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                _context.next = 2;
+	                                return regeneratorRuntime.awrap(_this._member._client.getBalance(_this._id));
+
+	                            case 2:
+	                                res = _context.sent;
+	                                return _context.abrupt("return", res.data);
+
+	                            case 4:
+	                            case "end":
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, null, _this);
 	            });
 	        }
 
@@ -6790,10 +8289,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransaction(transactionId) {
 	            var _this2 = this;
 
-	            return this._member._client.getTransaction(this._id, transactionId).then(function (res) {
-	                return new _Transaction2.default(res.data.transaction);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this2.getTransaction, err);
+	            return _Util2.default.tryToDo(this.getTransaction, function _callee2() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee2$(_context2) {
+	                    while (1) {
+	                        switch (_context2.prev = _context2.next) {
+	                            case 0:
+	                                _context2.next = 2;
+	                                return regeneratorRuntime.awrap(_this2._member._client.getTransaction(_this2._id, transactionId));
+
+	                            case 2:
+	                                res = _context2.sent;
+	                                return _context2.abrupt("return", new _Transaction2.default(res.data.transaction));
+
+	                            case 4:
+	                            case "end":
+	                                return _context2.stop();
+	                        }
+	                    }
+	                }, null, _this2);
 	            });
 	        }
 
@@ -6809,12 +8323,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransactions(offset, limit) {
 	            var _this3 = this;
 
-	            return this._member._client.getTransactions(this._id, offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.transactions.map(function (tr) {
-	                    return new _Transaction2.default(tr);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this3.getTransactions, err);
+	            return _Util2.default.tryToDo(this.getTransactions, function _callee3() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee3$(_context3) {
+	                    while (1) {
+	                        switch (_context3.prev = _context3.next) {
+	                            case 0:
+	                                _context3.next = 2;
+	                                return regeneratorRuntime.awrap(_this3._member._client.getTransactions(_this3._id, offset, limit));
+
+	                            case 2:
+	                                res = _context3.sent;
+	                                return _context3.abrupt("return", new _PagedResult2.default(res.data.transactions.map(function (tr) {
+	                                    return new _Transaction2.default(tr);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context3.stop();
+	                        }
+	                    }
+	                }, null, _this3);
 	            });
 	        }
 	    }, {
@@ -6863,7 +8392,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Account;
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6902,7 +8431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PagedResult;
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6971,7 +8500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transaction;
 
 /***/ },
-/* 22 */
+/* 25 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7016,7 +8545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Subscriber;
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7067,7 +8596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Address;
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7082,7 +8611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7093,25 +8622,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(4);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _Util = __webpack_require__(16);
+	var _Util = __webpack_require__(19);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _AuthHeader = __webpack_require__(26);
+	var _AuthHeader = __webpack_require__(29);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _AuthContext = __webpack_require__(28);
+	var _AuthContext = __webpack_require__(31);
 
 	var _AuthContext2 = _interopRequireDefault(_AuthContext);
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
-	var _KeyLevel = __webpack_require__(24);
+	var _KeyLevel = __webpack_require__(27);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
@@ -7119,8 +8648,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var stringify = __webpack_require__(12);
-	var axios = __webpack_require__(29);
+	var stringify = __webpack_require__(15);
+	var axios = __webpack_require__(32);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -7578,7 +9107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClient;
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7589,9 +9118,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(4);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
@@ -7599,7 +9128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var stringify = __webpack_require__(12);
+	var stringify = __webpack_require__(15);
 
 	var AuthHeader = function () {
 	    function AuthHeader(baseUrl, keys) {
@@ -7696,7 +9225,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHeader;
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7735,7 +9264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.maxDecimals = maxDecimals;
 
 /***/ },
-/* 28 */
+/* 31 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7771,20 +9300,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthContext;
 
 /***/ },
-/* 29 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(30);
+	module.exports = __webpack_require__(33);
 
 /***/ },
-/* 30 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
-	var bind = __webpack_require__(32);
-	var Axios = __webpack_require__(33);
+	var utils = __webpack_require__(34);
+	var bind = __webpack_require__(35);
+	var Axios = __webpack_require__(36);
 
 	/**
 	 * Create an instance of Axios
@@ -7820,7 +9349,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(51);
+	axios.spread = __webpack_require__(53);
 
 	module.exports = axios;
 
@@ -7829,12 +9358,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 31 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var bind = __webpack_require__(32);
+	var bind = __webpack_require__(35);
 
 	/*global toString:true*/
 
@@ -8134,7 +9663,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8151,17 +9680,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var defaults = __webpack_require__(34);
-	var utils = __webpack_require__(31);
-	var InterceptorManager = __webpack_require__(36);
-	var dispatchRequest = __webpack_require__(37);
-	var isAbsoluteURL = __webpack_require__(49);
-	var combineURLs = __webpack_require__(50);
+	var defaults = __webpack_require__(37);
+	var utils = __webpack_require__(34);
+	var InterceptorManager = __webpack_require__(39);
+	var dispatchRequest = __webpack_require__(40);
+	var isAbsoluteURL = __webpack_require__(51);
+	var combineURLs = __webpack_require__(52);
 
 	/**
 	 * Create a new instance of Axios
@@ -8242,13 +9771,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
-	var normalizeHeaderName = __webpack_require__(35);
+	var utils = __webpack_require__(34);
+	var normalizeHeaderName = __webpack_require__(38);
 
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 	var DEFAULT_CONTENT_TYPE = {
@@ -8320,12 +9849,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 35 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -8338,12 +9867,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -8396,13 +9925,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(31);
-	var transformData = __webpack_require__(39);
+	var utils = __webpack_require__(34);
+	var transformData = __webpack_require__(41);
 
 	/**
 	 * Dispatch a request to the server using whichever adapter
@@ -8443,10 +9972,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    adapter = config.adapter;
 	  } else if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(40);
+	    adapter = __webpack_require__(42);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(40);
+	    adapter = __webpack_require__(42);
 	  }
 
 	  return Promise.resolve(config)
@@ -8475,201 +10004,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 38 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
-	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
-	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-
-
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-
-
-
-	}
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = runTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    runClearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	/**
 	 * Transform the data for a request or a response
@@ -8690,18 +10033,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(31);
-	var settle = __webpack_require__(41);
-	var buildURL = __webpack_require__(44);
-	var parseHeaders = __webpack_require__(45);
-	var isURLSameOrigin = __webpack_require__(46);
-	var createError = __webpack_require__(42);
-	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(47);
+	var utils = __webpack_require__(34);
+	var settle = __webpack_require__(43);
+	var buildURL = __webpack_require__(46);
+	var parseHeaders = __webpack_require__(47);
+	var isURLSameOrigin = __webpack_require__(48);
+	var createError = __webpack_require__(44);
+	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(49);
 
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -8795,7 +10138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(48);
+	      var cookies = __webpack_require__(50);
 
 	      // Add xsrf header
 	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -8856,15 +10199,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 41 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createError = __webpack_require__(42);
+	var createError = __webpack_require__(44);
 
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -8890,12 +10233,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var enhanceError = __webpack_require__(43);
+	var enhanceError = __webpack_require__(45);
 
 	/**
 	 * Create an Error with the specified message, config, error code, and response.
@@ -8913,7 +10256,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 45 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8938,12 +10281,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -9012,12 +10355,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	/**
 	 * Parse headers into an object
@@ -9055,12 +10398,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 46 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -9129,7 +10472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 47 */
+/* 49 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9171,12 +10514,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 48 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(31);
+	var utils = __webpack_require__(34);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -9230,7 +10573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 49 */
+/* 51 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9250,7 +10593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 50 */
+/* 52 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9268,7 +10611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 51 */
+/* 53 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9301,7 +10644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 52 */
+/* 54 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9349,7 +10692,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = TokenOperationResult;
 
 /***/ },
-/* 53 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9360,11 +10703,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Util = __webpack_require__(16);
+	var _Util = __webpack_require__(19);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9544,7 +10887,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = BankTransferToken;
 
 /***/ },
-/* 54 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9555,11 +10898,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Util = __webpack_require__(16);
+	var _Util = __webpack_require__(19);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9902,7 +11245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AccessToken;
 
 /***/ },
-/* 55 */
+/* 57 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9974,7 +11317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transfer;
 
 /***/ },
-/* 56 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -9985,21 +11328,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(4);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _KeyLevel = __webpack_require__(24);
+	var _KeyLevel = __webpack_require__(27);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var axios = __webpack_require__(29);
+	var axios = __webpack_require__(32);
 
 	var HttpClient = function () {
 	    function HttpClient(env) {
@@ -10081,7 +11424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = HttpClient;
 
 /***/ },
-/* 57 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10092,18 +11435,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _AuthHeader = __webpack_require__(26);
+	var _AuthHeader = __webpack_require__(29);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _constants = __webpack_require__(27);
+	var _constants = __webpack_require__(30);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var stringify = __webpack_require__(12);
-	var axios = __webpack_require__(29);
+	var stringify = __webpack_require__(15);
+	var axios = __webpack_require__(32);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -10142,7 +11485,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClientUsername;
 
 /***/ },
-/* 58 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, global) {/*!
@@ -10277,7 +11620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function attemptVertx() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(59);
+	    var vertx = __webpack_require__(61);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -11299,10 +12642,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	})));
 	//# sourceMappingURL=es6-promise.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(38), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), (function() { return this; }())))
 
 /***/ },
-/* 59 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/* (ignored) */

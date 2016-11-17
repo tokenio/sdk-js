@@ -56,11 +56,10 @@ export default class Account {
      * @return {Promise} balance - Promise of balance object
      */
     getBalance() {
-        return this._member._client.getBalance(this._id)
-            .then(res => {
-                return res.data;
-            })
-            .catch(err => Util.reject(this.getBalance, err));
+        return Util.tryToDo(this.getBalance, async () => {
+            const res = await this._member._client.getBalance(this._id);
+            return res.data;
+        });
     }
 
     /**
@@ -69,11 +68,10 @@ export default class Account {
      * @return {Promise} transaction - the Transaction
      */
     getTransaction(transactionId) {
-      return this._member._client.getTransaction(this._id, transactionId)
-          .then(res => {
-              return new Transaction(res.data.transaction);
-          })
-          .catch(err => Util.reject(this.getTransaction, err));
+        return Util.tryToDo(this.getTransaction, async () => {
+            const res = await this._member._client.getTransaction(this._id, transactionId);
+            return new Transaction(res.data.transaction);
+        });
     }
 
     /**
@@ -83,12 +81,11 @@ export default class Account {
      * @return {Promise} transactions - Transactions
      */
     getTransactions(offset, limit) {
-        return this._member._client.getTransactions(this._id, offset, limit)
-            .then(res => {
-                return new PagedResult(
-                    res.data.transactions.map(tr => new Transaction(tr)),
-                    res.data.offset);
-            })
-            .catch(err => Util.reject(this.getTransactions, err));
+        return Util.tryToDo(this.getTransactions, async () => {
+            const res = await this._member._client.getTransactions(this._id, offset, limit);
+            return new PagedResult(
+                res.data.transactions.map(tr => new Transaction(tr)),
+                res.data.offset);
+        });
     }
 }

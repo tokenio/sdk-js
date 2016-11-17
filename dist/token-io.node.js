@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("tweetnacl"), require("fast-sha256"), require("base64url"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
+		module.exports = factory(require("babel-regenerator-runtime"), require("tweetnacl"), require("fast-sha256"), require("base64url"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
 	else if(typeof define === 'function' && define.amd)
-		define("token-io.node", ["tweetnacl", "fast-sha256", "base64url", "json-stable-stringify", "axios", "es6-promise"], factory);
+		define("token-io.node", ["babel-regenerator-runtime", "tweetnacl", "fast-sha256", "base64url", "json-stable-stringify", "axios", "es6-promise"], factory);
 	else if(typeof exports === 'object')
-		exports["token-io.node"] = factory(require("tweetnacl"), require("fast-sha256"), require("base64url"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
+		exports["token-io.node"] = factory(require("babel-regenerator-runtime"), require("tweetnacl"), require("fast-sha256"), require("base64url"), require("json-stable-stringify"), require("axios"), require("es6-promise"));
 	else
-		root["token-io.node"] = factory(root["tweetnacl"], root["fast-sha256"], root["base64url"], root["json-stable-stringify"], root["axios"], root["es6-promise"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_19__, __WEBPACK_EXTERNAL_MODULE_26__) {
+		root["token-io.node"] = factory(root["babel-regenerator-runtime"], root["tweetnacl"], root["fast-sha256"], root["base64url"], root["json-stable-stringify"], root["axios"], root["es6-promise"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_6__, __WEBPACK_EXTERNAL_MODULE_7__, __WEBPACK_EXTERNAL_MODULE_21__, __WEBPACK_EXTERNAL_MODULE_28__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -54,51 +54,66 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(1);
+	module.exports = __webpack_require__(2);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	module.exports = require("babel-regenerator-runtime");
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(3);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _Util = __webpack_require__(6);
+	var _Util = __webpack_require__(8);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _Member = __webpack_require__(7);
+	var _Member = __webpack_require__(9);
 
 	var _Member2 = _interopRequireDefault(_Member);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(16);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _LocalStorage = __webpack_require__(8);
+	var _LocalStorage = __webpack_require__(10);
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _HttpClient = __webpack_require__(24);
+	var _HttpClient = __webpack_require__(26);
 
 	var _HttpClient2 = _interopRequireDefault(_HttpClient);
 
-	var _TokenOperationResult = __webpack_require__(20);
+	var _TokenOperationResult = __webpack_require__(22);
 
 	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
 
-	var _AuthHttpClientUsername = __webpack_require__(25);
+	var _AuthHttpClientUsername = __webpack_require__(27);
 
 	var _AuthHttpClientUsername2 = _interopRequireDefault(_AuthHttpClientUsername);
+
+	__webpack_require__(1);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	// Promise polyfill for IE and older browsers
-	__webpack_require__(26).polyfill();
+	__webpack_require__(28).polyfill();
 
 	// Main entry object
-
 	var Token = function () {
 	    function Token() {
 	        var env = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'prd';
@@ -125,12 +140,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function usernameExists(username) {
 	            var _this = this;
 
-	            return this._unauthenticatedClient.usernameExists(username)
-	            // Workaround for a default value case when protobuf does not serialize it.
-	            .then(function (res) {
-	                return res.data.exists ? res.data.exists : false;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this.usernameExists, err);
+	            return _Util2.default.tryToDo(this.usernameExists, function _callee() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                _context.next = 2;
+	                                return regeneratorRuntime.awrap(_this._unauthenticatedClient.usernameExists(username));
+
+	                            case 2:
+	                                res = _context.sent;
+	                                return _context.abrupt("return", res.data.exists ? res.data.exists : false);
+
+	                            case 4:
+	                            case "end":
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, null, _this);
 	            });
 	        }
 
@@ -145,16 +173,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function createMember(username) {
 	            var _this2 = this;
 
-	            var keys = _Crypto2.default.generateKeys();
-	            return this._unauthenticatedClient.createMemberId().then(function (response) {
-	                return _this2._unauthenticatedClient.addFirstKey(keys, response.data.memberId).then(function () {
-	                    var member = new _Member2.default(_this2._env, response.data.memberId, keys);
-	                    return member.addUsername(username).then(function () {
-	                        return member;
-	                    });
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this2.createMember, err);
+	            return _Util2.default.tryToDo(this.createMember, function _callee2() {
+	                var keys, response, member;
+	                return regeneratorRuntime.async(function _callee2$(_context2) {
+	                    while (1) {
+	                        switch (_context2.prev = _context2.next) {
+	                            case 0:
+	                                keys = _Crypto2.default.generateKeys();
+	                                _context2.next = 3;
+	                                return regeneratorRuntime.awrap(_this2._unauthenticatedClient.createMemberId());
+
+	                            case 3:
+	                                response = _context2.sent;
+	                                _context2.next = 6;
+	                                return regeneratorRuntime.awrap(_this2._unauthenticatedClient.addFirstKey(keys, response.data.memberId));
+
+	                            case 6:
+	                                member = new _Member2.default(_this2._env, response.data.memberId, keys);
+	                                _context2.next = 9;
+	                                return regeneratorRuntime.awrap(member.addUsername(username));
+
+	                            case 9:
+	                                return _context2.abrupt("return", member);
+
+	                            case 10:
+	                            case "end":
+	                                return _context2.stop();
+	                        }
+	                    }
+	                }, null, _this2);
 	            });
 	        }
 
@@ -170,8 +217,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function login(memberId, keys) {
 	            var _this3 = this;
 
-	            return Promise.resolve(new _Member2.default(this._env, memberId, keys)).catch(function (err) {
-	                return _Util2.default.reject(_this3.login, err);
+	            return _Util2.default.tryToDo(this.login, function _callee3() {
+	                return regeneratorRuntime.async(function _callee3$(_context3) {
+	                    while (1) {
+	                        switch (_context3.prev = _context3.next) {
+	                            case 0:
+	                                return _context3.abrupt("return", new _Member2.default(_this3._env, memberId, keys));
+
+	                            case 1:
+	                            case "end":
+	                                return _context3.stop();
+	                        }
+	                    }
+	                }, null, _this3);
 	            });
 	        }
 
@@ -189,10 +247,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function loginWithUsername(keys, username) {
 	            var _this4 = this;
 
-	            return new _AuthHttpClientUsername2.default(this._env, username, keys).getMemberByUsername().then(function (res) {
-	                return new _Member2.default(_this4._env, res.data.member.id, keys);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this4.loginWithUsername, err);
+	            return _Util2.default.tryToDo(this.loginWithUsername, function _callee4() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee4$(_context4) {
+	                    while (1) {
+	                        switch (_context4.prev = _context4.next) {
+	                            case 0:
+	                                _context4.next = 2;
+	                                return regeneratorRuntime.awrap(new _AuthHttpClientUsername2.default(_this4._env, username, keys).getMemberByUsername());
+
+	                            case 2:
+	                                res = _context4.sent;
+	                                return _context4.abrupt("return", new _Member2.default(_this4._env, res.data.member.id, keys));
+
+	                            case 4:
+	                            case "end":
+	                                return _context4.stop();
+	                        }
+	                    }
+	                }, null, _this4);
 	            });
 	        }
 
@@ -204,12 +277,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "loginFromLocalStorage",
 	        value: function loginFromLocalStorage() {
-	            try {
-	                var member = _LocalStorage2.default.loadMember(this._env);
-	                return Promise.resolve(member);
-	            } catch (err) {
-	                return _Util2.default.reject(this.loginFromLocalStorage, err);
-	            }
+	            var _this5 = this;
+
+	            return _Util2.default.tryToDo(this.loginFromLocalStorage, function _callee5() {
+	                return regeneratorRuntime.async(function _callee5$(_context5) {
+	                    while (1) {
+	                        switch (_context5.prev = _context5.next) {
+	                            case 0:
+	                                return _context5.abrupt("return", _LocalStorage2.default.loadMember(_this5._env));
+
+	                            case 1:
+	                            case "end":
+	                                return _context5.stop();
+	                        }
+	                    }
+	                }, null, _this5);
+	            });
 	        }
 
 	        /**
@@ -225,7 +308,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "notifyLinkAccounts",
 	        value: function notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
-	            var _this5 = this;
+	            var _this6 = this;
 
 	            var notification = {
 	                linkAccounts: {
@@ -234,10 +317,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    accountLinkPayloads: accountLinkPayloads
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(username, notification).then(function (res) {
-	                return res.data.status;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this5.notifyLinkAccounts, err);
+	            return _Util2.default.tryToDo(this.notifyLinkAccounts, function _callee6() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee6$(_context6) {
+	                    while (1) {
+	                        switch (_context6.prev = _context6.next) {
+	                            case 0:
+	                                _context6.next = 2;
+	                                return regeneratorRuntime.awrap(_this6._unauthenticatedClient.notify(username, notification));
+
+	                            case 2:
+	                                res = _context6.sent;
+	                                return _context6.abrupt("return", res.data.status);
+
+	                            case 4:
+	                            case "end":
+	                                return _context6.stop();
+	                        }
+	                    }
+	                }, null, _this6);
 	            });
 	        }
 
@@ -253,7 +351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "notifyAddKey",
 	        value: function notifyAddKey(username, publicKey) {
-	            var _this6 = this;
+	            var _this7 = this;
 
 	            var name = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
@@ -263,10 +361,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    name: name
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(username, notification).then(function (res) {
-	                return res.data.status;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this6.notifyAddKey, err);
+	            return _Util2.default.tryToDo(this.notifyAddKey, function _callee7() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee7$(_context7) {
+	                    while (1) {
+	                        switch (_context7.prev = _context7.next) {
+	                            case 0:
+	                                _context7.next = 2;
+	                                return regeneratorRuntime.awrap(_this7._unauthenticatedClient.notify(username, notification));
+
+	                            case 2:
+	                                res = _context7.sent;
+	                                return _context7.abrupt("return", res.data.status);
+
+	                            case 4:
+	                            case "end":
+	                                return _context7.stop();
+	                        }
+	                    }
+	                }, null, _this7);
 	            });
 	        }
 
@@ -285,7 +398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "notifyLinkAccountsAndAddKey",
 	        value: function notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey) {
-	            var _this7 = this;
+	            var _this8 = this;
 
 	            var name = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : "";
 
@@ -302,10 +415,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 	            };
-	            return this._unauthenticatedClient.notify(username, notification).then(function (res) {
-	                return res.data.status;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this7.notifyLinkAccountsAndAddKey, err);
+	            return _Util2.default.tryToDo(this.notifyLinkAccountsAndAddKey, function _callee8() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee8$(_context8) {
+	                    while (1) {
+	                        switch (_context8.prev = _context8.next) {
+	                            case 0:
+	                                _context8.next = 2;
+	                                return regeneratorRuntime.awrap(_this8._unauthenticatedClient.notify(username, notification));
+
+	                            case 2:
+	                                res = _context8.sent;
+	                                return _context8.abrupt("return", res.data.status);
+
+	                            case 4:
+	                            case "end":
+	                                return _context8.stop();
+	                        }
+	                    }
+	                }, null, _this8);
 	            });
 	        }
 	    }]);
@@ -318,7 +446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Token;
 
 /***/ },
-/* 1 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -329,19 +457,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _tweetnacl = __webpack_require__(2);
+	var _tweetnacl = __webpack_require__(4);
 
 	var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
 
-	var _fastSha = __webpack_require__(3);
+	var _fastSha = __webpack_require__(5);
 
 	var _fastSha2 = _interopRequireDefault(_fastSha);
 
-	var _base64url = __webpack_require__(4);
+	var _base64url = __webpack_require__(6);
 
 	var _base64url2 = _interopRequireDefault(_base64url);
 
-	var _jsonStableStringify = __webpack_require__(5);
+	var _jsonStableStringify = __webpack_require__(7);
 
 	var _jsonStableStringify2 = _interopRequireDefault(_jsonStableStringify);
 
@@ -425,31 +553,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Crypto;
 
 /***/ },
-/* 2 */
+/* 4 */
 /***/ function(module, exports) {
 
 	module.exports = require("tweetnacl");
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports) {
 
 	module.exports = require("fast-sha256");
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = require("base64url");
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = require("json-stable-stringify");
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -460,11 +588,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _tweetnacl = __webpack_require__(2);
+	var _tweetnacl = __webpack_require__(4);
 
 	var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
 
-	var _base64url = __webpack_require__(4);
+	var _base64url = __webpack_require__(6);
 
 	var _base64url2 = _interopRequireDefault(_base64url);
 
@@ -479,9 +607,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _createClass(Util, null, [{
 	        key: "generateNonce",
+
+	        /**
+	         * Generates a random nonce
+	         *
+	         * @returns string nonce
+	         */
 	        value: function generateNonce() {
 	            return (0, _base64url2.default)(_tweetnacl2.default.sign.keyPair().publicKey);
 	        }
+
+	        /**
+	         * Count the number of decimal points in a number
+	         *
+	         * @param value: number
+	         * @returns {number} number of decimals
+	         */
+
 	    }, {
 	        key: "countDecimals",
 	        value: function countDecimals(value) {
@@ -490,14 +632,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            return value.toString().split(".")[1].length || 0;
 	        }
+
+	        /**
+	         * Helper method to handle promise exceptions. The function will be executed, and if
+	         * anything fails, a rejected promise is returned, with the method name that failed,
+	         * included in the rejection.
+	         *
+	         * @param method: outside method that is being executed
+	         * @param fn: function to try to execute
+	         * @returns successful or rejected promise
+	         */
+
 	    }, {
-	        key: "reject",
-	        value: function reject(method, err) {
-	            return Promise.reject({
-	                type: method.name,
-	                error: err,
-	                reason: err.response !== undefined && err.response.data !== undefined ? err.response.data : "UNKNOWN"
-	            });
+	        key: "tryToDo",
+	        value: function tryToDo(method, fn) {
+	            return regeneratorRuntime.async(function tryToDo$(_context) {
+	                while (1) {
+	                    switch (_context.prev = _context.next) {
+	                        case 0:
+	                            _context.prev = 0;
+	                            _context.next = 3;
+	                            return regeneratorRuntime.awrap(fn());
+
+	                        case 3:
+	                            return _context.abrupt("return", _context.sent);
+
+	                        case 6:
+	                            _context.prev = 6;
+	                            _context.t0 = _context["catch"](0);
+	                            return _context.abrupt("return", Promise.reject({
+	                                type: method.name,
+	                                error: _context.t0,
+	                                reason: _context.t0.response !== undefined && _context.t0.response.data !== undefined ? _context.t0.response.data : "UNKNOWN"
+	                            }));
+
+	                        case 9:
+	                        case "end":
+	                            return _context.stop();
+	                    }
+	                }
+	            }, null, this, [[0, 6]]);
 	        }
 	    }]);
 
@@ -507,7 +681,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Util;
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -518,59 +692,59 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(3);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _LocalStorage = __webpack_require__(8);
+	var _LocalStorage = __webpack_require__(10);
 
 	var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
-	var _Account = __webpack_require__(9);
+	var _Account = __webpack_require__(11);
 
 	var _Account2 = _interopRequireDefault(_Account);
 
-	var _Subscriber = __webpack_require__(12);
+	var _Subscriber = __webpack_require__(14);
 
 	var _Subscriber2 = _interopRequireDefault(_Subscriber);
 
-	var _Address = __webpack_require__(13);
+	var _Address = __webpack_require__(15);
 
 	var _Address2 = _interopRequireDefault(_Address);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(16);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _AuthHttpClient = __webpack_require__(15);
+	var _AuthHttpClient = __webpack_require__(17);
 
 	var _AuthHttpClient2 = _interopRequireDefault(_AuthHttpClient);
 
-	var _PagedResult = __webpack_require__(10);
+	var _PagedResult = __webpack_require__(12);
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _TokenOperationResult = __webpack_require__(20);
+	var _TokenOperationResult = __webpack_require__(22);
 
 	var _TokenOperationResult2 = _interopRequireDefault(_TokenOperationResult);
 
-	var _TransferToken = __webpack_require__(21);
+	var _TransferToken = __webpack_require__(23);
 
 	var _TransferToken2 = _interopRequireDefault(_TransferToken);
 
-	var _AccessToken = __webpack_require__(22);
+	var _AccessToken = __webpack_require__(24);
 
 	var _AccessToken2 = _interopRequireDefault(_AccessToken);
 
-	var _Transfer = __webpack_require__(23);
+	var _Transfer = __webpack_require__(25);
 
 	var _Transfer2 = _interopRequireDefault(_Transfer);
 
-	var _Util = __webpack_require__(6);
+	var _Util = __webpack_require__(8);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -639,7 +813,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Approves a new key for this member
 	         * @param {Buffer} publicKey - key to add
 	         * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
-	         * @return {Promise} empty empty promise
+	         * @return {Promise} empty - empty promise
 	         */
 
 	    }, {
@@ -649,12 +823,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var keyLevel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _KeyLevel2.default.PRIVILEGED;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this._client.addKey(prevHash, _Crypto2.default.bufferKey(publicKey), keyLevel).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this.approveKey, err);
+	            return _Util2.default.tryToDo(this.approveKey, function _callee() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                _context.next = 2;
+	                                return regeneratorRuntime.awrap(_this._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context.sent;
+	                                _context.next = 5;
+	                                return regeneratorRuntime.awrap(_this._client.addKey(prevHash, _Crypto2.default.bufferKey(publicKey), keyLevel));
+
+	                            case 5:
+	                                return _context.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, null, _this);
 	            });
 	        }
 
@@ -669,12 +860,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function removeKey(keyId) {
 	            var _this2 = this;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this2._client.removeKey(prevHash, keyId).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this2.removeKey, err);
+	            return _Util2.default.tryToDo(this.removeKey, function _callee2() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee2$(_context2) {
+	                    while (1) {
+	                        switch (_context2.prev = _context2.next) {
+	                            case 0:
+	                                _context2.next = 2;
+	                                return regeneratorRuntime.awrap(_this2._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context2.sent;
+	                                _context2.next = 5;
+	                                return regeneratorRuntime.awrap(_this2._client.removeKey(prevHash, keyId));
+
+	                            case 5:
+	                                return _context2.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context2.stop();
+	                        }
+	                    }
+	                }, null, _this2);
 	            });
 	        }
 
@@ -689,12 +897,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function addUsername(username) {
 	            var _this3 = this;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this3._client.addUsername(prevHash, username).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this3.addUsername, err);
+	            return _Util2.default.tryToDo(this.addUsername, function _callee3() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee3$(_context3) {
+	                    while (1) {
+	                        switch (_context3.prev = _context3.next) {
+	                            case 0:
+	                                _context3.next = 2;
+	                                return regeneratorRuntime.awrap(_this3._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context3.sent;
+	                                _context3.next = 5;
+	                                return regeneratorRuntime.awrap(_this3._client.addUsername(prevHash, username));
+
+	                            case 5:
+	                                return _context3.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context3.stop();
+	                        }
+	                    }
+	                }, null, _this3);
 	            });
 	        }
 
@@ -709,12 +934,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function removeUsername(username) {
 	            var _this4 = this;
 
-	            return this._getPreviousHash().then(function (prevHash) {
-	                return _this4._client.removeUsername(prevHash, username).then(function (res) {
-	                    return undefined;
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this4.removeUsername, err);
+	            return _Util2.default.tryToDo(this.removeUsername, function _callee4() {
+	                var prevHash;
+	                return regeneratorRuntime.async(function _callee4$(_context4) {
+	                    while (1) {
+	                        switch (_context4.prev = _context4.next) {
+	                            case 0:
+	                                _context4.next = 2;
+	                                return regeneratorRuntime.awrap(_this4._getPreviousHash());
+
+	                            case 2:
+	                                prevHash = _context4.sent;
+	                                _context4.next = 5;
+	                                return regeneratorRuntime.awrap(_this4._client.removeUsername(prevHash, username));
+
+	                            case 5:
+	                                return _context4.abrupt("return");
+
+	                            case 6:
+	                            case "end":
+	                                return _context4.stop();
+	                        }
+	                    }
+	                }, null, _this4);
 	            });
 	        }
 
@@ -730,12 +972,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function linkAccounts(bankId, accountLinkPayloads) {
 	            var _this5 = this;
 
-	            return this._client.linkAccounts(bankId, accountLinkPayloads).then(function (res) {
-	                return res.data.accounts.map(function (acc) {
-	                    return new _Account2.default(_this5, acc);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this5.linkAccounts, err);
+	            return _Util2.default.tryToDo(this.linkAccounts, function _callee5() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee5$(_context5) {
+	                    while (1) {
+	                        switch (_context5.prev = _context5.next) {
+	                            case 0:
+	                                _context5.next = 2;
+	                                return regeneratorRuntime.awrap(_this5._client.linkAccounts(bankId, accountLinkPayloads));
+
+	                            case 2:
+	                                res = _context5.sent;
+	                                return _context5.abrupt("return", res.data.accounts.map(function (acc) {
+	                                    return new _Account2.default(_this5, acc);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context5.stop();
+	                        }
+	                    }
+	                }, null, _this5);
 	            });
 	        }
 
@@ -749,12 +1006,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAccounts() {
 	            var _this6 = this;
 
-	            return this._client.getAccounts().then(function (res) {
-	                return res.data.accounts.map(function (acc) {
-	                    return new _Account2.default(_this6, acc);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this6.getAccounts, err);
+	            return _Util2.default.tryToDo(this.getAccounts, function _callee6() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee6$(_context6) {
+	                    while (1) {
+	                        switch (_context6.prev = _context6.next) {
+	                            case 0:
+	                                _context6.next = 2;
+	                                return regeneratorRuntime.awrap(_this6._client.getAccounts());
+
+	                            case 2:
+	                                res = _context6.sent;
+	                                return _context6.abrupt("return", res.data.accounts.map(function (acc) {
+	                                    return new _Account2.default(_this6, acc);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context6.stop();
+	                        }
+	                    }
+	                }, null, _this6);
 	            });
 	        }
 
@@ -773,10 +1045,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var platform = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "IOS";
 
-	            return this._client.subscribeToNotifications(target, platform).then(function (res) {
-	                return new _Subscriber2.default(res.data.subscriber);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this7.subscribeToNotifications, err);
+	            return _Util2.default.tryToDo(this.subscribeToNotifications, function _callee7() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee7$(_context7) {
+	                    while (1) {
+	                        switch (_context7.prev = _context7.next) {
+	                            case 0:
+	                                _context7.next = 2;
+	                                return regeneratorRuntime.awrap(_this7._client.subscribeToNotifications(target, platform));
+
+	                            case 2:
+	                                res = _context7.sent;
+	                                return _context7.abrupt("return", new _Subscriber2.default(res.data.subscriber));
+
+	                            case 4:
+	                            case "end":
+	                                return _context7.stop();
+	                        }
+	                    }
+	                }, null, _this7);
 	            });
 	        }
 
@@ -791,12 +1078,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getSubscribers() {
 	            var _this8 = this;
 
-	            return this._client.getSubscribers().then(function (res) {
-	                return res.data.subscribers.map(function (s) {
-	                    return new _Subscriber2.default(s);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this8.getSubscribers, err);
+	            return _Util2.default.tryToDo(this.getSubscribers, function _callee8() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee8$(_context8) {
+	                    while (1) {
+	                        switch (_context8.prev = _context8.next) {
+	                            case 0:
+	                                _context8.next = 2;
+	                                return regeneratorRuntime.awrap(_this8._client.getSubscribers());
+
+	                            case 2:
+	                                res = _context8.sent;
+	                                return _context8.abrupt("return", res.data.subscribers.map(function (s) {
+	                                    return new _Subscriber2.default(s);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context8.stop();
+	                        }
+	                    }
+	                }, null, _this8);
 	            });
 	        }
 
@@ -812,10 +1114,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getSubscriber(subscriberId) {
 	            var _this9 = this;
 
-	            return this._client.getSubscriber(subscriberId).then(function (res) {
-	                return new _Subscriber2.default(res.data.subscriber);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this9.getSubscriber, err);
+	            return _Util2.default.tryToDo(this.getSubscriber, function _callee9() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee9$(_context9) {
+	                    while (1) {
+	                        switch (_context9.prev = _context9.next) {
+	                            case 0:
+	                                _context9.next = 2;
+	                                return regeneratorRuntime.awrap(_this9._client.getSubscriber(subscriberId));
+
+	                            case 2:
+	                                res = _context9.sent;
+	                                return _context9.abrupt("return", new _Subscriber2.default(res.data.subscriber));
+
+	                            case 4:
+	                            case "end":
+	                                return _context9.stop();
+	                        }
+	                    }
+	                }, null, _this9);
 	            });
 	        }
 
@@ -830,8 +1147,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function unsubscribeFromNotifications(subscriberId) {
 	            var _this10 = this;
 
-	            return this._client.unsubscribeFromNotifications(subscriberId).catch(function (err) {
-	                return _Util2.default.reject(_this10.unsubscribeFromNotifications, err);
+	            return _Util2.default.tryToDo(this.unsubscribeFromNotifications, function _callee10() {
+	                return regeneratorRuntime.async(function _callee10$(_context10) {
+	                    while (1) {
+	                        switch (_context10.prev = _context10.next) {
+	                            case 0:
+	                                _context10.next = 2;
+	                                return regeneratorRuntime.awrap(_this10._client.unsubscribeFromNotifications(subscriberId));
+
+	                            case 2:
+	                                return _context10.abrupt("return");
+
+	                            case 3:
+	                            case "end":
+	                                return _context10.stop();
+	                        }
+	                    }
+	                }, null, _this10);
 	            });
 	        }
 
@@ -847,10 +1179,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function addAddress(name, address) {
 	            var _this11 = this;
 
-	            return this._client.addAddress(name, address).then(function (res) {
-	                return new _Address2.default(res.data.address);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this11.addAddress, err);
+	            return _Util2.default.tryToDo(this.addAddress, function _callee11() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee11$(_context11) {
+	                    while (1) {
+	                        switch (_context11.prev = _context11.next) {
+	                            case 0:
+	                                _context11.next = 2;
+	                                return regeneratorRuntime.awrap(_this11._client.addAddress(name, address));
+
+	                            case 2:
+	                                res = _context11.sent;
+	                                return _context11.abrupt("return", new _Address2.default(res.data.address));
+
+	                            case 4:
+	                            case "end":
+	                                return _context11.stop();
+	                        }
+	                    }
+	                }, null, _this11);
 	            });
 	        }
 
@@ -866,10 +1213,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAddress(addressId) {
 	            var _this12 = this;
 
-	            return this._client.getAddress(addressId).then(function (res) {
-	                return new _Address2.default(res.data.address);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this12.getAddress, err);
+	            return _Util2.default.tryToDo(this.getAddress, function _callee12() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee12$(_context12) {
+	                    while (1) {
+	                        switch (_context12.prev = _context12.next) {
+	                            case 0:
+	                                _context12.next = 2;
+	                                return regeneratorRuntime.awrap(_this12._client.getAddress(addressId));
+
+	                            case 2:
+	                                res = _context12.sent;
+	                                return _context12.abrupt("return", new _Address2.default(res.data.address));
+
+	                            case 4:
+	                            case "end":
+	                                return _context12.stop();
+	                        }
+	                    }
+	                }, null, _this12);
 	            });
 	        }
 
@@ -883,12 +1245,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAddresses() {
 	            var _this13 = this;
 
-	            return this._client.getAddresses().then(function (res) {
-	                return res.data.addresses.map(function (address) {
-	                    return new _Address2.default(address);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this13.getAddresses, err);
+	            return _Util2.default.tryToDo(this.getAddresses, function _callee13() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee13$(_context13) {
+	                    while (1) {
+	                        switch (_context13.prev = _context13.next) {
+	                            case 0:
+	                                _context13.next = 2;
+	                                return regeneratorRuntime.awrap(_this13._client.getAddresses());
+
+	                            case 2:
+	                                res = _context13.sent;
+	                                return _context13.abrupt("return", res.data.addresses.map(function (address) {
+	                                    return new _Address2.default(address);
+	                                }));
+
+	                            case 4:
+	                            case "end":
+	                                return _context13.stop();
+	                        }
+	                    }
+	                }, null, _this13);
 	            });
 	        }
 
@@ -902,10 +1279,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAllUsernames() {
 	            var _this14 = this;
 
-	            return this._getMember().then(function (member) {
-	                return member.usernames;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this14.getAllUsernames, err);
+	            return _Util2.default.tryToDo(this.getAllUsernames, function _callee14() {
+	                var member;
+	                return regeneratorRuntime.async(function _callee14$(_context14) {
+	                    while (1) {
+	                        switch (_context14.prev = _context14.next) {
+	                            case 0:
+	                                _context14.next = 2;
+	                                return regeneratorRuntime.awrap(_this14._getMember());
+
+	                            case 2:
+	                                member = _context14.sent;
+	                                return _context14.abrupt("return", member.usernames);
+
+	                            case 4:
+	                            case "end":
+	                                return _context14.stop();
+	                        }
+	                    }
+	                }, null, _this14);
 	            });
 	        }
 
@@ -921,10 +1313,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function createAccessToken(accessToken) {
 	            var _this15 = this;
 
-	            return this._client.createToken(accessToken.from(this).json).then(function (res) {
-	                return _AccessToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this15.createAccessToken, err);
+	            return _Util2.default.tryToDo(this.createAccessToken, function _callee15() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee15$(_context15) {
+	                    while (1) {
+	                        switch (_context15.prev = _context15.next) {
+	                            case 0:
+	                                _context15.next = 2;
+	                                return regeneratorRuntime.awrap(_this15._client.createToken(accessToken.from(_this15).json));
+
+	                            case 2:
+	                                res = _context15.sent;
+	                                return _context15.abrupt("return", _AccessToken2.default.createFromToken(res.data.token));
+
+	                            case 4:
+	                            case "end":
+	                                return _context15.stop();
+	                        }
+	                    }
+	                }, null, _this15);
 	            });
 	        }
 
@@ -941,10 +1348,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function replaceAccessToken(tokenToCancel, tokenToCreate) {
 	            var _this16 = this;
 
-	            return this._client.replaceToken(tokenToCancel, tokenToCreate).then(function (res) {
-	                return new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token));
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this16.replaceAccessToken, err);
+	            return _Util2.default.tryToDo(this.replaceAccessToken, function _callee16() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee16$(_context16) {
+	                    while (1) {
+	                        switch (_context16.prev = _context16.next) {
+	                            case 0:
+	                                _context16.next = 2;
+	                                return regeneratorRuntime.awrap(_this16._client.replaceToken(tokenToCancel, tokenToCreate));
+
+	                            case 2:
+	                                res = _context16.sent;
+	                                return _context16.abrupt("return", new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token)));
+
+	                            case 4:
+	                            case "end":
+	                                return _context16.stop();
+	                        }
+	                    }
+	                }, null, _this16);
 	            });
 	        }
 
@@ -961,10 +1383,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
 	            var _this17 = this;
 
-	            return this._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate).then(function (res) {
-	                return new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token));
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this17.replaceAndEndorseAccessToken, err);
+	            return _Util2.default.tryToDo(this.replaceAndEndorseAccessToken, function _callee17() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee17$(_context17) {
+	                    while (1) {
+	                        switch (_context17.prev = _context17.next) {
+	                            case 0:
+	                                _context17.next = 2;
+	                                return regeneratorRuntime.awrap(_this17._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate));
+
+	                            case 2:
+	                                res = _context17.sent;
+	                                return _context17.abrupt("return", new _TokenOperationResult2.default(res.data.result, _AccessToken2.default.createFromToken(res.data.result.token)));
+
+	                            case 4:
+	                            case "end":
+	                                return _context17.stop();
+	                        }
+	                    }
+	                }, null, _this17);
 	            });
 	        }
 
@@ -987,10 +1424,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var description = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : undefined;
 
 	            var token = _TransferToken2.default.create(this, accountId, amount, currency, username, description);
-	            return this._client.createToken(token.json).then(function (res) {
-	                return _TransferToken2.default.createFromToken(res.data.token);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this18.createToken, err);
+	            return _Util2.default.tryToDo(this.createToken, function _callee18() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee18$(_context18) {
+	                    while (1) {
+	                        switch (_context18.prev = _context18.next) {
+	                            case 0:
+	                                _context18.next = 2;
+	                                return regeneratorRuntime.awrap(_this18._client.createToken(token.json));
+
+	                            case 2:
+	                                res = _context18.sent;
+	                                return _context18.abrupt("return", _TransferToken2.default.createFromToken(res.data.token));
+
+	                            case 4:
+	                            case "end":
+	                                return _context18.stop();
+	                        }
+	                    }
+	                }, null, _this18);
 	            });
 	        }
 
@@ -1005,14 +1457,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getToken(tokenId) {
 	            var _this19 = this;
 
-	            return this._client.getToken(tokenId).then(function (res) {
-	                if (res.data.token.payload.access !== undefined) {
-	                    return _AccessToken2.default.createFromToken(res.data.token);
-	                } else {
-	                    return _TransferToken2.default.createFromToken(res.data.token);
-	                }
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this19.getToken, err);
+	            return _Util2.default.tryToDo(this.getToken, function _callee19() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee19$(_context19) {
+	                    while (1) {
+	                        switch (_context19.prev = _context19.next) {
+	                            case 0:
+	                                _context19.next = 2;
+	                                return regeneratorRuntime.awrap(_this19._client.getToken(tokenId));
+
+	                            case 2:
+	                                res = _context19.sent;
+
+	                                if (!(res.data.token.payload.access !== undefined)) {
+	                                    _context19.next = 7;
+	                                    break;
+	                                }
+
+	                                return _context19.abrupt("return", _AccessToken2.default.createFromToken(res.data.token));
+
+	                            case 7:
+	                                return _context19.abrupt("return", _TransferToken2.default.createFromToken(res.data.token));
+
+	                            case 8:
+	                            case "end":
+	                                return _context19.stop();
+	                        }
+	                    }
+	                }, null, _this19);
 	            });
 	        }
 
@@ -1028,12 +1500,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransferTokens(offset, limit) {
 	            var _this20 = this;
 
-	            return this._client.getTokens('TRANSFER', offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
-	                    return _TransferToken2.default.createFromToken(tk);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this20.getTransferTokens, err);
+	            return _Util2.default.tryToDo(this.getTransferTokens, function _callee20() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee20$(_context20) {
+	                    while (1) {
+	                        switch (_context20.prev = _context20.next) {
+	                            case 0:
+	                                _context20.next = 2;
+	                                return regeneratorRuntime.awrap(_this20._client.getTokens('TRANSFER', offset, limit));
+
+	                            case 2:
+	                                res = _context20.sent;
+	                                return _context20.abrupt("return", new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
+	                                    return _TransferToken2.default.createFromToken(tk);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context20.stop();
+	                        }
+	                    }
+	                }, null, _this20);
 	            });
 	        }
 
@@ -1049,12 +1536,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getAccessTokens(offset, limit) {
 	            var _this21 = this;
 
-	            return this._client.getTokens('ACCESS', offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
-	                    return _AccessToken2.default.createFromToken(tk);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this21.getAccessTokens, err);
+	            return _Util2.default.tryToDo(this.getAccessTokens, function _callee21() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee21$(_context21) {
+	                    while (1) {
+	                        switch (_context21.prev = _context21.next) {
+	                            case 0:
+	                                _context21.next = 2;
+	                                return regeneratorRuntime.awrap(_this21._client.getTokens('ACCESS', offset, limit));
+
+	                            case 2:
+	                                res = _context21.sent;
+	                                return _context21.abrupt("return", new _PagedResult2.default(res.data.tokens === undefined ? [] : res.data.tokens.map(function (tk) {
+	                                    return _AccessToken2.default.createFromToken(tk);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context21.stop();
+	                        }
+	                    }
+	                }, null, _this21);
 	            });
 	        }
 
@@ -1069,15 +1571,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function endorseToken(token) {
 	            var _this22 = this;
 
-	            return this._resolveToken(token).then(function (finalToken) {
-	                return _this22._client.endorseToken(finalToken).then(function (res) {
-	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
+	            return _Util2.default.tryToDo(this.endorseToken, function _callee22() {
+	                var finalToken, endorsed;
+	                return regeneratorRuntime.async(function _callee22$(_context22) {
+	                    while (1) {
+	                        switch (_context22.prev = _context22.next) {
+	                            case 0:
+	                                _context22.next = 2;
+	                                return regeneratorRuntime.awrap(_this22._resolveToken(token));
+
+	                            case 2:
+	                                finalToken = _context22.sent;
+	                                _context22.next = 5;
+	                                return regeneratorRuntime.awrap(_this22._client.endorseToken(finalToken));
+
+	                            case 5:
+	                                endorsed = _context22.sent;
+
+	                                if (typeof token !== 'string' && !(token instanceof String)) {
+	                                    token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
+	                                }
+	                                return _context22.abrupt("return", new _TokenOperationResult2.default(endorsed.data.result, token));
+
+	                            case 8:
+	                            case "end":
+	                                return _context22.stop();
+	                        }
 	                    }
-	                    return new _TokenOperationResult2.default(res.data.result, token);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this22.endorseToken, err);
+	                }, null, _this22);
 	            });
 	        }
 
@@ -1092,15 +1613,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function cancelToken(token) {
 	            var _this23 = this;
 
-	            return this._resolveToken(token).then(function (finalToken) {
-	                return _this23._client.cancelToken(finalToken).then(function (res) {
-	                    if (typeof token !== 'string' && !(token instanceof String)) {
-	                        token.payloadSignatures = res.data.result.token.payloadSignatures;
+	            return _Util2.default.tryToDo(this.cancelToken, function _callee23() {
+	                var finalToken, cancelled;
+	                return regeneratorRuntime.async(function _callee23$(_context23) {
+	                    while (1) {
+	                        switch (_context23.prev = _context23.next) {
+	                            case 0:
+	                                _context23.next = 2;
+	                                return regeneratorRuntime.awrap(_this23._resolveToken(token));
+
+	                            case 2:
+	                                finalToken = _context23.sent;
+	                                _context23.next = 5;
+	                                return regeneratorRuntime.awrap(_this23._client.cancelToken(finalToken));
+
+	                            case 5:
+	                                cancelled = _context23.sent;
+
+	                                if (typeof token !== 'string' && !(token instanceof String)) {
+	                                    token.payloadSignatures = cancelled.data.result.token.payloadSignatures;
+	                                }
+	                                return _context23.abrupt("return", new _TokenOperationResult2.default(cancelled.data.result, token));
+
+	                            case 8:
+	                            case "end":
+	                                return _context23.stop();
+	                        }
 	                    }
-	                    return new _TokenOperationResult2.default(res.data.result, token);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this23.cancelToken, err);
+	                }, null, _this23);
 	            });
 	        }
 
@@ -1121,21 +1661,46 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var destinations = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : [];
 
-	            return this._resolveToken(token).then(function (finalToken) {
-	                if (amount === undefined) {
-	                    amount = finalToken.payload.transfer.amount;
-	                }
-	                if (currency === undefined) {
-	                    currency = finalToken.payload.transfer.currency;
-	                }
-	                if (_Util2.default.countDecimals(amount) > _constants.maxDecimals) {
-	                    throw new Error("Number of decimals in amount should be at most " + _constants.maxDecimals);
-	                }
-	                return _this24._client.createTransfer(finalToken, amount, currency, description, destinations).then(function (res) {
-	                    return new _Transfer2.default(res.data.transfer);
-	                });
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this24.createTransfer, err);
+	            return _Util2.default.tryToDo(this.createTransfer, function _callee24() {
+	                var finalToken, res;
+	                return regeneratorRuntime.async(function _callee24$(_context24) {
+	                    while (1) {
+	                        switch (_context24.prev = _context24.next) {
+	                            case 0:
+	                                _context24.next = 2;
+	                                return regeneratorRuntime.awrap(_this24._resolveToken(token));
+
+	                            case 2:
+	                                finalToken = _context24.sent;
+
+	                                if (amount === undefined) {
+	                                    amount = finalToken.payload.transfer.amount;
+	                                }
+	                                if (currency === undefined) {
+	                                    currency = finalToken.payload.transfer.currency;
+	                                }
+
+	                                if (!(_Util2.default.countDecimals(amount) > _constants.maxDecimals)) {
+	                                    _context24.next = 7;
+	                                    break;
+	                                }
+
+	                                throw new Error("Number of decimals in amount should be at most " + _constants.maxDecimals);
+
+	                            case 7:
+	                                _context24.next = 9;
+	                                return regeneratorRuntime.awrap(_this24._client.createTransfer(finalToken, amount, currency, description, destinations));
+
+	                            case 9:
+	                                res = _context24.sent;
+	                                return _context24.abrupt("return", new _Transfer2.default(res.data.transfer));
+
+	                            case 11:
+	                            case "end":
+	                                return _context24.stop();
+	                        }
+	                    }
+	                }, null, _this24);
 	            });
 	        }
 
@@ -1150,10 +1715,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransfer(transferId) {
 	            var _this25 = this;
 
-	            return this._client.getTransfer(transferId).then(function (res) {
-	                return new _Transfer2.default(res.data.transfer);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this25.getTransfer, err);
+	            return _Util2.default.tryToDo(this.getTransfer, function _callee25() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee25$(_context25) {
+	                    while (1) {
+	                        switch (_context25.prev = _context25.next) {
+	                            case 0:
+	                                _context25.next = 2;
+	                                return regeneratorRuntime.awrap(_this25._client.getTransfer(transferId));
+
+	                            case 2:
+	                                res = _context25.sent;
+	                                return _context25.abrupt("return", new _Transfer2.default(res.data.transfer));
+
+	                            case 4:
+	                            case "end":
+	                                return _context25.stop();
+	                        }
+	                    }
+	                }, null, _this25);
 	            });
 	        }
 
@@ -1170,12 +1750,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransfers(tokenId, offset, limit) {
 	            var _this26 = this;
 
-	            return this._client.getTransfers(tokenId, offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.transfers.map(function (pt) {
-	                    return new _Transfer2.default(pt);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this26.getTransfers, err);
+	            return _Util2.default.tryToDo(this.getTransfers, function _callee26() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee26$(_context26) {
+	                    while (1) {
+	                        switch (_context26.prev = _context26.next) {
+	                            case 0:
+	                                _context26.next = 2;
+	                                return regeneratorRuntime.awrap(_this26._client.getTransfers(tokenId, offset, limit));
+
+	                            case 2:
+	                                res = _context26.sent;
+	                                return _context26.abrupt("return", new _PagedResult2.default(res.data.transfers.map(function (pt) {
+	                                    return new _Transfer2.default(pt);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context26.stop();
+	                        }
+	                    }
+	                }, null, _this26);
 	            });
 	        }
 
@@ -1189,10 +1784,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getPublicKeys() {
 	            var _this27 = this;
 
-	            return this._getMember().then(function (member) {
-	                return member.keys;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this27.getPublicKeys, err);
+	            return _Util2.default.tryToDo(this.getPublicKeys, function _callee27() {
+	                var member;
+	                return regeneratorRuntime.async(function _callee27$(_context27) {
+	                    while (1) {
+	                        switch (_context27.prev = _context27.next) {
+	                            case 0:
+	                                _context27.next = 2;
+	                                return regeneratorRuntime.awrap(_this27._getMember());
+
+	                            case 2:
+	                                member = _context27.sent;
+	                                return _context27.abrupt("return", member.keys);
+
+	                            case 4:
+	                            case "end":
+	                                return _context27.stop();
+	                        }
+	                    }
+	                }, null, _this27);
 	            });
 	        }
 	    }, {
@@ -1200,10 +1810,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _getPreviousHash() {
 	            var _this28 = this;
 
-	            return this._getMember().then(function (member) {
-	                return member.lastHash;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this28._getPreviousHash, err);
+	            return _Util2.default.tryToDo(this._getPreviousHash, function _callee28() {
+	                var member;
+	                return regeneratorRuntime.async(function _callee28$(_context28) {
+	                    while (1) {
+	                        switch (_context28.prev = _context28.next) {
+	                            case 0:
+	                                _context28.next = 2;
+	                                return regeneratorRuntime.awrap(_this28._getMember());
+
+	                            case 2:
+	                                member = _context28.sent;
+	                                return _context28.abrupt("return", member.lastHash);
+
+	                            case 4:
+	                            case "end":
+	                                return _context28.stop();
+	                        }
+	                    }
+	                }, null, _this28);
 	            });
 	        }
 	    }, {
@@ -1211,10 +1836,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _getMember() {
 	            var _this29 = this;
 
-	            return this._client.getMember().then(function (res) {
-	                return res.data.member;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this29._getMember, err);
+	            return _Util2.default.tryToDo(this._getMember, function _callee29() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee29$(_context29) {
+	                    while (1) {
+	                        switch (_context29.prev = _context29.next) {
+	                            case 0:
+	                                _context29.next = 2;
+	                                return regeneratorRuntime.awrap(_this29._client.getMember());
+
+	                            case 2:
+	                                res = _context29.sent;
+	                                return _context29.abrupt("return", res.data.member);
+
+	                            case 4:
+	                            case "end":
+	                                return _context29.stop();
+	                        }
+	                    }
+	                }, null, _this29);
 	            });
 	        }
 	    }, {
@@ -1256,7 +1896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Member;
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1267,11 +1907,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Member = __webpack_require__(7);
+	var _Member = __webpack_require__(9);
 
 	var _Member2 = _interopRequireDefault(_Member);
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(3);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
@@ -1322,7 +1962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = LocalStorage;
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1333,15 +1973,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _PagedResult = __webpack_require__(10);
+	var _PagedResult = __webpack_require__(12);
 
 	var _PagedResult2 = _interopRequireDefault(_PagedResult);
 
-	var _Transaction = __webpack_require__(11);
+	var _Transaction = __webpack_require__(13);
 
 	var _Transaction2 = _interopRequireDefault(_Transaction);
 
-	var _Util = __webpack_require__(6);
+	var _Util = __webpack_require__(8);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
@@ -1385,10 +2025,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getBalance() {
 	            var _this = this;
 
-	            return this._member._client.getBalance(this._id).then(function (res) {
-	                return res.data;
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this.getBalance, err);
+	            return _Util2.default.tryToDo(this.getBalance, function _callee() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                _context.next = 2;
+	                                return regeneratorRuntime.awrap(_this._member._client.getBalance(_this._id));
+
+	                            case 2:
+	                                res = _context.sent;
+	                                return _context.abrupt("return", res.data);
+
+	                            case 4:
+	                            case "end":
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, null, _this);
 	            });
 	        }
 
@@ -1403,10 +2058,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransaction(transactionId) {
 	            var _this2 = this;
 
-	            return this._member._client.getTransaction(this._id, transactionId).then(function (res) {
-	                return new _Transaction2.default(res.data.transaction);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this2.getTransaction, err);
+	            return _Util2.default.tryToDo(this.getTransaction, function _callee2() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee2$(_context2) {
+	                    while (1) {
+	                        switch (_context2.prev = _context2.next) {
+	                            case 0:
+	                                _context2.next = 2;
+	                                return regeneratorRuntime.awrap(_this2._member._client.getTransaction(_this2._id, transactionId));
+
+	                            case 2:
+	                                res = _context2.sent;
+	                                return _context2.abrupt("return", new _Transaction2.default(res.data.transaction));
+
+	                            case 4:
+	                            case "end":
+	                                return _context2.stop();
+	                        }
+	                    }
+	                }, null, _this2);
 	            });
 	        }
 
@@ -1422,12 +2092,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function getTransactions(offset, limit) {
 	            var _this3 = this;
 
-	            return this._member._client.getTransactions(this._id, offset, limit).then(function (res) {
-	                return new _PagedResult2.default(res.data.transactions.map(function (tr) {
-	                    return new _Transaction2.default(tr);
-	                }), res.data.offset);
-	            }).catch(function (err) {
-	                return _Util2.default.reject(_this3.getTransactions, err);
+	            return _Util2.default.tryToDo(this.getTransactions, function _callee3() {
+	                var res;
+	                return regeneratorRuntime.async(function _callee3$(_context3) {
+	                    while (1) {
+	                        switch (_context3.prev = _context3.next) {
+	                            case 0:
+	                                _context3.next = 2;
+	                                return regeneratorRuntime.awrap(_this3._member._client.getTransactions(_this3._id, offset, limit));
+
+	                            case 2:
+	                                res = _context3.sent;
+	                                return _context3.abrupt("return", new _PagedResult2.default(res.data.transactions.map(function (tr) {
+	                                    return new _Transaction2.default(tr);
+	                                }), res.data.offset));
+
+	                            case 4:
+	                            case "end":
+	                                return _context3.stop();
+	                        }
+	                    }
+	                }, null, _this3);
 	            });
 	        }
 	    }, {
@@ -1476,7 +2161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Account;
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1515,7 +2200,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PagedResult;
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1584,7 +2269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transaction;
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1629,7 +2314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Subscriber;
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1680,7 +2365,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Address;
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1695,7 +2380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1706,25 +2391,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(3);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _Util = __webpack_require__(6);
+	var _Util = __webpack_require__(8);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _AuthHeader = __webpack_require__(16);
+	var _AuthHeader = __webpack_require__(18);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _AuthContext = __webpack_require__(18);
+	var _AuthContext = __webpack_require__(20);
 
 	var _AuthContext2 = _interopRequireDefault(_AuthContext);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(16);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
@@ -1732,8 +2417,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var stringify = __webpack_require__(5);
-	var axios = __webpack_require__(19);
+	var stringify = __webpack_require__(7);
+	var axios = __webpack_require__(21);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -2191,7 +2876,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClient;
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2202,9 +2887,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(3);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
@@ -2212,7 +2897,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var stringify = __webpack_require__(5);
+	var stringify = __webpack_require__(7);
 
 	var AuthHeader = function () {
 	    function AuthHeader(baseUrl, keys) {
@@ -2309,7 +2994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHeader;
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2348,7 +3033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.maxDecimals = maxDecimals;
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -2384,13 +3069,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthContext;
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = require("axios");
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2438,7 +3123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = TokenOperationResult;
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2449,11 +3134,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Util = __webpack_require__(6);
+	var _Util = __webpack_require__(8);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2633,7 +3318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = BankTransferToken;
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2644,11 +3329,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Util = __webpack_require__(6);
+	var _Util = __webpack_require__(8);
 
 	var _Util2 = _interopRequireDefault(_Util);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2991,7 +3676,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AccessToken;
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3063,7 +3748,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Transfer;
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3074,21 +3759,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _Crypto = __webpack_require__(1);
+	var _Crypto = __webpack_require__(3);
 
 	var _Crypto2 = _interopRequireDefault(_Crypto);
 
-	var _KeyLevel = __webpack_require__(14);
+	var _KeyLevel = __webpack_require__(16);
 
 	var _KeyLevel2 = _interopRequireDefault(_KeyLevel);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var axios = __webpack_require__(19);
+	var axios = __webpack_require__(21);
 
 	var HttpClient = function () {
 	    function HttpClient(env) {
@@ -3170,7 +3855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = HttpClient;
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3181,18 +3866,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _AuthHeader = __webpack_require__(16);
+	var _AuthHeader = __webpack_require__(18);
 
 	var _AuthHeader2 = _interopRequireDefault(_AuthHeader);
 
-	var _constants = __webpack_require__(17);
+	var _constants = __webpack_require__(19);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var stringify = __webpack_require__(5);
-	var axios = __webpack_require__(19);
+	var stringify = __webpack_require__(7);
+	var axios = __webpack_require__(21);
 
 	/**
 	 * Authenticated client for making requests to the Token gateway
@@ -3231,7 +3916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthHttpClientUsername;
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = require("es6-promise");

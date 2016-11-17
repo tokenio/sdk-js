@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -10,34 +11,27 @@ let username = '';
 
 describe('Key addition detection', () => {
 
-    beforeEach(() => {
+    beforeEach(async () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
-        return Token
-            .createMember(username)
-            .then(res => {
-                member = res;
-                return member.approveKey(Crypto.strKey(keys.publicKey));
-            });
+        member = await Token.createMember(username);
+        await member.approveKey(Crypto.strKey(keys.publicKey));
     });
 
-    it('should not have access before being added', done => {
+    it('should not have access before being added', async () => {
         const keys = Crypto.generateKeys();
-        Token
-            .loginWithUsername(keys, username)
-            .then(ignored => { done(new Error("should fail")); })
-            .catch(() => done());
+        try {
+            await Token.loginWithUsername(keys, username);
+            return Promise.reject(new Error("should fail"));
+        } catch (err) {
+            return;
+        }
     });
 
-    it('should have access after being added', () => {
+    it('should have access after being added', async () => {
         const keys = Crypto.generateKeys();
-        return member
-            .approveKey(Crypto.strKey(keys.publicKey))
-            .then(() => {
-                return Token.loginWithUsername(keys, username);
-            })
-            .then(memberNew => {
-                assert.equal(member.id, memberNew.id);
-            });
+        await member.approveKey(Crypto.strKey(keys.publicKey));
+        const memberNew = await Token.loginWithUsername(keys, username);
+        assert.equal(member.id, memberNew.id);
     });
 });

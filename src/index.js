@@ -9,6 +9,7 @@ import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
+import 'babel-regenerator-runtime';
 
 // Main entry object
 class Token {
@@ -28,11 +29,10 @@ class Token {
      * @return {Promise} result - true if username exists, false otherwise
      */
     usernameExists(username) {
-        return this._unauthenticatedClient
-            .usernameExists(username)
-            // Workaround for a default value case when protobuf does not serialize it.
-            .then(res => res.data.exists ? res.data.exists : false)
-            .catch(err => Util.reject(this.usernameExists, err));
+        return Util.tryToDo(this.usernameExists, async () => {
+            const res = await this._unauthenticatedClient.usernameExists(username);
+            return res.data.exists ? res.data.exists : false;
+        });
     }
 
     /**
@@ -41,19 +41,14 @@ class Token {
      * @return {Promise} member - Promise of created Member
      */
     createMember(username) {
-        const keys = Crypto.generateKeys();
-        return this._unauthenticatedClient
-            .createMemberId()
-            .then(response => this._unauthenticatedClient
-                .addFirstKey(keys, response.data.memberId)
-                .then(() => {
-                    const member = new Member(this._env, response.data.memberId, keys);
-                    return member
-                        .addUsername(username)
-                        .then(() => member);
-                })
-            )
-            .catch(err => Util.reject(this.createMember, err));
+        return Util.tryToDo(this.createMember, async () => {
+            const keys = Crypto.generateKeys();
+            const response = await this._unauthenticatedClient.createMemberId();
+            await this._unauthenticatedClient.addFirstKey(keys, response.data.memberId);
+            const member = new Member(this._env, response.data.memberId, keys);
+            await member.addUsername(username);
+            return member;
+        });
     }
 
     /**
@@ -63,8 +58,9 @@ class Token {
      * @return {Promise} member - Promise of instantiated Member
      */
     login(memberId, keys) {
-        return Promise.resolve(new Member(this._env, memberId, keys))
-            .catch(err => Util.reject(this.login, err));
+        return Util.tryToDo(this.login, async () => {
+            return new Member(this._env, memberId, keys);
+        });
     }
 
     /**
@@ -76,10 +72,10 @@ class Token {
      * @return {Promise} member - instantiated Member, if successful
      */
     loginWithUsername(keys, username) {
-        return new AuthHttpClientUsername(this._env, username, keys)
-            .getMemberByUsername()
-            .then(res => new Member(this._env, res.data.member.id, keys))
-            .catch(err => Util.reject(this.loginWithUsername, err));
+        return Util.tryToDo(this.loginWithUsername, async () => {
+            const res = await new AuthHttpClientUsername(this._env, username, keys).getMemberByUsername();
+            return new Member(this._env, res.data.member.id, keys);
+        });
     }
 
     /**
@@ -87,12 +83,9 @@ class Token {
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage() {
-        try {
-            const member = LocalStorage.loadMember(this._env);
-            return Promise.resolve(member);
-        } catch (err) {
-            return Util.reject(this.loginFromLocalStorage, err)
-        }
+        return Util.tryToDo(this.loginFromLocalStorage, async () => {
+            return LocalStorage.loadMember(this._env);
+        });
     }
 
     /**
@@ -112,9 +105,10 @@ class Token {
                 accountLinkPayloads
             }
         };
-        return this._unauthenticatedClient.notify(username, notification)
-            .then(res => res.data.status)
-            .catch(err => Util.reject(this.notifyLinkAccounts, err));
+        return Util.tryToDo(this.notifyLinkAccounts, async () => {
+            const res = await this._unauthenticatedClient.notify(username, notification);
+            return res.data.status;
+        });
     }
 
     /**
@@ -132,9 +126,10 @@ class Token {
                 name
             }
         };
-        return this._unauthenticatedClient.notify(username, notification)
-            .then(res => res.data.status)
-            .catch(err => Util.reject(this.notifyAddKey, err));
+        return Util.tryToDo(this.notifyAddKey, async () => {
+            const res = await this._unauthenticatedClient.notify(username, notification)
+            return res.data.status;
+        });
     }
 
     /**
@@ -162,9 +157,10 @@ class Token {
                 }
             }
         };
-        return this._unauthenticatedClient.notify(username, notification)
-            .then(res => res.data.status)
-            .catch(err => Util.reject(this.notifyLinkAccountsAndAddKey, err));
+        return Util.tryToDo(this.notifyLinkAccountsAndAddKey, async () => {
+            const res = await this._unauthenticatedClient.notify(username, notification)
+            return res.data.status;
+        });
     }
 };
 

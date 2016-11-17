@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -17,97 +18,82 @@ let username2 = '';
 let token1 = {};
 
 // Set up a first member
-const setUp1 = () => {
+const setUp1 = async () => {
     username1 = Crypto.generateKeys().keyId;
-    return Token.createMember(username1)
-        .then(res => {
-            member1 = res;
-            return BankClient.requestLinkAccounts(username1, 100000, 'EUR').then(alp => {
-                return member1.linkAccounts('iron', alp).then(accs => {
-                    account1 = accs[0];
-                });
-            });
-        });
+    member1 = await Token.createMember(username1);
+    const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+    const accs = await member1.linkAccounts('iron', alp);
+    account1 = accs[0];
 };
 
 // Set up a second member
-const setUp2 = () => {
+const setUp2 = async () => {
     username2 = Crypto.generateKeys().keyId;
-    return Token.createMember(username2)
-        .then(res => {
-            member2 = res;
-            return BankClient.requestLinkAccounts(username2, 100000, 'EUR').then(alp => {
-                return member2.linkAccounts('iron', alp);
-            });
-        });
+    member2 = await Token.createMember(username2);
+    const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
+    await member2.linkAccounts('iron', alp);
 };
 
 // Set up an endorsed transfer token
-const setUp3 = () => {
-    return member1.createToken(account1.id, 38.71, 'EUR', username2).then(token => {
-        return member1.endorseToken(token.id).then(() => {
-            return member2.getToken(token.id).then(lookedUp => {
-                token1 = lookedUp;
-            });
-        });
-    });
+const setUp3 = async () => {
+    const token = await member1.createToken(account1.id, 38.71, 'EUR', username2);
+    await member1.endorseToken(token.id);
+    const token1 = await member2.getToken(token.id);
 };
 
-describe('Token Redemptions', () => {
-    before(() => {
-        return Promise.all([setUp1(), setUp2()]);
-    });
-    beforeEach(() => {
-        return setUp3();
+describe('Token Redemptions', async () => {
+    before(() => Promise.all([setUp1(), setUp2()]));
+    beforeEach(setUp3);
+
+    it('should redeem a basic token', async () => {
+        const transfer = await member2.createTransfer(token1, 10.21, 'EUR');
+        assert.equal(10.21, transfer.amount);
+        assert.equal('EUR', transfer.currency);
+        assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 
-    it('should redeem a basic token', () => {
-        return member2.createTransfer(token1, 10.21, 'EUR').then(transfer => {
-            assert.equal(10.21, transfer.amount);
-            assert.equal('EUR', transfer.currency);
-            assert.isAtLeast(transfer.payloadSignatures.length, 1);
-        });
+    it('should redeem a basic token by id', async () => {
+        const transfer = await member2.createTransfer(token1.id, 15.28, 'EUR');
+        assert.equal(15.28, transfer.amount);
+        assert.equal('EUR', transfer.currency);
+        assert.isAtLeast(transfer.payloadSignatures.length, 1);
+        const bal = await account1.getBalance();
+        assert.isAtLeast(100000, bal.current.value);
     });
 
-    it('should redeem a basic token by id', () => {
-        return member2.createTransfer(token1.id, 15.28, 'EUR').then(transfer => {
-            assert.equal(15.28, transfer.amount);
-            assert.equal('EUR', transfer.currency);
-            assert.isAtLeast(transfer.payloadSignatures.length, 1);
-            return account1.getBalance().then(bal => {
-                assert.isAtLeast(100000, bal.current.value);
-            });
-        });
+    it('should fail if redeem amount is too high', async () => {
+        try {
+            await member2.createTransfer(token1.id, 1242.28, 'EUR');
+            return Promise.reject(new Error("should fail"));
+        } catch (err) {
+            return true;
+        }
     });
 
-    it('should fail if redeem amount is too high', done => {
-        member2.createTransfer(token1.id, 1242.28, 'EUR').then(transfer => {
-            done(new Error("should fail"));
-        })
-            .catch(() => done());
+    it('should fail if redeemer is wrong', async () => {
+        try {
+            await member1.createTransfer(token1.id, 10.28, 'EUR');
+            return Promise.reject(new Error("should fail"));
+        } catch (err) {
+            return true;
+        }
     });
 
-    it('should fail if redeemer is wrong', done => {
-        member1.createTransfer(token1.id, 10.28, 'EUR').then(transfer => {
-            done(new Error("should fail"));
-        })
-            .catch(() => done());
+    it('should fail if wrong currency', async () => {
+        try {
+            await member1.createTransfer(token1.id, 10.28, 'USD');
+            return Promise.reject(new Error("should fail"));
+        } catch (err) {
+            return true;
+        }
     });
 
-    it('should fail if wrong currency', done => {
-        member1.createTransfer(token1.id, 10.28, 'USD').then(transfer => {
-            done(new Error("should fail"));
-        })
-            .catch(() => done());
-    });
-
-    it('should should redeem a token with notifications', () => {
-        return member1.subscribeToNotifications('4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5' +
+    it('should should redeem a token with notifications', async () => {
+        await member1.subscribeToNotifications('4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5' +
             'B000') // Remove 0s to notify iphone
-            .then(() => member2.createTransfer(token1, 10.21, 'EUR').then(transfer => {
-                assert.equal(10.21, transfer.amount);
-                assert.equal('EUR', transfer.currency);
-                assert.isAtLeast(transfer.payloadSignatures.length, 1);
-            }));
+        const transfer = await member2.createTransfer(token1, 10.21, 'EUR');
+        assert.equal(10.21, transfer.amount);
+        assert.equal('EUR', transfer.currency);
+        assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 });

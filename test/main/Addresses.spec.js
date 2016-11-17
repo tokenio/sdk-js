@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -10,43 +11,24 @@ let member1 = {};
 let username1 = '';
 let account1 = {};
 
-// Set up a first member
-const setUp1 = () => {
-    username1 = Crypto.generateKeys().keyId;
-    return Token
-        .createMember(username1)
-        .then(res => {
-            member1 = res;
-            return BankClient
-                .requestLinkAccounts(username1, 100000, 'EUR')
-                .then(alp => {
-                    return member1
-                        .linkAccounts('iron', alp)
-                        .then(accs => {account1 = accs[0];
-                });
-            });
-        });
-};
 
 describe('Addresses', () => {
-    beforeEach(() => {
-        return setUp1();
+    beforeEach(async () => {
+        username1 = Crypto.generateKeys().keyId;
+        member1 = await Token.createMember(username1);
+        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const accs = await member1.linkAccounts('iron', alp);
+        account1 = accs[0];
     });
 
-    it('Add and lookup an address', () => {
+    it('Add and lookup an address', async () => {
         const address = { city: 'San Francisco', country: 'US' };
-        return member1
-            .addAddress("Home", address)
-            .then(() => {
-                return member1
-                    .getAddresses()
-                    .then(res => {
-                        assert.equal(res.length, 1);
-                        assert.equal(res[0].name, "Home");
-                        assert.deepEqual(res[0].address, address);
-                        assert.isOk(res[0].addressSignature);
-                        assert.isOk(res[0].id);
-                    });
-        });
+        await member1.addAddress("Home", address);
+        const res = await member1.getAddresses();
+        assert.equal(res.length, 1);
+        assert.equal(res[0].name, "Home");
+        assert.deepEqual(res[0].address, address);
+        assert.isOk(res[0].addressSignature);
+        assert.isOk(res[0].id);
     });
 });
