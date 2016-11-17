@@ -1,52 +1,33 @@
 import tokenIo from "../src";
 const Token = new tokenIo(TEST_ENV);
+const chai = require('chai');
+const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 import BankClient from "./sample/BankClient";
 
 describe('Token library', () => {
-    it("should perform a transfer flow", () => {
-        var username1 = Token.Crypto.generateKeys().keyId;
-        var username2 = Token.Crypto.generateKeys().keyId;
+    it("should perform a transfer flow", async () => {
+        const username1 = Token.Crypto.generateKeys().keyId;
+        const username2 = Token.Crypto.generateKeys().keyId;
 
         // For testing push notifications
-        var pushToken = '36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a10535581f97900';
+        const pushToken = '36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a10535581f97900';
 
-        var member1 = {};
-        var member2 = {};
-        var account = {};
-        var tokenId = "";
+        const member1 = await Token.createMember(username1);
+        await member1.subscribeToNotifications(pushToken);
+        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const accounts = await member1.linkAccounts("iron", alp);
+        const account = accounts[0];
 
-        var setUpMem1 = () => Token
-                .createMember(username1)
-                .then(member => {
-                    member1 = member;
-                    return member1
-                        .subscribeToNotifications(pushToken)
-                        .then(() => BankClient.requestLinkAccounts(username1, 100000, 'EUR'))
-                        .then(alp => member1.linkAccounts("iron", alp))
-                        .then(accounts => {
-                            account = accounts[0];
-                        });
-                });
+        const member2 = await Token.createMember(username2);
 
-        var setUpMem2 = () => Token
-                .createMember(username2)
-                .then(member => {
-                    member2 = member;
-                });
+        const token = await member1.createToken(account.id, 9.24, 'EUR', username2);
+        await member1.endorseToken(token.id);
 
-        var createAndEndorse = () => member1
-                .createToken(account.id, 9.24, 'EUR', username2)
-                .then(token => {
-                    tokenId = token.id;
-                    return member1
-                        .endorseToken(tokenId);
-                });
+        await member2.createTransfer(token.id, 5, 'EUR');
+        const transfers = await member1.getTransfers(token.id, null, 100);
 
-        return setUpMem1()
-            .then(setUpMem2)
-            .then(createAndEndorse)
-            .then(() => member2.createTransfer(tokenId, 5, 'EUR'))
-            .then(() => member1.getTransfers(tokenId, null, 100));
+        assert.isAtLeast(transfers.data.length, 1);
     });
 });

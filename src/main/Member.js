@@ -74,15 +74,14 @@ export default class Member {
      * Approves a new key for this member
      * @param {Buffer} publicKey - key to add
      * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
-     * @return {Promise} empty empty promise
+     * @return {Promise} empty - empty promise
      */
     approveKey(publicKey, keyLevel = KeyLevel.PRIVILEGED) {
-        return this._getPreviousHash()
-            .then(prevHash =>
-                this._client
-                    .addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel)
-                    .then(res => undefined))
-            .catch(err => Util.reject(this.approveKey, err));
+        return Util.call(this.approveKey, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel);
+            return;
+        });
     }
 
     /**
@@ -91,12 +90,11 @@ export default class Member {
      * @return {Promise} empty empty promise
      */
     removeKey(keyId) {
-        return this._getPreviousHash()
-            .then(prevHash =>
-                this._client
-                    .removeKey(prevHash, keyId)
-                    .then(res => undefined))
-            .catch(err => Util.reject(this.removeKey, err));
+        return Util.call(this.removeKey, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.removeKey(prevHash, keyId);
+            return;
+        });
     }
 
     /**
@@ -105,12 +103,11 @@ export default class Member {
      * @return {Promise} empty empty promise
      */
     addUsername(username) {
-        return this._getPreviousHash()
-            .then(prevHash =>
-                this._client
-                    .addUsername(prevHash, username)
-                    .then(res => undefined))
-            .catch(err => Util.reject(this.addUsername, err));
+        return Util.call(this.addUsername, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.addUsername(prevHash, username);
+            return;
+        });
     }
 
     /**
@@ -119,13 +116,11 @@ export default class Member {
      * @return {Promise} empty - empty promise
      */
     removeUsername(username) {
-        return this
-            ._getPreviousHash()
-            .then(prevHash =>
-                this._client
-                    .removeUsername(prevHash, username)
-                    .then(res => undefined))
-            .catch(err => Util.reject(this.removeUsername, err));
+        return Util.call(this.removeUsername, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.removeUsername(prevHash, username);
+            return;
+        });
     }
 
     /**
@@ -135,12 +130,10 @@ export default class Member {
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
     linkAccounts(bankId, accountLinkPayloads) {
-        return this._client
-            .linkAccounts(bankId, accountLinkPayloads)
-            .then(res => {
-                return res.data.accounts.map(acc => new Account(this, acc));
-            })
-            .catch(err => Util.reject(this.linkAccounts, err));
+        return Util.call(this.linkAccounts, async () => {
+            const res = await this._client.linkAccounts(bankId, accountLinkPayloads);
+            return res.data.accounts.map(acc => new Account(this, acc));
+        });
     }
 
     /**
@@ -148,12 +141,10 @@ export default class Member {
      * @return {Promise} accounts - Promise resolving to the accounts
      */
     getAccounts() {
-        return this._client
-            .getAccounts()
-            .then(res => {
-                return res.data.accounts.map(acc => new Account(this, acc));
-            })
-            .catch(err => Util.reject(this.getAccounts, err));
+        return Util.call(this.getAccounts, async () => {
+            const res = await this._client.getAccounts();
+            return res.data.accounts.map(acc => new Account(this, acc));
+        });
     }
 
     /**
@@ -166,12 +157,10 @@ export default class Member {
     subscribeToNotifications(
         target,
         platform = "IOS") {
-        return this._client
-            .subscribeToNotifications(target, platform)
-            .then(res => {
-                return new Subscriber(res.data.subscriber);
-            })
-            .catch(err => Util.reject(this.subscribeToNotifications, err));
+        return Util.call(this.subscribeToNotifications, async () => {
+            const res = await this._client.subscribeToNotifications(target, platform);
+            return new Subscriber(res.data.subscriber);
+        })
     }
 
     /**
@@ -180,12 +169,10 @@ export default class Member {
      * @return {Promise} - subscribers
      */
     getSubscribers() {
-        return this._client
-            .getSubscribers()
-            .then(res => {
-                return res.data.subscribers.map(s => new Subscriber(s));
-            })
-            .catch(err => Util.reject(this.getSubscribers, err));
+        return Util.call(this.getSubscribers, async () => {
+            const res = await this._client.getSubscribers();
+            return res.data.subscribers.map(s => new Subscriber(s));
+        });
     }
 
     /**
@@ -195,12 +182,10 @@ export default class Member {
      * @return {Promise} - subscriber
      */
     getSubscriber(subscriberId) {
-        return this._client
-            .getSubscriber(subscriberId)
-            .then(res => {
-                return new Subscriber(res.data.subscriber);
-            })
-            .catch(err => Util.reject(this.getSubscriber, err));
+        return Util.call(this.getSubscriber, async () => {
+            const res = await this._client.getSubscriber(subscriberId);
+            return new Subscriber(res.data.subscriber);
+        });
     }
 
     /**
@@ -209,9 +194,10 @@ export default class Member {
      * @return {Promise} empty - empty promise
      */
     unsubscribeFromNotifications(subscriberId) {
-        return this._client
-            .unsubscribeFromNotifications(subscriberId)
-            .catch(err => Util.reject(this.unsubscribeFromNotifications, err));
+        return Util.call(this.unsubscribeFromNotifications, async () => {
+            await this._client.unsubscribeFromNotifications(subscriberId);
+            return;
+        });
     }
 
     /**
@@ -221,12 +207,10 @@ export default class Member {
      * @return {Promise} empty - empty promise
      */
     addAddress(name, address) {
-        return this._client
-            .addAddress(name, address)
-            .then(res => {
-                return new Address(res.data.address);
-            })
-            .catch(err => Util.reject(this.addAddress, err));
+        return Util.call(this.addAddress, async () => {
+            const res = await this._client.addAddress(name, address);
+            return new Address(res.data.address);
+        });
     }
 
     /**
@@ -236,12 +220,10 @@ export default class Member {
      * @return {Promise} address - the address
      */
     getAddress(addressId) {
-        return this._client
-            .getAddress(addressId)
-            .then(res => {
-                return new Address(res.data.address);
-            })
-            .catch(err => Util.reject(this.getAddress, err));
+        return Util.call(this.getAddress, async () => {
+            const res = await this._client.getAddress(addressId);
+            return new Address(res.data.address);
+        });
     }
 
     /**
@@ -249,13 +231,10 @@ export default class Member {
      * @return {Promise} addresses - Addresses
      */
     getAddresses() {
-        return this._client
-            .getAddresses()
-            .then(res => {
-                return res.data.addresses
-                    .map(address => new Address(address));
-            })
-            .catch(err => Util.reject(this.getAddresses, err));
+        return Util.call(this.getAddresses, async () => {
+            const res = await this._client.getAddresses();
+            return res.data.addresses.map(address => new Address(address));
+        });
     }
 
     /**
@@ -263,10 +242,10 @@ export default class Member {
      * @return {Promise} usernames - member's usernames
      */
     getAllUsernames() {
-        return this
-            ._getMember()
-            .then(member => member.usernames)
-            .catch(err => Util.reject(this.getAllUsernames, err));
+        return Util.call(this.getAllUsernames, async () => {
+            const member = await this._getMember();
+            return member.usernames;
+        });
     }
 
     /**
@@ -276,12 +255,10 @@ export default class Member {
      * @return {Promise} token - promise of a created AccessToken
      */
     createAccessToken(accessToken) {
-        return this._client
-            .createToken(accessToken.from(this).json)
-            .then(res => {
-                return AccessToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createAccessToken, err));
+        return Util.call(this.createAccessToken, async () => {
+            const res = await this._client.createToken(accessToken.from(this).json);
+            return AccessToken.createFromToken(res.data.token);
+        });
     }
 
     /**
@@ -292,14 +269,12 @@ export default class Member {
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAccessToken(tokenToCancel, tokenToCreate) {
-        return this._client
-            .replaceToken(tokenToCancel, tokenToCreate)
-            .then(res => {
-                return new TokenOperationResult(
-                    res.data.result,
-                    AccessToken.createFromToken(res.data.result.token));
-            })
-            .catch(err => Util.reject(this.replaceAccessToken, err));
+        return Util.call(this.replaceAccessToken, async () => {
+            const res = await this._client.replaceToken(tokenToCancel, tokenToCreate);
+            return new TokenOperationResult(
+                res.data.result,
+                AccessToken.createFromToken(res.data.result.token));
+        });
     }
 
     /**
@@ -310,14 +285,12 @@ export default class Member {
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
-        return this._client
-            .replaceAndEndorseToken(tokenToCancel, tokenToCreate)
-            .then(res => {
-                return new TokenOperationResult(
-                    res.data.result,
-                    AccessToken.createFromToken(res.data.result.token));
-            })
-            .catch(err => Util.reject(this.replaceAndEndorseAccessToken, err));
+        return Util.call(this.replaceAndEndorseAccessToken, async () => {
+            const res = await this._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate);
+            return new TokenOperationResult(
+                res.data.result,
+                AccessToken.createFromToken(res.data.result.token));
+        });
     }
 
     /**
@@ -333,12 +306,10 @@ export default class Member {
     createToken(accountId, amount, currency, username, description = undefined) {
         const token = TransferToken.create(this, accountId, amount,
             currency, username, description);
-        return this._client
-            .createToken(token.json)
-            .then(res => {
-                return TransferToken.createFromToken(res.data.token);
-            })
-            .catch(err => Util.reject(this.createToken, err));
+        return Util.call(this.createToken, async () => {
+            const res = await this._client.createToken(token.json);
+            return TransferToken.createFromToken(res.data.token);
+        });
     }
 
     /**
@@ -347,16 +318,14 @@ export default class Member {
      * @return {Promise} token - TransferToken
      */
     getToken(tokenId) {
-        return this._client
-            .getToken(tokenId)
-            .then(res => {
-                if (res.data.token.payload.access !== undefined) {
-                    return AccessToken.createFromToken(res.data.token);
-                } else {
-                    return TransferToken.createFromToken(res.data.token);
-                }
-            })
-            .catch(err => Util.reject(this.getToken, err));
+        return Util.call(this.getToken, async () => {
+            const res = await this._client.getToken(tokenId);
+            if (res.data.token.payload.access !== undefined) {
+                return AccessToken.createFromToken(res.data.token);
+            } else {
+                return TransferToken.createFromToken(res.data.token);
+            }
+        });
     }
 
     /**
@@ -366,16 +335,14 @@ export default class Member {
      * @return {TransferToken} tokens - returns a list of Transfer Tokens
      */
     getTransferTokens(offset, limit) {
-        return this._client
-            .getTokens('TRANSFER', offset, limit)
-            .then(res => {
-                return new PagedResult(
-                    res.data.tokens === undefined
-                        ? []
-                        :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
-                    res.data.offset);
-            })
-            .catch(err => Util.reject(this.getTransferTokens, err));
+        return Util.call(this.getTransferTokens, async () => {
+            const res = await this._client.getTokens('TRANSFER', offset, limit);
+            return new PagedResult(
+                res.data.tokens === undefined
+                    ? []
+                    :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
+                res.data.offset);
+        });
     }
 
     /**
@@ -385,16 +352,14 @@ export default class Member {
      * @return {Promise} AccessTokens - returns a list of Access Tokens
      */
     getAccessTokens(offset, limit) {
-        return this._client
-            .getTokens('ACCESS', offset, limit)
-            .then(res => {
-                return new PagedResult(
-                    res.data.tokens === undefined
-                        ? []
-                        :res.data.tokens.map(tk => AccessToken.createFromToken(tk)),
-                    res.data.offset);
-            })
-            .catch(err => Util.reject(this.getAccessTokens, err));
+        return Util.call(this.getAccessTokens, async () => {
+            const res = await this._client.getTokens('ACCESS', offset, limit);
+            return new PagedResult(
+                res.data.tokens === undefined
+                    ? []
+                    :res.data.tokens.map(tk => AccessToken.createFromToken(tk)),
+                res.data.offset);
+        });
     }
 
     /**
@@ -403,19 +368,14 @@ export default class Member {
      * @return {Promise} token - Promise of endorsed transfer token
      */
     endorseToken(token) {
-        return this
-            ._resolveToken(token)
-            .then(finalToken => {
-                return this._client
-                    .endorseToken(finalToken)
-                    .then(res => {
-                        if (typeof token !== 'string' && !(token instanceof String)) {
-                            token.payloadSignatures = res.data.result.token.payloadSignatures;
-                        }
-                        return new TokenOperationResult(res.data.result, token);
-                    });
-            })
-            .catch(err => Util.reject(this.endorseToken, err));
+        return Util.call(this.endorseToken, async () => {
+            const finalToken = await this._resolveToken(token);
+            const endorsed = await this._client.endorseToken(finalToken);
+            if (typeof token !== 'string' && !(token instanceof String)) {
+                token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
+            }
+            return new TokenOperationResult(endorsed.data.result, token);
+        });
     }
 
     /**
@@ -424,19 +384,14 @@ export default class Member {
      * @return {Promise} TokenOperationResult.js - cancelled token
      */
     cancelToken(token) {
-        return this
-            ._resolveToken(token)
-            .then(finalToken => {
-                return this._client
-                    .cancelToken(finalToken)
-                    .then(res => {
-                        if (typeof token !== 'string' && !(token instanceof String)) {
-                            token.payloadSignatures = res.data.result.token.payloadSignatures;
-                        }
-                        return new TokenOperationResult(res.data.result, token);
-                    });
-            })
-            .catch(err => Util.reject(this.cancelToken, err));
+        return Util.call(this.cancelToken, async () => {
+            const finalToken = await this._resolveToken(token);
+            const cancelled = await this._client.cancelToken(finalToken);
+            if (typeof token !== 'string' && !(token instanceof String)) {
+                token.payloadSignatures = cancelled.data.result.token.payloadSignatures;
+            }
+            return new TokenOperationResult(cancelled.data.result, token);
+        });
     }
 
     /**
@@ -449,25 +404,20 @@ export default class Member {
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
     createTransfer(token, amount, currency, description, destinations = []) {
-        return this
-            ._resolveToken(token)
-            .then(finalToken => {
-                if (amount === undefined) {
-                    amount = finalToken.payload.transfer.amount;
-                }
-                if (currency === undefined) {
-                    currency = finalToken.payload.transfer.currency;
-                }
-                if (Util.countDecimals(amount) > maxDecimals) {
-                    throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
-                }
-                return this._client
-                    .createTransfer(finalToken, amount, currency, description, destinations)
-                    .then(res => {
-                        return new Transfer(res.data.transfer);
-                    });
-            })
-            .catch(err => Util.reject(this.createTransfer, err));
+        return Util.call(this.createTransfer, async () => {
+            const finalToken = await this._resolveToken(token);
+            if (amount === undefined) {
+                amount = finalToken.payload.transfer.amount;
+            }
+            if (currency === undefined) {
+                currency = finalToken.payload.transfer.currency;
+            }
+            if (Util.countDecimals(amount) > maxDecimals) {
+                throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
+            }
+            const res = await this._client.createTransfer(finalToken, amount, currency, description, destinations)
+            return new Transfer(res.data.transfer);
+        })
     }
 
     /**
@@ -476,12 +426,10 @@ export default class Member {
      * @return {Transfer} transfer - transfer if found
      */
     getTransfer(transferId) {
-        return this._client
-            .getTransfer(transferId)
-            .then(res => {
-                return new Transfer(res.data.transfer);
-            })
-            .catch(err => Util.reject(this.getTransfer, err));
+        return Util.call(this.getTransfer, async () => {
+            const res = await this._client.getTransfer(transferId);
+            return new Transfer(res.data.transfer);
+        });
     }
 
     /**
@@ -492,14 +440,12 @@ export default class Member {
      * @return {Promise} transfers - Transfers
      */
     getTransfers(tokenId, offset, limit) {
-        return this._client
-            .getTransfers(tokenId, offset, limit)
-            .then(res => {
-                return new PagedResult(
-                    res.data.transfers.map(pt => new Transfer(pt)),
-                    res.data.offset);
-            })
-            .catch(err => Util.reject(this.getTransfers, err));
+        return Util.call(this.getTransfers, async () => {
+            const res = await this._client.getTransfers(tokenId, offset, limit);
+            return new PagedResult(
+                res.data.transfers.map(pt => new Transfer(pt)),
+                res.data.offset);
+        });
     }
 
     /**
@@ -507,26 +453,24 @@ export default class Member {
      * @return {Promise} keys - keys objects
      */
     getPublicKeys() {
-        return this
-            ._getMember()
-            .then(member => member.keys)
-            .catch(err => Util.reject(this.getPublicKeys, err));
+        return Util.call(this.getPublicKeys, async () => {
+            const member = await this._getMember();
+            return member.keys;
+        });
     }
 
     _getPreviousHash() {
-        return this
-            ._getMember()
-            .then(member => member.lastHash)
-            .catch(err => Util.reject(this._getPreviousHash, err));
+        return Util.call(this._getPreviousHash, async () => {
+            const member = await this._getMember();
+            return member.lastHash;
+        });
     }
 
     _getMember() {
-        return this._client
-            .getMember()
-            .then(res => {
-                return res.data.member;
-            })
-            .catch(err => Util.reject(this._getMember, err));
+        return Util.call(this._getMember, async () => {
+            const res = await this._client.getMember();
+            return res.data.member;
+        });
     }
 
     _resolveToken(token) {

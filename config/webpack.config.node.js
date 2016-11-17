@@ -30,7 +30,7 @@ fs.readdirSync('node_modules')
 
 module.exports = {
     target: 'node',
-    entry: resolve(dirname(__dirname), 'src/index.js'),
+    entry: ['babel-regenerator-runtime', resolve(dirname(__dirname), 'src/index.js')],
     output: {
         path: resolve(dirname(__dirname), 'dist'),
         filename: outputFile,
@@ -47,12 +47,9 @@ module.exports = {
                 exclude: /(node_modules|bower_components|dist)/,
                 loader: 'babel', // 'babel-loader' is also a valid name to reference
                 query: {
-                    presets: ['es2015']
+                    presets: ['es2015'],
+                    plugins: ['babel-plugin-transform-regenerator']
                 }
-            },
-            {
-                test: /\.proto$/,
-                loader: 'proto-loader'
             }
         ]
     }

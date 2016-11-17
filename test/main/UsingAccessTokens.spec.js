@@ -1,8 +1,10 @@
+const chai = require('chai');
+const assert = chai.assert;
+import 'babel-regenerator-runtime';
+
 import AccessToken from "../../src/main/AccessToken";
 import Sample from "../sample/Sample";
 
-const chai = require('chai');
-const assert = chai.assert;
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -13,146 +15,92 @@ let grantor = {};
 let grantee = {};
 let address = {};
 
-const setUpGrantor = () => {
+const setUpGrantor = async () => {
     grantorUsername = Sample.string();
-    return Token
-        .createMember(grantorUsername)
-        .then(member => {
-            grantor = member;
-            return grantor
-                .addAddress("name", { city: 'San Francisco', country: 'US' })
-                .then(res => {
-                    address = res;
-                });
-        });
+    grantor = await Token.createMember(grantorUsername);
+    address = await grantor.addAddress("name", { city: 'San Francisco', country: 'US' });
 };
 
-const setupGrantee = () => {
+const setupGrantee = async () => {
     granteeUsername = Sample.string();
-    return Token
-        .createMember(granteeUsername)
-        .then(member => {
-            grantee = member;
-        });
+    grantee = await Token.createMember(granteeUsername);
 };
 
-const setupToken = () => {
-    return grantor.createAccessToken(AccessToken.grantTo(granteeUsername).forAddress(address.id))
-        .then(token => grantor
-            .endorseToken(token)
-            .then(res => token))
-
+const setupToken = async () => {
+    const token = await grantor.createAccessToken(Token.AccessToken.grantTo(granteeUsername).forAddress(address.id));
+    await grantor.endorseToken(token);
+    return token;
 };
 
-describe('Using access tokens', () => {
-    beforeEach(() => {
-        return setUpGrantor()
-            .then(res => setupGrantee());
+describe('Using access tokens', async () => {
+    beforeEach(async () => {
+        await setUpGrantor();
+        await setupGrantee();
     });
 
-    it('On-Behalf-Of address token', () => {
-        return setupToken()
-            .then(token => {
-                grantee.useAccessToken(token.id);
-                return grantee
-                    .getAddress(address.id)
-                    .then(result => {
-                        assert.equal(result.id, address.id);
-                        assert.equal(result.name, address.name);
-                        assert.deepEqual(result.address, address.address);
-                    });
-            });
+    it('On-Behalf-Of address token', async () => {
+        const token = await setupToken();
+        grantee.useAccessToken(token.id);
+        const result = await grantee.getAddress(address.id);
+        assert.equal(result.id, address.id);
+        assert.equal(result.name, address.name);
+        assert.deepEqual(result.address, address.address);
     });
 
-    it('address access token should not work if cleared token', done => {
-        setupToken()
-            .then(token => {
-                grantee.useAccessToken(token.id);
-                grantee.clearAccessToken();
-                return grantee
-                    .getAddress(address.id)
-                    .then(() => {
-                        done(new Error("Should not succeed"))
-                    })
-                    .catch(err => done());
-            });
+    it('address access token should not work if cleared token', async () => {
+        const token = await setupToken();
+        grantee.useAccessToken(token.id);
+        grantee.clearAccessToken();
+        try {
+            await grantee.getAddress(address.id);
+            return Promise.reject(new Error("Should not succeed"));
+        } catch (e) {
+            return true;
+        }
     });
 
-    it('replaced address token should work', () => {
-        return setupToken()
-            .then(token => {
-                grantee.useAccessToken(token.id);
-                grantee
-                    .getAddress(address.id)
-                    .then(result => {
-                      assert.equal(result.id, address.id);
-                      assert.equal(result.name, address.name);
-                      assert.deepEqual(result.address, address.address);
-                    })
-                    .then(() => grantee.clearAccessToken());
-                return token;
-            })
-            .then(token => {
-              return grantor
-                  .replaceAndEndorseAccessToken(
+    it('replaced address token should work', async () => {
+        const token = await setupToken();
+        grantee.useAccessToken(token.id);
+        const result = await grantee.getAddress(address.id);
+        assert.equal(result.id, address.id);
+        assert.equal(result.name, address.name);
+        assert.deepEqual(result.address, address.address);
+
+        grantee.clearAccessToken();
+        const operationalResult = await grantor.replaceAndEndorseAccessToken(
                       token,
-                      AccessToken.createFromAccessToken(token).forAll())
-                  .then(operationResult => {
-                    assert.equal(operationResult.status, 'SUCCESS');
-                    return operationResult.token;
-                  });
-            })
-            .then(token => {
-                grantee.useAccessToken(token.id);
-                return grantee
-                    .getAddress(address.id)
-                    .then(result => {
-                      assert.equal(result.id, address.id);
-                      assert.equal(result.name, address.name);
-                      assert.deepEqual(result.address, address.address);
-                    })
-                    .then(() => grantee.clearAccessToken());
-            })
+                      Token.AccessToken.createFromAccessToken(token).forAll())
+        assert.equal(operationalResult.status, 'SUCCESS');
+
+        grantee.useAccessToken(operationalResult.token.id);
+        const result2 = await grantee.getAddress(address.id);
+        assert.equal(result2.id, address.id);
+        assert.equal(result2.name, address.name);
+        assert.deepEqual(result2.address, address.address);
+        grantee.clearAccessToken();
     });
 
-    it('replaced address should work after endorsing', () => {
-      return setupToken()
-          .then(token => {
-            grantee.useAccessToken(token.id);
-            grantee
-                .getAddress(address.id)
-                .then(result => {
-                  assert.equal(result.id, address.id);
-                  assert.equal(result.name, address.name);
-                  assert.deepEqual(result.address, address.address);
-                })
-                .then(() => grantee.clearAccessToken());
-            return token;
-          })
-          .then(token => {
-            return grantor
-                .replaceAccessToken(
+    it('replaced address should work after endorsing', async () => {
+      const token = await setupToken();
+        grantee.useAccessToken(token.id);
+        const result = await grantee.getAddress(address.id);
+        assert.equal(result.id, address.id);
+        assert.equal(result.name, address.name);
+        assert.deepEqual(result.address, address.address);
+        grantee.clearAccessToken();
+
+        const operationalResult = await grantor.replaceAccessToken(
                     token,
-                    AccessToken.createFromAccessToken(token).forAll())
-                .then(operationResult => {
-                  assert.equal(operationResult.status, 'MORE_SIGNATURES_NEEDED');
-                  return operationResult.token;
-                });
-          })
-          .then(token =>
-              grantor
-                  .endorseToken(token)
-                  .then(res => token))
-          .then(token => {
-            grantee.useAccessToken(token.id);
-            return grantee
-                .getAddress(address.id)
-                .then(result => {
-                  assert.equal(result.id, address.id);
-                  assert.equal(result.name, address.name);
-                  assert.deepEqual(result.address, address.address);
-                })
-                .then(() => grantee.clearAccessToken());
-          })
+                    Token.AccessToken.createFromAccessToken(token).forAll())
+        assert.equal(operationalResult.status, 'MORE_SIGNATURES_NEEDED');
+
+        await grantor.endorseToken(operationalResult.token);
+        grantee.useAccessToken(operationalResult.token.id);
+        const result2 = await grantee.getAddress(address.id);
+        assert.equal(result2.id, address.id);
+        assert.equal(result2.name, address.name);
+        assert.deepEqual(result2.address, address.address);
+        grantee.clearAccessToken();
     });
 });

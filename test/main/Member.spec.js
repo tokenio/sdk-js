@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -11,76 +12,64 @@ let member = {};
 let username = '';
 
 describe('member tests', () => {
-    before(() => {
+    before(async () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
-        return Token.createMember(username)
-            .then(res => {
-                member = res;
-                return member.approveKey(Crypto.strKey(keys.publicKey));
-            });
+        member = await Token.createMember(username);
+        await member.approveKey(Crypto.strKey(keys.publicKey));
     });
 
     describe('Creating a member', () => {
-        it('should add a second key', () => {
+        it('should add a second key', async () => {
             const keys = Crypto.generateKeys();
-            return member.approveKey(Crypto.strKey(keys.publicKey));
+            await member.approveKey(Crypto.strKey(keys.publicKey));
         });
 
-        it('should add and remove a key', () => {
+        it('should add and remove a key', async () => {
             const keys = Crypto.generateKeys();
-            return member.approveKey(Crypto.strKey(keys.publicKey))
-                .then(() => member.removeKey(keys.keyId))
-                .then(() => member.getPublicKeys())
-                .then(keys => assert.isAtLeast(keys.length, 2));
+            await member.approveKey(Crypto.strKey(keys.publicKey));
+            await member.removeKey(keys.keyId);
+            const keys2 = await member.getPublicKeys();
+            assert.isAtLeast(keys2.length, 2);
         });
 
-        it('should add an username', () => {
+        it('should add an username', async () => {
             const username = Crypto.generateKeys().keyId;
-            return member.addUsername(username)
-                .then(() => member.getAllUsernames())
-                .then(usernames => assert.isAtLeast(usernames.length, 2));
+            await member.addUsername(username);
+            const usernames = await member.getAllUsernames();
+            assert.isAtLeast(usernames.length, 2);
         });
 
-        it('should add and remove an username', () => {
+        it('should add and remove an username', async () => {
             const newUsername = Crypto.generateKeys().keyId;
-            return member.addUsername(newUsername)
-                .then(() => member.removeUsername(newUsername))
-                .then(() => member.getAllUsernames())
-                .then(usernames => {
-                    assert.include(usernames, username);
-                    assert.notInclude(usernames, newUsername);
-                });
+            await member.addUsername(newUsername);
+            await member.removeUsername(newUsername);
+            const usernames = await member.getAllUsernames();
+            assert.include(usernames, username);
+            assert.notInclude(usernames, newUsername);
         });
 
-        it('should get all usernames', () => {
-            return member.getAllUsernames().then(usernames => {
-                assert.isAtLeast(usernames.length, 1);
-            });
+        it('should get all usernames', async () => {
+            const usernames = await member.getAllUsernames();
+            assert.isAtLeast(usernames.length, 1);
         });
 
-        it('should get all keys', () => {
-            return member.getPublicKeys().then(keys => {
-                assert.isAtLeast(keys.length, 1);
-            });
+        it('should get all keys', async () => {
+            const keys = await member.getPublicKeys();
+            assert.isAtLeast(keys.length, 1);
         });
 
-        it('should link an account', () => {
-            BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp =>
-                member.linkAccounts('iron', alp).then(accs => {
-                    assert.isAtLeast(accs.length, 2);
-                })
-            );
+        it('should link an account', async () => {
+            const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const accs = await member.linkAccounts('iron', alp);
+            assert.isAtLeast(accs.length, 1);
         });
 
-        it('should get accounts', () => {
-            BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp =>
-                member.linkAccounts('iron', alp).then(() => {
-                    return member.getAccounts().then(accs => {
-                        assert.isAtLeast(accs.length, 2);
-                    });
-                })
-            );
+        it('should get accounts', async () => {
+            const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            await member.linkAccounts('iron', alp);
+            const accs = await member.getAccounts();
+            assert.isAtLeast(accs.length, 2);
         });
     });
 });

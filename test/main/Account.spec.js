@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -10,56 +11,41 @@ let member = {};
 let username = '';
 
 describe('Account tests', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
-        return Token.createMember(username)
-            .then(res => {
-                member = res;
-                return member.approveKey(Crypto.strKey(keys.publicKey));
-            });
+        member = await Token.createMember(username);
+        await member.approveKey(Crypto.strKey(keys.publicKey));
     });
 
-    it('should get accounts', () => {
-        return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
-            return member.linkAccounts('iron', alp).then(() => {
-                return member.getAccounts().then(accs => {
-                    assert.equal(accs.length, 1);
-                });
-            });
-        });
+    it('should get accounts', async () => {
+        const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        await member.linkAccounts('iron', alp);
+        const accs = await member.getAccounts();
     });
 
-    it('should have name and id', () => {
-        return BankClient.requestLinkAccounts(username, 100000, 'EUR').then(alp => {
-            return member.linkAccounts('iron', alp).then(() => {
-                return member.getAccounts().then(accs => {
-                    assert.equal(accs.length, 1);
-                    assert.isOk(accs[0].name);
-                    assert.isOk(accs[0].id);
-                    assert.equal(accs[0].bankId, 'iron');
-                });
-            });
-        });
+    it('should have name and id', async () => {
+        const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        await member.linkAccounts('iron', alp);
+        const accs = await member.getAccounts();
+        assert.equal(accs.length, 1);
+        assert.isOk(accs[0].name);
+        assert.isOk(accs[0].id);
+        assert.equal(accs[0].bankId, 'iron');
     });
 
     let account = {};
 
     describe('advances', () => {
-        beforeEach(() => {
-            return BankClient.requestLinkAccounts(username, 100000, 'EUR')
-                .then(alp => {
-                    return member.linkAccounts('iron', alp).then(accs => {
-                        account = accs[0];
-                    });
-                });
+        beforeEach(async () => {
+            const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const accs = await member.linkAccounts('iron', alp);
+            account = accs[0];
         });
 
-        it('should get the balance', () => {
-            return account.getBalance()
-                .then(bal => {
-                    assert.equal(parseFloat(bal.current.value), 100000);
-                });
+        it('should get the balance', async () => {
+            const bal = await account.getBalance()
+            assert.equal(parseFloat(bal.current.value), 100000);
         });
     });
 });

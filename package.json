@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.4.24",
+  "version": "1.4.25",
   "description": "",
   "main": "dist/token-io.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.5",
+    "babel-plugin-transform-regenerator": "^6.16.1",
     "babel-preset-es2015": "^6.14.0",
     "chai": "^3.5.0",
     "eslint": "^3.6.1",
@@ -49,6 +50,7 @@
   },
   "dependencies": {
     "axios": "^0.14.0",
+    "babel-regenerator-runtime": "^6.5.0",
     "base64url": "^2.0.0",
     "es6-promise": "^3.3.1",
     "fast-sha256": "^1.0.0",

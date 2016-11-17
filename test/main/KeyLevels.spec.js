@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -10,64 +11,50 @@ import KeyLevel from "../../src/main/KeyLevel";
 let member = {};
 let username = '';
 describe('Key levels', () => {
-    before(() => {
+    before(async () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
-        return Token
-            .createMember(username)
-            .then(res => {
-                member = res;
-                return member.approveKey(Crypto.strKey(keys.publicKey));
-            });
+        member = await Token.createMember(username);
+        await member.approveKey(Crypto.strKey(keys.publicKey));
     });
 
-    it('should approve a standard level key', () => {
+    it('should approve a standard level key', async () => {
         const keys = Crypto.generateKeys();
-        return member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD).then(() => {
-            return Token
-                .loginWithUsername(keys, username)
-                .then(memberNew => {
-                    assert.equal(member.id, memberNew.id);
-                });
-        });
+        await member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD);
+        const memberNew = await Token.loginWithUsername(keys, username);
+        assert.equal(member.id, memberNew.id);
     });
 
-    it('should approve a low level key', () => {
+    it('should approve a low level key', async () => {
         const keys = Crypto.generateKeys();
-        return member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
-            return Token
-                .loginWithUsername(keys, username)
-                .then(memberNew => {
-                    assert.equal(member.id, memberNew.id);
-                });
-        });
+        await member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW);
+        const memberNew = await Token.loginWithUsername(keys, username);
+        assert.equal(member.id, memberNew.id);
     });
 
-    it('should not allow non-privileged key to add a key', done => {
+    it('should not allow non-privileged key to add a key', async () => {
         const keys = Crypto.generateKeys();
-        member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD).then(() => {
-            return Token
-                .loginWithUsername(keys, username)
-                .then(memberNew => {
-                    const keys2 = Crypto.generateKeys();
-                    return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
-                        done(new Error("should fail"));
-                    });
-            });
-        }).catch(() => done());
+        await member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD);
+        const memberNew = await Token.loginWithUsername(keys, username);
+        const keys2 = Crypto.generateKeys();
+        try {
+            await memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW);
+            return Promise.reject(new Error("should fail"));
+        } catch (err) {
+            return true;
+        }
     });
 
-    it('should not allow non-privileged key to add a key, LOW', done => {
+    it('should not allow non-privileged key to add a key, LOW', async () => {
         const keys = Crypto.generateKeys();
-        member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW).then(() => {
-            return Token
-                .loginWithUsername(keys, username)
-                .then(memberNew => {
-                    const keys2 = Crypto.generateKeys();
-                    return memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW).then(() => {
-                        done(new Error("should fail"));
-                    });
-                });
-        }).catch(() => done());
+        await member.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW);
+        const memberNew = await Token.loginWithUsername(keys, username);
+        const keys2 = Crypto.generateKeys();
+        try {
+            await memberNew.approveKey(Crypto.strKey(keys2.publicKey), KeyLevel.LOW);
+            return Promise.reject(new Error("should fail"));
+        } catch (err) {
+            return true;
+        }
     });
 });

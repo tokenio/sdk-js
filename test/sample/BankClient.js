@@ -1,6 +1,7 @@
 import {defaultCurrency} from "../../src/constants";
 import Sample from "./Sample";
 const axios = require('axios');
+import 'babel-regenerator-runtime';
 
 const urls = {
     local: 'http://localhost:8100',
@@ -13,15 +14,16 @@ const instance = axios.create({
 });
 
 export default {
-    requestLinkAccounts: (
-        username,
-        balance = 100000,
-        currency = defaultCurrency,
-        accountName = "123") => {
+    requestLinkAccounts: async (
+            username,
+            balance = 100000,
+            currency = defaultCurrency,
+            accountName = "123") => {
+
         const randLastName = Sample.string();
         const randomAccNumber = Sample.string();
 
-        return instance(
+        const res = await instance(
             {
                 method: 'put',
                 url: `/clients`,
@@ -29,26 +31,22 @@ export default {
                     firstName: "JS Test",
                     lastName: "JS Testoff " + randLastName,
                 }
-            })
-            .then(res => res.data.client)
-            .then(client => {
-                return instance(
-                        {
-                        method: 'put',
-                        url: `/clients/${client.id}/accounts`,
-                        data: {
-                            name: accountName,
-                            account_number: randomAccNumber,
-                            balance: {
-                                value: balance,
-                                currency: currency
-                            }
-                        }
-                    })
-                    .then(ignored => client);
-            })
-            .then(client => {
-                return instance({
+            });
+        const client = res.data.client;
+        await instance(
+            {
+                method: 'put',
+                url: `/clients/${client.id}/accounts`,
+                data: {
+                    name: accountName,
+                    account_number: randomAccNumber,
+                    balance: {
+                        value: balance,
+                        currency: currency
+                    }
+                }
+            });
+        const res2 = await instance({
                     method: 'put',
                     url: `/clients/${client.id}/link-accounts`,
                     data: {
@@ -56,7 +54,6 @@ export default {
                         accounts: [ randomAccNumber ]
                     }
                 });
-             })
-             .then(res => res.data.accountLinkPayloads);
+        return res2.data.accountLinkPayloads;
     }
 };

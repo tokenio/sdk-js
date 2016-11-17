@@ -6,7 +6,9 @@ module.exports = {
         "es6": true,
         "mocha": true,
     },
-
+    "parserOptions": {
+        "ecmaVersion": 2017
+    },
     "globals": {
         "define": true,
         "BROWSER": true,
@@ -16,6 +18,6 @@ module.exports = {
         "no-unused-vars": "warn",
         "max-nested-callbacks": "off",
         "max-len": ["warn", 100],
-        "indent": "off"
+        "indent": "off",
     },
 };
