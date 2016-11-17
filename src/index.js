@@ -11,7 +11,6 @@ import AccessToken from "./main/AccessToken";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
-import 'babel-regenerator-runtime';
 
 // Main entry object
 class Token {
