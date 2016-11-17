@@ -6,6 +6,8 @@ import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
 import TokenOperationResult from "./main/TokenOperationResult";
 import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
+import TransferToken from "./main/TransferToken";
+import AccessToken from "./main/AccessToken";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
@@ -21,6 +23,8 @@ class Token {
         this.Util = Util;
         this.KeyLevel = KeyLevel;
         this.TokenOperationResult = TokenOperationResult;
+        this.TransferToken = TransferToken;
+        this.AccessToken = AccessToken;
     }
 
     /**

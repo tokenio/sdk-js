@@ -38,7 +38,7 @@ const setUp2 = async () => {
 const setUp3 = async () => {
     const token = await member1.createToken(account1.id, 38.71, 'EUR', username2);
     await member1.endorseToken(token.id);
-    const token1 = await member2.getToken(token.id);
+    token1 = await member2.getToken(token.id);
 };
 
 describe('Token Redemptions', async () => {
@@ -66,6 +66,7 @@ describe('Token Redemptions', async () => {
             await member2.createTransfer(token1.id, 1242.28, 'EUR');
             return Promise.reject(new Error("should fail"));
         } catch (err) {
+            assert.include(err.error.response.data, "amount exceeded");
             return true;
         }
     });
@@ -75,6 +76,7 @@ describe('Token Redemptions', async () => {
             await member1.createTransfer(token1.id, 10.28, 'EUR');
             return Promise.reject(new Error("should fail"));
         } catch (err) {
+            assert.include(err.error.response.data, "redeemer");
             return true;
         }
     });
@@ -84,6 +86,7 @@ describe('Token Redemptions', async () => {
             await member1.createTransfer(token1.id, 10.28, 'USD');
             return Promise.reject(new Error("should fail"));
         } catch (err) {
+            assert.include(err.error.response.data, "currency");
             return true;
         }
     });
