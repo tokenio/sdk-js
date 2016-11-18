@@ -7,7 +7,8 @@ export default class BankTransferToken {
         const id = token.id;
         const from = token.payload.from;
         const instructions = token.payload.transfer.instructions;
-        const amount = parseFloat(token.payload.transfer.amount);
+        const lifetimeAmount = parseFloat(token.payload.transfer.lifetimeAmount);
+        const amount = token.payload.transfer.amount !== undefined ? parseFloat(token.payload.transfer.amount) : 0;
         const currency = token.payload.transfer.currency;
         const redeemer = token.payload.transfer.redeemer;
         const description = token.payload.description;
@@ -15,11 +16,11 @@ export default class BankTransferToken {
         const issuer = token.payload.issuer;
         const nonce = token.payload.nonce;
         const payloadSignatures = token.payloadSignatures;
-        return new BankTransferToken(id, from, instructions, amount, currency,
-            redeemer, description, version, issuer, nonce, payloadSignatures);
+        return new BankTransferToken(id, from, instructions, lifetimeAmount, currency,
+            redeemer, description, amount, version, issuer, nonce, payloadSignatures);
     }
 
-    static create(member, accountId, amount, currency, username, description) {
+    static create(member, accountId, lifetimeAmount, currency, username, description) {
         const from = {
             id: member.id
         };
@@ -31,23 +32,25 @@ export default class BankTransferToken {
                 accountId: accountId
             }
         };
-        return new BankTransferToken(undefined, from, instructions, amount, currency,
+        return new BankTransferToken(undefined, from, instructions, lifetimeAmount, currency,
             redeemer, description);
     }
 
-    constructor(id, from, instructions, amount, currency, redeemer, description,
+    constructor(id, from, instructions, lifetimeAmount, currency, redeemer, description, amount = 0,
                 version = transferTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
-        if (Util.countDecimals(amount) > maxDecimals) {
+        if (Util.countDecimals(lifetimeAmount) > maxDecimals
+            || Util.countDecimals(amount) > maxDecimals) {
             throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
         }
         this._id = id;
         this._from = from;
         this._instructions = instructions;
-        this._amount = amount;
+        this._lifetimeAmount = lifetimeAmount;
         this._currency = currency;
         this._redeemer = redeemer;
         this._description = description;
+        this._amount = amount;
         this._version = version;
         this._issuer = issuer;
         this._nonce = nonce;
@@ -74,6 +77,9 @@ export default class BankTransferToken {
 
     get amount() {
         return this._amount;
+    }
+    get lifetimeAmount() {
+        return this._lifetimeAmount;
     }
 
     get currency() {
@@ -112,10 +118,13 @@ export default class BankTransferToken {
             from: this._from,
             transfer: {
                 currency: this._currency,
-                amount: this._amount.toString(),
+                lifetimeAmount: this._lifetimeAmount.toString(),
                 instructions: this._instructions
             }
         };
+        if (this._amount !== undefined) {
+            json.transfer.amount = this._amount.toString();
+        }
         if (this._redeemer !== undefined) {
             json.transfer.redeemer = this._redeemer;
         }
