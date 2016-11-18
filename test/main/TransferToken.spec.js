@@ -33,7 +33,7 @@ describe('TransferTokens', () => {
         assert.isOk(json.nonce);
         assert.equal(json.from.id, member1.id);
         assert.equal(json.transfer.currency, defaultCurrency);
-        assert.equal(json.transfer.amount, '12.54');
+        assert.equal(json.transfer.lifetimeAmount, '12.54');
         assert.equal(json.transfer.instructions.source.accountId, account1.id);
 
     });

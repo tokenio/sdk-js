@@ -297,17 +297,18 @@ export default class Member {
      * Creates an unendorsed Transfer Token
      *
      * @param {string} accountId - id of the source account
-     * @param {double} amount - amount limit on the token
+     * @param {double} lifetimeAmount - amount limit on the token
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
      * @param {string} username - username of the redeemer of this token
      * @param {string} description - optional description for the token
      * @return {Promise} token - promise of a created TransferToken
      */
-    createToken(accountId, amount, currency, username, description = undefined) {
-        const token = TransferToken.create(this, accountId, amount,
+    createToken(accountId, lifetimeAmount, currency, username, description = undefined) {
+        const token = TransferToken.create(this, accountId, lifetimeAmount,
             currency, username, description);
         return Util.callAsync(this.createToken, async () => {
             const res = await this._client.createToken(token.json);
+            debugger
             return TransferToken.createFromToken(res.data.token);
         });
     }
