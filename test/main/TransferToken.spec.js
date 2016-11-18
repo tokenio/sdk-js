@@ -35,7 +35,6 @@ describe('TransferTokens', () => {
         assert.equal(json.transfer.currency, defaultCurrency);
         assert.equal(json.transfer.lifetimeAmount, '12.54');
         assert.equal(json.transfer.instructions.source.accountId, account1.id);
-
     });
 
     it('should throw an error when there are too many decimals', done => {

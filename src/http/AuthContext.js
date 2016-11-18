@@ -1,5 +1,5 @@
 class AuthContext {
-    constructor(){
+    constructor() {
         this._onBehalfOf = undefined;
     }
 

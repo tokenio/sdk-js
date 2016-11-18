@@ -33,6 +33,7 @@ class AuthHeader {
      * right before it is sent to the server
      */
     addAuthorizationHeader(identity, config, context) {
+        let now = new Date().getTime();
         // Parses out the base uri
         let uriPath = config.url.replace(this._baseUrl, '');
 
@@ -50,7 +51,8 @@ class AuthHeader {
         const payload = {
             method: config.method.toUpperCase(),
             uriHost: this._baseUrl.replace('http://', '').replace('https://', ''),
-            uriPath
+            uriPath,
+            createdAtMs: now.toString()
         };
 
         if (config.data !== undefined && config.data !== '') {
@@ -69,7 +71,8 @@ class AuthHeader {
         const header = signatureScheme + ' ' +
             identity + ',' +
             'key-id=' + this._keys.keyId + ',' +
-            'signature=' + signature +
+            'signature=' + signature + ',' +
+            'created-at-ms=' + now +
             AuthHeader._onBehalfOfHeader(context);
 
         config.headers = {
