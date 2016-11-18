@@ -33,7 +33,7 @@ class Util {
      * @param fn: function to try to execute
      * @returns successful or rejected promise
      */
-    static async call(method, fn) {
+    static async callAsync(method, fn) {
         try {
             return await fn();
         } catch (err) {

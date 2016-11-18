@@ -32,7 +32,7 @@ class Token {
      * @return {Promise} result - true if username exists, false otherwise
      */
     usernameExists(username) {
-        return Util.call(this.usernameExists, async () => {
+        return Util.callAsync(this.usernameExists, async () => {
             const res = await this._unauthenticatedClient.usernameExists(username);
             return res.data.exists ? res.data.exists : false;
         });
@@ -44,7 +44,7 @@ class Token {
      * @return {Promise} member - Promise of created Member
      */
     createMember(username) {
-        return Util.call(this.createMember, async () => {
+        return Util.callAsync(this.createMember, async () => {
             const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
             await this._unauthenticatedClient.addFirstKey(keys, response.data.memberId);
@@ -61,7 +61,7 @@ class Token {
      * @return {Promise} member - Promise of instantiated Member
      */
     login(memberId, keys) {
-        return Util.call(this.login, async () => {
+        return Util.callAsync(this.login, async () => {
             return new Member(this._env, memberId, keys);
         });
     }
@@ -75,7 +75,7 @@ class Token {
      * @return {Promise} member - instantiated Member, if successful
      */
     loginWithUsername(keys, username) {
-        return Util.call(this.loginWithUsername, async () => {
+        return Util.callAsync(this.loginWithUsername, async () => {
             const res = await new AuthHttpClientUsername(this._env, username, keys).getMemberByUsername();
             return new Member(this._env, res.data.member.id, keys);
         });
@@ -86,7 +86,7 @@ class Token {
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage() {
-        return Util.call(this.loginFromLocalStorage, async () => {
+        return Util.callAsync(this.loginFromLocalStorage, async () => {
             return LocalStorage.loadMember(this._env);
         });
     }
@@ -101,15 +101,15 @@ class Token {
      * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
-        const notification = {
+        const body = {
             linkAccounts: {
                 bankId,
                 bankName,
                 accountLinkPayloads
             }
         };
-        return Util.call(this.notifyLinkAccounts, async () => {
-            const res = await this._unauthenticatedClient.notify(username, notification);
+        return Util.callAsync(this.notifyLinkAccounts, async () => {
+            const res = await this._unauthenticatedClient.notify(username, body);
             return res.data.status;
         });
     }
@@ -123,14 +123,14 @@ class Token {
      * @return {Promise} NotifyStatus - status
      */
     notifyAddKey(username, publicKey, name = '') {
-        const notification = {
+        const body = {
             addKey: {
                 publicKey: Crypto.strKey(publicKey),
                 name
             }
         };
-        return Util.call(this.notifyAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(username, notification)
+        return Util.callAsync(this.notifyAddKey, async () => {
+            const res = await this._unauthenticatedClient.notify(username, body)
             return res.data.status;
         });
     }
@@ -147,7 +147,7 @@ class Token {
      * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey, name = "") {
-        const notification = {
+        const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
                     bankId,
@@ -160,8 +160,8 @@ class Token {
                 }
             }
         };
-        return Util.call(this.notifyLinkAccountsAndAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(username, notification)
+        return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
+            const res = await this._unauthenticatedClient.notify(username, body)
             return res.data.status;
         });
     }
