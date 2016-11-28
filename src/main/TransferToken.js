@@ -5,6 +5,7 @@ export default class BankTransferToken {
 
     static createFromToken(token) {
         const id = token.id;
+        const parentId = token.payload.parentTokenId;
         const from = token.payload.from;
         const instructions = token.payload.transfer.instructions;
         const lifetimeAmount = parseFloat(token.payload.transfer.lifetimeAmount);
@@ -16,7 +17,7 @@ export default class BankTransferToken {
         const issuer = token.payload.issuer;
         const nonce = token.payload.nonce;
         const payloadSignatures = token.payloadSignatures;
-        return new BankTransferToken(id, from, instructions, lifetimeAmount, currency,
+        return new BankTransferToken(id, parentId, from, instructions, lifetimeAmount, currency,
             redeemer, description, amount, version, issuer, nonce, payloadSignatures);
     }
 
@@ -32,18 +33,19 @@ export default class BankTransferToken {
                 accountId: accountId
             }
         };
-        return new BankTransferToken(undefined, from, instructions, lifetimeAmount, currency,
+        return new BankTransferToken(undefined, undefined, from, instructions, lifetimeAmount, currency,
             redeemer, description);
     }
 
-    constructor(id, from, instructions, lifetimeAmount, currency, redeemer, description, amount = 0,
-                version = transferTokenVersion, issuer = undefined, nonce = undefined,
+    constructor(id, parentId, from, instructions, lifetimeAmount, currency, redeemer, description,
+                amount = 0, version = transferTokenVersion, issuer = undefined, nonce = undefined,
                 payloadSignatures = []) {
         if (Util.countDecimals(lifetimeAmount) > maxDecimals
             || Util.countDecimals(amount) > maxDecimals) {
             throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
         }
         this._id = id;
+        this._parentId = parentId;
         this._from = from;
         this._instructions = instructions;
         this._lifetimeAmount = lifetimeAmount;
@@ -71,6 +73,10 @@ export default class BankTransferToken {
         return this._id;
     }
 
+    get parentTokenId() {
+        return this._parentId;
+    }
+
     get from() {
         return this._from;
     }
@@ -78,6 +84,7 @@ export default class BankTransferToken {
     get amount() {
         return this._amount;
     }
+
     get lifetimeAmount() {
         return this._lifetimeAmount;
     }
@@ -113,6 +120,7 @@ export default class BankTransferToken {
     // Creates a standardized json object for the TransferToken, to be used for signing
     get json() {
         const json = {
+            parentTokenId: this._parentId,
             version: this._version,
             nonce: this._nonce,
             from: this._from,
