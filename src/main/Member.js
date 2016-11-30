@@ -308,7 +308,6 @@ export default class Member {
             currency, username, description);
         return Util.callAsync(this.createToken, async () => {
             const res = await this._client.createToken(token.json);
-            debugger
             return TransferToken.createFromToken(res.data.token);
         });
     }

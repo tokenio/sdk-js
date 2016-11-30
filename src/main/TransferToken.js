@@ -78,6 +78,7 @@ export default class BankTransferToken {
     get amount() {
         return this._amount;
     }
+
     get lifetimeAmount() {
         return this._lifetimeAmount;
     }
