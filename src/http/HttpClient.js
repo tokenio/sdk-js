@@ -44,13 +44,10 @@ class HttpClient {
         const update = {
             memberId: memberId,
             addKey: {
+                level: keyLevel,
                 publicKey: Crypto.strKey(keys.publicKey)
             }
         };
-
-        if (keyLevel !== KeyLevel.PRIVILEGED) {
-            update.addKey.level = keyLevel;
-        }
 
         const req = {
             update,
