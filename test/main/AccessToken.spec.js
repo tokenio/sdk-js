@@ -1,6 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 
+import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 import Crypto from "../../src/Crypto";
