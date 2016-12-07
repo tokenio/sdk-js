@@ -143,7 +143,9 @@ export default class Member {
     getAccounts() {
         return Util.callAsync(this.getAccounts, async () => {
             const res = await this._client.getAccounts();
-            return res.data.accounts.map(acc => new Account(this, acc));
+            return res.data.accounts === undefined
+                ? []
+                : res.data.accounts.map(acc => new Account(this, acc));
         });
     }
 
@@ -171,7 +173,9 @@ export default class Member {
     getSubscribers() {
         return Util.callAsync(this.getSubscribers, async () => {
             const res = await this._client.getSubscribers();
-            return res.data.subscribers.map(s => new Subscriber(s));
+            return res.data.subscribers === undefined
+                ? []
+                : res.data.subscribers.map(s => new Subscriber(s));
         });
     }
 
@@ -233,7 +237,9 @@ export default class Member {
     getAddresses() {
         return Util.callAsync(this.getAddresses, async () => {
             const res = await this._client.getAddresses();
-            return res.data.addresses.map(address => new Address(address));
+            return res.data.addresses === undefined
+                ? []
+                : res.data.addresses.map(address => new Address(address));
         });
     }
 
@@ -337,6 +343,7 @@ export default class Member {
     getTransferTokens(offset, limit) {
         return Util.callAsync(this.getTransferTokens, async () => {
             const res = await this._client.getTokens('TRANSFER', offset, limit);
+
             return new PagedResult(
                 res.data.tokens === undefined
                     ? []
@@ -443,7 +450,9 @@ export default class Member {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             return new PagedResult(
-                res.data.transfers.map(pt => new Transfer(pt)),
+                res.data.transfers === undefined
+                    ? []
+                    : res.data.transfers.map(pt => new Transfer(pt)),
                 res.data.offset);
         });
     }
