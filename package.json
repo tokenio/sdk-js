@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.4.30",
+  "version": "1.4.31",
   "description": "",
   "main": "dist/token-io.js",
   "scripts": {
@@ -41,6 +41,7 @@
     "karma-mocha": "^1.1.1",
     "karma-mocha-reporter": "^2.2.0",
     "karma-webpack": "^1.8.0",
+    "lodash": "^4.16.2",
     "mocha": "^3.0.2",
     "mocha-bamboo-reporter": "^1.1.1",
     "mocha-webpack": "^0.6.0",
@@ -55,7 +56,6 @@
     "es6-promise": "^3.3.1",
     "fast-sha256": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
-    "lodash": "^4.16.2",
     "tweetnacl": "^0.14.3"
   }
 }
