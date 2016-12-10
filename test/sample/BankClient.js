@@ -5,6 +5,9 @@ import 'babel-regenerator-runtime';
 
 const urls = {
     local: 'http://localhost:8100',
+    awsDev: 'http://aws.fank.dev.api.token.io:81',
+    awsStg: 'http://aws.fank.stg.api.token.io:81',
+    awsPrd: 'http://aws.fank.prd.api.token.io:81',
     dev: 'http://dev.api.token.io:81',
     stg: 'http://stg.api.token.io:81',
     prd: 'http://prd.api.token.io:81',
