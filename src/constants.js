@@ -7,9 +7,6 @@ const urls = {
     dev: 'http://dev.api.token.io',
     stg: 'http://stg.api.token.io',
     prd: 'http://prd.api.token.io',
-    awsDev: 'http://aws.dev.api.token.io',
-    awsStg: 'http://aws.stg.api.token.io',
-    awsPrd: 'http://aws.prd.api.token.io',
 }
 
 // Scheme for transfer tokens

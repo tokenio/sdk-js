@@ -18,7 +18,7 @@ var account1 = {};
 var accountsLinkPayload = Token.Util.generateNonce();
 
 const instance = axios.create({
-    baseURL: "http://prd.api.token.io:81"
+    baseURL: "http://prd.api.token.io"
 });
 
 var requestLinkAccounts = (
