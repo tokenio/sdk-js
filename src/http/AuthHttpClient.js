@@ -70,6 +70,22 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    getNotifications() {
+        const config = {
+            method: 'get',
+            url: `/notifications`
+        };
+        return this._instance(config);
+    }
+
+    getNotification(notificationId) {
+        const config = {
+            method: 'get',
+            url: `/notifications/${notificationId}`
+        };
+        return this._instance(config);
+    }
+
     unsubscribeFromNotifications(subscriberId) {
         const config = {
             method: 'delete',

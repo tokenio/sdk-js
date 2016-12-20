@@ -82,4 +82,27 @@ describe('Notifications', () => {
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
     });
+
+    it('should get notifications', async () => {
+        const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
+        const keys = Crypto.generateKeys();
+        const username2 = Crypto.generateKeys().keyId;
+        const member2 = await Token.createMember(username2);
+        const notificationsEmpty = await member2.getNotifications();
+        assert.equal(notificationsEmpty.length, 0);
+
+        const alp = await member2.subscribeToNotifications(target);
+        await Token.notifyAddKey(username2, keys.publicKey, "Chrome 54.1");
+        const notificationsFull = await member2.getNotifications();
+        assert.equal(notificationsFull.length, 1);
+        const lookedUp = await member2.getNotification(notificationsFull[0].id);
+        assert.equal(lookedUp.id, notificationsFull[0].id);
+        assert.isOk(lookedUp.subscriberId);
+        assert.isOk(lookedUp.status);
+        assert.isOk(lookedUp.content);
+        assert.isOk(lookedUp.content.type);
+        assert.isOk(lookedUp.content.title);
+        assert.isOk(lookedUp.content.body);
+        assert.isOk(lookedUp.content.createdAtMs);
+    });
 });
