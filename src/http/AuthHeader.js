@@ -34,6 +34,7 @@ class AuthHeader {
      */
     addAuthorizationHeader(identity, config, context) {
         let now = new Date().getTime();
+
         // Parses out the base uri
         let uriPath = config.url.replace(this._baseUrl, '');
 

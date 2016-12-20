@@ -192,6 +192,33 @@ export default class Member {
         });
     }
 
+        /**
+     * Gets all notifications for this member
+     *
+     * @return {Promise} - notifications
+     */
+    getNotifications() {
+        return Util.callAsync(this.getNotifications, async () => {
+            const res = await this._client.getNotifications();
+            return res.data.notifications === undefined
+                ? []
+                : res.data.notifications;
+        });
+    }
+
+    /**
+     * Gets a specific notification by Id
+     *
+     * @param {string} notificationId - id of the notification
+     * @return {Promise} - notification
+     */
+    getNotification(notificationId) {
+        return Util.callAsync(this.getNotification, async () => {
+            const res = await this._client.getNotification(notificationId);
+            return res.data.notification;
+        });
+    }
+
     /**
      * Unsubscribes from notifications (removes a subscriber)
      * @param {string} subscriberId - subscriber to remove
