@@ -5,6 +5,15 @@ import stringify from "json-stable-stringify";
 
 class Crypto {
     /**
+     * Returns the name of the algorithm used by this crypto.
+     *
+     * @returns {string} the name of the algorithm
+     */
+    static algorithm() {
+        return "ED25519";
+    }
+
+    /**
      * Generates a keypair to use with the token System
      * @return {object} keyPair - keyPair
      */
