@@ -7,7 +7,7 @@ const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
 import KeyLevel from "../../src/main/KeyLevel";
-import TokenOperationResult from "../../src/main/TokenOperationResult";
+import TokenOperationResultStatus from "../../src/main/TokenOperationResultStatus";
 import BankClient from "../sample/BankClient";
 import {defaultCurrency} from "../../src/constants";
 const some = require('lodash/some');
@@ -68,13 +68,13 @@ describe('Tokens', () => {
         const res = await member1.endorseToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(res.token.payloadSignatures.length, 2);
-        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
+        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
     });
 
     it('should create a token and endorse it by id', async () => {
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.endorseToken(token.id);
-        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
+        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
 
         const lookedUp = await member1.getToken(token.id);
         assert.equal(lookedUp.payloadSignatures.length, 2);
@@ -86,13 +86,13 @@ describe('Tokens', () => {
         const res = await member1.cancelToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
-        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
+        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
     });
 
     it('should create token and cancel it by id', async () => {
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.cancelToken(token.id);
-        assert.equal(res.status, TokenOperationResult.Status.SUCCESS)
+        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
 
         const lookedUp = await member1.getToken(token.id);
         assert.equal(lookedUp.payloadSignatures.length, 2);
@@ -131,6 +131,6 @@ describe('Tokens', () => {
         const memberNew = await Token.loginWithUsername(keys, username1);
         const token = await memberNew.createToken(account1.id, 900.24, defaultCurrency, username2);
         const res = await memberNew.endorseToken(token.id)
-        assert.equal(res.status, TokenOperationResult.Status.MORE_SIGNATURES_NEEDED);
+        assert.equal(res.status, TokenOperationResultStatus.MORE_SIGNATURES_NEEDED);
     });
 });

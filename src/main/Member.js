@@ -1,17 +1,10 @@
 import Crypto from "../Crypto";
 import LocalStorage from "../LocalStorage";
-import Account from "./Account";
-import Subscriber from "./Subscriber";
-import Address from "./Address";
 import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
-import PagedResult from "./PagedResult";
-import TokenOperationResult from "./TokenOperationResult";
-import TransferToken from "./TransferToken";
 import AccessToken from "./AccessToken";
-import Transfer from "./Transfer";
 import Util from "../Util";
-import {maxDecimals} from "../constants";
+import {transferTokenVersion, maxDecimals} from "../constants";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -132,7 +125,7 @@ export default class Member {
     linkAccounts(bankId, accountLinkPayloads) {
         return Util.callAsync(this.linkAccounts, async () => {
             const res = await this._client.linkAccounts(bankId, accountLinkPayloads);
-            return res.data.accounts.map(acc => new Account(this, acc));
+            return res.data.accounts;
         });
     }
 
@@ -145,7 +138,7 @@ export default class Member {
             const res = await this._client.getAccounts();
             return res.data.accounts === undefined
                 ? []
-                : res.data.accounts.map(acc => new Account(this, acc));
+                : res.data.accounts;
         });
     }
 
@@ -154,14 +147,14 @@ export default class Member {
      * new device requests, linking account requests, or transfer notifications
      * @param {string} target - the notification target for this device. (e.g iOS push token)
      * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
-     * @return {Promise} subscriber - Subscriber object
+     * @return {Promise} subscriber - Subscriber
      */
     subscribeToNotifications(
         target,
         platform = "IOS") {
         return Util.callAsync(this.subscribeToNotifications, async () => {
             const res = await this._client.subscribeToNotifications(target, platform);
-            return new Subscriber(res.data.subscriber);
+            return res.data.subscriber;
         })
     }
 
@@ -175,7 +168,7 @@ export default class Member {
             const res = await this._client.getSubscribers();
             return res.data.subscribers === undefined
                 ? []
-                : res.data.subscribers.map(s => new Subscriber(s));
+                : res.data.subscribers;
         });
     }
 
@@ -188,7 +181,7 @@ export default class Member {
     getSubscriber(subscriberId) {
         return Util.callAsync(this.getSubscriber, async () => {
             const res = await this._client.getSubscriber(subscriberId);
-            return new Subscriber(res.data.subscriber);
+            return res.data.subscriber;
         });
     }
 
@@ -240,7 +233,7 @@ export default class Member {
     addAddress(name, address) {
         return Util.callAsync(this.addAddress, async () => {
             const res = await this._client.addAddress(name, address);
-            return new Address(res.data.address);
+            return res.data.address;
         });
     }
 
@@ -253,7 +246,7 @@ export default class Member {
     getAddress(addressId) {
         return Util.callAsync(this.getAddress, async () => {
             const res = await this._client.getAddress(addressId);
-            return new Address(res.data.address);
+            return res.data.address;
         });
     }
 
@@ -266,7 +259,7 @@ export default class Member {
             const res = await this._client.getAddresses();
             return res.data.addresses === undefined
                 ? []
-                : res.data.addresses.map(address => new Address(address));
+                : res.data.addresses;
         });
     }
 
@@ -304,9 +297,7 @@ export default class Member {
     replaceAccessToken(tokenToCancel, tokenToCreate) {
         return Util.callAsync(this.replaceAccessToken, async () => {
             const res = await this._client.replaceToken(tokenToCancel, tokenToCreate);
-            return new TokenOperationResult(
-                res.data.result,
-                AccessToken.createFromToken(res.data.result.token));
+            return res.data.result;
         });
     }
 
@@ -320,9 +311,7 @@ export default class Member {
     replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
             const res = await this._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate);
-            return new TokenOperationResult(
-                res.data.result,
-                AccessToken.createFromToken(res.data.result.token));
+            return res.data.result;
         });
     }
 
@@ -334,21 +323,44 @@ export default class Member {
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
      * @param {string} username - username of the redeemer of this token
      * @param {string} description - optional description for the token
-     * @return {Promise} token - promise of a created TransferToken
+     * @return {Promise} token - promise of a created transfer token
      */
-    createToken(accountId, lifetimeAmount, currency, username, description = undefined) {
-        const token = TransferToken.create(this, accountId, lifetimeAmount,
-            currency, username, description);
+    createToken(accountId, lifetimeAmount, currency, username, description = undefined, amount=0) {
+        if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
+            throw new Error(`Number of decimals in lifetimeAmount should be at most ${maxDecimals}`);
+        }
+        if (Util.countDecimals(amount) > maxDecimals) {
+            throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
+        }
+        const token = {
+            version: transferTokenVersion,
+            nonce: Util.generateNonce(),
+            from: {
+                id: this.id,
+            },
+            transfer: {
+                currency,
+                lifetimeAmount: lifetimeAmount.toString(),
+                instructions: {
+                    source: {
+                        accountId,
+                    },
+                },
+            },
+            amount,
+            redeemer: username,
+            description: description,
+        };
         return Util.callAsync(this.createToken, async () => {
-            const res = await this._client.createToken(token.json);
-            return TransferToken.createFromToken(res.data.token);
+            const res = await this._client.createToken(token);
+            return res.data.token;
         });
     }
 
     /**
      * Looks up a token by its Id
      * @param {string} tokenId - id of the token
-     * @return {Promise} token - TransferToken
+     * @return {Promise} token - transfer token
      */
     getToken(tokenId) {
         return Util.callAsync(this.getToken, async () => {
@@ -356,7 +368,7 @@ export default class Member {
             if (res.data.token.payload.access !== undefined) {
                 return AccessToken.createFromToken(res.data.token);
             } else {
-                return TransferToken.createFromToken(res.data.token);
+                return res.data.token;
             }
         });
     }
@@ -365,17 +377,18 @@ export default class Member {
      * Looks up all transfer tokens (not just for this account)
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
-     * @return {TransferToken} tokens - returns a list of Transfer Tokens
+     * @return {Promise} tokens - returns a list of Transfer Tokens
      */
     getTransferTokens(offset, limit) {
         return Util.callAsync(this.getTransferTokens, async () => {
             const res = await this._client.getTokens('TRANSFER', offset, limit);
-
-            return new PagedResult(
-                res.data.tokens === undefined
+            const data = res.data.tokens === undefined
                     ? []
-                    :res.data.tokens.map(tk => TransferToken.createFromToken(tk)),
-                res.data.offset);
+                    : res.data.tokens;
+            return {
+                data,
+                offset: res.data.offset,
+            };
         });
     }
 
@@ -388,11 +401,13 @@ export default class Member {
     getAccessTokens(offset, limit) {
         return Util.callAsync(this.getAccessTokens, async () => {
             const res = await this._client.getTokens('ACCESS', offset, limit);
-            return new PagedResult(
-                res.data.tokens === undefined
+            const data = res.data.tokens === undefined
                     ? []
-                    :res.data.tokens.map(tk => AccessToken.createFromToken(tk)),
-                res.data.offset);
+                    :res.data.tokens.map(tk => AccessToken.createFromToken(tk));
+            return {
+                data,
+                offset: res.data.offset,
+            };
         });
     }
 
@@ -408,14 +423,14 @@ export default class Member {
             if (typeof token !== 'string' && !(token instanceof String)) {
                 token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
             }
-            return new TokenOperationResult(endorsed.data.result, token);
+            return endorsed.data.result;
         });
     }
 
     /**
      * Cancels a token. (Called by the payer or the redeemer)
      * @param {Token} token - token to cancel. Can also be a {string} tokenId
-     * @return {Promise} TokenOperationResult.js - cancelled token
+     * @return {Promise} TokenOperationResult - cancelled token
      */
     cancelToken(token) {
         return Util.callAsync(this.cancelToken, async () => {
@@ -424,13 +439,13 @@ export default class Member {
             if (typeof token !== 'string' && !(token instanceof String)) {
                 token.payloadSignatures = cancelled.data.result.token.payloadSignatures;
             }
-            return new TokenOperationResult(cancelled.data.result, token);
+            return cancelled.data.result;
         });
     }
 
     /**
      * Redeems a token. (Called by the payee or redeemer)
-     * @param {BankTransferToken} token - token to redeem. Can also be a {string} tokenId
+     * @param {object} token - token to redeem. Can also be a {string} tokenId
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
      * @param {string} description - optional transfer description
@@ -450,19 +465,19 @@ export default class Member {
                 throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
             }
             const res = await this._client.createTransfer(finalToken, amount, currency, description, destinations)
-            return new Transfer(res.data.transfer);
+            return res.data.transfer;
         })
     }
 
     /**
      * Looks up a transfer
      * @param {string} transferId - id to look up
-     * @return {Transfer} transfer - transfer if found
+     * @return {Promise} transfer - transfer if found
      */
     getTransfer(transferId) {
         return Util.callAsync(this.getTransfer, async () => {
             const res = await this._client.getTransfer(transferId);
-            return new Transfer(res.data.transfer);
+            return res.data.transfer;
         });
     }
 
@@ -476,11 +491,55 @@ export default class Member {
     getTransfers(tokenId, offset, limit) {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
-            return new PagedResult(
-                res.data.transfers === undefined
+            const data = res.data.transfers === undefined
                     ? []
-                    : res.data.transfers.map(pt => new Transfer(pt)),
-                res.data.offset);
+                    : res.data.transfers;
+            return {
+                data,
+                offset: res.data.offset,
+            };
+        });
+    }
+
+    /**
+     * Looks up the balance of an account
+     * @param {string} accountId - id of the account
+     * @return {Promise} balance - Promise of balance object
+     */
+    getBalance(accountId) {
+        return Util.callAsync(this.getBalance, async () => {
+            const res = await this._client.getBalance(accountId);
+            return res.data;
+        });
+    }
+
+    /**
+     * Looks up a transaction
+     * @param {string} accountId - id of the account
+     * @param {string} transactionId - which transaction to look up
+     * @return {Promise} transaction - the Transaction
+     */
+    getTransaction(accountId, transactionId) {
+        return Util.callAsync(this.getTransaction, async () => {
+            const res = await this._client.getTransaction(accountId, transactionId);
+            return res.data.transaction;
+        });
+    }
+
+    /**
+     * Looks up all of the member's transactions for an account
+     * @param {string} accountId - id of the account
+     * @param {string} offset - where to start looking
+     * @param {int} limit - how many to retrieve
+     * @return {Promise} transactions - Transactions
+     */
+    getTransactions(accountId, offset, limit) {
+        return Util.callAsync(this.getTransactions, async () => {
+            const res = await this._client.getTransactions(accountId, offset, limit);
+            return {
+                data: res.data.transactions,
+                offset: res.data.offset,
+            };
         });
     }
 
