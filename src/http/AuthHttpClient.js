@@ -365,7 +365,8 @@ class AuthHttpClient {
         const update = {
             memberId: this._memberId,
             addKey: {
-                publicKey: Crypto.strKey(publicKey)
+                publicKey: Crypto.strKey(publicKey),
+                algorithm: Crypto.algorithm()
             }
         };
 
