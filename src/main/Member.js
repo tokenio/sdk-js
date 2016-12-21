@@ -346,9 +346,11 @@ export default class Member {
                         accountId,
                     },
                 },
+                amount,
+                redeemer: {
+                    username,
+                },
             },
-            amount,
-            redeemer: username,
             description: description,
         };
         return Util.callAsync(this.createToken, async () => {

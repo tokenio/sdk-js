@@ -322,7 +322,8 @@ class AuthHttpClient {
     }
 
     _tokenOperationSignature(token, suffix) {
-        const payload = stringify(token.json) + `.${suffix}`;
+        const payload = stringify(token) + `.${suffix}`;
+        console.log("Signing:", payload);
         return {
             memberId: this._memberId,
             keyId: this._keys.keyId,

@@ -52,15 +52,15 @@ describe('Tokens', () => {
 
     it('should create a token, look it up, and endorse it', async () => {
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
-
+        console.log(token);
         assert.isAtLeast(token.id.length, 5);
-        assert.equal(token.version, '1.0');
-        assert.equal(token.issuer.id, 'iron');
-        assert.equal(token.from.id, member1.id);
-        assert.equal(token.description, undefined);
-        assert.equal(token.redeemer.username, username2);
-        assert.equal(token.lifetimeAmount, 9.24);
-        assert.equal(token.currency, defaultCurrency);
+        assert.equal(token.payload.version, '1.0');
+        assert.equal(token.payload.issuer.id, 'iron');
+        assert.equal(token.payload.from.id, member1.id);
+        assert.equal(token.payload.description, undefined);
+        assert.equal(token.payload.transfer.redeemer.username, username2);
+        assert.equal(token.payload.transfer.lifetimeAmount, 9.24);
+        assert.equal(token.payload.transfer.currency, defaultCurrency);
 
         const tokenLookedUp = await member1.getToken(token.id);
         assert.equal(token.id, tokenLookedUp.id);
