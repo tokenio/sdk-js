@@ -47,17 +47,18 @@ describe('Token Redemptions', async () => {
 
     it('should redeem a basic token', async () => {
         const transfer = await member2.createTransfer(token1, 10.21, 'EUR');
-        assert.equal(10.21, transfer.amount);
-        assert.equal('EUR', transfer.currency);
+        console.log(transfer);
+        assert.equal(10.21, transfer.payload.amount.value);
+        assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 
     it('should redeem a basic token by id', async () => {
         const transfer = await member2.createTransfer(token1.id, 15.28, 'EUR');
-        assert.equal(15.28, transfer.amount);
-        assert.equal('EUR', transfer.currency);
+        assert.equal(15.28, transfer.payload.amount.value);
+        assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
-        const bal = await account1.getBalance();
+        const bal = await member1.getBalance(account1.id);
         assert.isAtLeast(100000, bal.current.value);
     });
 
@@ -95,8 +96,8 @@ describe('Token Redemptions', async () => {
         await member1.subscribeToNotifications('4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5' +
             'B000') // Remove 0s to notify iphone
         const transfer = await member2.createTransfer(token1, 10.21, 'EUR');
-        assert.equal(10.21, transfer.amount);
-        assert.equal('EUR', transfer.currency);
+        assert.equal(10.21, transfer.payload.amount.value);
+        assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 });

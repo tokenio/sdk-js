@@ -25,18 +25,6 @@ const setUp1 = async () => {
 describe('TransferTokens', () => {
     before(setUp1);
 
-    it('create a transfer token object', () => {
-        const token = Token.TransferToken
-            .create(member1, account1.id, 12.54, defaultCurrency, username1, 'desc');
-        const json = token.json;
-        assert.equal(json.version, '1.0');
-        assert.isOk(json.nonce);
-        assert.equal(json.from.id, member1.id);
-        assert.equal(json.transfer.currency, defaultCurrency);
-        assert.equal(json.transfer.lifetimeAmount, '12.54');
-        assert.equal(json.transfer.instructions.source.accountId, account1.id);
-    });
-
     it('should throw an error when there are too many decimals', done => {
         try {
             const token = Token.TransferToken

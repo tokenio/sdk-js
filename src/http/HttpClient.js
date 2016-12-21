@@ -1,6 +1,5 @@
 import Crypto from "../Crypto";
-import KeyLevel from "../main/KeyLevel";
-import {urls} from "../constants";
+import {urls, KeyLevel} from "../constants";
 
 const axios = require('axios');
 

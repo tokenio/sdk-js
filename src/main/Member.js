@@ -1,14 +1,14 @@
 import Crypto from "../Crypto";
 import LocalStorage from "../LocalStorage";
-import KeyLevel from "./KeyLevel";
 import AuthHttpClient from "../http/AuthHttpClient";
 import AccessToken from "./AccessToken";
 import Util from "../Util";
-import {transferTokenVersion, maxDecimals} from "../constants";
+import {maxDecimals, KeyLevel} from "../constants";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
  * objects
+ *
  */
 export default class Member {
 
@@ -323,6 +323,7 @@ export default class Member {
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
      * @param {string} username - username of the redeemer of this token
      * @param {string} description - optional description for the token
+     * @param {double} amount - optional charge limit on the token
      * @return {Promise} token - promise of a created transfer token
      */
     createToken(accountId, lifetimeAmount, currency, username, description = undefined, amount=0) {
@@ -332,29 +333,15 @@ export default class Member {
         if (Util.countDecimals(amount) > maxDecimals) {
             throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
         }
-        const token = {
-            version: transferTokenVersion,
-            nonce: Util.generateNonce(),
-            from: {
-                id: this.id,
-            },
-            transfer: {
-                currency,
-                lifetimeAmount: lifetimeAmount.toString(),
-                instructions: {
-                    source: {
-                        accountId,
-                    },
-                },
-                amount,
-                redeemer: {
-                    username,
-                },
-            },
-            description: description,
-        };
         return Util.callAsync(this.createToken, async () => {
-            const res = await this._client.createToken(token);
+            const res = await this._client.createToken(
+                this._id,
+                accountId,
+                lifetimeAmount,
+                currency,
+                username,
+                description,
+                amount);
             return res.data.token;
         });
     }

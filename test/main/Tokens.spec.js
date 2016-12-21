@@ -6,10 +6,8 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
-import KeyLevel from "../../src/main/KeyLevel";
-import TokenOperationResultStatus from "../../src/main/TokenOperationResultStatus";
 import BankClient from "../sample/BankClient";
-import {defaultCurrency} from "../../src/constants";
+import {defaultCurrency, KeyLevel} from "../../src/constants";
 const some = require('lodash/some');
 const map = require('lodash/map');
 
@@ -68,13 +66,13 @@ describe('Tokens', () => {
         const res = await member1.endorseToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(res.token.payloadSignatures.length, 2);
-        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
+        assert.equal(res.status, 'SUCCESS')
     });
 
     it('should create a token and endorse it by id', async () => {
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.endorseToken(token.id);
-        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
+        assert.equal(res.status, 'SUCCESS')
 
         const lookedUp = await member1.getToken(token.id);
         assert.equal(lookedUp.payloadSignatures.length, 2);
@@ -86,13 +84,13 @@ describe('Tokens', () => {
         const res = await member1.cancelToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
-        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
+        assert.equal(res.status, 'SUCCESS')
     });
 
     it('should create token and cancel it by id', async () => {
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.cancelToken(token.id);
-        assert.equal(res.status, TokenOperationResultStatus.SUCCESS)
+        assert.equal(res.status, 'SUCCESS')
 
         const lookedUp = await member1.getToken(token.id);
         assert.equal(lookedUp.payloadSignatures.length, 2);

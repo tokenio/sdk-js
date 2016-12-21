@@ -1,5 +1,0 @@
-export default {
-    FAILED: 'FAILED',
-    ACCEPTED: 'ACCEPTED',
-    NO_SUBSCRIBERS: 'NO_SUBSCRIBERS'
-};

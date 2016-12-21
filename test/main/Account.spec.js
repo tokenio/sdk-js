@@ -44,7 +44,7 @@ describe('Account tests', () => {
         });
 
         it('should get the balance', async () => {
-            const bal = await account.getBalance()
+            const bal = await member.getBalance(account.id)
             assert.equal(parseFloat(bal.current.value), 100000);
         });
     });

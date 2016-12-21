@@ -6,7 +6,7 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
-import KeyLevel from "../../src/main/KeyLevel";
+import {KeyLevel} from '../../src/constants';
 
 let member = {};
 let username = '';

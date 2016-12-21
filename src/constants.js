@@ -21,11 +21,19 @@ const defaultCurrency = 'EUR';
 // Max number of decimal points to accept for amounts
 const maxDecimals = 4;
 
+// Security levels for keys
+const KeyLevel = {
+    PRIVILEGED: 'PRIVILEGED',
+    STANDARD: 'STANDARD',
+    LOW: 'LOW',
+};
+
 export {
     signatureScheme,
     urls,
     transferTokenVersion,
     accessTokenVersion,
     defaultCurrency,
-    maxDecimals
+    maxDecimals,
+    KeyLevel,
 };

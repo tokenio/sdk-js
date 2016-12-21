@@ -1,10 +1,9 @@
 import Crypto from "./Crypto";
 import Util from "./Util";
 import Member from "./main/Member";
-import KeyLevel from "./main/KeyLevel";
+import {KeyLevel} from "./constants";
 import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
-import TokenOperationResultStatus from "./main/TokenOperationResultStatus";
 import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
 import AccessToken from "./main/AccessToken";
 
@@ -17,10 +16,9 @@ class Token {
     constructor(env = 'prd') {
         this._env = env;
         this._unauthenticatedClient = new HttpClient(env);
+        this.KeyLevel = KeyLevel;
         this.Crypto = Crypto;
         this.Util = Util;
-        this.KeyLevel = KeyLevel;
-        this.TokenOperationResultStatus = TokenOperationResultStatus;
         this.AccessToken = AccessToken;
     }
 

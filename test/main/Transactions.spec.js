@@ -66,16 +66,17 @@ describe('Transactions and transfers', () => {
     });
 
     it('should see transaction', async () => {
-        const pagedResult = await account1.getTransactions(null, 100);
+        const pagedResult = await member1.getTransactions(account1.id, null, 100);
+        console.log(pagedResult);
         assert.equal(pagedResult.data[0].type, 'DEBIT');
         assert.isOk(pagedResult.data[0].id);
-        assert.isOk(pagedResult.data[0].currency);
-        assert.isOk(pagedResult.data[0].amount);
+        assert.isOk(pagedResult.data[0].amount.currency);
+        assert.isOk(pagedResult.data[0].amount.value);
         assert.isOk(pagedResult.data[0].description);
         assert.isOk(pagedResult.data[0].tokenId);
         assert.isOk(pagedResult.data[0].tokenTransferId);
         assert.isString(pagedResult.offset);
-        const transaction = await account1.getTransaction(pagedResult.data[0].id);
+        const transaction = await member1.getTransaction(account1.id, pagedResult.data[0].id);
         assert.equal(transaction.tokenId, token1.id);
     });
 });
