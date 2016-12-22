@@ -1,8 +1,6 @@
 import Util from "../Util";
 import {accessTokenVersion} from "../constants";
 
-var protobuf = require("protobufjs");
-
 export default class AccessToken {
     /**
      * Creates an instance of AccessToken and sets the "to" field on the payload.

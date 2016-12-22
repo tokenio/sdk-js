@@ -90,6 +90,7 @@ describe('Using access tokens', async () => {
         assert.deepEqual(result.address, address.address);
         grantee.clearAccessToken();
 
+        console.log("Token:", token);
         const operationalResult = await grantor.replaceAccessToken(
                     token,
                     Token.AccessToken.createFromAccessToken(token).forAll())

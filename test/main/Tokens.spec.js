@@ -129,6 +129,6 @@ describe('Tokens', () => {
         const memberNew = await Token.loginWithUsername(keys, username1);
         const token = await memberNew.createToken(account1.id, 900.24, defaultCurrency, username2);
         const res = await memberNew.endorseToken(token.id)
-        assert.equal(res.status, TokenOperationResultStatus.MORE_SIGNATURES_NEEDED);
+        assert.equal(res.status, 'MORE_SIGNATURES_NEEDED');
     });
 });

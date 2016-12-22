@@ -282,8 +282,8 @@ export default class Member {
      */
     createAccessToken(accessToken) {
         return Util.callAsync(this.createAccessToken, async () => {
-            const res = await this._client.createToken(accessToken.from(this).json);
-            return AccessToken.createFromToken(res.data.token);
+            const res = await this._client.createAccessToken(accessToken.from(this).json);
+            return res.data.token;
         });
     }
 
@@ -334,7 +334,7 @@ export default class Member {
             throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
         }
         return Util.callAsync(this.createToken, async () => {
-            const res = await this._client.createToken(
+            const res = await this._client.createTransferToken(
                 this._id,
                 accountId,
                 lifetimeAmount,
@@ -354,11 +354,7 @@ export default class Member {
     getToken(tokenId) {
         return Util.callAsync(this.getToken, async () => {
             const res = await this._client.getToken(tokenId);
-            if (res.data.token.payload.access !== undefined) {
-                return AccessToken.createFromToken(res.data.token);
-            } else {
-                return res.data.token;
-            }
+            return res.data.token;
         });
     }
 
@@ -392,7 +388,7 @@ export default class Member {
             const res = await this._client.getTokens('ACCESS', offset, limit);
             const data = res.data.tokens === undefined
                     ? []
-                    :res.data.tokens.map(tk => AccessToken.createFromToken(tk));
+                    :res.data.tokens;
             return {
                 data,
                 offset: res.data.offset,

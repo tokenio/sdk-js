@@ -189,12 +189,12 @@ class AuthHttpClient {
     //
     // Tokens
     //
-    createToken(
+
+    createTransferToken(
         memberId,
         accountId,
-        currency,
         lifetimeAmount,
-        accountId,
+        currency,
         username,
         description,
         amount) {
@@ -220,6 +220,17 @@ class AuthHttpClient {
             },
             description: description,
         };
+        const config = {
+            method: 'post',
+            url: `/tokens`,
+            data: {
+                payload,
+            }
+        };
+        return this._instance(config);
+    }
+
+    createAccessToken(payload) {
         const config = {
             method: 'post',
             url: `/tokens`,
