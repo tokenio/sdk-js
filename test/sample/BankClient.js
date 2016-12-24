@@ -5,9 +5,9 @@ import 'babel-regenerator-runtime';
 
 const urls = {
     local: 'http://localhost:8100',
-    dev: 'http://fank.dev.token.io',
-    stg: 'http://fank.stg.token.io',
-    prd: 'http://fank.prd.token.io',
+    dev: 'https://fank.dev.token.io',
+    stg: 'https://fank.stg.token.io',
+    prd: 'https://fank.prd.token.io',
 }
 const instance = axios.create({
     baseURL: urls[TEST_ENV]
