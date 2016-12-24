@@ -4,9 +4,9 @@ const signatureScheme = 'Token-Ed25519-SHA512';
 // Hosts of the gateway
 const urls = {
     local: 'http://localhost:8000',
-    dev: 'http://api.dev.token.io',
-    stg: 'http://api.stg.token.io',
-    prd: 'http://api.prd.token.io',
+    dev: 'https://api.dev.token.io',
+    stg: 'https://api.stg.token.io',
+    prd: 'https://api.prd.token.io',
 }
 
 // Scheme for transfer tokens
