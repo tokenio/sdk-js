@@ -54,6 +54,6 @@ export default {
                         accounts: [ randomAccNumber ]
                     }
                 });
-        return res2.data.accountLinkPayloads;
+        return res2.data.payloads;
     }
 };
