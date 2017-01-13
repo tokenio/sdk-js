@@ -18,6 +18,7 @@ if (env === 'build') {
 plugins.push(new webpack.DefinePlugin({
     BROWSER: JSON.stringify(false),
     TEST_ENV: JSON.stringify(testEnv),
+    TOKEN_VERSION: JSON.stringify(require("../package.json").version),
 }));
 
 fs.readdirSync('node_modules')
@@ -50,7 +51,8 @@ module.exports = {
                     presets: ['es2015'],
                     plugins: ['babel-plugin-transform-regenerator']
                 }
-            }
+            },
+            {test: /\.json$/, loader: 'json-loader'}
         ]
     }
 };

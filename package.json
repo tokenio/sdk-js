@@ -17,7 +17,7 @@
     "bambooDev": "TEST_ENV=dev node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "bambooStg": "TEST_ENV=stg node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "bambooPrd": "TEST_ENV=prd node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
-    "build": "sed -i.bak -e \"s/^const tokenSdkVersion = .*/const tokenSdkVersion = \\\"`cat package.json | grep version -m 1 | cut -d':' -f2 | tr -d ' \",' `\\\";/\" ./src/constants.js && rm -rf ./src/constants.js.bak && npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser && WEBPACK_ENV=build npm run buildNode",
+    "build": "npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser && WEBPACK_ENV=build npm run buildNode",
     "buildBrowser": "TEST_ENV=prd webpack --config config/webpack.config.js",
     "buildBrowserw": "TEST_ENV=prd webpack --config config/webpack.config.js --progress --colors -w",
     "buildNode": "TEST_ENV=prd webpack --config config/webpack.config.node.js",
@@ -56,6 +56,7 @@
     "es6-promise": "^3.3.1",
     "fast-sha256": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
+    "json-loader": "^0.5.4",
     "tweetnacl": "^0.14.3"
   }
 }

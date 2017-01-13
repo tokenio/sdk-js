@@ -1,4 +1,4 @@
-const tokenSdkVersion = "1.4.38";
+const tokenSdkVersion = TOKEN_VERSION;
 
 // Signature scheme to use
 const signatureScheme = 'Token-Ed25519-SHA512';
