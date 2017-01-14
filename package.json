@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.4.37",
+  "version": "1.4.38",
   "description": "",
   "main": "dist/token-io.js",
   "scripts": {
@@ -56,6 +56,7 @@
     "es6-promise": "^3.3.1",
     "fast-sha256": "^1.0.0",
     "json-stable-stringify": "^1.0.1",
+    "json-loader": "^0.5.4",
     "tweetnacl": "^0.14.3"
   }
 }
