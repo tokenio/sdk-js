@@ -1,6 +1,7 @@
 import Crypto from "../Crypto";
 import KeyLevel from "../main/KeyLevel";
 import {urls} from "../constants";
+import VersionHeader from "./VersionHeader";
 
 const axios = require('axios');
 
@@ -9,6 +10,12 @@ class HttpClient {
         this._instance = axios.create({
             baseURL: urls[env]
         });
+
+        this._versionHeader = new VersionHeader();
+        this._instance.interceptors.request.use((config) => {
+            this._versionHeader.addVersionHeader(config);
+            return config;
+        })
     }
 
     createMemberId() {

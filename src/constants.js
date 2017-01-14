@@ -29,5 +29,6 @@ export {
     transferTokenVersion,
     accessTokenVersion,
     defaultCurrency,
-    maxDecimals
+    maxDecimals,
+    tokenSdkVersion
 };
