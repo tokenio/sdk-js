@@ -1,4 +1,5 @@
 import AuthHeader from "./AuthHeader";
+import VersionHeader from "./VersionHeader";
 import {urls} from "../constants";
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
@@ -13,11 +14,16 @@ class AuthHttpClientUsername {
         });
 
         const authHeader = new AuthHeader(urls[env], keys);
-
         this._instance.interceptors.request.use((config) => {
             authHeader.addAuthorizationHeaderUsername(username, config, undefined);
             return config;
         });
+
+        const versionHeader = new VersionHeader();
+        this._instance.interceptors.request.use((config) => {
+            versionHeader.addVersionHeader(config);
+            return config;
+        })
     }
 
     getMemberByUsername() {
