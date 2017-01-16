@@ -44,7 +44,8 @@ class HttpClient {
             memberId: memberId,
             addKey: {
                 level: keyLevel,
-                publicKey: Crypto.strKey(keys.publicKey)
+                publicKey: Crypto.strKey(keys.publicKey),
+                algorithm: Crypto.algorithm()
             }
         };
 

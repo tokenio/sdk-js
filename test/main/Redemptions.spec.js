@@ -47,7 +47,6 @@ describe('Token Redemptions', async () => {
 
     it('should redeem a basic token', async () => {
         const transfer = await member2.createTransfer(token1, 10.21, 'EUR');
-        console.log(transfer);
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);

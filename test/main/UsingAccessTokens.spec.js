@@ -27,7 +27,8 @@ const setupGrantee = async () => {
 };
 
 const setupToken = async () => {
-    const token = await grantor.createAccessToken(Token.AccessToken.grantTo(granteeUsername).forAddress(address.id));
+    const token = await grantor.createAccessToken(Token.AccessToken.grantTo(granteeUsername)
+        .forAddress(address.id));
     await grantor.endorseToken(token);
     return token;
 };
@@ -90,7 +91,6 @@ describe('Using access tokens', async () => {
         assert.deepEqual(result.address, address.address);
         grantee.clearAccessToken();
 
-        console.log("Token:", token);
         const operationalResult = await grantor.replaceAccessToken(
                     token,
                     Token.AccessToken.createFromAccessToken(token).forAll())

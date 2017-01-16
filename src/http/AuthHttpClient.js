@@ -246,7 +246,7 @@ class AuthHttpClient {
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            payload: tokenToCreate.json,
+            payload: tokenToCreate.payload,
         };
 
         const config = {
@@ -265,7 +265,7 @@ class AuthHttpClient {
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            payload: tokenToCreate.json,
+            payload: tokenToCreate.payload,
             payload_signature: this._tokenOperationSignature(tokenToCreate, 'endorsed')
         };
 
@@ -405,7 +405,8 @@ class AuthHttpClient {
         const update = {
             memberId: this._memberId,
             addKey: {
-                publicKey: Crypto.strKey(publicKey)
+                publicKey: Crypto.strKey(publicKey),
+                algorithm: Crypto.algorithm()
             }
         };
 

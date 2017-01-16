@@ -67,7 +67,6 @@ describe('Transactions and transfers', () => {
 
     it('should see transaction', async () => {
         const pagedResult = await member1.getTransactions(account1.id, null, 100);
-        console.log(pagedResult);
         assert.equal(pagedResult.data[0].type, 'DEBIT');
         assert.isOk(pagedResult.data[0].id);
         assert.isOk(pagedResult.data[0].amount.currency);

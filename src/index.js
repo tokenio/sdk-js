@@ -122,6 +122,7 @@ class Token {
         const body = {
             addKey: {
                 publicKey: Crypto.strKey(publicKey),
+                algorithm: Crypto.algorithm(),
                 name
             }
         };
@@ -152,6 +153,7 @@ class Token {
                 },
                 addKey: {
                     publicKey: Crypto.strKey(publicKey),
+                    algorithm: Crypto.algorithm(),
                     name
                 }
             }

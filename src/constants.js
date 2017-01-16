@@ -1,12 +1,14 @@
+const tokenSdkVersion = TOKEN_VERSION;
+
 // Signature scheme to use
 const signatureScheme = 'Token-Ed25519-SHA512';
 
 // Hosts of the gateway
 const urls = {
     local: 'http://localhost:8000',
-    dev: 'http://dev.api.token.io',
-    stg: 'http://stg.api.token.io',
-    prd: 'http://prd.api.token.io',
+    dev: 'https://api.dev.token.io',
+    stg: 'https://api.stg.token.io',
+    prd: 'https://api.prd.token.io',
 }
 
 // Scheme for transfer tokens

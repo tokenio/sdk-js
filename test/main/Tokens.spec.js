@@ -50,7 +50,6 @@ describe('Tokens', () => {
 
     it('should create a token, look it up, and endorse it', async () => {
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
-        console.log(token);
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
         assert.equal(token.payload.issuer.id, 'iron');
@@ -125,7 +124,7 @@ describe('Tokens', () => {
         const keys = Crypto.generateKeys();
 
         await member1.subscribeToNotifications("0F7BF07748A12DE0C2393FD3731BFEB1484693DFA47A5C9614428BDF724548CD");
-        await member1.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.STANDARD);
+        await member1.approveKey(Crypto.strKey(keys.publicKey), KeyLevel.LOW);
         const memberNew = await Token.loginWithUsername(keys, username1);
         const token = await memberNew.createToken(account1.id, 900.24, defaultCurrency, username2);
         const res = await memberNew.endorseToken(token.id)

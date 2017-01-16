@@ -283,7 +283,7 @@ export default class Member {
     createAccessToken(accessToken) {
         return Util.callAsync(this.createAccessToken, async () => {
             const res = await this._client.createAccessToken(accessToken.from(this).json);
-            return res.data.token;
+            return AccessToken.createFromToken(res.data.token);
         });
     }
 
@@ -296,7 +296,9 @@ export default class Member {
      */
     replaceAccessToken(tokenToCancel, tokenToCreate) {
         return Util.callAsync(this.replaceAccessToken, async () => {
-            const res = await this._client.replaceToken(tokenToCancel, tokenToCreate);
+            const finalTokenToCancel = await this._resolveToken(tokenToCancel);
+            const finalTokenToCreate = await this._resolveToken(tokenToCreate);
+            const res = await this._client.replaceToken(finalTokenToCancel, finalTokenToCreate);
             return res.data.result;
         });
     }
@@ -310,7 +312,9 @@ export default class Member {
      */
     replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
-            const res = await this._client.replaceAndEndorseToken(tokenToCancel, tokenToCreate);
+            const finalTokenToCancel = await this._resolveToken(tokenToCancel);
+            const finalTokenToCreate = await this._resolveToken(tokenToCreate);
+            const res = await this._client.replaceAndEndorseToken(finalTokenToCancel, finalTokenToCreate);
             return res.data.result;
         });
     }
@@ -558,8 +562,14 @@ export default class Member {
             if (typeof token === 'string' || token instanceof String) {
                 this.getToken(token)
                     .then(lookedUp => resolve(lookedUp));
+            } else if (token instanceof AccessToken) {
+                const payload = token.json;  // Convert access token to json representation
+                resolve({
+                    id: token.id,
+                    payload,
+                });
             } else {
-                resolve(token);
+                resolve(token);       // Transfer token, already in json representation
             }
         });
 
