@@ -38,4 +38,5 @@ export {
     defaultCurrency,
     maxDecimals,
     KeyLevel,
+    tokenSdkVersion
 };

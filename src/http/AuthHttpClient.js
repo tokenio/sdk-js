@@ -3,6 +3,7 @@ import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
 import {urls, KeyLevel, transferTokenVersion} from "../constants";
+import VersionHeader from "./VersionHeader";
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
 
@@ -19,6 +20,7 @@ class AuthHttpClient {
         this._context = new AuthContext();
         this._authHeader = new AuthHeader(urls[env], keys);
         this._resetInterceptor();
+        this._addVersionHeader();
     }
 
     _resetInterceptor() {
@@ -26,6 +28,14 @@ class AuthHttpClient {
 
         this._interceptor = this._instance.interceptors.request.use((config) => {
             this._authHeader.addAuthorizationHeaderMemberId(this._memberId, config, this._context);
+            return config;
+        })
+    }
+
+    _addVersionHeader() {
+        this._versionHeader = new VersionHeader();
+        this._instance.interceptors.request.use((config) => {
+            this._versionHeader.addVersionHeader(config);
             return config;
         })
     }
