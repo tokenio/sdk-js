@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 import HttpClient from "../../src/http/HttpClient";
 import AuthHttpClient from "../../src/http/AuthHttpClient";
 import Crypto from "../../src/Crypto";
-import KeyLevel from "../../src/main/KeyLevel";
+import {KeyLevel} from '../../src/constants';
 
 describe('AuthHttpClient', () => {
     it('should add a second key', async () => {

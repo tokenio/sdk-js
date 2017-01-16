@@ -43,8 +43,15 @@ describe('Account tests', () => {
             account = accs[0];
         });
 
+        it('should get an empty array when there are not accounts', async () => {
+            const username2 = Crypto.generateKeys().keyId;
+            const member2 = await Token.createMember(username2);
+            const accounts = await member2.getAccounts();
+            assert.equal(accounts.length, 0);
+        });
+
         it('should get the balance', async () => {
-            const bal = await account.getBalance()
+            const bal = await member.getBalance(account.id)
             assert.equal(parseFloat(bal.current.value), 100000);
         });
     });

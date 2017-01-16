@@ -2,8 +2,7 @@ import Crypto from "../Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
-import {urls} from "../constants";
-import KeyLevel from "../main/KeyLevel";
+import {urls, KeyLevel, transferTokenVersion} from "../constants";
 import VersionHeader from "./VersionHeader";
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
@@ -200,12 +199,53 @@ class AuthHttpClient {
     //
     // Tokens
     //
-    createToken(payload) {
+
+    createTransferToken(
+        memberId,
+        accountId,
+        lifetimeAmount,
+        currency,
+        username,
+        description,
+        amount) {
+
+        const payload = {
+            version: transferTokenVersion,
+            nonce: Util.generateNonce(),
+            from: {
+                id: memberId,
+            },
+            transfer: {
+                currency,
+                lifetimeAmount: lifetimeAmount.toString(),
+                instructions: {
+                    source: {
+                        accountId,
+                    },
+                },
+                amount,
+                redeemer: {
+                    username,
+                },
+            },
+            description: description,
+        };
         const config = {
             method: 'post',
             url: `/tokens`,
             data: {
-                payload: payload
+                payload,
+            }
+        };
+        return this._instance(config);
+    }
+
+    createAccessToken(payload) {
+        const config = {
+            method: 'post',
+            url: `/tokens`,
+            data: {
+                payload,
             }
         };
         return this._instance(config);
@@ -216,7 +256,7 @@ class AuthHttpClient {
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            payload: tokenToCreate.json,
+            payload: tokenToCreate.payload,
         };
 
         const config = {
@@ -235,7 +275,7 @@ class AuthHttpClient {
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            payload: tokenToCreate.json,
+            payload: tokenToCreate.payload,
             payload_signature: this._tokenOperationSignature(tokenToCreate, 'endorsed')
         };
 
@@ -332,7 +372,7 @@ class AuthHttpClient {
     }
 
     _tokenOperationSignature(token, suffix) {
-        const payload = stringify(token.json) + `.${suffix}`;
+        const payload = stringify(token.payload) + `.${suffix}`;
         return {
             memberId: this._memberId,
             keyId: this._keys.keyId,

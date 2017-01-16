@@ -27,7 +27,8 @@ const setupGrantee = async () => {
 };
 
 const setupToken = async () => {
-    const token = await grantor.createAccessToken(Token.AccessToken.grantTo(granteeUsername).forAddress(address.id));
+    const token = await grantor.createAccessToken(Token.AccessToken.grantTo(granteeUsername)
+        .forAddress(address.id));
     await grantor.endorseToken(token);
     return token;
 };

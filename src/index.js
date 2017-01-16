@@ -1,12 +1,10 @@
 import Crypto from "./Crypto";
 import Util from "./Util";
 import Member from "./main/Member";
-import KeyLevel from "./main/KeyLevel";
+import {KeyLevel} from "./constants";
 import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
-import TokenOperationResult from "./main/TokenOperationResult";
 import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
-import TransferToken from "./main/TransferToken";
 import AccessToken from "./main/AccessToken";
 
 // Promise polyfill for IE and older browsers
@@ -18,11 +16,9 @@ class Token {
     constructor(env = 'prd') {
         this._env = env;
         this._unauthenticatedClient = new HttpClient(env);
+        this.KeyLevel = KeyLevel;
         this.Crypto = Crypto;
         this.Util = Util;
-        this.KeyLevel = KeyLevel;
-        this.TokenOperationResult = TokenOperationResult;
-        this.TransferToken = TransferToken;
         this.AccessToken = AccessToken;
     }
 
