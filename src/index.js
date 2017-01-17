@@ -47,7 +47,7 @@ class Token {
         return Util.callAsync(this.createMember, async () => {
             const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
-            await this._unauthenticatedClient.addFirstKey(keys, response.data.memberId);
+            await this._unauthenticatedClient.addFirstKey(response.data.memberId, keys);
             const member = new Member(this._env, response.data.memberId, keys);
             await member.addUsername(username);
             return member;
@@ -118,20 +118,25 @@ class Token {
      * Notifies subscribers that a key should be added and passes the public Key and
      * optional name
      * @param {string} username - username to notify
-     * @param {string} publicKey - public
-     * @param {string} name - name for the new key, (e.g Chrome 53.0)
+     * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
+     * @param {Object} key - key
+     * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
-    notifyAddKey(username, publicKey, name = '') {
+    notifyAddKey(username, keyName, key, level) {
         const body = {
             addKey: {
-                publicKey: Crypto.strKey(publicKey),
-                algorithm: Crypto.algorithm(),
-                name
+                name: keyName,
+                key: {
+                    id: key.keyId,
+                    level: level,
+                    algorithm: key.algorithm,
+                    publicKey: Crypto.strKey(key.publicKey)
+                }
             }
         };
         return Util.callAsync(this.notifyAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(username, body)
+            const res = await this._unauthenticatedClient.notify(username, body);
             return res.data.status;
         });
     }
@@ -143,11 +148,12 @@ class Token {
      * @param {string} bankId - ID of the bank owning the accounts
      * @param {string} bankName - name of the bank owning the accounts
      * @param {string} accountLinkPayloads - accountsLinkPayload retrieved from the bank
-     * @param {string} publicKey - public
-     * @param {array} name - name for the new key, (e.g Chrome 53.0)
+     * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
+     * @param {Object} key - key
+     * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, publicKey, name = "") {
+    notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, keyName, key, level) {
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
@@ -156,18 +162,22 @@ class Token {
                     accountLinkPayloads
                 },
                 addKey: {
-                    publicKey: Crypto.strKey(publicKey),
-                    algorithm: Crypto.algorithm(),
-                    name
+                    name: keyName,
+                    key: {
+                        id: key.keyId,
+                        level: level,
+                        algorithm: key.algorithm,
+                        publicKey: Crypto.strKey(key.publicKey)
+                    }
                 }
             }
         };
         return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(username, body)
+            const res = await this._unauthenticatedClient.notify(username, body);
             return res.data.status;
         });
     }
-};
+}
 
 module.exports = Token;
 

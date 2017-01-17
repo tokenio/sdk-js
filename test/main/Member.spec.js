@@ -16,18 +16,18 @@ describe('member tests', () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
         member = await Token.createMember(username);
-        await member.approveKey(Crypto.strKey(keys.publicKey));
+        await member.approveKey(keys);
     });
 
     describe('Creating a member', () => {
         it('should add a second key', async () => {
             const keys = Crypto.generateKeys();
-            await member.approveKey(Crypto.strKey(keys.publicKey));
+            await member.approveKey(keys);
         });
 
         it('should add and remove a key', async () => {
             const keys = Crypto.generateKeys();
-            await member.approveKey(Crypto.strKey(keys.publicKey));
+            await member.approveKey(keys);
             await member.removeKey(keys.keyId);
             const keys2 = await member.getPublicKeys();
             assert.isAtLeast(keys2.length, 2);

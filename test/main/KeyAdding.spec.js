@@ -15,7 +15,7 @@ describe('Key addition detection', () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
         member = await Token.createMember(username);
-        await member.approveKey(Crypto.strKey(keys.publicKey));
+        await member.approveKey(keys);
     });
 
     it('should not have access before being added', async () => {
@@ -30,7 +30,7 @@ describe('Key addition detection', () => {
 
     it('should have access after being added', async () => {
         const keys = Crypto.generateKeys();
-        await member.approveKey(Crypto.strKey(keys.publicKey));
+        await member.approveKey(keys);
         const memberNew = await Token.loginWithUsername(keys, username);
         assert.equal(member.id, memberNew.id);
     });

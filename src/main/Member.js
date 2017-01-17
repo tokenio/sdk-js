@@ -72,14 +72,14 @@ export default class Member {
 
     /**
      * Approves a new key for this member
-     * @param {Buffer} publicKey - key to add
+     * @param {Object} key - key to add
      * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
      * @return {Promise} empty - empty promise
      */
-    approveKey(publicKey, keyLevel = KeyLevel.PRIVILEGED) {
+    approveKey(key, keyLevel = KeyLevel.PRIVILEGED) {
         return Util.callAsync(this.approveKey, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addKey(prevHash, Crypto.bufferKey(publicKey), keyLevel);
+            await this._client.addKey(prevHash, key, keyLevel);
             return;
         });
     }

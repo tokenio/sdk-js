@@ -40,13 +40,13 @@ class HttpClient {
         return this._instance(config);
     }
 
-    addFirstKey(keys, memberId, keyLevel = KeyLevel.PRIVILEGED) {
+    addFirstKey(memberId, key, level = KeyLevel.PRIVILEGED) {
         const update = {
             memberId: memberId,
             addKey: {
-                level: keyLevel,
-                publicKey: Crypto.strKey(keys.publicKey),
-                algorithm: Crypto.algorithm()
+                level: level,
+                algorithm: key.algorithm,
+                publicKey: Crypto.strKey(key.publicKey)
             }
         };
 
@@ -54,8 +54,8 @@ class HttpClient {
             update,
             updateSignature: {
                 memberId: memberId,
-                keyId: keys.keyId,
-                signature: Crypto.signJson(update, keys)
+                keyId: key.keyId,
+                signature: Crypto.signJson(update, key)
             }
         };
         const config = {

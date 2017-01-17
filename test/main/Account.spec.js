@@ -15,7 +15,7 @@ describe('Account tests', () => {
         const keys = Crypto.generateKeys();
         username = Crypto.generateKeys().keyId;
         member = await Token.createMember(username);
-        await member.approveKey(Crypto.strKey(keys.publicKey));
+        await member.approveKey(keys);
     });
 
     it('should get accounts', async () => {

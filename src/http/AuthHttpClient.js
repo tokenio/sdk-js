@@ -361,19 +361,15 @@ class AuthHttpClient {
     }
 
 
-    addKey(prevHash, publicKey, keyLevel) {
+    addKey(prevHash, key, level) {
         const update = {
             memberId: this._memberId,
             addKey: {
-                publicKey: Crypto.strKey(publicKey),
-                algorithm: Crypto.algorithm()
+                level,
+                algorithm: key.algorithm,
+                publicKey: Crypto.strKey(key.publicKey)
             }
         };
-
-        // Do this because default this._keys are invisible in protos
-        if (keyLevel !== KeyLevel.PRIVILEGED) {
-            update.addKey.level = keyLevel;
-        }
 
         return this._memberUpdate(update, prevHash);
     }
