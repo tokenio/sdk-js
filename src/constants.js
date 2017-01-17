@@ -9,7 +9,7 @@ const urls = {
     dev: 'https://api.dev.token.io',
     stg: 'https://api.stg.token.io',
     prd: 'https://api.prd.token.io',
-}
+};
 
 // Scheme for transfer tokens
 const transferTokenVersion = '1.0';

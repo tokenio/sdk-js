@@ -7,7 +7,7 @@ const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
-import KeyLevel from "../../src/main/KeyLevel";
+import {KeyLevel} from "../../src/constants";
 
 let member1 = {};
 let username1 = '';
