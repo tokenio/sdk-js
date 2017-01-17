@@ -7,6 +7,7 @@ const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
+import KeyLevel from "../../src/main/KeyLevel";
 
 let member1 = {};
 let username1 = '';
@@ -58,7 +59,7 @@ describe('Notifications', () => {
         const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
         const alp = await member1.subscribeToNotifications(target);
-        await Token.notifyAddKey(username1, keys.publicKey, "Chrome 54.1");
+        await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
     });
 
     it('should send a push for adding a key and linking accounts', async () => {
@@ -71,13 +72,14 @@ describe('Notifications', () => {
                 'iron',
                 'bank-name',
                 alp,
-                keys.publicKey,
-                'Chrome 51.0');
+                'Chrome 51.0',
+                keys,
+                KeyLevel.PRIVILEGED);
     });
 
     it('should send an actual push to device', async () => {
         await member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
-            '8E5F9402554000')
+            '8E5F9402554000');
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
     });
@@ -91,7 +93,7 @@ describe('Notifications', () => {
         assert.equal(notificationsEmpty.length, 0);
 
         const alp = await member2.subscribeToNotifications(target);
-        await Token.notifyAddKey(username2, keys.publicKey, "Chrome 54.1");
+        await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         const notificationsFull = await member2.getNotifications();
         assert.equal(notificationsFull.length, 1);
         const lookedUp = await member2.getNotification(notificationsFull[0].id);

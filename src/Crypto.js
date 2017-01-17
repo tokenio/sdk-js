@@ -5,21 +5,13 @@ import stringify from "json-stable-stringify";
 
 class Crypto {
     /**
-     * Returns the name of the algorithm used by this crypto.
-     *
-     * @returns {string} the name of the algorithm
-     */
-    static algorithm() {
-        return "ED25519";
-    }
-
-    /**
      * Generates a keypair to use with the token System
      * @return {object} keyPair - keyPair
      */
     static generateKeys() {
         const keyPair = nacl.sign.keyPair();
         keyPair.keyId = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
+        keyPair.algorithm = 'ED25519';
         return keyPair;
     }
 
