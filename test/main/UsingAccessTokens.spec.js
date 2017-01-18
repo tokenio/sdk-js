@@ -103,4 +103,33 @@ describe('Using access tokens', async () => {
         assert.deepEqual(result2.address, address.address);
         grantee.clearAccessToken();
     });
+
+    it('replaced address should work with pulling token', async () => {
+        const t = await setupToken();
+        const token = await grantor.getToken(t.id);
+        grantee.useAccessToken(token.id);
+        const result = await grantee.getAddress(address.id);
+        assert.equal(result.id, address.id);
+        assert.equal(result.name, address.name);
+        assert.deepEqual(result.address, address.address);
+
+        grantee.clearAccessToken();
+        const operationalResult = await grantor.replaceAndEndorseAccessToken(
+                      token,
+                      Token.AccessToken.createFromAccessToken(token).forAll())
+        assert.equal(operationalResult.status, 'SUCCESS');
+
+        grantee.useAccessToken(operationalResult.token.id);
+        const result2 = await grantee.getAddress(address.id);
+        assert.equal(result2.id, address.id);
+        assert.equal(result2.name, address.name);
+        assert.deepEqual(result2.address, address.address);
+        grantee.clearAccessToken();
+    });
+
+    it('should get access tokens', async () => {
+        await setupToken();
+        const tokens = await grantor.getAccessTokens(0, 100);
+        assert.isAbove(tokens.data.length, 0);
+    });
 });

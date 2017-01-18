@@ -4,7 +4,11 @@ webpackConfig.entry = {};
 // Karma configuration
 module.exports = function (config) {
     config.set({
-
+        client: {
+            mocha: {
+                timeout : 6000 // 6 seconds - upped from 2 seconds
+            }
+        },
         // ... normal karma configuration
         files: [
 

@@ -359,11 +359,14 @@ export default class Member {
     /**
      * Looks up a token by its Id
      * @param {string} tokenId - id of the token
-     * @return {Promise} token - transfer token
+     * @return {Promise} token - token
      */
     getToken(tokenId) {
         return Util.callAsync(this.getToken, async () => {
             const res = await this._client.getToken(tokenId);
+            if (res.data.token.payload.access !== undefined) { // Access Token
+                return AccessToken.createFromToken(res.data.token);
+            }
             return res.data.token;
         });
     }
@@ -398,7 +401,7 @@ export default class Member {
             const res = await this._client.getTokens('ACCESS', offset, limit);
             const data = res.data.tokens === undefined
                     ? []
-                    :res.data.tokens;
+                    : res.data.tokens.map(t => AccessToken.createFromToken(t));
             return {
                 data,
                 offset: res.data.offset,
