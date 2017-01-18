@@ -37,7 +37,6 @@ class Util {
         try {
             return await fn();
         } catch (err) {
-            Promise.reject(new Error(method.name, err));
             return Promise.reject({
                 type: method.name,
                 error: err,
