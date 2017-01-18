@@ -4,7 +4,7 @@
 class Sample {
 
 static string() {
-        return Sample.stringOf(5);
+        return Sample.stringOf(15);
     }
 
     static stringOf(length) {
