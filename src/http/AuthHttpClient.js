@@ -2,7 +2,7 @@ import Crypto from "../Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
-import {urls, KeyLevel, transferTokenVersion} from "../constants";
+import {urls, KeyLevel, transferTokenVersion, accessTokenVersion} from "../constants";
 import VersionHeader from "./VersionHeader";
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
@@ -240,7 +240,21 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    createAccessToken(payload) {
+    createAccessToken(memberId, username, resources) {
+        const payload = {
+            from: {
+                id: memberId,
+            },
+            to: {
+                username,
+             },
+            access: {
+                resources,
+            },
+            version: accessTokenVersion,
+            nonce: Util.generateNonce(),
+        };
+
         const config = {
             method: 'post',
             url: `/tokens`,

@@ -277,13 +277,15 @@ export default class Member {
     /**
      * Creates a new unendorsed access token.
      *
-     * @param {AccessToken} accessToken - the access token configuration
-     * @return {Promise} token - promise of a created AccessToken
+     * @param {string} username - the username of the grantee of the Access Token
+     * @param {array} resources - a list of resources to give access to
+     * @return {Promise} token - promise of a created Access Token
      */
-    createAccessToken(accessToken) {
+    createAccessToken(username, resources) {
         return Util.callAsync(this.createAccessToken, async () => {
-            const res = await this._client.createAccessToken(accessToken.from(this).json);
-            return AccessToken.createFromToken(res.data.token);
+            const res = await this._client.createAccessToken(this._id, username, resources);
+            console.log('created', res.data.token);
+            return res.data.token;
         });
     }
 
@@ -299,7 +301,9 @@ export default class Member {
             const finalTokenToCancel = await this._resolveToken(tokenToCancel);
             const finalTokenToCreate = await this._resolveToken(tokenToCreate);
             const res = await this._client.replaceToken(finalTokenToCancel, finalTokenToCreate);
-            return res.data.result;
+            const returnVal = res.data.result;
+            return returnVal.token = AccessToken.createFromToken(returnVal.token);
+            return returnVal;
         });
     }
 
@@ -315,7 +319,9 @@ export default class Member {
             const finalTokenToCancel = await this._resolveToken(tokenToCancel);
             const finalTokenToCreate = await this._resolveToken(tokenToCreate);
             const res = await this._client.replaceAndEndorseToken(finalTokenToCancel, finalTokenToCreate);
-            return res.data.result;
+            const returnVal = res.data.result;
+            returnVal.token = AccessToken.createFromToken(returnVal.token);
+            return returnVal;
         });
     }
 
@@ -413,6 +419,9 @@ export default class Member {
                 token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
             }
             return endorsed.data.result;
+            const returnVal = endorsed.data.result;
+            returnVal.token = AccessToken.createFromToken(returnVal.token);
+            return returnVal;
         });
     }
 
