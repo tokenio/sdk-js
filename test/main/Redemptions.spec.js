@@ -66,7 +66,7 @@ describe('Token Redemptions', async () => {
             await member2.createTransfer(token1.id, 1242.28, 'EUR');
             return Promise.reject(new Error("should fail"));
         } catch (err) {
-            assert.include(err.error.response.data, "amount exceeded");
+            assert.include(err.message, "amount exceeded");
             return true;
         }
     });
@@ -76,7 +76,7 @@ describe('Token Redemptions', async () => {
             await member1.createTransfer(token1.id, 10.28, 'EUR');
             return Promise.reject(new Error("should fail"));
         } catch (err) {
-            assert.include(err.error.response.data, "redeemer");
+            assert.include(err.message, "redeemer");
             return true;
         }
     });
@@ -86,7 +86,7 @@ describe('Token Redemptions', async () => {
             await member1.createTransfer(token1.id, 10.28, 'USD');
             return Promise.reject(new Error("should fail"));
         } catch (err) {
-            assert.include(err.error.response.data, "currency");
+            assert.include(err.message, "currency");
             return true;
         }
     });

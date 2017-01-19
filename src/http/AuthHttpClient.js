@@ -2,7 +2,7 @@ import Crypto from "../Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
-import {urls, KeyLevel, transferTokenVersion} from "../constants";
+import {urls, KeyLevel, transferTokenVersion, accessTokenVersion} from "../constants";
 import VersionHeader from "./VersionHeader";
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
@@ -240,7 +240,21 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    createAccessToken(payload) {
+    createAccessToken(username, resources) {
+        const payload = {
+            from: {
+                id: this._memberId,
+            },
+            to: {
+                username,
+             },
+            access: {
+                resources,
+            },
+            version: accessTokenVersion,
+            nonce: Util.generateNonce(),
+        };
+
         const config = {
             method: 'post',
             url: `/tokens`,
@@ -251,12 +265,23 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    replaceToken(tokenToCancel, tokenToCreate) {
+    replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            payload: tokenToCreate.payload,
+            payload: {
+                from: {
+                    id: this._memberId,
+                },
+                to: tokenToCancel.payload.to,
+                access: {
+                    resources: newResources,
+                },
+                issuer: tokenToCancel.payload.issuer,
+                version: accessTokenVersion,
+                nonce: Util.generateNonce(),
+            },
         };
 
         const config = {
@@ -270,13 +295,26 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    replaceAndEndorseToken(tokenToCancel, tokenToCreate) {
+    replaceAndEndorseToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
+        const payload = {
+            from: {
+                id: this._memberId,
+            },
+            to: tokenToCancel.payload.to,
+            access: {
+                resources: newResources,
+            },
+            issuer: tokenToCancel.payload.issuer,
+            version: accessTokenVersion,
+            nonce: Util.generateNonce(),
+        };
+
         const createReq = {
-            payload: tokenToCreate.payload,
-            payload_signature: this._tokenOperationSignature(tokenToCreate, 'endorsed')
+            payload,
+            payload_signature: this._tokenOperationSignature(payload, 'endorsed')
         };
 
         const config = {
@@ -367,12 +405,12 @@ class AuthHttpClient {
     _tokenOperationRequest(token, suffix) {
         return {
             tokenId: token.id,
-            signature: this._tokenOperationSignature(token, suffix)
+            signature: this._tokenOperationSignature(token.payload, suffix)
         };
     }
 
-    _tokenOperationSignature(token, suffix) {
-        const payload = stringify(token.payload) + `.${suffix}`;
+    _tokenOperationSignature(tokenPayload, suffix) {
+        const payload = stringify(tokenPayload) + `.${suffix}`;
         return {
             memberId: this._memberId,
             keyId: this._keys.keyId,

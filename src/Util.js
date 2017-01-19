@@ -37,13 +37,11 @@ class Util {
         try {
             return await fn();
         } catch (err) {
-            return Promise.reject({
-                type: method.name,
-                error: err,
-                reason: (err.response !== undefined && err.response.data !== undefined)
+            const reason = (err.response !== undefined && err.response.data !== undefined)
                     ? err.response.data
-                    : "UNKNOWN"
-            });
+                    : "UNKNOWN";
+            err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
+            return Promise.reject(err);
         }
     }
 }

@@ -50,9 +50,8 @@ describe('Error handling', () => {
             const err = await member2.createTransfer(token1, 10000, 'EUR');
             return Promise.reject(new Error("Call should fail"));
         } catch (err) {
-            assert.equal(err.type, "createTransfer");
-            assert.isOk(err.error.response.data, "error should not be undefined");
-            assert.include(err.reason, "PRECONDITION");
+            assert.include(err.message, "createTransfer");
+            assert.include(err.message, "PRECONDITION");
         }
     });
 });

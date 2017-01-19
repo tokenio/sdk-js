@@ -5,7 +5,6 @@ import {KeyLevel} from "./constants";
 import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
 import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
-import AccessToken from "./main/AccessToken";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
@@ -19,7 +18,6 @@ class Token {
         this.KeyLevel = KeyLevel;
         this.Crypto = Crypto;
         this.Util = Util;
-        this.AccessToken = AccessToken;
     }
 
     /**
