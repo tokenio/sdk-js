@@ -265,22 +265,23 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    replaceToken(tokenToCancel, newUsername, newResources) {
+    replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            from: {
-                id: this._memberId,
+            payload: {
+                from: {
+                    id: this._memberId,
+                },
+                to: tokenToCancel.payload.to,
+                access: {
+                    resources: newResources,
+                },
+                issuer: tokenToCancel.payload.issuer,
+                version: accessTokenVersion,
+                nonce: Util.generateNonce(),
             },
-            to: {
-                username: newUsername,
-             },
-            access: {
-                resources: newResources,
-            },
-            version: accessTokenVersion,
-            nonce: Util.generateNonce(),
         };
 
         const config = {
@@ -294,7 +295,7 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    replaceAndEndorseToken(tokenToCancel, newUsername, newResources) {
+    replaceAndEndorseToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
@@ -302,12 +303,11 @@ class AuthHttpClient {
             from: {
                 id: this._memberId,
             },
-            to: {
-                username: newUsername,
-             },
+            to: tokenToCancel.payload.to,
             access: {
                 resources: newResources,
             },
+            issuer: tokenToCancel.payload.issuer,
             version: accessTokenVersion,
             nonce: Util.generateNonce(),
         };

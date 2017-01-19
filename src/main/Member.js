@@ -295,12 +295,11 @@ export default class Member {
      * @returns {array] newResources - the new resources for this token
      * @returns {Promise} operationResult - the result of the operation
      */
-    replaceAccessToken(tokenToCancel, newUsername, newResources) {
+    replaceAccessToken(tokenToCancel, newResources) {
         return Util.callAsync(this.replaceAccessToken, async () => {
             const finalTokenToCancel = await this._resolveToken(tokenToCancel);
             const res = await this._client.replaceToken(
                 finalTokenToCancel,
-                newUsername,
                 newResources);
             return res.data.result;
         });
@@ -314,12 +313,11 @@ export default class Member {
      * @returns {array] newResources - the new resources for this token
      * @returns {Promise} operationResult - the result of the operation
      */
-    replaceAndEndorseAccessToken(tokenToCancel, newUsername, newResources) {
+    replaceAndEndorseAccessToken(tokenToCancel, newResources) {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
             const finalTokenToCancel = await this._resolveToken(tokenToCancel);
             const res = await this._client.replaceAndEndorseToken(
                 finalTokenToCancel,
-                newUsername,
                 newResources);
             return res.data.result;
         });
