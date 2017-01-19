@@ -4,7 +4,7 @@ import 'babel-regenerator-runtime';
 
 import AccessToken from "../../src/main/AccessToken";
 import Sample from "../sample/Sample";
-
+import BankClient from "../sample/BankClient";
 
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
@@ -14,11 +14,15 @@ let granteeUsername = '';
 let grantor = {};
 let grantee = {};
 let address = {};
+let grantorAccount = {};
 
 const setUpGrantor = async () => {
     grantorUsername = Sample.string();
     grantor = await Token.createMember(grantorUsername);
     address = await grantor.addAddress("name", { city: 'San Francisco', country: 'US' });
+    const alp = await BankClient.requestLinkAccounts(grantorUsername, 100000, 'EUR');
+    const accs = await grantor.linkAccounts('iron', alp);
+    grantorAccount = accs[0];
 };
 
 const setupGrantee = async () => {
@@ -27,7 +31,7 @@ const setupGrantee = async () => {
 };
 
 const setupToken = async () => {
-    const token = await grantor.createAccessToken(granteeUsername, { allAddresses: {} });
+    const token = await grantor.createAccessToken(granteeUsername, [{ allAddresses: {} }]);
     await grantor.endorseToken(token);
     return token;
 };
@@ -66,18 +70,26 @@ describe('Using access tokens', async () => {
         assert.equal(result.id, address.id);
         assert.equal(result.name, address.name);
         assert.deepEqual(result.address, address.address);
-
         grantee.clearAccessToken();
+        const tokens = await grantee.getToken(token.id);
+        console.log(tokens);
         const operationalResult = await grantor.replaceAndEndorseAccessToken(
-                      token,
-                      Token.AccessToken.createFromAccessToken(token).forAll())
+                token,
+                granteeUsername,
+                [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-
+        const tokens2 = await grantee.getAllUsernames();
+        console.log(operationalResult.token, tokens2);
         grantee.useAccessToken(operationalResult.token.id);
-        const result2 = await grantee.getAddress(address.id);
-        assert.equal(result2.id, address.id);
-        assert.equal(result2.name, address.name);
-        assert.deepEqual(result2.address, address.address);
+        try {
+            await grantee.getAddress(address.id);
+            return Promise.reject(new Error("Should not succeed"));
+        } catch (e) {}
+
+        debugger;
+        console.log(await grantee.getToken(operationalResult.token.id));
+        const result2 = await grantee.getBalance(grantorAccount.id);
+        console.log(result2);
         grantee.clearAccessToken();
     });
 
@@ -92,15 +104,13 @@ describe('Using access tokens', async () => {
 
         const operationalResult = await grantor.replaceAccessToken(
                     token,
-                    Token.AccessToken.createFromAccessToken(token).forAll())
+                    granteeUsername,
+                    [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'MORE_SIGNATURES_NEEDED');
 
         await grantor.endorseToken(operationalResult.token);
         grantee.useAccessToken(operationalResult.token.id);
-        const result2 = await grantee.getAddress(address.id);
-        assert.equal(result2.id, address.id);
-        assert.equal(result2.name, address.name);
-        assert.deepEqual(result2.address, address.address);
+        const result2 = await grantee.getBalance(grantorAccount.id);
         grantee.clearAccessToken();
     });
 

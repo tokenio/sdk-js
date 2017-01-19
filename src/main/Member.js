@@ -1,7 +1,6 @@
 import Crypto from "../Crypto";
 import LocalStorage from "../LocalStorage";
 import AuthHttpClient from "../http/AuthHttpClient";
-import AccessToken from "./AccessToken";
 import Util from "../Util";
 import {maxDecimals, KeyLevel} from "../constants";
 
@@ -283,8 +282,7 @@ export default class Member {
      */
     createAccessToken(username, resources) {
         return Util.callAsync(this.createAccessToken, async () => {
-            const res = await this._client.createAccessToken(this._id, username, resources);
-            console.log('created', res.data.token);
+            const res = await this._client.createAccessToken(username, resources);
             return res.data.token;
         });
     }
@@ -292,36 +290,38 @@ export default class Member {
     /**
      * Cancels the existing token and creates a replacement for it.
      *
-     * @param {AccessToken} tokenToCancel - the old token to cancel
-     * @param {AccessToken} tokenToCreate - the new token to create
+     * @param {Object} tokenToCancel - the old token to cancel
+     * @param {string} newUsername - the username of the old grantee
+     * @returns {array] newResources - the new resources for this token
      * @returns {Promise} operationResult - the result of the operation
      */
-    replaceAccessToken(tokenToCancel, tokenToCreate) {
+    replaceAccessToken(tokenToCancel, newUsername, newResources) {
         return Util.callAsync(this.replaceAccessToken, async () => {
             const finalTokenToCancel = await this._resolveToken(tokenToCancel);
-            const finalTokenToCreate = await this._resolveToken(tokenToCreate);
-            const res = await this._client.replaceToken(finalTokenToCancel, finalTokenToCreate);
-            const returnVal = res.data.result;
-            return returnVal.token = AccessToken.createFromToken(returnVal.token);
-            return returnVal;
+            const res = await this._client.replaceToken(
+                finalTokenToCancel,
+                newUsername,
+                newResources);
+            return res.data.result;
         });
     }
 
     /**
      * Cancels the existing token, creates a replacement and endorses it.
      *
-     * @param {AccessToken} tokenToCancel - the old token to cancel
-     * @param {AccessToken} tokenToCreate - the new token to create
+     * @param {Object} tokenToCancel - the old token to cancel
+     * @param {string} newUsername - the username of the old grantee
+     * @returns {array] newResources - the new resources for this token
      * @returns {Promise} operationResult - the result of the operation
      */
-    replaceAndEndorseAccessToken(tokenToCancel, tokenToCreate) {
+    replaceAndEndorseAccessToken(tokenToCancel, newUsername, newResources) {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
             const finalTokenToCancel = await this._resolveToken(tokenToCancel);
-            const finalTokenToCreate = await this._resolveToken(tokenToCreate);
-            const res = await this._client.replaceAndEndorseToken(finalTokenToCancel, finalTokenToCreate);
-            const returnVal = res.data.result;
-            returnVal.token = AccessToken.createFromToken(returnVal.token);
-            return returnVal;
+            const res = await this._client.replaceAndEndorseToken(
+                finalTokenToCancel,
+                newUsername,
+                newResources);
+            return res.data.result;
         });
     }
 
@@ -364,9 +364,6 @@ export default class Member {
     getToken(tokenId) {
         return Util.callAsync(this.getToken, async () => {
             const res = await this._client.getToken(tokenId);
-            if (res.data.token.payload.access !== undefined) { // Access Token
-                return AccessToken.createFromToken(res.data.token);
-            }
             return res.data.token;
         });
     }
@@ -394,14 +391,14 @@ export default class Member {
      * Looks up all access tokens (not just for this account)
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
-     * @return {Promise} AccessTokens - returns a list of Access Tokens
+     * @return {Promise} tccess tokens - returns a list of access tokens
      */
     getAccessTokens(offset, limit) {
         return Util.callAsync(this.getAccessTokens, async () => {
             const res = await this._client.getTokens('ACCESS', offset, limit);
             const data = res.data.tokens === undefined
                     ? []
-                    : res.data.tokens.map(t => AccessToken.createFromToken(t));
+                    : res.data.tokens;
             return {
                 data,
                 offset: res.data.offset,
@@ -422,9 +419,6 @@ export default class Member {
                 token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
             }
             return endorsed.data.result;
-            const returnVal = endorsed.data.result;
-            returnVal.token = AccessToken.createFromToken(returnVal.token);
-            return returnVal;
         });
     }
 
@@ -574,14 +568,8 @@ export default class Member {
             if (typeof token === 'string' || token instanceof String) {
                 this.getToken(token)
                     .then(lookedUp => resolve(lookedUp));
-            } else if (token instanceof AccessToken) {
-                const payload = token.json;  // Convert access token to json representation
-                resolve({
-                    id: token.id,
-                    payload,
-                });
             } else {
-                resolve(token);       // Transfer token, already in json representation
+                resolve(token);       // Token, already in json representation
             }
         });
 

@@ -240,10 +240,10 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    createAccessToken(memberId, username, resources) {
+    createAccessToken(username, resources) {
         const payload = {
             from: {
-                id: memberId,
+                id: this._memberId,
             },
             to: {
                 username,
@@ -265,12 +265,22 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    replaceToken(tokenToCancel, tokenToCreate) {
+    replaceToken(tokenToCancel, newUsername, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
-            payload: tokenToCreate.payload,
+            from: {
+                id: this._memberId,
+            },
+            to: {
+                username: newUsername,
+             },
+            access: {
+                resources: newResources,
+            },
+            version: accessTokenVersion,
+            nonce: Util.generateNonce(),
         };
 
         const config = {
@@ -284,13 +294,27 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    replaceAndEndorseToken(tokenToCancel, tokenToCreate) {
+    replaceAndEndorseToken(tokenToCancel, newUsername, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
+        const payload = {
+            from: {
+                id: this._memberId,
+            },
+            to: {
+                username: newUsername,
+             },
+            access: {
+                resources: newResources,
+            },
+            version: accessTokenVersion,
+            nonce: Util.generateNonce(),
+        };
+
         const createReq = {
-            payload: tokenToCreate.payload,
-            payload_signature: this._tokenOperationSignature(tokenToCreate, 'endorsed')
+            payload,
+            payload_signature: this._tokenOperationSignature(payload, 'endorsed')
         };
 
         const config = {
@@ -381,12 +405,12 @@ class AuthHttpClient {
     _tokenOperationRequest(token, suffix) {
         return {
             tokenId: token.id,
-            signature: this._tokenOperationSignature(token, suffix)
+            signature: this._tokenOperationSignature(token.payload, suffix)
         };
     }
 
-    _tokenOperationSignature(token, suffix) {
-        const payload = stringify(token.payload) + `.${suffix}`;
+    _tokenOperationSignature(tokenPayload, suffix) {
+        const payload = stringify(tokenPayload) + `.${suffix}`;
         return {
             memberId: this._memberId,
             keyId: this._keys.keyId,
