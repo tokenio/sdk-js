@@ -389,7 +389,7 @@ export default class Member {
      * Looks up all access tokens (not just for this account)
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
-     * @return {Promise} tccess tokens - returns a list of access tokens
+     * @return {Promise} access tokens - returns a list of access tokens
      */
     getAccessTokens(offset, limit) {
         return Util.callAsync(this.getAccessTokens, async () => {
