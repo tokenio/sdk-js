@@ -292,7 +292,7 @@ export default class Member {
      *
      * @param {Object} tokenToCancel - the old token to cancel
      * @param {string} newUsername - the username of the old grantee
-     * @returns {array] newResources - the new resources for this token
+     * @returns {array] newResources - the new resources for this token to grant access to
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAccessToken(tokenToCancel, newResources) {
@@ -310,7 +310,7 @@ export default class Member {
      *
      * @param {Object} tokenToCancel - the old token to cancel
      * @param {string} newUsername - the username of the old grantee
-     * @returns {array] newResources - the new resources for this token
+     * @returns {array] newResources - the new resources for this token to grant access to
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAndEndorseAccessToken(tokenToCancel, newResources) {
