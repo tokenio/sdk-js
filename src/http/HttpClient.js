@@ -28,7 +28,7 @@ class HttpClient {
     usernameExists(username) {
         const config = {
             method: 'get',
-            url: `/username-exists?username=${username}`
+            url: `/memberid?username=${username}`
         };
         return this._instance(config);
     }
