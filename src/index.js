@@ -28,7 +28,7 @@ class Token {
     usernameExists(username) {
         return Util.callAsync(this.usernameExists, async () => {
             const res = await this._unauthenticatedClient.usernameExists(username);
-            return res.data.exists ? res.data.exists : false;
+            return res.data.memberId != null && res.data.memberId !== "";
         });
     }
 
