@@ -9,6 +9,7 @@ import Crypto from "../../src/Crypto";
 import BankClient from "../sample/BankClient";
 import {KeyLevel} from "../../src/constants";
 
+const GET_NOTIFICATION_TIMEOUT_MS = 5000;
 let member1 = {};
 let username1 = '';
 
@@ -84,6 +85,21 @@ describe('Notifications', () => {
         await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
     });
 
+    async function waitUntil(fn, resolve, reject, waitTime = 1, start = new Date().getTime()) {
+        try {
+            await fn();
+            resolve('Successful');
+        } catch (e) {
+            if (new Date().getTime() - start > GET_NOTIFICATION_TIMEOUT_MS) {
+                reject('Timed out');
+                return;
+            }
+            setTimeout(() => {
+                doLoop(fn, resolve, reject, waitTime * 2, start);
+            }, waitTime * 2);
+        }
+    }
+
     it('should get notifications', async () => {
         const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
@@ -94,16 +110,21 @@ describe('Notifications', () => {
 
         const alp = await member2.subscribeToNotifications(target);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        const notificationsFull = await member2.getNotifications();
-        assert.equal(notificationsFull.length, 1);
-        const lookedUp = await member2.getNotification(notificationsFull[0].id);
-        assert.equal(lookedUp.id, notificationsFull[0].id);
-        assert.isOk(lookedUp.subscriberId);
-        assert.isOk(lookedUp.status);
-        assert.isOk(lookedUp.content);
-        assert.isOk(lookedUp.content.type);
-        assert.isOk(lookedUp.content.title);
-        assert.isOk(lookedUp.content.body);
-        assert.isOk(lookedUp.content.createdAtMs);
+        return new Promise((resolve, reject) => {
+            waitUntil(async () => {
+                const notificationsFull = await member2.getNotifications();
+                assert.equal(notificationsFull.length, 1);
+                const lookedUp = await
+                member2.getNotification(notificationsFull[0].id);
+                assert.equal(lookedUp.id, notificationsFull[0].id);
+                assert.isOk(lookedUp.subscriberId);
+                assert.isOk(lookedUp.status);
+                assert.isOk(lookedUp.content);
+                assert.isOk(lookedUp.content.type);
+                assert.isOk(lookedUp.content.title);
+                assert.isOk(lookedUp.content.body);
+                assert.isOk(lookedUp.content.createdAtMs);
+            }, resolve, reject);
+        });
     });
 });
