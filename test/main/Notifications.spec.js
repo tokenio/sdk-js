@@ -85,7 +85,7 @@ describe('Notifications', () => {
         await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
     });
 
-    async function doLoop(fn, resolve, reject, waitTime = 1, start = new Date().getTime()) {
+    async function waitUntil(fn, resolve, reject, waitTime = 1, start = new Date().getTime()) {
         try {
             await fn();
             resolve('Successful');
@@ -111,7 +111,7 @@ describe('Notifications', () => {
         const alp = await member2.subscribeToNotifications(target);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
-            doLoop(async () => {
+            waitUntil(async () => {
                 const notificationsFull = await member2.getNotifications();
                 assert.equal(notificationsFull.length, 1);
                 const lookedUp = await
