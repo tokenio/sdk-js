@@ -22,6 +22,7 @@ class Token {
 
     /**
      * Checks if a given username already exists
+     *
      * @param {string} username - username to check
      * @return {Promise} result - true if username exists, false otherwise
      */
@@ -34,6 +35,7 @@ class Token {
 
     /**
      * Creates a member with an username and a keypair
+     *
      * @param  {string} username - username to set for member
      * @return {Promise} member - Promise of created Member
      */
@@ -50,6 +52,7 @@ class Token {
 
     /**
      * Log in a member (Instantiate a member object from keys and Id)
+     *
      * @param  {string} memberId - id of the member
      * @param  {object} keys - member's keys
      * @return {Promise} member - Promise of instantiated Member
@@ -64,6 +67,7 @@ class Token {
      * Log in a member by keys and username. This is useful for checking whether we are
      * authenticated, after requesting to add a key (by notification). Can call this
      * every n seconds until it succeeds
+     *
      * @param  {object} keys - Member keys
      * @param  {string} username - username to authenticate with
      * @return {Promise} member - instantiated Member, if successful
@@ -77,6 +81,7 @@ class Token {
 
     /**
      * Logs a member in from keys stored in localStorage
+     *
      * @return {Promise} member - instantiated member
      */
     loginFromLocalStorage() {
@@ -88,6 +93,7 @@ class Token {
     /**
      * Notifies subscribers that accounts should be linked, and passes the bank id and
      * payload
+     *
      * @param {string} username - username to notify
      * @param {string} bankId - ID of the bank owning the accounts
      * @param {string} bankName - name of the bank owning the accounts
@@ -111,6 +117,7 @@ class Token {
     /**
      * Notifies subscribers that a key should be added and passes the public Key and
      * optional name
+     *
      * @param {string} username - username to notify
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
@@ -138,6 +145,7 @@ class Token {
     /**
      * Notifies subscribed devices that accounts should be linked, and passes the bank id and
      * payload
+     *
      * @param {string} username - username to notify
      * @param {string} bankId - ID of the bank owning the accounts
      * @param {string} bankName - name of the bank owning the accounts

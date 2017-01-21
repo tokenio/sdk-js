@@ -13,6 +13,7 @@ export default class Member {
 
     /**
      * Represents a Member
+     *
      * @constructor
      * @param {string} memberId - The id of this memberId
      * @param {object} keys - An object representing the keypair of the user
@@ -25,6 +26,7 @@ export default class Member {
 
     /**
      * Gets the memberId
+     *
      * @return {string} memberId
      */
     get id() {
@@ -33,6 +35,7 @@ export default class Member {
 
     /**
      * Returns the member's key pair
+     *
      * @return {object} keyPair
      */
     get keys() {
@@ -64,6 +67,7 @@ export default class Member {
 
     /**
      * Approves a new key for this member
+     *
      * @param {Object} key - key to add
      * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
      * @return {Promise} empty - empty promise
@@ -78,6 +82,7 @@ export default class Member {
 
     /**
      * Removes a key from this member
+     *
      * @param {string} keyId - keyId to remove. Note, keyId is the hash of the pk
      * @return {Promise} empty empty promise
      */
@@ -91,6 +96,7 @@ export default class Member {
 
     /**
      * Adds an username to this member
+     *
      * @param {string} username - username to add
      * @return {Promise} empty empty promise
      */
@@ -104,6 +110,7 @@ export default class Member {
 
     /**
      * Removes an username from the memberId
+     *
      * @param {string} username - username to remove
      * @return {Promise} empty - empty promise
      */
@@ -117,6 +124,7 @@ export default class Member {
 
     /**
      * Links bank accounts to the member
+     *
      * @param {string} bankId - bank to link
      * @param {string} accountLinkPayloads - accountLinkPayload obtained from bank
      * @return {Promise} accounts - Promise resolving the the Accounts linked
@@ -130,6 +138,7 @@ export default class Member {
 
     /**
      * Looks up the member's accounts
+     *
      * @return {Promise} accounts - Promise resolving to the accounts
      */
     getAccounts() {
@@ -143,6 +152,7 @@ export default class Member {
 
     /**
      * Gets a list of all available banks for linking
+     *
      * @return {Array[object]} banks - list of banks
      */
     getBanks() {
@@ -168,6 +178,7 @@ export default class Member {
     /**
      * Creates a subscriber to receive notifications of member events, such as step up auth,
      * new device requests, linking account requests, or transfer notifications
+     *
      * @param {string} target - the notification target for this device. (e.g iOS push token)
      * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
      * @return {Promise} subscriber - Subscriber
@@ -208,7 +219,7 @@ export default class Member {
         });
     }
 
-        /**
+    /**
      * Gets all notifications for this member
      *
      * @return {Promise} - notifications
@@ -237,6 +248,7 @@ export default class Member {
 
     /**
      * Unsubscribes from notifications (removes a subscriber)
+     *
      * @param {string} subscriberId - subscriber to remove
      * @return {Promise} empty - empty promise
      */
@@ -249,6 +261,7 @@ export default class Member {
 
     /**
      * Creates an address for this member, and saves it
+     *
      * @param {string} name - name of the address (e.g 'Home')
      * @param {object} address - address
      * @return {Promise} empty - empty promise
@@ -275,6 +288,7 @@ export default class Member {
 
     /**
      * Gets the member's addresses
+     *
      * @return {Promise} addresses - Addresses
      */
     getAddresses() {
@@ -288,6 +302,7 @@ export default class Member {
 
     /**
      * Gets all of the member's usernames
+     *
      * @return {Promise} usernames - member's usernames
      */
     getAllUsernames() {
@@ -380,6 +395,7 @@ export default class Member {
 
     /**
      * Looks up a token by its Id
+     *
      * @param {string} tokenId - id of the token
      * @return {Promise} token - token
      */
@@ -392,6 +408,7 @@ export default class Member {
 
     /**
      * Looks up all transfer tokens (not just for this account)
+     *
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
      * @return {Promise} tokens - returns a list of Transfer Tokens
@@ -411,6 +428,7 @@ export default class Member {
 
     /**
      * Looks up all access tokens (not just for this account)
+     *
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
      * @return {Promise} access tokens - returns a list of access tokens
@@ -430,6 +448,7 @@ export default class Member {
 
     /**
      * Endorses a token
+     *
      * @param {Token} token - Transfer token to endorse. Can also be a {string} tokenId
      * @return {Promise} token - Promise of endorsed transfer token
      */
@@ -446,6 +465,7 @@ export default class Member {
 
     /**
      * Cancels a token. (Called by the payer or the redeemer)
+     *
      * @param {Token} token - token to cancel. Can also be a {string} tokenId
      * @return {Promise} TokenOperationResult - cancelled token
      */
@@ -462,6 +482,7 @@ export default class Member {
 
     /**
      * Redeems a token. (Called by the payee or redeemer)
+     *
      * @param {object} token - token to redeem. Can also be a {string} tokenId
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
@@ -488,6 +509,7 @@ export default class Member {
 
     /**
      * Looks up a transfer
+     *
      * @param {string} transferId - id to look up
      * @return {Promise} transfer - transfer if found
      */
@@ -500,6 +522,7 @@ export default class Member {
 
     /**
      * Looks up all of the member's transfers
+     *
      * @param {string} tokenId - token to use for lookup
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to retrieve
@@ -520,6 +543,7 @@ export default class Member {
 
     /**
      * Looks up the balance of an account
+     *
      * @param {string} accountId - id of the account
      * @return {Promise} balance - Promise of balance object
      */
@@ -532,6 +556,7 @@ export default class Member {
 
     /**
      * Looks up a transaction
+     *
      * @param {string} accountId - id of the account
      * @param {string} transactionId - which transaction to look up
      * @return {Promise} transaction - the Transaction
@@ -545,6 +570,7 @@ export default class Member {
 
     /**
      * Looks up all of the member's transactions for an account
+     *
      * @param {string} accountId - id of the account
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to retrieve
@@ -562,6 +588,7 @@ export default class Member {
 
     /**
      * Gets the member's public keys
+     *
      * @return {Promise} keys - keys objects
      */
     getPublicKeys() {
