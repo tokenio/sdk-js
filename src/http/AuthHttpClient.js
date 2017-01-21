@@ -196,6 +196,22 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    getBanks() {
+        const config = {
+            method: 'get',
+            url: `/banks`
+        };
+        return this._instance(config);
+    }
+
+    getBankInfo(bankId) {
+        const config = {
+            method: 'get',
+            url: `/banks/${bankId}/info`
+        };
+        return this._instance(config);
+    }
+
     //
     // Tokens
     //

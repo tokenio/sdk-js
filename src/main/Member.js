@@ -142,6 +142,30 @@ export default class Member {
     }
 
     /**
+     * Gets a list of all available banks for linking
+     * @return {Array[object]} banks - list of banks
+     */
+    getBanks() {
+        return Util.callAsync(this.getBanks, async () => {
+            const res = await this._client.getBanks();
+            return res.data.banks;
+        });
+    }
+
+    /**
+     * Gets the info of a bank, including a link for pairing accounts at this bank
+     *
+     * @param {string} bankId - id of the bank
+     * @returns {Object} bankInfo - info
+     */
+    getBankInfo(bankId) {
+        return Util.callAsync(this.getBankInfo, async () => {
+            const res = await this._client.getBankInfo(bankId);
+            return res.data.info;
+        });
+    }
+
+    /**
      * Creates a subscriber to receive notifications of member events, such as step up auth,
      * new device requests, linking account requests, or transfer notifications
      * @param {string} target - the notification target for this device. (e.g iOS push token)
