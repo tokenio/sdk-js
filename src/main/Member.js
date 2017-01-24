@@ -151,6 +151,20 @@ export default class Member {
     }
 
     /**
+     * Looks up a member's account by Id
+     *
+     * @return {Promise} account - Promise resolving to the account
+     */
+    getAccount(accountId) {
+        return Util.callAsync(this.getAccount, async () => {
+            const res = await this._client.getAccount(accountId);
+            return res.data === undefined
+                ? []
+                : res.data;
+        });
+    }
+
+    /**
      * Gets a list of all available banks for linking
      *
      * @return {Array[object]} banks - list of banks
