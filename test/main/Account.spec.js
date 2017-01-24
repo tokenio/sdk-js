@@ -54,5 +54,12 @@ describe('Account tests', () => {
             const bal = await member.getBalance(account.id)
             assert.equal(parseFloat(bal.current.value), 100000);
         });
+
+        it('should get the account info', async () => {
+           const info = await member.getAccount(account.id);
+           assert.equal(info.id, account.id);
+           assert.isOk(info.name);
+           assert.equal(info.bankId, 'iron');
+        });
     });
 });

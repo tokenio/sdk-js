@@ -158,9 +158,9 @@ export default class Member {
     getAccount(accountId) {
         return Util.callAsync(this.getAccount, async () => {
             const res = await this._client.getAccount(accountId);
-            return res.data === undefined
+            return res.data.account === undefined
                 ? []
-                : res.data;
+                : res.data.account;
         });
     }
 
