@@ -164,6 +164,14 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    getAccount(accountId) {
+        const config = {
+            method: 'get',
+            url: `/accounts/${accountId}`
+        };
+        return this._instance(config);
+    }
+
     setAccountName(accountId, name) {
         const config = {
             method: 'patch',
