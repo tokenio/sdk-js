@@ -476,11 +476,18 @@ class AuthHttpClient {
     addKey(prevHash, key, level) {
         const update = {
             memberId: this._memberId,
-            addKey: {
-                level,
-                algorithm: key.algorithm,
-                publicKey: Crypto.strKey(key.publicKey)
-            }
+            operations: [
+                {
+                    addKey: {
+                        key: {
+                            id: key.keyId,
+                            publicKey: Crypto.strKey(key.publicKey),
+                            level: level,
+                            algorithm: key.algorithm
+                        }
+                    }
+                }
+            ]
         };
 
         return this._memberUpdate(update, prevHash);
@@ -489,9 +496,13 @@ class AuthHttpClient {
     removeKey(prevHash, keyId) {
         const update = {
             memberId: this._memberId,
-            removeKey: {
-                keyId
-            }
+            operations: [
+                {
+                    removeKey: {
+                        keyId
+                    }
+                }
+            ]
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -499,9 +510,13 @@ class AuthHttpClient {
     addUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
-            addUsername: {
-                username
-            }
+            operations: [
+                {
+                    addUsername: {
+                        username
+                    }
+                }
+            ]
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -509,9 +524,13 @@ class AuthHttpClient {
     removeUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
-            removeUsername: {
-                username
-            }
+            operations: [
+                {
+                    removeUsername: {
+                        username
+                    }
+                }
+            ]
         };
         return this._memberUpdate(update, prevHash);
     }
