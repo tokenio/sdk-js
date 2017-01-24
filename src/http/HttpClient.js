@@ -49,11 +49,18 @@ class HttpClient {
     addFirstKey(memberId, key, level = KeyLevel.PRIVILEGED) {
         const update = {
             memberId: memberId,
-            addKey: {
-                level: level,
-                algorithm: key.algorithm,
-                publicKey: Crypto.strKey(key.publicKey)
-            }
+            operations: [
+                {
+                    addKey: {
+                        key: {
+                            id: key.keyId,
+                            publicKey: Crypto.strKey(key.publicKey),
+                            level: level,
+                            algorithm: key.algorithm
+                        }
+                    }
+                }
+            ]
         };
 
         const req = {
