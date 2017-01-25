@@ -8,7 +8,7 @@ const urls = {
     local: 'http://localhost:8000',
     dev: 'https://api.dev.token.io',
     stg: 'https://api.stg.token.io',
-    prd: 'https://api.prd.token.io',
+    prd: 'https://api.token.io',
 };
 
 // Scheme for transfer tokens
