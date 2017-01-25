@@ -7,7 +7,7 @@ const urls = {
     local: 'http://localhost:8100',
     dev: 'https://fank.dev.token.io',
     stg: 'https://fank.stg.token.io',
-    prd: 'https://fank.prd.token.io',
+    prd: 'https://fank.token.io',
 }
 const instance = axios.create({
     baseURL: urls[TEST_ENV]
