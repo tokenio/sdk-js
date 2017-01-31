@@ -95,7 +95,7 @@ describe('Notifications', () => {
                 return;
             }
             setTimeout(() => {
-                doLoop(fn, resolve, reject, waitTime * 2, start);
+                waitUntil(fn, resolve, reject, waitTime * 2, start);
             }, waitTime * 2);
         }
     }
