@@ -29,17 +29,32 @@ export default class Member {
      *
      * @return {string} memberId
      */
-    get id() {
+    get memberId() {
         return this._id;
     }
 
     /**
-     * Returns the member's key pair
+     * Gets all of the member's usernames
      *
-     * @return {object} keyPair
+     * @return {Promise} usernames - member's usernames
      */
-    get keys() {
-        return this._keys;
+    usernames() {
+        return Util.callAsync(this.usernames, async () => {
+            const member = await this._getMember();
+            return member.usernames;
+        });
+    }
+
+    /**
+     * Gets all o
+     *
+     * @return {Promise} usernames - member's usernames
+     */
+    usernames() {
+        return Util.callAsync(this.usernames, async () => {
+            const member = await this._getMember();
+            return member.usernames;
+        });
     }
 
     /**
@@ -311,18 +326,6 @@ export default class Member {
             return res.data.addresses === undefined
                 ? []
                 : res.data.addresses;
-        });
-    }
-
-    /**
-     * Gets all of the member's usernames
-     *
-     * @return {Promise} usernames - member's usernames
-     */
-    getAllUsernames() {
-        return Util.callAsync(this.getAllUsernames, async () => {
-            const member = await this._getMember();
-            return member.usernames;
         });
     }
 
@@ -605,8 +608,8 @@ export default class Member {
      *
      * @return {Promise} keys - keys objects
      */
-    getPublicKeys() {
-        return Util.callAsync(this.getPublicKeys, async () => {
+    keys() {
+        return Util.callAsync(this.keys, async () => {
             const member = await this._getMember();
             return member.keys;
         });
