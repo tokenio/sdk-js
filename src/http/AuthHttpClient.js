@@ -79,10 +79,10 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    getNotifications() {
+    getNotifications(offset, limit) {
         const config = {
             method: 'get',
-            url: `/notifications`
+            url: `/notifications?offset=${offset}&limit=${limit}`,
         };
         return this._instance(config);
     }
