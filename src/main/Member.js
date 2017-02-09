@@ -236,14 +236,20 @@ export default class Member {
     /**
      * Gets all notifications for this member
      *
+     * @param {string} offset - where to start looking
+     * @param {int} limit - how many to look for
      * @return {Promise} - notifications
      */
-    getNotifications() {
+    getNotifications(offset, limit) {
         return Util.callAsync(this.getNotifications, async () => {
-            const res = await this._client.getNotifications();
-            return res.data.notifications === undefined
-                ? []
-                : res.data.notifications;
+            const res = await this._client.getNotifications(offset, limit);
+            const data = res.data.notifications === undefined
+                    ? []
+                    : res.data.notifications;
+            return {
+                data,
+                offset: res.data.offset,
+            };
         });
     }
 
