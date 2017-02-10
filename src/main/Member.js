@@ -1,4 +1,4 @@
-import Crypto from "../Crypto";
+import Crypto from "../security/Crypto";
 import LocalStorage from "../LocalStorage";
 import AuthHttpClient from "../http/AuthHttpClient";
 import Util from "../Util";
@@ -29,7 +29,7 @@ export default class Member {
      *
      * @return {string} memberId
      */
-    get memberId() {
+    memberId() {
         return this._id;
     }
 
@@ -46,22 +46,27 @@ export default class Member {
     }
 
     /**
-     * Gets all o
+     * Gets the member's first username
      *
-     * @return {Promise} usernames - member's usernames
+     * @return {Promise} username - member's username
      */
-    usernames() {
-        return Util.callAsync(this.usernames, async () => {
+    firstUsername() {
+        return Util.callAsync(this.firstUsername, async () => {
             const member = await this._getMember();
-            return member.usernames;
+            return member.usernames.length ? member.usernames[0] : undefined;
         });
     }
 
     /**
-     * Save the member to localStorage, to be loaded in the future. Only works on browsers
+     * Gets the member's public keys
+     *
+     * @return {Promise} keys - keys objects
      */
-    saveToLocalStorage() {
-        LocalStorage.saveMember(this);
+    keys() {
+        return Util.callAsync(this.keys, async () => {
+            const member = await this._getMember();
+            return member.keys;
+        });
     }
 
     /**
@@ -81,6 +86,13 @@ export default class Member {
     }
 
     /**
+     * Save the member to localStorage, to be loaded in the future. Only works on browsers
+     */
+    saveToLocalStorage() {
+        LocalStorage.saveMember(this);
+    }
+
+    /**
      * Approves a new key for this member
      *
      * @param {Object} key - key to add
@@ -90,7 +102,22 @@ export default class Member {
     approveKey(key, keyLevel = KeyLevel.PRIVILEGED) {
         return Util.callAsync(this.approveKey, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addKey(prevHash, key, keyLevel);
+            await this._client.approveKey(prevHash, key, keyLevel);
+            return;
+        });
+    }
+
+    /**
+     * Approves new keys for this member
+     *
+     * @param {Array} keys - keys to add
+     * @param {Array} keyLevels - Security levels of these new key. PRIVILEGED is root security
+     * @return {Promise} empty - empty promise
+     */
+    approveKeys(keys, keyLevels) {
+        return Util.callAsync(this.approveKeys, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.approveKeys(prevHash, keys, keyLevels);
             return;
         });
     }
@@ -110,6 +137,20 @@ export default class Member {
     }
 
     /**
+     * Removes keys from this member
+     *
+     * @param {Array} keyIds - keyIds to remove. Note, keyId is the hash of the pk
+     * @return {Promise} empty empty promise
+     */
+    removeKeys(keyIds) {
+        return Util.callAsync(this.removeKeys, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.removeKeys(prevHash, keyIds);
+            return;
+        });
+    }
+
+    /**
      * Adds an username to this member
      *
      * @param {string} username - username to add
@@ -124,6 +165,20 @@ export default class Member {
     }
 
     /**
+     * Adds usernames to this member
+     *
+     * @param {Array} usernames - usernames to add
+     * @return {Promise} empty empty promise
+     */
+    addUsernames(usernames) {
+        return Util.callAsync(this.addUsernames, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.addUsernames(prevHash, usernames);
+            return;
+        });
+    }
+
+    /**
      * Removes an username from the memberId
      *
      * @param {string} username - username to remove
@@ -133,6 +188,20 @@ export default class Member {
         return Util.callAsync(this.removeUsername, async () => {
             const prevHash = await this._getPreviousHash();
             await this._client.removeUsername(prevHash, username);
+            return;
+        });
+    }
+
+    /**
+     * Removes usernames from the memberId
+     *
+     * @param {Array} usernames - usernames to remove
+     * @return {Promise} empty - empty promise
+     */
+    removeUsernames(usernames) {
+        return Util.callAsync(this.removeUsernames, async () => {
+            const prevHash = await this._getPreviousHash();
+            await this._client.removeUsernames(prevHash, usernames);
             return;
         });
     }
@@ -309,7 +378,7 @@ export default class Member {
     }
 
     /**
-     * Gets the member's addresse
+     * Gets the member's address
      *
      * @param {string} addressId - the address id
      * @return {Promise} address - the address
@@ -332,6 +401,19 @@ export default class Member {
             return res.data.addresses === undefined
                 ? []
                 : res.data.addresses;
+        });
+    }
+
+    /**
+     * Deletes a member's address by id
+     *
+     * @param {string} addressId - the address id
+     * @return {Promise} empty - empty promise
+     */
+    deleteAddress(addressId) {
+        return Util.callAsync(this.deleteAddress, async () => {
+            const res = await this._client.deleteAddress(addressId);
+            return;
         });
     }
 
@@ -398,7 +480,8 @@ export default class Member {
      */
     createToken(accountId, lifetimeAmount, currency, username, description = undefined, amount=0) {
         if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
-            throw new Error(`Number of decimals in lifetimeAmount should be at most ${maxDecimals}`);
+            throw new Error('Number of decimals in lifetimeAmount should be at most ' +
+                maxDecimals);
         }
         if (Util.countDecimals(amount) > maxDecimals) {
             throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
@@ -513,8 +596,8 @@ export default class Member {
      * @param {arr} destinations - transfer destinations
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
-    createTransfer(token, amount, currency, description, destinations = []) {
-        return Util.callAsync(this.createTransfer, async () => {
+    redeemToken(token, amount, currency, description, destinations = []) {
+        return Util.callAsync(this.redeemToken, async () => {
             const finalToken = await this._resolveToken(token);
             if (amount === undefined) {
                 amount = finalToken.payload.transfer.amount;
@@ -525,7 +608,12 @@ export default class Member {
             if (Util.countDecimals(amount) > maxDecimals) {
                 throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
             }
-            const res = await this._client.createTransfer(finalToken, amount, currency, description, destinations)
+            const res = await this._client.redeemToken(
+                finalToken,
+                amount,
+                currency,
+                description,
+                destinations)
             return res.data.transfer;
         })
     }
@@ -602,22 +690,27 @@ export default class Member {
     getTransactions(accountId, offset, limit) {
         return Util.callAsync(this.getTransactions, async () => {
             const res = await this._client.getTransactions(accountId, offset, limit);
+            const data = res.data.transactions === undefined
+                    ? []
+                    : res.data.transactions;
             return {
-                data: res.data.transactions,
+                data,
                 offset: res.data.offset,
             };
         });
     }
 
     /**
-     * Gets the member's public keys
+     * Creates a test bank account in a fake bank
      *
-     * @return {Promise} keys - keys objects
+     * @param {double} balance of the account
+     * @param {string} currency of the account
+     * @returns {Array} account linking payloads to use with linkAccounts
      */
-    keys() {
-        return Util.callAsync(this.keys, async () => {
-            const member = await this._getMember();
-            return member.keys;
+    createTestBankAccount(balance, currency) {
+        return Util.callAsync(this.createTestBankAccount, async () => {
+            const res = await this._client.createTestBankAccount(balance, currency);
+            return res.data.accountLinkingPayloads;
         });
     }
 

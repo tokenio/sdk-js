@@ -1,4 +1,4 @@
-import Crypto from "./Crypto";
+import Crypto from "./security/Crypto";
 import Util from "./Util";
 import Member from "./main/Member";
 import {KeyLevel} from "./constants";
@@ -43,7 +43,7 @@ class Token {
         return Util.callAsync(this.createMember, async () => {
             const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
-            await this._unauthenticatedClient.addFirstKey(response.data.memberId, keys);
+            await this._unauthenticatedClient.approveFirstKey(response.data.memberId, keys);
             const member = new Member(this._env, response.data.memberId, keys);
             await member.addUsername(username);
             return member;

@@ -1,4 +1,4 @@
-import Crypto from "../Crypto";
+import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
@@ -136,6 +136,14 @@ class AuthHttpClient {
         const config = {
             method: 'get',
             url: `/addresses`
+        };
+        return this._instance(config);
+    }
+
+    deleteAddress(addressId) {
+        const config = {
+            method: 'delete',
+            url: `/addresses/${addressId}`
         };
         return this._instance(config);
     }
@@ -366,7 +374,7 @@ class AuthHttpClient {
             'cancelled');
     }
 
-    createTransfer(transferToken, amount, currency, description, destinations) {
+    redeemToken(transferToken, amount, currency, description, destinations) {
         const payload = {
             nonce: Util.generateNonce(),
             tokenId: transferToken.id,
@@ -473,7 +481,7 @@ class AuthHttpClient {
     }
 
 
-    addKey(prevHash, key, level) {
+    approveKey(prevHash, key, level) {
         const update = {
             memberId: this._memberId,
             operations: [
@@ -493,6 +501,29 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    approveKeys(prevHash, keys, levels) {
+        const operations = [];
+        for (let n=0; n<keys.length; n++) {
+            operations.push({
+                addKey: {
+                    key: {
+                        id: keys[n].keyId,
+                        publicKey: Crypto.strKey(keys[n].publicKey),
+                        level: levels[n],
+                        algorithm: keys[n].algorithm
+                    }
+                }
+            });
+        }
+
+        const update = {
+            memberId: this._memberId,
+            operations,
+        };
+
+        return this._memberUpdate(update, prevHash);
+    }
+
     removeKey(prevHash, keyId) {
         const update = {
             memberId: this._memberId,
@@ -504,6 +535,19 @@ class AuthHttpClient {
                 }
             ]
         };
+        return this._memberUpdate(update, prevHash);
+    }
+
+    removeKeys(prevHash, keyIds) {
+        const update = {
+            memberId: this._memberId,
+            operations: keyIds.map((keyId) => ({
+                removeKey: {
+                    keyId
+                }
+            })),
+        };
+        console.log('request:', update);
         return this._memberUpdate(update, prevHash);
     }
 
@@ -521,6 +565,18 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    addUsernames(prevHash, usernames) {
+        const update = {
+            memberId: this._memberId,
+            operations: usernames.map((username) => ({
+                addUsername: {
+                    username
+                }
+            })),
+        };
+        return this._memberUpdate(update, prevHash);
+    }
+
     removeUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
@@ -531,6 +587,18 @@ class AuthHttpClient {
                     }
                 }
             ]
+        };
+        return this._memberUpdate(update, prevHash);
+    }
+
+    removeUsernames(prevHash, usernames) {
+        const update = {
+            memberId: this._memberId,
+            operations: usernames.map((username) => ({
+                removeUsername: {
+                    username
+                }
+            })),
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -552,6 +620,24 @@ class AuthHttpClient {
             method: 'post',
             url: `/members/${this._memberId}/updates`,
             data: req
+        };
+        return this._instance(config);
+    }
+
+    //
+    // Test
+    //
+    createTestBankAccount(balance, currency) {
+        const req = {
+            balance: {
+                currency,
+                value: balance
+            },
+        };
+        const config = {
+            method: 'post',
+            url: '/test/create-account',
+            data: req,
         };
         return this._instance(config);
     }

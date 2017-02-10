@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-import Crypto from "../../src/Crypto";
+import Crypto from "../../src/security/Crypto";
 import BankClient from "../sample/BankClient";
 import {KeyLevel} from "../../src/constants";
 

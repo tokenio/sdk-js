@@ -74,7 +74,7 @@ describe('Using access tokens', async () => {
                 token,
                 [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-        const tokens2 = await grantee.getAllUsernames();
+        const tokens2 = await grantee.usernames();
         grantee.useAccessToken(operationalResult.token.id);
         try {
             await grantee.getAddress(address.id);
@@ -152,7 +152,7 @@ describe('Using access tokens', async () => {
             token,
             [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-        const tokens2 = await grantee.getAllUsernames();
+        const tokens2 = await grantee.usernames();
         grantee.useAccessToken(operationalResult.token.id);
         await grantor.cancelToken(operationalResult.token.id);
         try {

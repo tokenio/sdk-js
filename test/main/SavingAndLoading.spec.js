@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-import Crypto from "../../src/Crypto";
+import Crypto from "../../src/security/Crypto";
 
 let member1 = {};
 let username1 = '';
@@ -23,17 +23,17 @@ describe('Saving and loading Members', () => {
         if (BROWSER) {
             await member1.saveToLocalStorage();
             const member = await Token.loginFromLocalStorage();
-            const publicKeys = await member.getPublicKeys();
+            const publicKeys = await member.keys();
             assert.isAtLeast(publicKeys.length, 1);
         }
     });
 
     it('save and login keys', async () => {
-        const keys = member1.keys;
-        const memberId = member1.id;
+        const keys = await member1.keys()[0];
+        const memberId = member1.memberId();
 
         const member2 = await Token.login(memberId, keys);
-        const publicKeys = await member2.getPublicKeys();
+        const publicKeys = await member2.keys();
         assert.isAtLeast(publicKeys.length, 1);
     });
 });

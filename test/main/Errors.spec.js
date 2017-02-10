@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-import Crypto from "../../src/Crypto";
+import Crypto from "../../src/security/Crypto";
 import BankClient from "../sample/BankClient";
 
 let member1 = {};
@@ -47,10 +47,10 @@ describe('Error handling', () => {
 
     it('Promise should reject', async() => {
         try {
-            const err = await member2.createTransfer(token1, 10000, 'EUR');
+            const err = await member2.redeemToken(token1, 10000, 'EUR');
             return Promise.reject(new Error("Call should fail"));
         } catch (err) {
-            assert.include(err.message, "createTransfer");
+            assert.include(err.message, "redeemToken");
             assert.include(err.message, "PRECONDITION");
         }
     });

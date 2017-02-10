@@ -1,4 +1,4 @@
-import Crypto from "../Crypto";
+import Crypto from "../security/Crypto";
 import {urls, KeyLevel} from "../constants";
 import VersionHeader from "./VersionHeader";
 
@@ -46,7 +46,7 @@ class HttpClient {
         return this._instance(config);
     }
 
-    addFirstKey(memberId, key, level = KeyLevel.PRIVILEGED) {
+    approveFirstKey(memberId, key, level = KeyLevel.PRIVILEGED) {
         const update = {
             memberId: memberId,
             operations: [

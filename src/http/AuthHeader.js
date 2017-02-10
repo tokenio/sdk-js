@@ -1,7 +1,7 @@
 const stringify = require('json-stable-stringify');
 
 import {signatureScheme} from "../constants";
-import Crypto from "../Crypto";
+import Crypto from "../security/Crypto";
 
 class AuthHeader {
 

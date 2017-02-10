@@ -8,10 +8,11 @@ class Crypto {
      * Generates a keypair to use with the token System
      * @return {object} keyPair - keyPair
      */
-    static generateKeys() {
+    static generateKeys(keyLevel) {
         const keyPair = nacl.sign.keyPair();
         keyPair.keyId = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
+        keyPair.level = keyLevel;
         return keyPair;
     }
 

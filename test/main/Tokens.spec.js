@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-import Crypto from "../../src/Crypto";
+import Crypto from "../../src/security/Crypto";
 import BankClient from "../sample/BankClient";
 import {defaultCurrency, KeyLevel} from "../../src/constants";
 const some = require('lodash/some');
@@ -53,7 +53,7 @@ describe('Tokens', () => {
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
         assert.equal(token.payload.issuer.id, 'iron');
-        assert.equal(token.payload.from.id, member1.id);
+        assert.equal(token.payload.from.id, member1.memberId());
         assert.equal(token.payload.description, undefined);
         assert.equal(token.payload.transfer.redeemer.username, username2);
         assert.equal(token.payload.transfer.lifetimeAmount, 9.24);

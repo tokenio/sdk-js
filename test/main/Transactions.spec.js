@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-import Crypto from "../../src/Crypto";
+import Crypto from "../../src/security/Crypto";
 import BankClient from "../sample/BankClient";
 
 let member1 = {};
@@ -42,7 +42,7 @@ const setUp3 = async () => {
     const token = await member1.createToken(account1.id, 38.71, 'EUR', username2);
     await member1.endorseToken(token.id);
     token1 = await member2.getToken(token.id);
-    transfer1 = await member2.createTransfer(token1, 10.21, 'EUR', 'giftcard');
+    transfer1 = await member2.redeemToken(token1, 10.21, 'EUR', 'giftcard');
 };
 
 describe('Transactions and transfers', () => {

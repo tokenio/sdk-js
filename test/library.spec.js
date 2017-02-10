@@ -25,7 +25,7 @@ describe('Token library', () => {
         const token = await member1.createToken(account.id, 9.24, 'EUR', username2);
         await member1.endorseToken(token.id);
 
-        await member2.createTransfer(token.id, 5, 'EUR');
+        await member2.redeemToken(token.id, 5, 'EUR');
         const transfers = await member1.getTransfers(token.id, null, 100);
 
         assert.isAtLeast(transfers.data.length, 1);

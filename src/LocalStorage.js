@@ -1,5 +1,5 @@
 import Member from "./main/Member";
-import Crypto from "./Crypto";
+import Crypto from "./security/Crypto";
 
 class LocalStorage {
     static saveMember(member) {
