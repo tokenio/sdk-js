@@ -125,7 +125,7 @@ describe('Notifications', () => {
                 assert.isOk(lookedUp.content.type);
                 assert.isOk(lookedUp.content.title);
                 assert.isOk(lookedUp.content.body);
-                assert.isOk(lookedUp.createdAtMs);
+                assert.isOk(lookedUp.content.createdAtMs);
                 const notifications2 = await member2.getNotifications(notifications.offset, 100);
                 assert.equal(notifications2.data.length, 2);
             }, resolve, reject);
