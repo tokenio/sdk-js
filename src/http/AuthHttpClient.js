@@ -156,6 +156,18 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    unlinkAccounts(accountIds) {
+        const req = {
+            accountIds
+        };
+        const config = {
+            method: 'delete',
+            url: `/accounts`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
     getAccounts() {
         const config = {
             method: 'get',
