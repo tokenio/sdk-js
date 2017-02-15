@@ -2,7 +2,7 @@ import Crypto from './Crypto';
 import {localStorageSchemaVersion} from '../constants';
 
 /**
- * LocalStorageCryptoEngine: Implements the CryptoEngine interface.
+ * BrowserCryptoEngine: Implements the CryptoEngine interface.
  *
  * Crypto engine to handle signatures, verifications, and key storage, on browsers. Uses
  * LocalStorage as the storage location, and handles storage for multiple members at once.
@@ -25,8 +25,7 @@ import {localStorageSchemaVersion} from '../constants';
  * ]
  *
  */
-class LocalStorageCryptoEngine {
-
+class BrowserCryptoEngine {
     /**
      * Constructs the engine, using an existing member/keys if it is in localStorage
      *
@@ -210,4 +209,4 @@ class LocalStorageCryptoEngine {
     }
 }
 
-export default LocalStorageCryptoEngine;
+export default BrowserCryptoEngine;

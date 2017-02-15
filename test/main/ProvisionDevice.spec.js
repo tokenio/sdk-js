@@ -27,7 +27,7 @@ const setUp1 = async () => {
     if (BROWSER) {
         window.localStorage.clear();
         username1 = Token.Util.generateNonce();
-        member1 = await Token.createMember(username1, Token.LocalStorageCryptoEngine);
+        member1 = await Token.createMember(username1, Token.BrowserCryptoEngine);
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const accs = await member1.linkAccounts('iron', alp);
         account1 = accs[0];
@@ -38,7 +38,7 @@ const setUp1 = async () => {
 const setUp2 = async () => {
     if (BROWSER) {
         username2 = Token.Util.generateNonce();
-        member2 = await Token.createMember(username2, Token.LocalStorageCryptoEngine);
+        member2 = await Token.createMember(username2, Token.BrowserCryptoEngine);
         const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
         await member2.linkAccounts('iron', alp);
     }
@@ -66,28 +66,28 @@ describe('Provisioning a new device', async () => {
 
     if (BROWSER) {
         it('should provision a new device with localStorage', async() => {
-            const deviceInfo = await Token.provisionDevice(username1, Token.LocalStorageCryptoEngine);
+            const deviceInfo = await Token.provisionDevice(username1, Token.BrowserCryptoEngine);
             await member1.approveKeys(deviceInfo.keys);
-            const memberLoggedIn = Token.login(Token.LocalStorageCryptoEngine, deviceInfo.memberId);
+            const memberLoggedIn = Token.login(Token.BrowserCryptoEngine, deviceInfo.memberId);
             assert.isAtLeast((await memberLoggedIn.keys()).length, 6);
         });
 
         it('should provision a new LOW device with localStorage', async() => {
-            const deviceInfo = await Token.provisionDeviceLow(username1, Token.LocalStorageCryptoEngine);
+            const deviceInfo = await Token.provisionDeviceLow(username1, Token.BrowserCryptoEngine);
             await member1.approveKeys(deviceInfo.keys);
-            const memberLoggedIn = Token.login(Token.LocalStorageCryptoEngine, deviceInfo.memberId);
+            const memberLoggedIn = Token.login(Token.BrowserCryptoEngine, deviceInfo.memberId);
             assert.isAtLeast((await memberLoggedIn.keys()).length, 4);
         });
 
         it('should be able to endorse a token with a low key with localStorage', async() => {
             const localStorageCache = window.localStorage.members;
             window.localStorage.members = [];
-            const deviceInfo = await Token.provisionDeviceLow(username1, Token.LocalStorageCryptoEngine);
+            const deviceInfo = await Token.provisionDeviceLow(username1, Token.BrowserCryptoEngine);
             const localStorageCache2 = window.localStorage.members;
             window.localStorage.members = localStorageCache;
             await member1.approveKeys(deviceInfo.keys);
             window.localStorage.members = localStorageCache2;
-            const memberLoggedIn = Token.login(Token.LocalStorageCryptoEngine, deviceInfo.memberId);
+            const memberLoggedIn = Token.login(Token.BrowserCryptoEngine, deviceInfo.memberId);
             assert.isAtLeast((await memberLoggedIn.keys()).length, 4);
             const token = await memberLoggedIn.createToken(account1.id, 38.71, 'EUR', username2);
             const res = await memberLoggedIn.endorseToken(token.id);

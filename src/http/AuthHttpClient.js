@@ -1,4 +1,4 @@
-import LocalStorageCryptoEngine from "../security/LocalStorageCryptoEngine";
+import BrowserCryptoEngine from "../security/BrowserCryptoEngine";
 import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";

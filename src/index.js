@@ -1,5 +1,5 @@
 import Crypto from "./security/Crypto";
-import LocalStorageCryptoEngine from "./security/LocalStorageCryptoEngine";
+import BrowserCryptoEngine from "./security/BrowserCryptoEngine";
 import MemoryCryptoEngine from "./security/MemoryCryptoEngine";
 import Util from "./Util";
 import Member from "./main/Member";
@@ -17,7 +17,7 @@ class Token {
         this.KeyLevel = KeyLevel;
         this.Crypto = Crypto;
         this.Util = Util;
-        this.LocalStorageCryptoEngine = LocalStorageCryptoEngine;
+        this.BrowserCryptoEngine = BrowserCryptoEngine;
         this.MemoryCryptoEngine = MemoryCryptoEngine;
     }
 
