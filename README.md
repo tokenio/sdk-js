@@ -4,7 +4,7 @@ A javascript SDK for interacting with the Token System. Visit Token at http://to
 
 ### Installation
 
-Token requires a recent version of npm to build.
+Token requires a recent version of npm/yarn to build.
 
 Install the npm package:
 
@@ -15,13 +15,16 @@ $ npm install token-io
 To use in a browser:
 
 ```sh
-$ var tokenIo = require("token-io");
-$ var Token = tokenIo(env = "prd");
+$ var tokenLib = require("token-io");
+$ var Token = tokenLib(env = "prd");
 ```
 
+To use in node:
 
-Works in a node as well, but have to directly require the node file from token-io/dist.
-Minified files available in dist as well.
+```sh
+$ var TokenLib = require("token-io/dist/token-io.node.min.js")
+$ var Token = new TokenLib("prd");
+```
 
 To build:
 ```sh

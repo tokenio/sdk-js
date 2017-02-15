@@ -2,7 +2,7 @@
   "name": "token-io",
   "version": "1.4.50",
   "description": "",
-  "main": "dist/token-io.js",
+  "main": "dist/token-io.min.js",
   "scripts": {
     "test": "npm run testNode",
     "testBrowser": "./node_modules/karma/bin/karma start test/karma.config.js",
