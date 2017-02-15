@@ -41,7 +41,6 @@ describe('member tests', () => {
                 [keys, keys2, keys3],
                 [Token.KeyLevel.LOW, Token.KeyLevel.STANDARD, Token.KeyLevel.LOW]);
             const pks = await memberX.keys();
-            console.log(pks.length);
             assert.equal(pks.length, 6);
             await memberX.removeKeys([keys.id, keys3.id]);
             const pks2 = await memberX.keys();
@@ -111,6 +110,14 @@ describe('member tests', () => {
             await member.linkAccounts('iron', alp);
             const accs = await member.getAccounts();
             assert.isAtLeast(accs.length, 2);
+        });
+
+        it('should get the memberId', async () => {
+            const memId = await Token.getMemberId(username);
+            assert.equal(memId, member.memberId());
+
+            const memId2 = await Token.getMemberId(Token.Util.generateNonce());
+            assert.isNotOk(memId2);
         });
     });
 });

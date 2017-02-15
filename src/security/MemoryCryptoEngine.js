@@ -3,9 +3,37 @@ import {localStorageSchemaVersion} from '../constants';
 
 const globalStorage = {
     members: [],
+    activeMemberId: "",
 }
 
+/**
+ * MemoryCryptoEngine: Implements the CryptoEngine interface.
+ *
+ * Crypto engine to handle signatures, verifications, and key storage, in memory. Handles storage
+ * for multiple members at once, and uses the following schema:
+ *
+ * activeMemberId: 123,
+ * members: [
+ *  {
+ *      id: 123
+ *      keys: [{
+ *          id: 456,
+ *          algorithm: ED25519,
+ *          level: PRIVILEGED,
+ *          publicKey: 789,
+ *          secretKey: 012,
+ *      }]
+ *  }
+ * ]
+ *
+ */
 class MemoryCryptoEngine {
+
+    /**
+     * Constructs the engine, using an existing member/keys if it exists in the storage
+     *
+     * @param memberId - memberId of the member we want to create the engine for
+     */
     constructor(memberId) {
         if (!memberId) {
             throw new Error("Invalid memberId");
@@ -13,6 +41,7 @@ class MemoryCryptoEngine {
 
         this._memberId = memberId;
 
+        // If member already exists, use its keys. Otherwise use an empty key store
         try {
             this._loadMember(this._memberId);
         } catch (error) {
@@ -24,6 +53,11 @@ class MemoryCryptoEngine {
         globalStorage.activeMemberId = this._memberId;
     }
 
+    /**
+     * Get's the currently active memberId. This allows login without caching memberId somewhere
+     *
+     * @returns {string} memberId - active memberId
+     */
     static getActiveMemberId() {
         const memberId = globalStorage.activeMemberId;
         if (!memberId) {
@@ -32,6 +66,13 @@ class MemoryCryptoEngine {
         return memberId;
     }
 
+    /**
+     * Generates and stores a new key. Adds it to the storage, replacing the corresponding
+     * old key if it exists (with the same security level).
+     *
+     * @param {string} securityLevel - security level of the key we want to create
+     * @returns {Key} key - generated key
+     */
     generateKey(securityLevel) {
         const keypair = Crypto.generateKeys(securityLevel);
         const loadedMember = this._loadMember();
@@ -54,6 +95,13 @@ class MemoryCryptoEngine {
         };
     }
 
+   /**
+     * Creates a signer object using the key with the specified key level. This can sign
+     * strings and JSON objects.
+     *
+     * @param {string} securityLevel - security level of the key we want to use to sign
+     * @returns {Object} signer - signer object
+     */
     createSigner(securityLevel) {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {
@@ -72,6 +120,13 @@ class MemoryCryptoEngine {
         throw new Error(`No key with level ${securityLevel} found`);
     }
 
+    /**
+     * Creates a verifier object using the key with the specified key id. This can verify
+     * signatures by that key, on strings and JSON objects.
+     *
+     * @param {string} keyId - keyId that we want to use to verify
+     * @returns {Object} verifier - verifier object
+     */
     createVerifier(keyId) {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {

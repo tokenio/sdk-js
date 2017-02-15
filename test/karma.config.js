@@ -14,7 +14,7 @@ module.exports = function (config) {
 
             // all files ending in ".spec"
             {pattern: 'src/**/*.js', watched: true},
-            {pattern: '**/*Device.spec.js', watched: false}
+            {pattern: '**/*.spec.js', watched: false}
 
             // each file acts as entry point for the webpack configuration
         ],

@@ -49,9 +49,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token, look it up, and endorse it', async () => {
-        console.log('creating token');
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
-        console.log('created token');
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
         assert.equal(token.payload.issuer.id, 'iron');
@@ -61,11 +59,9 @@ describe('Tokens', () => {
         assert.equal(token.payload.transfer.lifetimeAmount, 9.24);
         assert.equal(token.payload.transfer.currency, defaultCurrency);
 
-        console.log('looking up token');
         const tokenLookedUp = await member1.getToken(token.id);
         assert.equal(token.id, tokenLookedUp.id);
 
-        console.log('endorsing token');
         const res = await member1.endorseToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(res.token.payloadSignatures.length, 2);

@@ -43,9 +43,10 @@ class Crypto {
     /**
      * Verifies a signature on json. Throws if verification fails.
      *
-     * @param {string} message - message to verify
+     * @param {Object} json - json message to verify
      * @param {string} signature - signature to verify
      * @param {Buffer} public Key - public key to use for verification
+     * @return {empty} empty - returns nothing if successful
      */
     static verifyJson(json, signature, publicKey) {
         return Crypto.verify(stringify(json), signature, publicKey);
@@ -56,7 +57,8 @@ class Crypto {
      *
      * @param {string} message - message to verify
      * @param {string} signature - signature to verify
-     * @return {Buffer} public Key - public key to use for verification
+     * @param {Buffer} public Key - public key to use for verification
+     * @return {empty} empty - returns nothing if successful
      */
     static verify(message, signature, publicKey) {
         const msg = new Buffer(message);

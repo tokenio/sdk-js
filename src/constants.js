@@ -30,6 +30,7 @@ const KeyLevel = {
     LOW: 'LOW',
 };
 
+// Version for localStorage schema
 const localStorageSchemaVersion = 0.1;
 
 export {

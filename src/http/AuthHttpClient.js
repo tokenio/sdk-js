@@ -17,7 +17,11 @@ class AuthHttpClient {
             baseURL: urls[env]
         });
         this._memberId = memberId;
+
+        // Creates the necessary signers
         this._signerLow = cryptoEngine.createSigner(KeyLevel.LOW);
+        this._signerStandard = cryptoEngine.createSigner(KeyLevel.LOW);
+        this._signerPrivileged = cryptoEngine.createSigner(KeyLevel.LOW);
         try {
             this._signerStandard = cryptoEngine.createSigner(KeyLevel.STANDARD);
         } catch (err) {

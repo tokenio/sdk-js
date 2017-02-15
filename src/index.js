@@ -36,14 +36,27 @@ class Token {
     }
 
     /**
-     * Creates a member with an username and a keypair, using the provided engine
+     * Retrieved a memberId given a username
+     *
+     * @param {string} username - username to lookup
+     * @return {Promise} result - true if username exists, false otherwise
+     */
+    getMemberId(username) {
+        return Util.callAsync(this.getMemberId, async () => {
+            const res = await this._unauthenticatedClient.getMemberId(username);
+            return res.data.memberId;
+        });
+    }
+
+    /**
+     * Creates a member with a username and a keypair, using the provided engine
      *
      * @param  {string} username - username to set for member
      * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
     createMember(username, CryptoEngine) {
-        return Util.callAsync(this.createMemberWithEngine, async () => {
+        return Util.callAsync(this.createMember, async () => {
             const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
             const engine = new CryptoEngine(response.data.memberId);
@@ -65,7 +78,7 @@ class Token {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys.
      *
-     * @param {string} username - user to provision t he device for
+     * @param {string} username - user to provision the device for
      * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
@@ -74,7 +87,7 @@ class Token {
             const res = await this._unauthenticatedClient.getMemberId(username);
             if (!(res.data.memberId)) {
                 throw new Error('Invalid username');
-            }
+        }
             const engine = new CryptoEngine(res.data.memberId);
             const pk1 = engine.generateKey('PRIVILEGED');
             const pk2 = engine.generateKey('STANDARD');
@@ -101,6 +114,7 @@ class Token {
             if (!(res.data.memberId)) {
                 throw new Error('Invalid username');
             }
+
             const engine = new CryptoEngine(res.data.memberId);
             const pk1 = engine.generateKey('LOW');
             return {
@@ -110,40 +124,8 @@ class Token {
         });
     }
 
-    // /**
-    //  * Log in a member (Instantiate a member object from keys and Id)
-    //  *
-    //  * @param  {string} memberId - id of the member
-    //  * @param  {object} keys - member's keys
-    //  * @return {Promise} member - Promise of instantiated Member
-    //  */
-    // login(memberId, keys) {
-    //     return Util.callAsync(this.login, async () => {
-    //         return new Member(this._env, memberId, keys);
-    //     });
-    // }
-    //
-    // /**
-    //  * Log in a member by keys and username. This is useful for checking whether we are
-    //  * authenticated, after requesting to add a key (by notification). Can call this
-    //  * every n seconds until it succeeds
-    //  *
-    //  * @param  {object} keys - Member keys
-    //  * @param  {string} username - username to authenticate with
-    //  * @return {Promise} member - instantiated Member, if successful
-    //  */
-    // loginWithUsername(username) {
-    //     return Util.callAsync(this.loginWithUsername, async () => {
-    //         const cryptoEngineTemp = new LocalStorageCryptoEngine(username);
-    //         const res = await new AuthHttpClientUsername(this._env, username, cryptoEngineTemp)
-    //             .getMemberByUsername();
-    //         const cryptoEngine = new LocalStorageCryptoEngine(memberId);
-    //         return new Member(this._env, res.data.member.id, keys);
-    //     });
-    // }
-
     /**
-     * Logs a member in from keys stored in localStorage. If memberId is not provided,
+     * Logs a member in from keys stored in the CryptoEngine. If memberId is not provided,
      * the last member to log on will be used
      *
      * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage

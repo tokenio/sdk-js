@@ -2,7 +2,11 @@ import Crypto from './Crypto';
 import {localStorageSchemaVersion} from '../constants';
 
 /**
- * localStorage schema:
+ * LocalStorageCryptoEngine: Implements the CryptoEngine interface.
+ *
+ * Crypto engine to handle signatures, verifications, and key storage, on browsers. Uses
+ * LocalStorage as the storage location, and handles storage for multiple members at once.
+ * Uses the following schema:
  *
  * schemaVersion: 0.1,
  *
@@ -21,8 +25,13 @@ import {localStorageSchemaVersion} from '../constants';
  * ]
  *
  */
-
 class LocalStorageCryptoEngine {
+
+    /**
+     * Constructs the engine, using an existing member/keys if it is in localStorage
+     *
+     * @param memberId - memberId of the member we want to create the engine for
+     */
     constructor(memberId) {
         if (!BROWSER) {
             throw new Error("Browser Only");
@@ -31,6 +40,7 @@ class LocalStorageCryptoEngine {
             throw new Error("Invalid memberId");
         }
 
+        // Clears the storage if we are using an old schema
         let savedSchemaVersion;
         try {
             savedSchemaVersion = JSON.parse(window.localStorage.schemaVersion);
@@ -44,6 +54,7 @@ class LocalStorageCryptoEngine {
         }
         this._memberId = memberId;
 
+        // If member already exists, use its keys. Otherwise use an empty key store
         try {
             this._loadMember(this._memberId);
         } catch (error) {
@@ -56,6 +67,11 @@ class LocalStorageCryptoEngine {
 
     }
 
+    /**
+     * Get's the currently active memberId. This allows login without caching memberId somewhere
+     *
+     * @returns {string} memberId - active memberId
+     */
     static getActiveMemberId() {
         const memberId = window.localStorage.activeMemberId;
         if (!memberId) {
@@ -64,6 +80,13 @@ class LocalStorageCryptoEngine {
         return memberId;
     }
 
+    /**
+     * Generates and stores a new key. Adds it to the localStorage, replacing the corresponding
+     * old key if it exists (with the same security level).
+     *
+     * @param {string} securityLevel - security level of the key we want to create
+     * @returns {Key} key - generated key
+     */
     generateKey(securityLevel) {
         const keypair = Crypto.generateKeys(securityLevel);
         const loadedMember = this._loadMember();
@@ -86,6 +109,13 @@ class LocalStorageCryptoEngine {
         };
     }
 
+    /**
+     * Creates a signer object using the key with the specified key level. This can sign
+     * strings and JSON objects.
+     *
+     * @param {string} securityLevel - security level of the key we want to use to sign
+     * @returns {Object} signer - signer object
+     */
     createSigner(securityLevel) {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {
@@ -104,6 +134,13 @@ class LocalStorageCryptoEngine {
         throw new Error(`No key with level ${securityLevel} found`);
     }
 
+    /**
+     * Creates a verifier object using the key with the specified key id. This can verify
+     * signatures by that key, on strings and JSON objects.
+     *
+     * @param {string} keyId - keyId that we want to use to verify
+     * @returns {Object} verifier - verifier object
+     */
     createVerifier(keyId) {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {

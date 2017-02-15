@@ -5,7 +5,6 @@ import MemoryCryptoEngine from "../../src/security/MemoryCryptoEngine";
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-console.log(MemoryCryptoEngine);
 if (BROWSER) {
     describe('Memory crypto engine', () => {
 

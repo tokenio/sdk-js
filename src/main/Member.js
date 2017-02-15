@@ -1,4 +1,3 @@
-import LocalStorage from "../LocalStorage";
 import AuthHttpClient from "../http/AuthHttpClient";
 import Util from "../Util";
 import {maxDecimals, KeyLevel} from "../constants";
@@ -14,8 +13,9 @@ export default class Member {
      * Represents a Member
      *
      * @constructor
+     * @param {string} env - The environment to use for this member
      * @param {string} memberId - The id of this memberId
-     * @param {object} keys - An object representing the keypair of the user
+     * @param {object} cryptoEngine - the cryptoEngine to use for signing and key storage
      */
     constructor(env, memberId, cryptoEngine) {
         this._id = memberId;
@@ -83,12 +83,6 @@ export default class Member {
         this._client.clearAccessToken();
     }
 
-    /**
-     * Save the member to localStorage, to be loaded in the future. Only works on browsers
-     */
-    saveToLocalStorage() {
-        LocalStorage.saveMember(this);
-    }
 
     /**
      * Approves a new key for this member
@@ -122,7 +116,7 @@ export default class Member {
      * Removes a key from this member
      *
      * @param {string} id - keyId to remove. Note, keyId is the hash of the pk
-     * @return {Promise} empty empty promise
+     * @return {Promise} empty - empty promise
      */
     removeKey(keyId) {
         return Util.callAsync(this.removeKey, async () => {
@@ -136,7 +130,7 @@ export default class Member {
      * Removes keys from this member
      *
      * @param {Array} keyIds - keyIds to remove. Note, keyId is the hash of the pk
-     * @return {Promise} empty empty promise
+     * @return {Promise} empty - empty promise
      */
     removeKeys(keyIds) {
         return Util.callAsync(this.removeKeys, async () => {
@@ -147,10 +141,10 @@ export default class Member {
     }
 
     /**
-     * Adds an username to this member
+     * Adds a username to this member
      *
      * @param {string} username - username to add
-     * @return {Promise} empty empty promise
+     * @return {Promise} empty - empty promise
      */
     addUsername(username) {
         return Util.callAsync(this.addUsername, async () => {
@@ -164,7 +158,7 @@ export default class Member {
      * Adds usernames to this member
      *
      * @param {Array} usernames - usernames to add
-     * @return {Promise} empty empty promise
+     * @return {Promise} empty - empty promise
      */
     addUsernames(usernames) {
         return Util.callAsync(this.addUsernames, async () => {
@@ -175,7 +169,7 @@ export default class Member {
     }
 
     /**
-     * Removes an username from the memberId
+     * Removes a username from the memberId
      *
      * @param {string} username - username to remove
      * @return {Promise} empty - empty promise
@@ -431,8 +425,7 @@ export default class Member {
      * Cancels the existing token and creates a replacement for it.
      *
      * @param {Object} tokenToCancel - the old token to cancel
-     * @param {string} newUsername - the username of the old grantee
-     * @returns {array] newResources - the new resources for this token to grant access to
+     * @param {array] newResources - the new resources for this token to grant access to
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAccessToken(tokenToCancel, newResources) {
@@ -449,8 +442,7 @@ export default class Member {
      * Cancels the existing token, creates a replacement and endorses it.
      *
      * @param {Object} tokenToCancel - the old token to cancel
-     * @param {string} newUsername - the username of the old grantee
-     * @returns {array] newResources - the new resources for this token to grant access to
+     * @param {array] newResources - the new resources for this token to grant access to
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAndEndorseAccessToken(tokenToCancel, newResources) {
@@ -509,7 +501,7 @@ export default class Member {
     }
 
     /**
-     * Looks up all transfer tokens (not just for this account)
+     * Looks up all transfer tokens
      *
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
@@ -529,7 +521,7 @@ export default class Member {
     }
 
     /**
-     * Looks up all access tokens (not just for this account)
+     * Looks up all access tokens
      *
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to look for
