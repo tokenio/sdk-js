@@ -115,7 +115,7 @@ export default class Member {
     /**
      * Removes a key from this member
      *
-     * @param {string} id - keyId to remove. Note, keyId is the hash of the pk
+     * @param {string} keyId - keyId to remove. Note, keyId is the hash of the pk
      * @return {Promise} empty - empty promise
      */
     removeKey(keyId) {
@@ -425,7 +425,7 @@ export default class Member {
      * Cancels the existing token and creates a replacement for it.
      *
      * @param {Object} tokenToCancel - the old token to cancel
-     * @param {array] newResources - the new resources for this token to grant access to
+     * @param {Array} newResources - the new resources for this token to grant access to
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAccessToken(tokenToCancel, newResources) {
@@ -442,7 +442,7 @@ export default class Member {
      * Cancels the existing token, creates a replacement and endorses it.
      *
      * @param {Object} tokenToCancel - the old token to cancel
-     * @param {array] newResources - the new resources for this token to grant access to
+     * @param {Array} newResources - the new resources for this token to grant access to
      * @returns {Promise} operationResult - the result of the operation
      */
     replaceAndEndorseAccessToken(tokenToCancel, newResources) {

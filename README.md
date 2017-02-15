@@ -44,6 +44,3 @@ $ npm version patch
 ```
 
 Make sure to update the version before pushing a change
-
-### API
-See library.spec.js for an example of how to use the library

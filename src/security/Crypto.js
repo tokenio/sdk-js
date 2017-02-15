@@ -45,7 +45,7 @@ class Crypto {
      *
      * @param {Object} json - json message to verify
      * @param {string} signature - signature to verify
-     * @param {Buffer} public Key - public key to use for verification
+     * @param {Buffer} publicKey - public key to use for verification
      * @return {empty} empty - returns nothing if successful
      */
     static verifyJson(json, signature, publicKey) {
@@ -57,7 +57,7 @@ class Crypto {
      *
      * @param {string} message - message to verify
      * @param {string} signature - signature to verify
-     * @param {Buffer} public Key - public key to use for verification
+     * @param {Buffer} publicKey - public key to use for verification
      * @return {empty} empty - returns nothing if successful
      */
     static verify(message, signature, publicKey) {

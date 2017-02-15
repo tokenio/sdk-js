@@ -14,8 +14,8 @@ class Util {
     /**
      * Count the number of decimal points in a number
      *
-     * @param value: number
-     * @returns {number} number of decimals
+     * @param {Number} value - number
+     * @return {Number} count - number of decimals
      */
    static countDecimals(value) {
        if(Math.floor(value) === value) {
@@ -29,9 +29,9 @@ class Util {
      * anything fails, a rejected promise is returned, with the method name that failed,
      * included in the rejection.
      *
-     * @param method: outside method that is being executed
-     * @param fn: function to try to execute
-     * @returns successful or rejected promise
+     * @param {function} method - outside method that is being executed
+     * @param {function} fn - function to try to execute
+     * @return {Promise} promise - successful or rejected promise
      */
     static async callAsync(method, fn) {
         try {
@@ -47,9 +47,9 @@ class Util {
     /**
      * Helper method similar to the one above, but without promises
      *
-     * @param method: outside method that is being executed
-     * @param fn: function to try to execute
-     * @returns successful result or thrown error
+     * @param {function} method - outside method that is being executed
+     * @param {function} fn - function to try to execute
+     * @return {Object} result - successful result or thrown error
      */
     static callSync(method, fn) {
         try {

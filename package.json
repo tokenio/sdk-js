@@ -21,7 +21,8 @@
     "buildBrowser": "TEST_ENV=prd webpack --config config/webpack.config.js",
     "buildBrowserw": "TEST_ENV=prd webpack --config config/webpack.config.js --progress --colors -w",
     "buildNode": "TEST_ENV=prd webpack --config config/webpack.config.node.js",
-    "buildNodew": "TEST_ENV=prd webpack --config config/webpack.config.node.js --progress --colors -w"
+    "buildNodew": "TEST_ENV=prd webpack --config config/webpack.config.node.js --progress --colors -w",
+    "doc": "./node_modules/esdoc/out/src/ESDocCLI.js"
   },
   "author": "",
   "license": "ISC",
@@ -54,6 +55,7 @@
     "babel-regenerator-runtime": "^6.5.0",
     "base64url": "^2.0.0",
     "es6-promise": "^3.3.1",
+    "esdoc": "^0.5.2",
     "fast-sha256": "^1.0.0",
     "json-loader": "^0.5.4",
     "json-stable-stringify": "^1.0.1",
