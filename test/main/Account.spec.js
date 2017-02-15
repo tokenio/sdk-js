@@ -21,7 +21,17 @@ describe('Account tests', () => {
     it('should get accounts', async () => {
         const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
         await member.linkAccounts('iron', alp);
-        const accs = await member.getAccounts();
+        await member.getAccounts();
+    });
+
+    it('should unlink accounts', async () => {
+        const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        await member.linkAccounts('iron', alp);
+        const linked = await member.getAccounts();
+        assert.equal(linked.length, 1);
+        await member.unlinkAccounts([linked[0].id ]);
+        const unlinked = await member.getAccounts();
+        assert.equal(unlinked.length, 0);
     });
 
     it('should have name and id', async () => {

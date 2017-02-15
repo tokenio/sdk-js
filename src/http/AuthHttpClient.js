@@ -267,6 +267,24 @@ class AuthHttpClient {
     }
 
     /**
+     * Unlinks bank accounts previously linked by the linkAccounts call.
+     *
+     * @param {Array} accountIds - account ids to unlink
+     * @return {Object} response - response to the API call
+     */
+    unlinkAccounts(accountIds) {
+        const req = {
+            accountIds
+        };
+        const config = {
+            method: 'delete',
+            url: `/accounts`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
      * Gets all accounts linked to the member.
      *
      * @return {Object} response - response to the API call

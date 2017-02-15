@@ -211,6 +211,19 @@ export default class Member {
     }
 
     /**
+     * Unlinks bank accounts previously linked by the linkAccounts call.
+     *
+     * @param {Array} accountIds - account ids to unlink
+     * @returns {Promise} empty - empty promise
+     */
+    unlinkAccounts(accountIds)  {
+        return Util.callAsync(this.unlinkAccounts, async() => {
+            await this._client.unlinkAccounts(accountIds);
+            return;
+        })
+    }
+
+    /**
      * Looks up the member's accounts
      *
      * @return {Promise} accounts - Promise resolving to the accounts
