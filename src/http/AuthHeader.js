@@ -1,36 +1,31 @@
 const stringify = require('json-stable-stringify');
-
 import {signatureScheme} from "../constants";
-class AuthHeader {
 
+/**
+ * Handles the addition of the http headers (with signature) to the request
+ */
+class AuthHeader {
+    /**
+     * Creates an AuthHeader object with set url and signer
+     *
+     * @param {string} baseUrl - url to send requests to (gateway)
+     * @param {Object} signer - object to use for signing data
+     */
     constructor(baseUrl, signer) {
         this._baseUrl = baseUrl;
         this._signer = signer;
     }
-    /*
-     * Adds an authorization header with the identity set as the memberId. This is preferrable
-     * to username identity, because it reduces trust required (no username lookup)
-     */
-    addAuthorizationHeaderMemberId(memberId, config, context) {
-        const identity = 'member-id=' + memberId;
-        this.addAuthorizationHeader(identity, config, context);
-    }
 
-    /*
-     * Adds an authorization header with identity set as the username. Useful when
-     * on a browser that doesn't yet have a memberId
+    /**
+     * Adds an authorization header to the request. This takes into account the url,
+     * payload of the request (with timestamp), to generate a message and signature.
+     * All of it goes into the Authorization http header.
+     *
+     * @param {string} memberId - memberId making the request
+     * @param {Object} config - request config
+     * @param {AuthContext} context - auth context for access token redemption
      */
-    addAuthorizationHeaderUsername(username, config, context) {
-        const identity = 'username=' + username;
-        this.addAuthorizationHeader(identity, config, context);
-    }
-
-    /*
-     * Adds an authorization header to an HTTP request. The header is built
-     * using the request info and the keys. The config is the axios request configuration,
-     * right before it is sent to the server
-     */
-    addAuthorizationHeader(identity, config, context) {
+    addAuthorizationHeader(memberId, config, context) {
         let now = new Date().getTime();
 
         // Parses out the base uri

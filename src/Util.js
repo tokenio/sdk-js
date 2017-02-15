@@ -1,6 +1,9 @@
 import nacl from "tweetnacl";
 import base64Url from "base64url";
 
+/**
+ * Class to provide static utility functions.
+ */
 class Util {
     /**
      * Generates a random nonce

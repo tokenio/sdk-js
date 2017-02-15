@@ -3,6 +3,9 @@ import sha256 from "fast-sha256";
 import base64Url from "base64url";
 import stringify from "json-stable-stringify";
 
+/**
+ * Class providing static crypto primitives.
+ */
 class Crypto {
     /**
      * Generates a keypair to use with the token System

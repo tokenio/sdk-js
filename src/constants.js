@@ -1,9 +1,10 @@
+/** Version of the SDK. */
 const tokenSdkVersion = TOKEN_VERSION;
 
-// Signature scheme to use
+/** Signature scheme to use. */
 const signatureScheme = 'Token-Ed25519-SHA512';
 
-// Hosts of the gateway
+/** Hosts of the gateway. */
 const urls = {
     local: 'http://localhost:8000',
     dev: 'https://api.dev.token.io',
@@ -11,26 +12,26 @@ const urls = {
     prd: 'https://api.token.io',
 };
 
-// Scheme for transfer tokens
+/** Scheme for transfer tokens. */
 const transferTokenVersion = '1.0';
 
-// Scheme for transfer tokens
+/** Scheme for transfer tokens. */
 const accessTokenVersion = '1.0';
 
-// Default currency to use
+/** Default currency to use. */
 const defaultCurrency = 'EUR';
 
-// Max number of decimal points to accept for amounts
+/** Max number of decimals for amounts. */
 const maxDecimals = 4;
 
-// Security levels for keys
+/** Security levels for keys */
 const KeyLevel = {
     PRIVILEGED: 'PRIVILEGED',
     STANDARD: 'STANDARD',
     LOW: 'LOW',
 };
 
-// Version for localStorage schema
+/** Version for localStorage schema */
 const localStorageSchemaVersion = 0.1;
 
 export {

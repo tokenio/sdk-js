@@ -11,16 +11,31 @@ require('es6-promise').polyfill();
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,
- * sending notifications, etc.
+ * sending notifications, etc, as well as access to other SDK classes.
  */
 class Token {
+    /**
+     * Construct the Token SDK object, pointing to the given environment.
+     *
+     * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     */
     constructor(env = 'prd') {
         this._env = env;
         this._unauthenticatedClient = new HttpClient(env);
+
+        /** Available security levels for keys */
         this.KeyLevel = KeyLevel;
+
+        /** Crypto utility functions */
         this.Crypto = Crypto;
+
+        /** Other utility functions */
         this.Util = Util;
+
+        /** Class for using the browser crypto engine */
         this.BrowserCryptoEngine = BrowserCryptoEngine;
+
+        /** Class for using the memory crypto engine */
         this.MemoryCryptoEngine = MemoryCryptoEngine;
     }
 

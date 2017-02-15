@@ -9,9 +9,18 @@ const stringify = require('json-stable-stringify');
 const axios = require('axios');
 
 /**
- * Authenticated client for making requests to the Token gateway
+ * Client for making authenticated requests to the Token gateway.
  */
 class AuthHttpClient {
+    /**
+     * Initializes the client for the environment, memberId, and CryptoEngine. Sets up signers using
+     * the CryptoEngine, for Low, Standard, and Privileged keys, which will be used to sign
+     * appropriate requests.
+     *
+     * @param {string} env - desired env, such as 'prd'
+     * @param {string} memberId - member making the requests
+     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     */
     constructor(env, memberId, cryptoEngine){
         this._instance = axios.create({
             baseURL: urls[env]
@@ -42,7 +51,7 @@ class AuthHttpClient {
         this._instance.interceptors.request.eject(this._interceptor);
 
         this._interceptor = this._instance.interceptors.request.use((config) => {
-            this._authHeader.addAuthorizationHeaderMemberId(this._memberId, config, this._context);
+            this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
             return config;
         })
     }
@@ -55,16 +64,31 @@ class AuthHttpClient {
         })
     }
 
+    /**
+     * Use the given access token. (Act on behalf of this member).
+     *
+     * @param {string} accessTokenId - Id of the access token
+     */
     useAccessToken(accessTokenId) {
         this._context.onBehalfOf = accessTokenId;
         this._resetInterceptor();
     }
 
+    /**
+     * Clears the AuthContext, so this client no longer acts on behalf of another member.
+     */
     clearAccessToken() {
         this._context.onBehalfOf = undefined;
         this._resetInterceptor();
     }
 
+    /**
+     * Subcribes to push notifications.
+     *
+     * @param {string} target - where the push notification is send
+     * @param {string} platform - platform, (e.g IOS, ANDROID, WEB)
+     * @return {Object} response - response to the API call
+     */
     subscribeToNotifications(target, platform) {
         const req = {
             target,
@@ -78,6 +102,11 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all subscribers for a member.
+     *
+     * @return {Object} response - response to the API call
+     */
     getSubscribers() {
         const config = {
             method: 'get',
@@ -86,6 +115,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets a subscriber by id.
+     *
+     * @param {string} subscriberId - Id of the subscriber to get
+     * @return {Object} response - response to the API call
+     */
     getSubscriber(subscriberId) {
         const config = {
             method: 'get',
@@ -94,6 +129,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all notifications.
+     *
+     * @param {string} offset - where to start looking
+     * @param {Number} limit - how many to get
+     * @return {Object} response - response to the API call
+     */
     getNotifications(offset, limit) {
         const config = {
             method: 'get',
@@ -102,6 +144,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets a notification by id.
+     *
+     * @param {string} notificationId - Id of the notification to get
+     * @return {Object} response - response to the API call
+     */
     getNotification(notificationId) {
         const config = {
             method: 'get',
@@ -110,6 +158,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Unsubscribes from notifications (deletes a subscriber).
+     *
+     * @param {string} subscriberId - subscriber to delete
+     * @return {Object} response - response to the API call
+     */
     unsubscribeFromNotifications(subscriberId) {
         const config = {
             method: 'delete',
@@ -121,6 +175,14 @@ class AuthHttpClient {
     //
     // ADDRESSES
     //
+
+    /**
+     * Adds an address to the member.
+     *
+     * @param {string} name - name of the address
+     * @param {Object} address - address to add
+     * @return {Object} response - response to the API call
+     */
     addAddress(name, address) {
         const req = {
             name,
@@ -139,6 +201,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets an address by id.
+     *
+     * @param {string} addressId - address to get
+     * @return {Object} response - response to the API call
+     */
     getAddress(addressId) {
         const config = {
             method: 'get',
@@ -147,6 +215,11 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all addresses.
+     *
+     * @return {Object} response - response to the API call
+     */
     getAddresses() {
         const config = {
             method: 'get',
@@ -155,6 +228,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Deletes an address.
+     *
+     * @param {string} addressId - address to delete
+     * @return {Object} response - response to the API call
+     */
     deleteAddress(addressId) {
         const config = {
             method: 'delete',
@@ -166,6 +245,14 @@ class AuthHttpClient {
     //
     // ACCOUNTS
     //
+
+    /**
+     * Links accounts to the member.
+     *
+     * @param {string} bankId - id of the bank that the accounts belong to
+     * @param {Array} accountLinkPayloads - encrypted payload for each account
+     * @return {Object} response - response to the API call
+     */
     linkAccounts(bankId, accountLinkPayloads) {
         const req = {
             bankId,
@@ -179,6 +266,11 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all accounts linked to the member.
+     *
+     * @return {Object} response - response to the API call
+     */
     getAccounts() {
         const config = {
             method: 'get',
@@ -187,6 +279,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets an account.
+     *
+     * @param {string} accountId - account to get
+     * @return {Object} response - response to the API call
+     */
     getAccount(accountId) {
         const config = {
             method: 'get',
@@ -195,6 +293,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Sets the name of an account.
+     *
+     * @param {string} accountId - account
+     * @param {string} name - new name
+     * @return {Object} response - response to the API call
+     */
     setAccountName(accountId, name) {
         const config = {
             method: 'patch',
@@ -203,6 +308,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets the balance of an account.
+     *
+     * @param {string} accountId - accountId
+     * @return {Object} response - response to the API call
+     */
     getBalance(accountId) {
         const config = {
             method: 'get',
@@ -211,6 +322,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets a transaction for an account, by its id.
+     *
+     * @param {string} accountId - account that initiated the transaction
+     * @param {string} transactionId - id of the transaction
+     * @return {Object} response - response to the API call
+     */
     getTransaction(accountId, transactionId) {
         const config = {
             method: 'get',
@@ -219,6 +337,14 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all transactions for an account.
+     *
+     * @param {string} accountId - id of the account
+     * @param {string} offset - where to start
+     * @param {Number} limit - how many to get
+     * @return {Object} response - response to the API call
+     */
     getTransactions(accountId, offset, limit) {
         const config = {
             method: 'get',
@@ -227,6 +353,11 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all banks.
+     *
+     * @return {Object} response - response to the API call
+     */
     getBanks() {
         const config = {
             method: 'get',
@@ -235,6 +366,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets info about a bank.
+     *
+     * @param {string} bankId - id of the bank to lookup
+     * @return {Object} response - response to the API call
+     */
     getBankInfo(bankId) {
         const config = {
             method: 'get',
@@ -247,6 +384,18 @@ class AuthHttpClient {
     // Tokens
     //
 
+    /**
+     * Creates a transfer token.
+     *
+     * @param {string} memberId - memberId of the payer
+     * @param {string} accountId - accountId of the payer
+     * @param {Number} lifetimeAmount - total limit of use of token
+     * @param {string} currency - currency that the token uses
+     * @param {string} username - username of the payee
+     * @param {string} description - description on the token
+     * @param {Number} amount - max amount per charge
+     * @return {Object} response - response to the API call
+     */
     createTransferToken(
         memberId,
         accountId,
@@ -287,6 +436,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Creates an access token.
+     *
+     * @param {string} username - username of the grantee
+     * @param {Array} resources - resources to give access to
+     * @return {Object} response - response to the API call
+     */
     createAccessToken(username, resources) {
         const payload = {
             from: {
@@ -312,6 +468,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Replaces an access token with one with updated resources.
+     *
+     * @param {Object} tokenToCancel - access token to replace
+     * @param {Array} newResources - new resources
+     * @return {Object} response - response to the API call
+     */
     replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
@@ -342,6 +505,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Replaces an access token with one with updated resources, and endorses it.
+     *
+     * @param {Object} tokenToCancel - access token to replace
+     * @param {Array} newResources - new resources
+     * @return {Object} response - response to the API call
+     */
     replaceAndEndorseToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
         const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
@@ -375,6 +545,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Endorses a token.
+     *
+     * @param {Object} token - token to endorse
+     * @return {Object} response - response to the API call
+     */
     endorseToken(token) {
         return this._tokenOperation(
             token,
@@ -382,13 +558,29 @@ class AuthHttpClient {
             'endorsed');
     }
 
-    cancelToken(transferToken) {
+    /**
+     * Cancels a token.
+     *
+     * @param {Object} token - token to cancel
+     * @return {Object} response - response to the API call
+     */
+    cancelToken(token) {
         return this._tokenOperation(
-            transferToken,
+            token,
             'cancel',
             'cancelled');
     }
 
+    /**
+     * Redeems a transfer token.
+     *
+     * @param {Object} transferToken - token to redeem
+     * @param {Number} amount - amount to charge
+     * @param {string} currency - currency to charge
+     * @param {string} description - description of the transfer
+     * @param {Array} destinations - destinations money should go to
+     * @return {Object} response - response to the API call
+     */
     redeemToken(transferToken, amount, currency, description, destinations) {
         const payload = {
             nonce: Util.generateNonce(),
@@ -423,6 +615,12 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets a token by its id.
+     *
+     * @param {string} tokenId - id of the token to get
+     * @return {Object} response - response to the API call
+     */
     getToken(tokenId) {
         const config = {
             method: 'get',
@@ -431,6 +629,14 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all tokens of the member, of a certain type.
+     *
+     * @param {string} type - type of tokens to get
+     * @param {string} offset - where to start looking
+     * @param {Number} limit - how many to get
+     * @return {Object} response - response to the API call
+     */
     getTokens(type, offset, limit) {
         const config = {
             method: 'get',
@@ -468,6 +674,13 @@ class AuthHttpClient {
     //
     // Transfers
     //
+
+    /**
+     * Gets a transfer by id.
+     *
+     * @param {string} transferId - id of the transfer
+     * @return {Object} response - response to the API call
+     */
     getTransfer(transferId) {
         const config = {
             method: 'get',
@@ -476,6 +689,14 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets all transfers on a token.
+     *
+     * @param {string} tokenId - id of the token
+     * @param {string} offset - where to start
+     * @param {Number} limit - how many to get
+     * @return {Object} response - response to the API call
+     */
     getTransfers(tokenId, offset, limit) {
         const config = {
             method: 'get',
@@ -487,6 +708,12 @@ class AuthHttpClient {
     //
     // Directory
     //
+
+    /**
+     * Gets the member's information.
+     *
+     * @return {Object} response - response to the API call
+     */
     getMember() {
         const config = {
             method: 'get',
@@ -495,7 +722,13 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-
+    /**
+     * Adds a key to the member.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Object} key - key to add
+     * @return {Object} response - response to the API call
+     */
     approveKey(prevHash, key) {
         const update = {
             memberId: this._memberId,
@@ -516,6 +749,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Adds keys to the member.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Array} keys - keys to add
+     * @return {Object} response - response to the API call
+     */
     approveKeys(prevHash, keys) {
         const update = {
             memberId: this._memberId,
@@ -534,6 +774,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Removes a key from the member.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {string} keyId - keyId to remove
+     * @return {Object} response - response to the API call
+     */
     removeKey(prevHash, keyId) {
         const update = {
             memberId: this._memberId,
@@ -548,6 +795,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Removes keys from the member.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Array} keyIds - keys to remove
+     * @return {Object} response - response to the API call
+     */
     removeKeys(prevHash, keyIds) {
         const update = {
             memberId: this._memberId,
@@ -560,6 +814,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Adds a username to the member;
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {string} username - username to add
+     * @return {Object} response - response to the API call
+     */
     addUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
@@ -574,6 +835,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Adds usernames to the member;
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Array} usernames - usernames to add
+     * @return {Object} response - response to the API call
+     */
     addUsernames(prevHash, usernames) {
         const update = {
             memberId: this._memberId,
@@ -586,6 +854,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Removes a username from the member;
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {string} username - username to remove
+     * @return {Object} response - response to the API call
+     */
     removeUsername(prevHash, username) {
         const update = {
             memberId: this._memberId,
@@ -600,6 +875,13 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
+    /**
+     * Removes usernames from the member;
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {string} usernames - usernames to remove
+     * @return {Object} response - response to the API call
+     */
     removeUsernames(prevHash, usernames) {
         const update = {
             memberId: this._memberId,
@@ -636,6 +918,14 @@ class AuthHttpClient {
     //
     // Test
     //
+
+    /**
+     * Creates a test bank account.
+     *
+     * @param {Number} balance - balance to put in the account
+     * @param {string} currency - currency in the account
+     * @return {Object} response - response to the API call
+     */
     createTestBankAccount(balance, currency) {
         const req = {
             balance: {

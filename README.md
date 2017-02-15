@@ -1,6 +1,8 @@
-# Token-io SDK  (Readme may not up to date, view source)
+# Token JavaScript SDK
 
-A javascript SDK for interacting with the Token System. Visit Token at http://token.io.
+A javascript SDK for interacting with the Token System. Visit Token at http://token.io, and view
+the docs at http://docs.token.io. For looking at the available API, look at the samples, as well
+as the Member and Token classes.
 
 ### Installation
 

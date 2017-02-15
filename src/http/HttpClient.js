@@ -4,7 +4,15 @@ import VersionHeader from "./VersionHeader";
 
 const axios = require('axios');
 
+/**
+ * Client to make unauthenticated requests to the Token gateway.
+ */
 class HttpClient {
+    /**
+     * Creates the client with the given environment.
+     *
+     * @param {string} env - environment to point to, like 'prd'
+     */
     constructor(env){
         this._instance = axios.create({
             baseURL: urls[env]
@@ -17,6 +25,11 @@ class HttpClient {
         })
     }
 
+    /**
+     * Creates a memberId.
+     *
+     * @return {Object} response - response to the API call
+     */
     createMemberId() {
         const config = {
             method: 'post',
@@ -25,6 +38,12 @@ class HttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Gets a memberId given a username.
+     *
+     * @param {string} username - username to lookup
+     * @return {Object} response - response to the API call
+     */
     getMemberId(username) {
         const config = {
             method: 'get',
@@ -33,6 +52,13 @@ class HttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Notifies a user.
+     *
+     * @param {string} username - user to notify
+     * @param {Object} body - body of the notification
+     * @return {Object} response - response to the API call
+     */
     notify(username, body) {
         const req = {
             username,
@@ -46,6 +72,14 @@ class HttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Approve a first key for a member (self signed).
+     *
+     * @param {string} memberId - id of the member
+     * @param {Object} key - key to approve
+     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @return {Object} response - response to the API call
+     */
     approveFirstKey(memberId, key, cryptoEngine) {
         const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
         const update = {
@@ -79,6 +113,14 @@ class HttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Approve the first keys for a member (self signed).
+     *
+     * @param {string} memberId - id of the member
+     * @param {Array} keys - keys to approve
+     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @return {Object} response - response to the API call
+     */
     approveFirstKeys(memberId, keys, cryptoEngine) {
         const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
         const update = {
