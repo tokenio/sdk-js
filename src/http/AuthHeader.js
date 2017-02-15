@@ -63,7 +63,7 @@ class AuthHeader {
 
         // Creates the authorization header, ands adds it to the request
         const header = signatureScheme + ' ' +
-            identity + ',' +
+            'member-id=' + memberId + ',' +
             'key-id=' + this._signer.getKeyId() + ',' +
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
