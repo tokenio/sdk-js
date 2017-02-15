@@ -5,7 +5,6 @@ import Util from "./Util";
 import Member from "./main/Member";
 import {KeyLevel} from "./constants";
 import HttpClient from "./http/HttpClient";
-import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
