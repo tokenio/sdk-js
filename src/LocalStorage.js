@@ -11,7 +11,7 @@ class LocalStorage {
             keys: {
                 publicKey: Crypto.strKey(member.keys.publicKey),
                 secretKey: Crypto.strKey(member.keys.secretKey),
-                keyId: member.keys.keyId
+                id: member.keys.id
             }
         };
         window.localStorage.member = JSON.stringify(payload);
@@ -25,7 +25,7 @@ class LocalStorage {
         const correctKeys = {
             publicKey: Crypto.bufferKey(loaded.keys.publicKey),
             secretKey: Crypto.bufferKey(loaded.keys.secretKey),
-            keyId: loaded.keys.keyId
+            id: loaded.keys.id
         };
         return new Member(env, loaded.memberId, correctKeys);
     }

@@ -15,22 +15,22 @@ let username1 = '';
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Crypto.generateKeys().keyId;
-    member1 = await Token.createMember(username1);
+    username1 = Token.Util.generateNonce();
+    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
 };
 
 describe('Notifications', () => {
     beforeEach(setUp1);
 
     it('should create and get subscribers', async () => {
-        const randomStr = Crypto.generateKeys().keyId;
+        const randomStr = Token.Util.generateNonce();
         const subscriber = await member1.subscribeToNotifications(randomStr);
         const subscribers = await member1.getSubscribers();
         assert.equal(subscriber.id, subscribers[0].id);
     });
 
     it('should create and get subscriber by Id', async () => {
-        const randomStr = Crypto.generateKeys().keyId;
+        const randomStr = Token.Util.generateNonce();
         const subscriber = await member1.subscribeToNotifications(randomStr, "ANDROID");
         const subscriber2 = await member1.getSubscriber(subscriber.id);
         assert.equal(subscriber.platform, subscriber2.platform);
@@ -49,7 +49,7 @@ describe('Notifications', () => {
     });
 
     it('should send a push for linking accounts', async () => {
-        const target = Crypto.generateKeys().keyId;
+        const target = Token.Util.generateNonce();
         await member1.subscribeToNotifications(target);
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const status = await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
@@ -103,8 +103,8 @@ describe('Notifications', () => {
     it('should get notifications with paging', async () => {
         const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
-        const username2 = Crypto.generateKeys().keyId;
-        const member2 = await Token.createMember(username2);
+        const username2 = Token.Util.generateNonce();
+        const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
         const notificationsEmpty = await member2.getNotifications(null, 100);
         assert.equal(notificationsEmpty.data.length, 0);
 

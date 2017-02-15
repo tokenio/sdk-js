@@ -13,8 +13,8 @@ let username1 = '';
 
 describe('Empty tokens and accounts', () => {
     before(async () => {
-        username1 = Crypto.generateKeys().keyId;
-        member1 = await Token.createMember(username1);
+        username1 = Token.Util.generateNonce();
+        member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
     });
 
     it('should see an empty list of accounts', async () => {

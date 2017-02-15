@@ -13,8 +13,8 @@ describe('Key addition detection', () => {
 
     beforeEach(async () => {
         const keys = Crypto.generateKeys();
-        username = Crypto.generateKeys().keyId;
-        member = await Token.createMember(username);
+        username = Token.Util.generateNonce();
+        member = await Token.createMember(username, Token.MemoryCryptoEngine);
         await member.approveKey(keys);
     });
 

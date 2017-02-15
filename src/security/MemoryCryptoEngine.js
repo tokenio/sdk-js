@@ -1,47 +1,16 @@
 import Crypto from './Crypto';
 import {localStorageSchemaVersion} from '../constants';
 
-/**
- * localStorage schema:
- *
- * schemaVersion: 0.1,
- *
- * activeMemberId: 123,
- * members: [
- *  {
- *      id: 123
- *      keys: [{
- *          id: 456,
- *          algorithm: ED25519,
- *          level: PRIVILEGED,
- *          publicKey: 789,
- *          secretKey: 012,
- *      }]
- *  }
- * ]
- *
- */
+const globalStorage = {
+    members: [],
+}
 
-class LocalStorageCryptoEngine {
+class MemoryCryptoEngine {
     constructor(memberId) {
-        if (!BROWSER) {
-            throw new Error("Browser Only");
-        }
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
 
-        let savedSchemaVersion;
-        try {
-            savedSchemaVersion = JSON.parse(window.localStorage.schemaVersion);
-        } catch (syntaxError) {
-            // If nothing yet in localStorage, continue
-        }
-
-        if (savedSchemaVersion < localStorageSchemaVersion) {
-            window.localStorage.clear();
-            window.localStorage.schemaVersion = JSON.stringify(localStorageSchemaVersion);
-        }
         this._memberId = memberId;
 
         try {
@@ -52,12 +21,11 @@ class LocalStorageCryptoEngine {
                 keys: [],
             });
         }
-        window.localStorage.activeMemberId = this._memberId;
-
+        globalStorage.activeMemberId = this._memberId;
     }
 
     static getActiveMemberId() {
-        const memberId = window.localStorage.activeMemberId;
+        const memberId = globalStorage.activeMemberId;
         if (!memberId) {
             throw new Error('No active memberId on this browser');
         }
@@ -126,16 +94,20 @@ class LocalStorageCryptoEngine {
         if (!this._memberId) {
             throw new Error('Invalid memberId');
         }
-        const loadedMembers = window.localStorage.members
-            ? JSON.parse(window.localStorage.members)
-            : [];
+        const loadedMembers = globalStorage.members;
         for (let member of loadedMembers) {
             if (member.id === this._memberId) {
-                for (let i=0; i<member.keys.length; i++) {
-                    member.keys[i].publicKey = Crypto.bufferKey(member.keys[i].publicKey);
-                    member.keys[i].secretKey = Crypto.bufferKey(member.keys[i].secretKey);
+                const memberCopy = {
+                    id: member.id,
+                    keys: member.keys.map((key) => ({
+                        id: key.id,
+                        algorithm: key.algorithm,
+                        level: key.level,
+                        publicKey: Crypto.bufferKey(key.publicKey),
+                        secretKey: Crypto.bufferKey(key.secretKey)
+                    })),
                 }
-                return member;
+                return memberCopy;
             }
         }
         throw new Error('Member not found');
@@ -156,21 +128,17 @@ class LocalStorageCryptoEngine {
             });
         }
 
-        const loadedMembers = window.localStorage.members
-            ? JSON.parse(window.localStorage.members)
-            : [];
         let replaced = false;
-        for (let i=0; i<loadedMembers.length; i++) {
-            if (loadedMembers[i].id === memberCopy.id) {
-                loadedMembers[i] = memberCopy;
+        for (let i=0; i<globalStorage.members.length; i++) {
+            if (globalStorage.members[i].id === memberCopy.id) {
+                globalStorage.members[i] = memberCopy;
                 replaced = true;
             }
         }
         if (!replaced) {
-            loadedMembers.push(memberCopy);
+            globalStorage.members.push(memberCopy);
         }
-        window.localStorage.members = JSON.stringify(loadedMembers);
     }
 }
 
-export default LocalStorageCryptoEngine;
+export default MemoryCryptoEngine;

@@ -13,10 +13,8 @@ let username = '';
 
 describe('member tests', () => {
     before(async () => {
-        const keys = Crypto.generateKeys();
-        username = Crypto.generateKeys().keyId;
-        member = await Token.createMember(username);
-        await member.approveKey(keys);
+        username = Token.Util.generateNonce();
+        member = await Token.createMember(username, Token.MemoryCryptoEngine);
     });
 
     describe('Creating a member', () => {
@@ -28,14 +26,14 @@ describe('member tests', () => {
         it('should add and remove a key', async () => {
             const keys = Crypto.generateKeys();
             await member.approveKey(keys);
-            await member.removeKey(keys.keyId);
+            await member.removeKey(keys.id);
             const keys2 = await member.keys();
             assert.isAtLeast(keys2.length, 2);
         });
 
         it('should add and remove multiple keys', async () => {
-            const username = Crypto.generateKeys().keyId;
-            let memberX = await Token.createMember(username);
+            const username = Token.Util.generateNonce();
+            let memberX = await Token.createMember(username, Token.MemoryCryptoEngine);
             const keys = Crypto.generateKeys();
             const keys2 = Crypto.generateKeys();
             const keys3 = Crypto.generateKeys();
@@ -43,14 +41,15 @@ describe('member tests', () => {
                 [keys, keys2, keys3],
                 [Token.KeyLevel.LOW, Token.KeyLevel.STANDARD, Token.KeyLevel.LOW]);
             const pks = await memberX.keys();
-            assert.equal(pks.length, 4);
-            await memberX.removeKeys([keys.keyId, keys3.keyId]);
+            console.log(pks.length);
+            assert.equal(pks.length, 6);
+            await memberX.removeKeys([keys.id, keys3.id]);
             const pks2 = await memberX.keys();
-            assert.equal(pks2.length, 2);
+            assert.equal(pks2.length, 4);
         });
 
         it('should add and get usernames', async () => {
-            const username = Crypto.generateKeys().keyId;
+            const username = Token.Util.generateNonce();
             await member.addUsername(username);
             const usernames = await member.usernames();
             assert.isAtLeast(usernames.length, 2);
@@ -60,9 +59,9 @@ describe('member tests', () => {
         })
 
         it('should add multiple usernames', async () => {
-            const username = Crypto.generateKeys().keyId;
-            const username2 = Crypto.generateKeys().keyId;
-            const username3 = Crypto.generateKeys().keyId;
+            const username = Token.Util.generateNonce();
+            const username2 = Token.Util.generateNonce();
+            const username3 = Token.Util.generateNonce();
             await member.addUsernames([username, username2, username3]);
             const usernames = await member.usernames();
             assert.include(usernames, username);
@@ -71,7 +70,7 @@ describe('member tests', () => {
         });
 
         it('should add and remove a username', async () => {
-            const newUsername = Crypto.generateKeys().keyId;
+            const newUsername = Token.Util.generateNonce();
             await member.addUsername(newUsername);
             await member.removeUsername(newUsername);
             const usernames = await member.usernames();
@@ -80,8 +79,8 @@ describe('member tests', () => {
         });
 
         it('should remove multiple usernames', async () => {
-            const newUsername = Crypto.generateKeys().keyId;
-            const newUsername2 = Crypto.generateKeys().keyId;
+            const newUsername = Token.Util.generateNonce();
+            const newUsername2 = Token.Util.generateNonce();
             await member.addUsername(newUsername);
             await member.addUsername(newUsername2);
             await member.removeUsernames([newUsername, newUsername2]);

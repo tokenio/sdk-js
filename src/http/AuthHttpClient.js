@@ -1,3 +1,4 @@
+import LocalStorageCryptoEngine from "../security/LocalStorageCryptoEngine";
 import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
@@ -11,14 +12,24 @@ const axios = require('axios');
  * Authenticated client for making requests to the Token gateway
  */
 class AuthHttpClient {
-    constructor(env, memberId, keys){
+    constructor(env, memberId, cryptoEngine){
         this._instance = axios.create({
             baseURL: urls[env]
         });
         this._memberId = memberId;
-        this._keys = keys;
+        this._signerLow = cryptoEngine.createSigner(KeyLevel.LOW);
+        try {
+            this._signerStandard = cryptoEngine.createSigner(KeyLevel.STANDARD);
+        } catch (err) {
+            this._signerStandard = this._signerLow; // If no Standard signer, uses Low
+        }
+        try {
+            this._signerPrivileged = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+        } catch (err) {
+            this._signerPrivileged = this._signerLow; // If no Privileged signer, uses Low
+        }
         this._context = new AuthContext();
-        this._authHeader = new AuthHeader(urls[env], keys);
+        this._authHeader = new AuthHeader(urls[env], this._signerLow);
         this._resetInterceptor();
         this._addVersionHeader();
     }
@@ -112,8 +123,8 @@ class AuthHttpClient {
             address,
             addressSignature: {
                 memberId: this._memberId,
-                keyId: this._keys.keyId,
-                signature: Crypto.signJson(address, this._keys)
+                keyId: this._signerLow.getKeyId(),
+                signature: this._signerLow.signJson(address),
             }
         };
         const config = {
@@ -396,8 +407,8 @@ class AuthHttpClient {
             payload,
             payloadSignature: {
                 memberId: this._memberId,
-                keyId: this._keys.keyId,
-                signature: Crypto.signJson(payload, this._keys)
+                keyId: this._signerLow.getKeyId(),
+                signature: this._signerLow.signJson(payload),
             }
         };
         const config = {
@@ -445,8 +456,8 @@ class AuthHttpClient {
         const payload = stringify(tokenPayload) + `.${suffix}`;
         return {
             memberId: this._memberId,
-            keyId: this._keys.keyId,
-            signature: Crypto.sign(payload, this._keys)
+            keyId: this._signerStandard.getKeyId(),
+            signature: this._signerStandard.sign(payload),
         };
     }
 
@@ -481,16 +492,16 @@ class AuthHttpClient {
     }
 
 
-    approveKey(prevHash, key, level) {
+    approveKey(prevHash, key) {
         const update = {
             memberId: this._memberId,
             operations: [
                 {
                     addKey: {
                         key: {
-                            id: key.keyId,
+                            id: key.id,
                             publicKey: Crypto.strKey(key.publicKey),
-                            level: level,
+                            level: key.level,
                             algorithm: key.algorithm
                         }
                     }
@@ -501,24 +512,19 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
-    approveKeys(prevHash, keys, levels) {
-        const operations = [];
-        for (let n=0; n<keys.length; n++) {
-            operations.push({
-                addKey: {
-                    key: {
-                        id: keys[n].keyId,
-                        publicKey: Crypto.strKey(keys[n].publicKey),
-                        level: levels[n],
-                        algorithm: keys[n].algorithm
-                    }
-                }
-            });
-        }
-
+    approveKeys(prevHash, keys) {
         const update = {
             memberId: this._memberId,
-            operations,
+            operations: keys.map((key) => ({
+                addKey: {
+                    key: {
+                        id: key.id,
+                        publicKey: Crypto.strKey(key.publicKey),
+                        level: key.level,
+                        algorithm: key.algorithm
+                    }
+                }
+            }))
         };
 
         return this._memberUpdate(update, prevHash);
@@ -547,7 +553,6 @@ class AuthHttpClient {
                 }
             })),
         };
-        console.log('request:', update);
         return this._memberUpdate(update, prevHash);
     }
 
@@ -612,8 +617,8 @@ class AuthHttpClient {
             update,
             updateSignature: {
                 memberId: this._memberId,
-                keyId: this._keys.keyId,
-                signature: Crypto.signJson(update, this._keys)
+                keyId: this._signerPrivileged.getKeyId(),
+                signature: this._signerPrivileged.signJson(update),
             }
         };
         const config = {

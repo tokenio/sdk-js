@@ -1,4 +1,3 @@
-import Crypto from "../security/Crypto";
 import LocalStorage from "../LocalStorage";
 import AuthHttpClient from "../http/AuthHttpClient";
 import Util from "../Util";
@@ -18,10 +17,9 @@ export default class Member {
      * @param {string} memberId - The id of this memberId
      * @param {object} keys - An object representing the keypair of the user
      */
-    constructor(env, memberId, keys) {
+    constructor(env, memberId, cryptoEngine) {
         this._id = memberId;
-        this._keys = keys;
-        this._client = new AuthHttpClient(env, memberId, keys);
+        this._client = new AuthHttpClient(env, memberId, cryptoEngine);
     }
 
     /**
@@ -96,13 +94,12 @@ export default class Member {
      * Approves a new key for this member
      *
      * @param {Object} key - key to add
-     * @param {string} keyLevel - Security level of this new key. PRIVILEGED is root security
      * @return {Promise} empty - empty promise
      */
-    approveKey(key, keyLevel = KeyLevel.PRIVILEGED) {
+    approveKey(key) {
         return Util.callAsync(this.approveKey, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.approveKey(prevHash, key, keyLevel);
+            await this._client.approveKey(prevHash, key);
             return;
         });
     }
@@ -111,13 +108,12 @@ export default class Member {
      * Approves new keys for this member
      *
      * @param {Array} keys - keys to add
-     * @param {Array} keyLevels - Security levels of these new key. PRIVILEGED is root security
      * @return {Promise} empty - empty promise
      */
-    approveKeys(keys, keyLevels) {
+    approveKeys(keys) {
         return Util.callAsync(this.approveKeys, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.approveKeys(prevHash, keys, keyLevels);
+            await this._client.approveKeys(prevHash, keys);
             return;
         });
     }
@@ -125,7 +121,7 @@ export default class Member {
     /**
      * Removes a key from this member
      *
-     * @param {string} keyId - keyId to remove. Note, keyId is the hash of the pk
+     * @param {string} id - keyId to remove. Note, keyId is the hash of the pk
      * @return {Promise} empty empty promise
      */
     removeKey(keyId) {

@@ -1,8 +1,9 @@
 import Crypto from "./security/Crypto";
+import LocalStorageCryptoEngine from "./security/LocalStorageCryptoEngine";
+import MemoryCryptoEngine from "./security/MemoryCryptoEngine";
 import Util from "./Util";
 import Member from "./main/Member";
 import {KeyLevel} from "./constants";
-import LocalStorage from "./LocalStorage";
 import HttpClient from "./http/HttpClient";
 import AuthHttpClientUsername from "./http/AuthHttpClientUsername";
 
@@ -11,13 +12,14 @@ require('es6-promise').polyfill();
 
 // Main entry object
 class Token {
-
     constructor(env = 'prd') {
         this._env = env;
         this._unauthenticatedClient = new HttpClient(env);
         this.KeyLevel = KeyLevel;
         this.Crypto = Crypto;
         this.Util = Util;
+        this.LocalStorageCryptoEngine = LocalStorageCryptoEngine;
+        this.MemoryCryptoEngine = MemoryCryptoEngine;
     }
 
     /**
@@ -28,65 +30,133 @@ class Token {
      */
     usernameExists(username) {
         return Util.callAsync(this.usernameExists, async () => {
-            const res = await this._unauthenticatedClient.usernameExists(username);
+            const res = await this._unauthenticatedClient.getMemberId(username);
             return res.data.memberId != null && res.data.memberId !== "";
         });
     }
 
     /**
-     * Creates a member with an username and a keypair
+     * Creates a member with an username and a keypair, using the provided engine
      *
      * @param  {string} username - username to set for member
+     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
-    createMember(username) {
-        return Util.callAsync(this.createMember, async () => {
+    createMember(username, CryptoEngine) {
+        return Util.callAsync(this.createMemberWithEngine, async () => {
             const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
-            await this._unauthenticatedClient.approveFirstKey(response.data.memberId, keys);
-            const member = new Member(this._env, response.data.memberId, keys);
+            const engine = new CryptoEngine(response.data.memberId);
+            const pk1 = engine.generateKey('PRIVILEGED');
+            const pk2 = engine.generateKey('STANDARD');
+            const pk3 = engine.generateKey('LOW');
+            await this._unauthenticatedClient.approveFirstKeys(
+                response.data.memberId,
+                [pk1, pk2, pk3],
+                engine);
+            const member = new Member(this._env, response.data.memberId, engine);
             await member.addUsername(username);
             return member;
         });
     }
 
     /**
-     * Log in a member (Instantiate a member object from keys and Id)
+     * Provisions a new device for an existing user. The call generates a set
+     * of keys that are returned back. The keys need to be approved by an
+     * existing device/keys.
      *
-     * @param  {string} memberId - id of the member
-     * @param  {object} keys - member's keys
-     * @return {Promise} member - Promise of instantiated Member
+     * @param {string} username - user to provision t he device for
+     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @return {Promise} deviceInfo - information about the device provisioned
      */
-    login(memberId, keys) {
-        return Util.callAsync(this.login, async () => {
-            return new Member(this._env, memberId, keys);
+    provisionDevice(username, CryptoEngine) {
+        return Util.callAsync(this.provisionDevice, async () => {
+            const res = await this._unauthenticatedClient.getMemberId(username);
+            if (!(res.data.memberId)) {
+                throw new Error('Invalid username');
+            }
+            const engine = new CryptoEngine(res.data.memberId);
+            const pk1 = engine.generateKey('PRIVILEGED');
+            const pk2 = engine.generateKey('STANDARD');
+            const pk3 = engine.generateKey('LOW');
+            return {
+                memberId: res.data.memberId,
+                keys: [pk1, pk2, pk3],
+            }
         });
     }
 
     /**
-     * Log in a member by keys and username. This is useful for checking whether we are
-     * authenticated, after requesting to add a key (by notification). Can call this
-     * every n seconds until it succeeds
+     * Provisions a new device for an existing user. The call generates a set
+     * of keys that are returned back. The keys need to be approved by an
+     * existing device/keys. This only generates one (LOW) key.
      *
-     * @param  {object} keys - Member keys
-     * @param  {string} username - username to authenticate with
-     * @return {Promise} member - instantiated Member, if successful
+     * @param {string} username - user to provision t he device for
+     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @return {Promise} deviceInfo - information about the device provisioned
      */
-    loginWithUsername(keys, username) {
-        return Util.callAsync(this.loginWithUsername, async () => {
-            const res = await new AuthHttpClientUsername(this._env, username, keys).getMemberByUsername();
-            return new Member(this._env, res.data.member.id, keys);
+    provisionDeviceLow(username, CryptoEngine) {
+        return Util.callAsync(this.provisionDeviceLow, async () => {
+            const res = await this._unauthenticatedClient.getMemberId(username);
+            if (!(res.data.memberId)) {
+                throw new Error('Invalid username');
+            }
+            const engine = new CryptoEngine(res.data.memberId);
+            const pk1 = engine.generateKey('LOW');
+            return {
+                memberId: res.data.memberId,
+                keys: [pk1],
+            }
         });
     }
 
+    // /**
+    //  * Log in a member (Instantiate a member object from keys and Id)
+    //  *
+    //  * @param  {string} memberId - id of the member
+    //  * @param  {object} keys - member's keys
+    //  * @return {Promise} member - Promise of instantiated Member
+    //  */
+    // login(memberId, keys) {
+    //     return Util.callAsync(this.login, async () => {
+    //         return new Member(this._env, memberId, keys);
+    //     });
+    // }
+    //
+    // /**
+    //  * Log in a member by keys and username. This is useful for checking whether we are
+    //  * authenticated, after requesting to add a key (by notification). Can call this
+    //  * every n seconds until it succeeds
+    //  *
+    //  * @param  {object} keys - Member keys
+    //  * @param  {string} username - username to authenticate with
+    //  * @return {Promise} member - instantiated Member, if successful
+    //  */
+    // loginWithUsername(username) {
+    //     return Util.callAsync(this.loginWithUsername, async () => {
+    //         const cryptoEngineTemp = new LocalStorageCryptoEngine(username);
+    //         const res = await new AuthHttpClientUsername(this._env, username, cryptoEngineTemp)
+    //             .getMemberByUsername();
+    //         const cryptoEngine = new LocalStorageCryptoEngine(memberId);
+    //         return new Member(this._env, res.data.member.id, keys);
+    //     });
+    // }
+
     /**
-     * Logs a member in from keys stored in localStorage
+     * Logs a member in from keys stored in localStorage. If memberId is not provided,
+     * the last member to log on will be used
      *
+     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @param {string} memberId - optional id of the member we want to log in
      * @return {Promise} member - instantiated member
      */
-    loginFromLocalStorage() {
-        return Util.callAsync(this.loginFromLocalStorage, async () => {
-            return LocalStorage.loadMember(this._env);
+    login(CryptoEngine, memberId) {
+        return Util.callSync(this.login, () => {
+            if (!memberId && typeof CryptoEngine["getActiveMemberId"] === 'function') {
+                memberId = CryptoEngine.getActiveMemberId();
+            }
+            const engine = new CryptoEngine(memberId);
+            return new Member(this._env, memberId, engine);
         });
     }
 
@@ -129,7 +199,7 @@ class Token {
             addKey: {
                 name: keyName,
                 key: {
-                    id: key.keyId,
+                    id: key.id,
                     level: level,
                     algorithm: key.algorithm,
                     publicKey: Crypto.strKey(key.publicKey)
@@ -166,7 +236,7 @@ class Token {
                 addKey: {
                     name: keyName,
                     key: {
-                        id: key.keyId,
+                        id: key.id,
                         level: level,
                         algorithm: key.algorithm,
                         publicKey: Crypto.strKey(key.publicKey)

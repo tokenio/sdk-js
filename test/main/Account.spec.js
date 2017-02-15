@@ -13,8 +13,8 @@ let username = '';
 describe('Account tests', () => {
     beforeEach(async () => {
         const keys = Crypto.generateKeys();
-        username = Crypto.generateKeys().keyId;
-        member = await Token.createMember(username);
+        username = Token.Util.generateNonce();
+        member = await Token.createMember(username, Token.MemoryCryptoEngine);
         await member.approveKey(keys);
     });
 
@@ -44,8 +44,8 @@ describe('Account tests', () => {
         });
 
         it('should get an empty array when there are not accounts', async () => {
-            const username2 = Crypto.generateKeys().keyId;
-            const member2 = await Token.createMember(username2);
+            const username2 = Token.Util.generateNonce();
+            const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
             const accounts = await member2.getAccounts();
             assert.equal(accounts.length, 0);
         });

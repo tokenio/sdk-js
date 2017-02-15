@@ -25,7 +25,7 @@ class HttpClient {
         return this._instance(config);
     }
 
-    usernameExists(username) {
+    getMemberId(username) {
         const config = {
             method: 'get',
             url: `/memberid?username=${username}`
@@ -46,29 +46,60 @@ class HttpClient {
         return this._instance(config);
     }
 
-    approveFirstKey(memberId, key, level = KeyLevel.PRIVILEGED) {
+    approveFirstKey(memberId, key, cryptoEngine) {
+        const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
             operations: [
                 {
                     addKey: {
                         key: {
-                            id: key.keyId,
+                            id: key.id,
                             publicKey: Crypto.strKey(key.publicKey),
-                            level: level,
+                            level: key.level,
                             algorithm: key.algorithm
                         }
                     }
                 }
             ]
         };
-
         const req = {
             update,
             updateSignature: {
                 memberId: memberId,
-                keyId: key.keyId,
-                signature: Crypto.signJson(update, key)
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(update)
+            }
+        };
+        const config = {
+            method: 'post',
+            url: `/members/${memberId}/updates`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    approveFirstKeys(memberId, keys, cryptoEngine) {
+        const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+        const update = {
+            memberId: memberId,
+            operations: keys.map((key) => ({
+                addKey: {
+                    key: {
+                        id: key.id,
+                        publicKey: Crypto.strKey(key.publicKey),
+                        level: key.level,
+                        algorithm: key.algorithm
+                    }
+                }
+            })),
+        };
+        const req = {
+            update,
+            updateSignature: {
+                memberId: memberId,
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(update)
             }
         };
         const config = {

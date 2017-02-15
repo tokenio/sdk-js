@@ -1,13 +1,11 @@
 const stringify = require('json-stable-stringify');
 
 import {signatureScheme} from "../constants";
-import Crypto from "../security/Crypto";
-
 class AuthHeader {
 
-    constructor(baseUrl, keys) {
+    constructor(baseUrl, signer) {
         this._baseUrl = baseUrl;
-        this._keys = keys;
+        this._signer = signer;
     }
     /*
      * Adds an authorization header with the identity set as the memberId. This is preferrable
@@ -66,12 +64,12 @@ class AuthHeader {
         }
 
         // Signs the Json string
-        const signature = Crypto.signJson(payload, this._keys);
+        const signature = this._signer.signJson(payload);
 
         // Creates the authorization header, ands adds it to the request
         const header = signatureScheme + ' ' +
             identity + ',' +
-            'key-id=' + this._keys.keyId + ',' +
+            'key-id=' + this._signer.getKeyId() + ',' +
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
             AuthHeader._onBehalfOfHeader(context);

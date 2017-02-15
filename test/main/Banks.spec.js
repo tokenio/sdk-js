@@ -12,8 +12,8 @@ let username = '';
 describe('Banks test', () => {
     beforeEach(async () => {
         const keys = Crypto.generateKeys();
-        username = Crypto.generateKeys().keyId;
-        member = await Token.createMember(username);
+        username = Token.Util.generateNonce();
+        member = await Token.createMember(username, Token.MemoryCryptoEngine);
     });
 
     it('should get banks and bank info', async () => {

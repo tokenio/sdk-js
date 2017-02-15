@@ -12,22 +12,20 @@ let member = {};
 let username = '';
 describe('Key levels', () => {
     before(async () => {
-        const keys = Crypto.generateKeys();
-        username = Crypto.generateKeys().keyId;
-        member = await Token.createMember(username);
-        await member.approveKey(keys);
+        username = Token.Util.generateNonce();
+        member = await Token.createMember(username, Token.MemoryCryptoEngine);
     });
 
     it('should approve a standard level key', async () => {
-        const keys = Crypto.generateKeys();
-        await member.approveKey(keys, KeyLevel.STANDARD);
+        const keys = Crypto.generateKeys(KeyLevel.STANDARD);
+        await member.approveKey(keys);
         const memberNew = await Token.loginWithUsername(keys, username);
         assert.equal(member.id, memberNew.id);
     });
 
     it('should approve a low level key', async () => {
-        const keys = Crypto.generateKeys();
-        await member.approveKey(keys, KeyLevel.LOW);
+        const keys = Crypto.generateKeys(KeyLevel.LOW);
+        await member.approveKey(keys);
         const memberNew = await Token.loginWithUsername(keys, username);
         assert.equal(member.id, memberNew.id);
     });

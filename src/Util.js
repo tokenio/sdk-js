@@ -44,5 +44,23 @@ class Util {
             return Promise.reject(err);
         }
     }
+    /**
+     * Helper method similar to the one above, but without promises
+     *
+     * @param method: outside method that is being executed
+     * @param fn: function to try to execute
+     * @returns successful result or thrown error
+     */
+    static callSync(method, fn) {
+        try {
+            return fn();
+        } catch (err) {
+            const reason = (err.response !== undefined && err.response.data !== undefined)
+                    ? err.response.data
+                    : "UNKNOWN";
+            err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
+            throw err;
+        }
+    }
 }
 export default Util;

@@ -20,8 +20,8 @@ let member2 = {};
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Crypto.generateKeys().keyId;
-    member1 = await Token.createMember(username1);
+    username1 = Token.Util.generateNonce();
+    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
     const accs = await member1.linkAccounts('iron', alp);
     account1 = accs[0];
@@ -29,27 +29,29 @@ const setUp1 = async () => {
 
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Crypto.generateKeys().keyId;
-    member2 = await Token.createMember(username2);
+    username2 = Token.Util.generateNonce();
+    member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
 };
 
 describe('Tokens', () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
     it('should confirm username does not exist', async () => {
-      const exists = await Token.usernameExists(Crypto.generateKeys().keyId);
+      const exists = await Token.usernameExists(Token.Util.generateNonce());
       assert.equal(exists, false);
     });
 
     it('should confirm username exists', async () => {
-      const username = Crypto.generateKeys().keyId;
+      const username = Token.Util.generateNonce();
       await member1.addUsername(username);
       const exists = await Token.usernameExists(username);
       assert.equal(exists, true);
     });
 
     it('should create a token, look it up, and endorse it', async () => {
+        console.log('creating token');
         const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        console.log('created token');
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
         assert.equal(token.payload.issuer.id, 'iron');
@@ -59,9 +61,11 @@ describe('Tokens', () => {
         assert.equal(token.payload.transfer.lifetimeAmount, 9.24);
         assert.equal(token.payload.transfer.currency, defaultCurrency);
 
+        console.log('looking up token');
         const tokenLookedUp = await member1.getToken(token.id);
         assert.equal(token.id, tokenLookedUp.id);
 
+        console.log('endorsing token');
         const res = await member1.endorseToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(res.token.payloadSignatures.length, 2);
@@ -118,16 +122,5 @@ describe('Tokens', () => {
         await member1.endorseToken(token.id)
         const lookedUp = await member2.getToken(token.id);
         assert.equal(lookedUp.id, token.id);
-    });
-
-    it('should fail to endorse a high value token with a low value key', async () => {
-        const keys = Crypto.generateKeys();
-
-        await member1.subscribeToNotifications("0F7BF07748A12DE0C2393FD3731BFEB1484693DFA47A5C9614428BDF724548CD");
-        await member1.approveKey(keys, KeyLevel.LOW);
-        const memberNew = await Token.loginWithUsername(keys, username1);
-        const token = await memberNew.createToken(account1.id, 900.24, defaultCurrency, username2);
-        const res = await memberNew.endorseToken(token.id)
-        assert.equal(res.status, 'MORE_SIGNATURES_NEEDED');
     });
 });

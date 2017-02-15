@@ -30,6 +30,8 @@ const KeyLevel = {
     LOW: 'LOW',
 };
 
+const localStorageSchemaVersion = 0.1;
+
 export {
     signatureScheme,
     urls,
@@ -38,5 +40,6 @@ export {
     defaultCurrency,
     maxDecimals,
     KeyLevel,
-    tokenSdkVersion
+    tokenSdkVersion,
+    localStorageSchemaVersion,
 };

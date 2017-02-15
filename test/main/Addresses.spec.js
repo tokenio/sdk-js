@@ -14,8 +14,8 @@ let account1 = {};
 
 describe('Addresses', () => {
     beforeEach(async () => {
-        username1 = Crypto.generateKeys().keyId;
-        member1 = await Token.createMember(username1);
+        username1 = Token.Util.generateNonce();
+        member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const accs = await member1.linkAccounts('iron', alp);
         account1 = accs[0];

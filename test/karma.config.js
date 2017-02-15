@@ -6,7 +6,7 @@ module.exports = function (config) {
     config.set({
         client: {
             mocha: {
-                timeout : 6000 // 6 seconds - upped from 2 seconds
+                timeout : 10000 // 10 seconds - upped from 6 seconds
             }
         },
         // ... normal karma configuration
@@ -14,7 +14,7 @@ module.exports = function (config) {
 
             // all files ending in ".spec"
             {pattern: 'src/**/*.js', watched: true},
-            {pattern: '**/*.spec.js', watched: false}
+            {pattern: '**/*Device.spec.js', watched: false}
 
             // each file acts as entry point for the webpack configuration
         ],

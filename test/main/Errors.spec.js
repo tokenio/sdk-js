@@ -19,8 +19,8 @@ let token1 = {};
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Crypto.generateKeys().keyId;
-    member1 = await Token.createMember(username1);
+    username1 = Token.Util.generateNonce();
+    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
     const accs = await member1.linkAccounts('iron', alp);
     account1 = accs[0];
@@ -28,8 +28,8 @@ const setUp1 = async () => {
 
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Crypto.generateKeys().keyId;
-    member2 = await Token.createMember(username2);
+    username2 = Token.Util.generateNonce();
+    member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
     await member2.linkAccounts('iron', alp);
 };

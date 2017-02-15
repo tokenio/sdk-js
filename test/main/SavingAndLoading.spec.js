@@ -12,19 +12,22 @@ let username1 = '';
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Crypto.generateKeys().keyId;
-    member1 = await Token.createMember(username1);
+    username1 = Token.Util.generateNonce();
+    member1 = await Token.createMember(username1, Token.LocalStorageCryptoEngine);
 };
 
 describe('Saving and loading Members', () => {
     before(() => Promise.all([setUp1()]));
 
-    it('save and login from LocalStorage', async () => {
+    it('save and login from LocalStorage, with or without memberId', async () => {
         if (BROWSER) {
-            await member1.saveToLocalStorage();
-            const member = await Token.loginFromLocalStorage();
+            const member = Token.loginFromLocalStorage(member1.memberId());
             const publicKeys = await member.keys();
             assert.isAtLeast(publicKeys.length, 1);
+
+            const member2 = Token.loginFromLocalStorage();
+            const publicKeys2 = await member2.keys();
+            assert.isAtLeast(publicKeys2.length, 1);
         }
     });
 
