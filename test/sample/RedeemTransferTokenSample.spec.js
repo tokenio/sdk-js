@@ -16,7 +16,7 @@ describe('RedeemTransferTokenSample test', () => {
 
         const member2Username = await member2.firstUsername();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
-        const transfer = await RedeemTransferTokenSample(member2, res.token.id);
+        const transfer = await RedeemTransferTokenSample(member2, res.id);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 });
