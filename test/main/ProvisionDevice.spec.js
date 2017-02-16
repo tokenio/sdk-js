@@ -89,7 +89,7 @@ describe('Provisioning a new device', async () => {
             window.localStorage.members = localStorageCache2;
             const memberLoggedIn = Token.login(Token.BrowserCryptoEngine, deviceInfo.memberId);
             assert.isAtLeast((await memberLoggedIn.keys()).length, 4);
-            const token = await memberLoggedIn.createToken(account1.id, 38.71, 'EUR', username2);
+            const token = await memberLoggedIn.createTransferToken(account1.id, 38.71, 'EUR', username2);
             const res = await memberLoggedIn.endorseToken(token.id);
             assert.equal(res.status, 'MORE_SIGNATURES_NEEDED');
         });

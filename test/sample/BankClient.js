@@ -1,7 +1,8 @@
 import {defaultCurrency} from "../../src/constants";
-import Sample from "./Sample";
 const axios = require('axios');
 import 'babel-regenerator-runtime';
+const tokenIo = require('../../src');
+const Token = new tokenIo(TEST_ENV);
 
 const urls = {
     local: 'http://localhost:8100',
@@ -20,8 +21,8 @@ export default {
             currency = defaultCurrency,
             accountName = "123") => {
 
-        const randLastName = Sample.string();
-        const randomAccNumber = Sample.string();
+        const randLastName = Token.Util.generateNonce();
+        const randomAccNumber = Token.Util.generateNonce();
 
         const res = await instance(
             {

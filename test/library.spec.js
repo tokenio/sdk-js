@@ -22,7 +22,7 @@ describe('Token library', () => {
 
         const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
 
-        const token = await member1.createToken(account.id, 9.24, 'EUR', username2);
+        const token = await member1.createTransferToken(account.id, 9.24, 'EUR', username2);
         await member1.endorseToken(token.id);
 
         await member2.redeemToken(token.id, 5, 'EUR');

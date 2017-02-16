@@ -2,7 +2,6 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-import Sample from "../sample/Sample";
 import BankClient from "../sample/BankClient";
 
 const tokenIo = require('../../src');
@@ -16,7 +15,7 @@ let address = {};
 let grantorAccount = {};
 
 const setUpGrantor = async () => {
-    grantorUsername = Sample.string();
+    grantorUsername = Token.Util.generateNonce();
     grantor = await Token.createMember(grantorUsername, Token.MemoryCryptoEngine);
     address = await grantor.addAddress("name", { city: 'San Francisco', country: 'US' });
     const alp = await BankClient.requestLinkAccounts(grantorUsername, 100000, 'EUR');
@@ -25,7 +24,7 @@ const setUpGrantor = async () => {
 };
 
 const setupGrantee = async () => {
-    granteeUsername = Sample.string();
+    granteeUsername = Token.Util.generateNonce();
     grantee = await Token.createMember(granteeUsername, Token.MemoryCryptoEngine);
 };
 
