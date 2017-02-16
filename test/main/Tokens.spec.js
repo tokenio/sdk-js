@@ -49,7 +49,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token, look it up, and endorse it', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
         assert.equal(token.payload.issuer.id, 'iron');
@@ -69,7 +69,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token and endorse it by id', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.endorseToken(token.id);
         assert.equal(res.status, 'SUCCESS')
 
@@ -79,7 +79,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token and cancel it', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.cancelToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
@@ -87,7 +87,7 @@ describe('Tokens', () => {
     });
 
     it('should create token and cancel it by id', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         const res = await member1.cancelToken(token.id);
         assert.equal(res.status, 'SUCCESS')
 
@@ -99,7 +99,7 @@ describe('Tokens', () => {
     });
 
     it('should create token, and look it up', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         await member1.endorseToken(token.id);
         const pagedResult = await member1.getTransferTokens(null, 100);
         assert.isAtLeast(pagedResult.data.length, 1);
@@ -107,14 +107,14 @@ describe('Tokens', () => {
     });
 
     it('should create token, and look it up, second member', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         await member1.endorseToken(token.id);
         const pagedResult = await member2.getTransferTokens(null, 100);
         assert.equal(pagedResult.data.length, 0);
     });
 
     it('should create token, and look it up, second member, tokenId', async () => {
-        const token = await member1.createToken(account1.id, 9.24, defaultCurrency, username2);
+        const token = await member1.createTransferToken(account1.id, 9.24, defaultCurrency, username2);
         await member1.endorseToken(token.id)
         const lookedUp = await member2.getToken(token.id);
         assert.equal(lookedUp.id, token.id);

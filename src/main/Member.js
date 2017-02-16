@@ -479,7 +479,7 @@ export default class Member {
      * @param {double} amount - optional charge limit on the token
      * @return {Promise} token - promise of a created transfer token
      */
-    createToken(accountId, lifetimeAmount, currency, username, description = undefined, amount=0) {
+    createTransferToken(accountId, lifetimeAmount, currency, username, description = undefined, amount=0) {
         if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
                 maxDecimals);
@@ -487,7 +487,7 @@ export default class Member {
         if (Util.countDecimals(amount) > maxDecimals) {
             throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
         }
-        return Util.callAsync(this.createToken, async () => {
+        return Util.callAsync(this.createTransferToken, async () => {
             const res = await this._client.createTransferToken(
                 this._id,
                 accountId,
