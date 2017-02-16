@@ -1,6 +1,9 @@
 import nacl from "tweetnacl";
 import base64Url from "base64url";
 
+/**
+ * Class to provide static utility functions.
+ */
 class Util {
     /**
      * Generates a random nonce
@@ -14,8 +17,8 @@ class Util {
     /**
      * Count the number of decimal points in a number
      *
-     * @param value: number
-     * @returns {number} number of decimals
+     * @param {Number} value - number
+     * @return {Number} count - number of decimals
      */
    static countDecimals(value) {
        if(Math.floor(value) === value) {
@@ -29,9 +32,9 @@ class Util {
      * anything fails, a rejected promise is returned, with the method name that failed,
      * included in the rejection.
      *
-     * @param method: outside method that is being executed
-     * @param fn: function to try to execute
-     * @returns successful or rejected promise
+     * @param {function} method - outside method that is being executed
+     * @param {function} fn - function to try to execute
+     * @return {Promise} promise - successful or rejected promise
      */
     static async callAsync(method, fn) {
         try {
@@ -42,6 +45,24 @@ class Util {
                     : "UNKNOWN";
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             return Promise.reject(err);
+        }
+    }
+    /**
+     * Helper method similar to the one above, but without promises
+     *
+     * @param {function} method - outside method that is being executed
+     * @param {function} fn - function to try to execute
+     * @return {Object} result - successful result or thrown error
+     */
+    static callSync(method, fn) {
+        try {
+            return fn();
+        } catch (err) {
+            const reason = (err.response !== undefined && err.response.data !== undefined)
+                    ? err.response.data
+                    : "UNKNOWN";
+            err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
+            throw err;
         }
     }
 }

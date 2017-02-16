@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
-import Crypto from "../../src/Crypto";
+import Crypto from "../../src/security/Crypto";
 import BankClient from "../sample/BankClient";
 import {defaultCurrency, KeyLevel} from "../../src/constants";
 const some = require('lodash/some');
@@ -20,8 +20,8 @@ let member2 = {};
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Crypto.generateKeys().keyId;
-    member1 = await Token.createMember(username1);
+    username1 = Token.Util.generateNonce();
+    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
     const accs = await member1.linkAccounts('iron', alp);
     account1 = accs[0];
@@ -29,20 +29,20 @@ const setUp1 = async () => {
 
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Crypto.generateKeys().keyId;
-    member2 = await Token.createMember(username2);
+    username2 = Token.Util.generateNonce();
+    member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
 };
 
 describe('Tokens', () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
     it('should confirm username does not exist', async () => {
-      const exists = await Token.usernameExists(Crypto.generateKeys().keyId);
+      const exists = await Token.usernameExists(Token.Util.generateNonce());
       assert.equal(exists, false);
     });
 
     it('should confirm username exists', async () => {
-      const username = Crypto.generateKeys().keyId;
+      const username = Token.Util.generateNonce();
       await member1.addUsername(username);
       const exists = await Token.usernameExists(username);
       assert.equal(exists, true);
@@ -53,7 +53,7 @@ describe('Tokens', () => {
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
         assert.equal(token.payload.issuer.id, 'iron');
-        assert.equal(token.payload.from.id, member1.id);
+        assert.equal(token.payload.from.id, member1.memberId());
         assert.equal(token.payload.description, undefined);
         assert.equal(token.payload.transfer.redeemer.username, username2);
         assert.equal(token.payload.transfer.lifetimeAmount, 9.24);
@@ -118,16 +118,5 @@ describe('Tokens', () => {
         await member1.endorseToken(token.id)
         const lookedUp = await member2.getToken(token.id);
         assert.equal(lookedUp.id, token.id);
-    });
-
-    it('should fail to endorse a high value token with a low value key', async () => {
-        const keys = Crypto.generateKeys();
-
-        await member1.subscribeToNotifications("0F7BF07748A12DE0C2393FD3731BFEB1484693DFA47A5C9614428BDF724548CD");
-        await member1.approveKey(keys, KeyLevel.LOW);
-        const memberNew = await Token.loginWithUsername(keys, username1);
-        const token = await memberNew.createToken(account1.id, 900.24, defaultCurrency, username2);
-        const res = await memberNew.endorseToken(token.id)
-        assert.equal(res.status, 'MORE_SIGNATURES_NEEDED');
     });
 });

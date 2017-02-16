@@ -6,3 +6,4 @@ node_modules
 mocha.json
 *.log
 dist
+doc

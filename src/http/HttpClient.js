@@ -1,10 +1,18 @@
-import Crypto from "../Crypto";
+import Crypto from "../security/Crypto";
 import {urls, KeyLevel} from "../constants";
 import VersionHeader from "./VersionHeader";
 
 const axios = require('axios');
 
+/**
+ * Client to make unauthenticated requests to the Token gateway.
+ */
 class HttpClient {
+    /**
+     * Creates the client with the given environment.
+     *
+     * @param {string} env - environment to point to, like 'prd'
+     */
     constructor(env){
         this._instance = axios.create({
             baseURL: urls[env]
@@ -17,6 +25,11 @@ class HttpClient {
         })
     }
 
+    /**
+     * Creates a memberId.
+     *
+     * @return {Object} response - response to the API call
+     */
     createMemberId() {
         const config = {
             method: 'post',
@@ -25,7 +38,13 @@ class HttpClient {
         return this._instance(config);
     }
 
-    usernameExists(username) {
+    /**
+     * Gets a memberId given a username.
+     *
+     * @param {string} username - username to lookup
+     * @return {Object} response - response to the API call
+     */
+    getMemberId(username) {
         const config = {
             method: 'get',
             url: `/memberid?username=${username}`
@@ -33,6 +52,13 @@ class HttpClient {
         return this._instance(config);
     }
 
+    /**
+     * Notifies a user.
+     *
+     * @param {string} username - user to notify
+     * @param {Object} body - body of the notification
+     * @return {Object} response - response to the API call
+     */
     notify(username, body) {
         const req = {
             username,
@@ -46,29 +72,76 @@ class HttpClient {
         return this._instance(config);
     }
 
-    addFirstKey(memberId, key, level = KeyLevel.PRIVILEGED) {
+    /**
+     * Approve a first key for a member (self signed).
+     *
+     * @param {string} memberId - id of the member
+     * @param {Object} key - key to approve
+     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @return {Object} response - response to the API call
+     */
+    approveFirstKey(memberId, key, cryptoEngine) {
+        const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
             operations: [
                 {
                     addKey: {
                         key: {
-                            id: key.keyId,
+                            id: key.id,
                             publicKey: Crypto.strKey(key.publicKey),
-                            level: level,
+                            level: key.level,
                             algorithm: key.algorithm
                         }
                     }
                 }
             ]
         };
-
         const req = {
             update,
             updateSignature: {
                 memberId: memberId,
-                keyId: key.keyId,
-                signature: Crypto.signJson(update, key)
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(update)
+            }
+        };
+        const config = {
+            method: 'post',
+            url: `/members/${memberId}/updates`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Approve the first keys for a member (self signed).
+     *
+     * @param {string} memberId - id of the member
+     * @param {Array} keys - keys to approve
+     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @return {Object} response - response to the API call
+     */
+    approveFirstKeys(memberId, keys, cryptoEngine) {
+        const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+        const update = {
+            memberId: memberId,
+            operations: keys.map((key) => ({
+                addKey: {
+                    key: {
+                        id: key.id,
+                        publicKey: Crypto.strKey(key.publicKey),
+                        level: key.level,
+                        algorithm: key.algorithm
+                    }
+                }
+            })),
+        };
+        const req = {
+            update,
+            updateSignature: {
+                memberId: memberId,
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(update)
             }
         };
         const config = {

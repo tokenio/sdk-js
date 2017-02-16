@@ -6,7 +6,7 @@ module.exports = function (config) {
     config.set({
         client: {
             mocha: {
-                timeout : 6000 // 6 seconds - upped from 2 seconds
+                timeout : 10000 // 10 seconds - upped from 6 seconds
             }
         },
         // ... normal karma configuration

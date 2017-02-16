@@ -17,7 +17,7 @@ let grantorAccount = {};
 
 const setUpGrantor = async () => {
     grantorUsername = Sample.string();
-    grantor = await Token.createMember(grantorUsername);
+    grantor = await Token.createMember(grantorUsername, Token.MemoryCryptoEngine);
     address = await grantor.addAddress("name", { city: 'San Francisco', country: 'US' });
     const alp = await BankClient.requestLinkAccounts(grantorUsername, 100000, 'EUR');
     const accs = await grantor.linkAccounts('iron', alp);
@@ -26,7 +26,7 @@ const setUpGrantor = async () => {
 
 const setupGrantee = async () => {
     granteeUsername = Sample.string();
-    grantee = await Token.createMember(granteeUsername);
+    grantee = await Token.createMember(granteeUsername, Token.MemoryCryptoEngine);
 };
 
 const setupToken = async () => {
@@ -74,7 +74,7 @@ describe('Using access tokens', async () => {
                 token,
                 [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-        const tokens2 = await grantee.getAllUsernames();
+        const tokens2 = await grantee.usernames();
         grantee.useAccessToken(operationalResult.token.id);
         try {
             await grantee.getAddress(address.id);
@@ -152,7 +152,7 @@ describe('Using access tokens', async () => {
             token,
             [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-        const tokens2 = await grantee.getAllUsernames();
+        const tokens2 = await grantee.usernames();
         grantee.useAccessToken(operationalResult.token.id);
         await grantor.cancelToken(operationalResult.token.id);
         try {
