@@ -5,9 +5,11 @@
  * @returns {Member} member - created member
  */
 export default async () => {
+    // Initializes SDK
     const TokenLib = require('../../src');
     const Token = new TokenLib(TEST_ENV);
 
+    // Creates a member, with keys stored in memory
     const username = Token.Util.generateNonce();
     return await Token.createMember(username, Token.MemoryCryptoEngine);
 }
