@@ -18,10 +18,12 @@ class Token {
      * Construct the Token SDK object, pointing to the given environment.
      *
      * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd') {
+    constructor(env = 'prd', globalRpcErrorCallback) {
         this._env = env;
-        this._unauthenticatedClient = new HttpClient(env);
+        this._unauthenticatedClient = new HttpClient(env, globalRpcErrorCallback);
 
         /** Available security levels for keys */
         this.KeyLevel = KeyLevel;
