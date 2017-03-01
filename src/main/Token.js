@@ -23,7 +23,8 @@ class Token {
      */
     constructor(env = 'prd', globalRpcErrorCallback) {
         this._env = env;
-        this._unauthenticatedClient = new HttpClient(env, globalRpcErrorCallback);
+        this._globalRpcErrorCallback = globalRpcErrorCallback;
+        this._unauthenticatedClient = new HttpClient(env, this._globalRpcErrorCallback);
 
         /** Available security levels for keys */
         this.KeyLevel = KeyLevel;
@@ -86,7 +87,11 @@ class Token {
                 response.data.memberId,
                 [pk1, pk2, pk3],
                 engine);
-            const member = new Member(this._env, response.data.memberId, engine);
+            const member = new Member(
+                    this._env,
+                    response.data.memberId,
+                    engine,
+                    this._globalRpcErrorCallback);
             await member.addUsername(username);
             return member;
         });
@@ -157,7 +162,7 @@ class Token {
                 memberId = CryptoEngine.getActiveMemberId();
             }
             const engine = new CryptoEngine(memberId);
-            return new Member(this._env, memberId, engine);
+            return new Member(this._env, memberId, engine, this._globalRpcErrorCallback);
         });
     }
 
