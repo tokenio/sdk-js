@@ -3,7 +3,6 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
 import HttpClient from "../../src/http/HttpClient";
-import Crypto from "../../src/security/Crypto";
 import MemoryCryptoEngine from "../../src/security/MemoryCryptoEngine";
 
 describe('Unauthenticated', () => {
@@ -26,5 +25,26 @@ describe('Unauthenticated', () => {
         assert.isOk(res2.data.member);
         assert.isOk(res2.data.member.lastHash);
         assert.equal(res2.data.member.keys.length, 1);
+    });
+    it('should call global handler on version mismatch error', async () => {
+        let handlerCalled = false;
+        const unauthenticatedClient = new HttpClient(TEST_ENV, (error) => {
+            assert.equal(error.name, 'unsupported-client-version');
+            handlerCalled = true;
+        });
+        // Override sdk version to force version mismatch error.
+        unauthenticatedClient._instance.interceptors.request.eject(0);
+        unauthenticatedClient._instance.interceptors.request.use((config) => {
+            config.headers['token-sdk'] = 'js';
+            config.headers['token-sdk-version'] = "0.0.1";
+            return config;
+        });
+        try {
+            await unauthenticatedClient.createMemberId();
+            Promise.reject(new Error("should fail"));
+        } catch (err) {
+            assert.include(err.message, "SDK");
+        }
+        assert.isTrue(handlerCalled);
     });
 });
