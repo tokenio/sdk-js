@@ -430,6 +430,9 @@ class AuthHttpClient {
             from: {
                 id: memberId,
             },
+            to: {
+                username,
+            },
             transfer: {
                 currency,
                 lifetimeAmount: lifetimeAmount.toString(),
