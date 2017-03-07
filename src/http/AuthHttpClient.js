@@ -431,7 +431,7 @@ class AuthHttpClient {
                 id: memberId,
             },
             to: {
-                    username,
+                username,
             },
             transfer: {
                 currency,
