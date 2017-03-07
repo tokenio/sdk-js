@@ -706,13 +706,14 @@ export default class Member {
     /**
      * Creates a test bank account in a fake bank
      *
-     * @param {double} balance of the account
-     * @param {string} currency of the account
+     * @param {double} balance - balance of the account
+     * @param {string} currency - currency of the account
+     * @param {string} bankId - bankId of the test bank to use
      * @returns {Array} account linking payloads to use with linkAccounts
      */
-    createTestBankAccount(balance, currency) {
+    createTestBankAccount(balance, currency, bankId) {
         return Util.callAsync(this.createTestBankAccount, async () => {
-            const res = await this._client.createTestBankAccount(balance, currency);
+            const res = await this._client.createTestBankAccount(balance, currency, bankId);
             return res.data.accountLinkingPayloads;
         });
     }

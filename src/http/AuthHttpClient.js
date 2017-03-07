@@ -946,13 +946,18 @@ class AuthHttpClient {
      *
      * @param {Number} balance - balance to put in the account
      * @param {string} currency - currency in the account
+     * @param {string} bankId - bankId of the test bank to use
      * @return {Object} response - response to the API call
      */
-    createTestBankAccount(balance, currency) {
+    createTestBankAccount(balance, currency, bankId) {
         const req = {
             balance: {
                 currency,
-                value: balance
+                value: balance,
+                tags: [{
+                    key: 'bank-id',
+                    value: bankId,
+                }],
             },
         };
         const config = {
