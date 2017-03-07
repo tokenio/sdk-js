@@ -954,12 +954,15 @@ class AuthHttpClient {
             balance: {
                 currency,
                 value: balance,
-                tags: [{
-                    key: 'bank-id',
-                    value: bankId,
-                }],
             },
         };
+
+        if (bankId) {
+            req.balance.tags = [{
+                key: 'bank-id',
+                value: bankId,
+            }];
+        }
         const config = {
             method: 'post',
             url: '/test/create-account',

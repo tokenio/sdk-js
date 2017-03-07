@@ -29,7 +29,7 @@ describe('Banks test', () => {
     });
 
     it('should link a fake bank', async () => {
-       const res = await member.createTestBankAccount(200, 'EUR');
+       const res = await member.createTestBankAccount(200, 'EUR', 'iron');
        const accounts = await member.linkAccounts(res.bankId, res.payloads);
        assert.isAtLeast(accounts.length, 1);
     });
