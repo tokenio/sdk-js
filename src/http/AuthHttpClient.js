@@ -958,7 +958,7 @@ class AuthHttpClient {
         };
 
         if (bankId) {
-            req.balance.tags = [{
+            req.tags = [{
                 key: 'bank-id',
                 value: bankId,
             }];
