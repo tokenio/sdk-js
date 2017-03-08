@@ -16,10 +16,12 @@ export default class Member {
      * @param {string} env - The environment to use for this member
      * @param {string} memberId - The id of this memberId
      * @param {object} cryptoEngine - the cryptoEngine to use for signing and key storage
+     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * call error. For example: SDK version mismatch
      */
-    constructor(env, memberId, cryptoEngine) {
+    constructor(env, memberId, cryptoEngine, globalRpcErrorCallback) {
         this._id = memberId;
-        this._client = new AuthHttpClient(env, memberId, cryptoEngine);
+        this._client = new AuthHttpClient(env, memberId, cryptoEngine, globalRpcErrorCallback);
     }
 
     /**
@@ -704,13 +706,14 @@ export default class Member {
     /**
      * Creates a test bank account in a fake bank
      *
-     * @param {double} balance of the account
-     * @param {string} currency of the account
+     * @param {double} balance - balance of the account
+     * @param {string} currency - currency of the account
+     * @param {string} bankId - bankId of the test bank to use
      * @returns {Array} account linking payloads to use with linkAccounts
      */
-    createTestBankAccount(balance, currency) {
+    createTestBankAccount(balance, currency, bankId) {
         return Util.callAsync(this.createTestBankAccount, async () => {
-            const res = await this._client.createTestBankAccount(balance, currency);
+            const res = await this._client.createTestBankAccount(balance, currency, bankId);
             return res.data.accountLinkingPayloads;
         });
     }

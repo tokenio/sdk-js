@@ -1,5 +1,6 @@
 import Crypto from "../security/Crypto";
 import {urls, KeyLevel} from "../constants";
+import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
 
 const axios = require('axios');
@@ -12,16 +13,23 @@ class HttpClient {
      * Creates the client with the given environment.
      *
      * @param {string} env - environment to point to, like 'prd'
+     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * call error. For example: SDK version mismatch
      */
-    constructor(env){
+    constructor(env, globalRpcErrorCallback){
         this._instance = axios.create({
             baseURL: urls[env]
         });
 
-        this._versionHeader = new VersionHeader();
+        const versionHeader = new VersionHeader();
         this._instance.interceptors.request.use((config) => {
-            this._versionHeader.addVersionHeader(config);
+            versionHeader.addVersionHeader(config);
             return config;
+        });
+
+        const errorHandler = new ErrorHandler(globalRpcErrorCallback);
+        this._instance.interceptors.response.use(null, (error) => {
+            throw errorHandler.handleError(error);
         })
     }
 

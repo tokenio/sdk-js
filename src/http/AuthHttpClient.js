@@ -1,9 +1,9 @@
-import BrowserCryptoEngine from "../security/BrowserCryptoEngine";
 import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
 import {urls, KeyLevel, transferTokenVersion, accessTokenVersion} from "../constants";
+import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
@@ -20,8 +20,10 @@ class AuthHttpClient {
      * @param {string} env - desired env, such as 'prd'
      * @param {string} memberId - member making the requests
      * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * call error. For example: SDK version mismatch
      */
-    constructor(env, memberId, cryptoEngine){
+    constructor(env, memberId, cryptoEngine, globalRpcErrorCallback){
         this._instance = axios.create({
             baseURL: urls[env]
         });
@@ -43,23 +45,22 @@ class AuthHttpClient {
         }
         this._context = new AuthContext();
         this._authHeader = new AuthHeader(urls[env], this._signerLow);
-        this._resetInterceptor();
-        this._addVersionHeader();
-    }
 
-    _resetInterceptor() {
-        this._instance.interceptors.request.eject(this._interceptor);
+        this._resetRequestInterceptor();
 
-        this._interceptor = this._instance.interceptors.request.use((config) => {
-            this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
-            return config;
+        const errorHandler = new ErrorHandler(globalRpcErrorCallback);
+        this._instance.interceptors.response.use(null, (error) => {
+            throw errorHandler.handleError(error);
         })
     }
 
-    _addVersionHeader() {
-        this._versionHeader = new VersionHeader();
-        this._instance.interceptors.request.use((config) => {
-            this._versionHeader.addVersionHeader(config);
+    _resetRequestInterceptor() {
+        this._instance.interceptors.request.eject(this._interceptor);
+
+        const versionHeader = new VersionHeader();
+        this._interceptor = this._instance.interceptors.request.use((config) => {
+            this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
+            versionHeader.addVersionHeader(config);
             return config;
         })
     }
@@ -71,7 +72,7 @@ class AuthHttpClient {
      */
     useAccessToken(accessTokenId) {
         this._context.onBehalfOf = accessTokenId;
-        this._resetInterceptor();
+        this._resetRequestInterceptor();
     }
 
     /**
@@ -79,7 +80,7 @@ class AuthHttpClient {
      */
     clearAccessToken() {
         this._context.onBehalfOf = undefined;
-        this._resetInterceptor();
+        this._resetRequestInterceptor();
     }
 
     /**
@@ -428,6 +429,9 @@ class AuthHttpClient {
             nonce: Util.generateNonce(),
             from: {
                 id: memberId,
+            },
+            to: {
+                username,
             },
             transfer: {
                 currency,
@@ -942,15 +946,23 @@ class AuthHttpClient {
      *
      * @param {Number} balance - balance to put in the account
      * @param {string} currency - currency in the account
+     * @param {string} bankId - bankId of the test bank to use
      * @return {Object} response - response to the API call
      */
-    createTestBankAccount(balance, currency) {
+    createTestBankAccount(balance, currency, bankId) {
         const req = {
             balance: {
                 currency,
-                value: balance
+                value: balance,
             },
         };
+
+        if (bankId) {
+            req.tags = [{
+                key: 'bank-id',
+                value: bankId,
+            }];
+        }
         const config = {
             method: 'post',
             url: '/test/create-account',
