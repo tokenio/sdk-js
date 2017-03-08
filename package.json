@@ -4,6 +4,8 @@
   "description": "",
   "main": "dist/token-io.min.js",
   "scripts": {
+    "postinstall-script": "./config/patch.sh",
+    "postinstall": "npm run postinstall-script",
     "test": "npm run testNode",
     "testBrowser": "./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserDev": "TEST_ENV=dev ./node_modules/karma/bin/karma start test/karma.config.js",
@@ -54,6 +56,7 @@
     "axios": "^0.14.0",
     "babel-regenerator-runtime": "^6.5.0",
     "base64url": "^2.0.0",
+    "buffer": "3.4.3",
     "es6-promise": "^3.3.1",
     "esdoc": "^0.5.2",
     "fast-sha256": "^1.0.0",

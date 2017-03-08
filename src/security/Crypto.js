@@ -3,6 +3,7 @@ import sha256 from "fast-sha256";
 import base64Url from "base64url";
 import stringify from "json-stable-stringify";
 import Util from "../Util";
+import {Buffer} from "buffer/.";
 
 let sjcl = null;
 
@@ -94,7 +95,7 @@ class Crypto {
      */
     static verify(message, signature, publicKey) {
         const msg = new Buffer(message);
-        const sig = base64Url.toBuffer(signature);
+        const sig = new Buffer(base64Url.toBuffer(signature));
         const result = nacl.sign.detached.verify(msg, sig, publicKey);
         if (!result) {
             throw new Error(
@@ -119,7 +120,7 @@ class Crypto {
      * @return {Buffer} key - key in Buffer form
      */
     static bufferKey(key) {
-        return base64Url.toBuffer(key);
+        return new Buffer(base64Url.toBuffer(key));
     }
 }
 export default Crypto;
