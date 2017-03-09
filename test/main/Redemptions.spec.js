@@ -52,6 +52,29 @@ describe('Token Redemptions', async () => {
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 
+    it('should create and redeem a token with destination', async () => {
+        const destinations = [{
+            tips: {
+                username: username2,
+            },
+        }];
+        const token = await member1.createTransferToken(
+                account1.id,
+                38.71,
+                'EUR',
+                username2,
+                '',
+                0,
+                destinations);
+        await member1.endorseToken(token.id);
+
+        assert.isOk(token.payload.transfer.instructions.destinations[0].tips);
+        const transfer = await member2.redeemToken(token1, 10.21, 'EUR');
+        assert.equal(10.21, transfer.payload.amount.value);
+        assert.equal('EUR', transfer.payload.amount.currency);
+        assert.isAtLeast(transfer.payloadSignatures.length, 1);
+    });
+
     it('should redeem a basic token by id', async () => {
         const transfer = await member2.redeemToken(token1.id, 15.28, 'EUR');
         assert.equal(15.28, transfer.payload.amount.value);
