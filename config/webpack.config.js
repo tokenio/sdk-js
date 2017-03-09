@@ -17,7 +17,7 @@ if (env === 'build') {
 plugins.push(new webpack.DefinePlugin({
     BROWSER: JSON.stringify(true),
     TEST_ENV: JSON.stringify(testEnv),
-    TOKEN_VERSION: JSON.stringify(require("../package.json").version),
+    TOKEN_VERSION: JSON.stringify(require("../package.json").version)
 }));
 
 module.exports = {

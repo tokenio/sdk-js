@@ -11,7 +11,28 @@ class Util {
      * @returns string nonce
      */
     static generateNonce() {
-        return base64Url(nacl.sign.keyPair().publicKey);
+        return Math.random().toString(36).substring(2);
+    }
+
+    /**
+     * Gets the specified byte of the 4 byte word, according to index. Assumes 2s complement
+     * representation of the word
+     *
+     * @param {number} word - 32 bit value number, in 2s complement
+     * @param {number} index - index of the byte to return
+     * @returns {number} result - the desired byte [0, 255]
+     */
+    static getByte(word, index) {
+        if (index === 0) {
+            return word & ((1 << 8) - 1);
+        } else if (index === 1) {
+            return (word & ((1 << 16) - 1)) >> 8;
+        } else if (index === 2) {
+            return (word & ((1 << 24)) - 1) >> 16;
+        } else {
+            const temp = (word & (((1 << 8) - 1) << 24)) >> 24;
+            return temp < 0 ? (256 + temp) : temp;
+        }
     }
 
     /**

@@ -2,6 +2,23 @@ import nacl from "tweetnacl";
 import sha256 from "fast-sha256";
 import base64Url from "base64url";
 import stringify from "json-stable-stringify";
+import Util from "../Util";
+import {Buffer} from "buffer/.";
+
+let sjcl = null;
+
+/**
+ * Initializes sjcl and mouse input collection, for IE10
+ */
+if (!BROWSER) {}
+else if (window.crypto && window.crypto.getRandomValues) {}
+else if (window.msCrypto && window.msCrypto.getRandomValues) {}
+else {
+    // Only set it up when it is necessary
+    sjcl = require('sjcl');
+    sjcl.random.startCollectors();
+}
+
 
 /**
  * Class providing static crypto primitives.
@@ -13,6 +30,19 @@ class Crypto {
      * @return {object} keyPair - keyPair
      */
     static generateKeys(keyLevel) {
+        if (sjcl !== null) {
+            if (sjcl.random.isReady()) {
+                nacl.setPRNG(function(x, n) {
+                    const randomWords = sjcl.random.randomWords(n/4);
+                    for (let i = 0; i < n; i++) {
+                        x[i] = Util.getByte(randomWords[Math.floor(i / 4)], i % 4)
+                    }
+                    return x;
+                });
+            } else {
+                throw new Error('Not enough entropy for random number generation');
+            }
+        }
         const keyPair = nacl.sign.keyPair();
         keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
@@ -65,7 +95,7 @@ class Crypto {
      */
     static verify(message, signature, publicKey) {
         const msg = new Buffer(message);
-        const sig = base64Url.toBuffer(signature);
+        const sig = new Buffer(base64Url.toBuffer(signature));
         const result = nacl.sign.detached.verify(msg, sig, publicKey);
         if (!result) {
             throw new Error(
@@ -90,7 +120,7 @@ class Crypto {
      * @return {Buffer} key - key in Buffer form
      */
     static bufferKey(key) {
-        return base64Url.toBuffer(key);
+        return new Buffer(base64Url.toBuffer(key));
     }
 }
 export default Crypto;
