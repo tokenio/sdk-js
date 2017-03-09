@@ -413,6 +413,7 @@ class AuthHttpClient {
      * @param {string} username - username of the payee
      * @param {string} description - description on the token
      * @param {Number} amount - max amount per charge
+     * @param {Array} destinations - optional transfer instruction destinations
      * @return {Object} response - response to the API call
      */
     createTransferToken(
@@ -422,7 +423,8 @@ class AuthHttpClient {
         currency,
         username,
         description,
-        amount) {
+        amount,
+        destinations) {
 
         const payload = {
             version: transferTokenVersion,
@@ -440,6 +442,7 @@ class AuthHttpClient {
                     source: {
                         accountId,
                     },
+                    destinations,
                 },
                 amount,
                 redeemer: {

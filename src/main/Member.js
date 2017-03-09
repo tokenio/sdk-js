@@ -479,9 +479,17 @@ export default class Member {
      * @param {string} username - username of the redeemer of this token
      * @param {string} description - optional description for the token
      * @param {double} amount - optional charge limit on the token
+     * @param {array} destinations - optional transfer instruction destinations
      * @return {Promise} token - promise of a created transfer token
      */
-    createTransferToken(accountId, lifetimeAmount, currency, username, description = undefined, amount=0) {
+    createTransferToken(
+            accountId,
+            lifetimeAmount,
+            currency,
+            username,
+            description = undefined,
+            amount=0,
+            destinations=[]) {
         if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
                 maxDecimals);
@@ -497,7 +505,8 @@ export default class Member {
                 currency,
                 username,
                 description,
-                amount);
+                amount,
+                destinations);
             return res.data.token;
         });
     }
