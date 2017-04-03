@@ -284,13 +284,15 @@ export default class Member {
      *
      * @param {string} target - the notification target for this device. (e.g iOS push token)
      * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
+     * @param {string} bankId - optional id of a bank, used to proxy notifications through bank
      * @return {Promise} subscriber - Subscriber
      */
     subscribeToNotifications(
         target,
-        platform = "IOS") {
+        platform = "IOS",
+        bankId = undefined) {
         return Util.callAsync(this.subscribeToNotifications, async () => {
-            const res = await this._client.subscribeToNotifications(target, platform);
+            const res = await this._client.subscribeToNotifications(target, platform, bankId);
             return res.data.subscriber;
         })
     }

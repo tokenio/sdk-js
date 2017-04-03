@@ -37,6 +37,15 @@ describe('Notifications', () => {
         assert.equal(subscriber.platform, "ANDROID");
     });
 
+    it('should create and get subscriber by Id, with bankId', async () => {
+        const randomStr = Token.Util.generateNonce();
+        const subscriber = await member1.subscribeToNotifications(randomStr, "ANDROID", "iron");
+        const subscriber2 = await member1.getSubscriber(subscriber.id);
+        assert.equal(subscriber.platform, subscriber2.platform);
+        assert.equal(subscriber.platform, "ANDROID");
+        assert.equal(subscriber.bankId, "iron");
+    });
+
     it('should subscribe and unsubscribe device', async () => {
       const subscriber = await member1.subscribeToNotifications("8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554");
       await member1.unsubscribeFromNotifications(subscriber.id);
@@ -130,5 +139,12 @@ describe('Notifications', () => {
                 assert.equal(notifications2.data.length, 2);
             }, resolve, reject);
         });
+    });
+
+    it('should send a push using bankId', async () => {
+        const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
+        const keys = Crypto.generateKeys();
+        const alp = await member1.subscribeToNotifications(target, "IOS", "iron");
+        await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
     });
 });
