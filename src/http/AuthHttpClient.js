@@ -90,11 +90,16 @@ class AuthHttpClient {
      * @param {string} platform - platform, (e.g IOS, ANDROID, WEB)
      * @return {Object} response - response to the API call
      */
-    subscribeToNotifications(target, platform) {
+    subscribeToNotifications(target, platform, bankId) {
         const req = {
             target,
             platform
         };
+
+        if (bankId) {
+            req.bankId = bankId;
+        };
+
         const config = {
             method: 'post',
             url: `/subscribers`,
