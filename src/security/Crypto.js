@@ -69,7 +69,7 @@ class Crypto {
      * @return {string} signature - signature
      */
     static sign(message, keys) {
-        const msg = new Buffer(message);
+        const msg = Crypto.wrapBuffer(message);
         return base64Url(nacl.sign.detached(msg, keys.secretKey));
     }
 
@@ -94,8 +94,8 @@ class Crypto {
      * @return {empty} empty - returns nothing if successful
      */
     static verify(message, signature, publicKey) {
-        const msg = new Buffer(message);
-        const sig = new Buffer(base64Url.toBuffer(signature));
+        const msg = Crypto.wrapBuffer(message);
+        const sig = Crypto.wrapBuffer(base64Url.toBuffer(signature));
         const result = nacl.sign.detached.verify(msg, sig, publicKey);
         if (!result) {
             throw new Error(
@@ -114,13 +114,23 @@ class Crypto {
     }
 
     /**
+     * Wraps buffer as a Uint8Array Buffer object.
+     *
+     * @param {buffer} buffer - buffer encoded data
+     * @return {Uint8Array} array - data in UintArray Buffer form
+     */
+    static wrapBuffer(buffer) {
+        return new Uint8Array(new Buffer(buffer));
+    }
+
+    /**
      * Converts a key from a string to buffer.
      *
      * @param {string} key - base64Url encoded key
      * @return {Buffer} key - key in Buffer form
      */
     static bufferKey(key) {
-        return new Buffer(base64Url.toBuffer(key));
+        return Crypto.wrapBuffer(base64Url.toBuffer(key));
     }
 }
 export default Crypto;
