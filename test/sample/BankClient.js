@@ -56,5 +56,21 @@ export default {
                     }
                 });
         return res2.data.payloads;
+    },
+
+    getNotifications: async(subscriberId) => {
+        const res = await instance({
+            method: 'get',
+            url: `/subscribers/${subscriberId}/notifications`,
+        });
+        return res.data.notifications;
+    },
+
+    getNotification: async(subscriberId, notificationId) => {
+        const res = await instance({
+            method: 'get',
+            url: `/subscribers/${subscriberId}/notifications/${notificationId}`,
+        });
+        return res.data.notification;
     }
 };

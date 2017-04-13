@@ -15,7 +15,7 @@ describe('Token library', () => {
         const pushToken = '36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a10535581f97900';
 
         const member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
-        await member1.subscribeToNotifications(pushToken);
+        await member1.subscribeToNotifications("iron");
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const accounts = await member1.linkAccounts("iron", alp);
         const account = accounts[0];

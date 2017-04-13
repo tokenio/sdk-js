@@ -282,17 +282,15 @@ export default class Member {
      * Creates a subscriber to receive notifications of member events, such as step up auth,
      * new device requests, linking account requests, or transfer notifications
      *
-     * @param {string} target - the notification target for this device. (e.g iOS push token)
-     * @param {string} platform - platform of the devices (IOS, ANDROID, WEB, etc)
-     * @param {string} bankId - optional id of a bank, used to proxy notifications through bank
+     * @param {string} handler - who is handling the notifications
+     * @param {string} handlerInstructions - how to send the notification
      * @return {Promise} subscriber - Subscriber
      */
     subscribeToNotifications(
-        target,
-        platform = "IOS",
-        bankId = undefined) {
+        handler = "token",
+        handlerInstructions = {}) {
         return Util.callAsync(this.subscribeToNotifications, async () => {
-            const res = await this._client.subscribeToNotifications(target, platform, bankId);
+            const res = await this._client.subscribeToNotifications(handler, handlerInstructions);
             return res.data.subscriber;
         })
     }
