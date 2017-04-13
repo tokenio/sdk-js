@@ -86,18 +86,14 @@ class AuthHttpClient {
     /**
      * Subcribes to push notifications.
      *
-     * @param {string} target - where the push notification is send
-     * @param {string} platform - platform, (e.g IOS, ANDROID, WEB)
+     * @param {string} handler - who is handling the notifications
+     * @param {string} handlerInstructions - how to send the notification
      * @return {Object} response - response to the API call
      */
-    subscribeToNotifications(target, platform, bankId) {
+    subscribeToNotifications(handler, handlerInstructions) {
         const req = {
-            target,
-            platform
-        };
-
-        if (bankId) {
-            req.bankId = bankId;
+            handler,
+            handlerInstructions,
         };
 
         const config = {

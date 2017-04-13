@@ -52,10 +52,11 @@ describe('Token Redemptions', async () => {
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 
-    it('should create and redeem a token with destination', async () => {
+    // TODO: Enable this test once we stabilize transfer instructions
+    xit('should create and redeem a token with destination', async () => {
         const destinations = [{
             tips: {
-                username: username2,
+                accountId: username2,
             },
         }];
         const token = await member1.createTransferToken(
@@ -115,8 +116,7 @@ describe('Token Redemptions', async () => {
     });
 
     it('should should redeem a token with notifications', async () => {
-        await member1.subscribeToNotifications('4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5' +
-            'B000') // Remove 0s to notify iphone
+        await member1.subscribeToNotifications("iron");
         const transfer = await member2.redeemToken(token1, 10.21, 'EUR');
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);

@@ -24,30 +24,47 @@ describe('Notifications', () => {
 
     it('should create and get subscribers', async () => {
         const randomStr = Token.Util.generateNonce();
-        const subscriber = await member1.subscribeToNotifications(randomStr);
+        const subscriber = await member1.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: '123',
+        });
         const subscribers = await member1.getSubscribers();
         assert.equal(subscriber.id, subscribers[0].id);
     });
 
     it('should create and get subscriber by Id', async () => {
         const randomStr = Token.Util.generateNonce();
-        const subscriber = await member1.subscribeToNotifications(randomStr, "ANDROID");
+        const subscriber = await member1.subscribeToNotifications("token", {
+            PLATFORM: 'ANDROID',
+            TARGET: '123',
+        });
         const subscriber2 = await member1.getSubscriber(subscriber.id);
-        assert.equal(subscriber.platform, subscriber2.platform);
-        assert.equal(subscriber.platform, "ANDROID");
+        assert.equal(subscriber.handler, subscriber2.handler);
+        assert.equal(
+                subscriber.handlerInstructions.PLATFORM,
+                subscriber2.handlerInstructions.PLATFORM);
+        assert.equal(subscriber2.handlerInstructions.PLATFORM, "ANDROID");
     });
 
     it('should create and get subscriber by Id, with bankId', async () => {
         const randomStr = Token.Util.generateNonce();
-        const subscriber = await member1.subscribeToNotifications(randomStr, "ANDROID", "iron");
+        const subscriber = await member1.subscribeToNotifications("iron");
         const subscriber2 = await member1.getSubscriber(subscriber.id);
-        assert.equal(subscriber.platform, subscriber2.platform);
-        assert.equal(subscriber.platform, "ANDROID");
-        assert.equal(subscriber.bankId, "iron");
+        assert.equal(subscriber.handler, subscriber2.handler);
+    });
+
+    it('should create and get subscriber by Id, with bankId', async () => {
+        const randomStr = Token.Util.generateNonce();
+        const subscriber = await member1.subscribeToNotifications("iron");
+        const subscriber2 = await member1.getSubscriber(subscriber.id);
+        assert.equal(subscriber.handler, subscriber2.handler);
     });
 
     it('should subscribe and unsubscribe device', async () => {
-      const subscriber = await member1.subscribeToNotifications("8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554");
+      const subscriber = await member1.subscribeToNotifications("token", {
+          PLATFORM: 'TEST',
+          TARGET: '8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554',
+      });
       await member1.unsubscribeFromNotifications(subscriber.id);
       try {
           const status = await Token.notifyLinkAccounts(username1, "iron", 'bank-name', "alp...");
@@ -59,7 +76,10 @@ describe('Notifications', () => {
 
     it('should send a push for linking accounts', async () => {
         const target = Token.Util.generateNonce();
-        await member1.subscribeToNotifications(target);
+        const subscriber = await member1.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: '123',
+        });
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const status = await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
         assert.equal(status, 'ACCEPTED');
@@ -141,10 +161,28 @@ describe('Notifications', () => {
         });
     });
 
-    it('should send a push using bankId', async () => {
-        const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
+    it('should send a and get push to fank', async () => {
         const keys = Crypto.generateKeys();
-        const alp = await member1.subscribeToNotifications(target, "IOS", "iron");
+        const subscriber = await member1.subscribeToNotifications("iron", {
+            "platform": "ANDROID",
+        });
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        return new Promise((resolve, reject) => {
+            waitUntil(async () => {
+                const notifications = await BankClient.getNotifications(subscriber.id);
+                assert.equal(notifications.length, 1);
+                const lookedUp = await BankClient.getNotification(
+                        subscriber.id,
+                        notifications[0].id);
+                assert.equal(lookedUp.id, notifications[0].id);
+                assert.isOk(lookedUp.subscriberId);
+                assert.isOk(lookedUp.status);
+                assert.isOk(lookedUp.content);
+                assert.isOk(lookedUp.content.type);
+                assert.isOk(lookedUp.content.title);
+                assert.isOk(lookedUp.content.body);
+                assert.isOk(lookedUp.content.createdAtMs);
+            }, resolve, reject);
+        });
     });
 });
