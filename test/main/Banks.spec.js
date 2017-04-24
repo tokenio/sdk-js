@@ -18,15 +18,12 @@ describe('Banks test', () => {
 
     it('should get banks and bank info', async () => {
         const banks = await member.getBanks();
-        console.log(banks);
         assert.isAtLeast(banks.length, 1);
         assert.isOk(banks[0].id);
         assert.isOk(banks[0].name);
         assert.isOk(banks[0].logoUri);
 
-        console.log(banks[5]);
         const bankInfo = await member.getBankInfo(banks[5].id);
-        console.log(bankInfo)
         assert.isOk(bankInfo.linkingUri);
         assert.isOk(bankInfo.redirectUriRegex);
     });
