@@ -29,7 +29,7 @@ const setUp1 = async () => {
         username1 = Token.Util.generateNonce();
         member1 = await Token.createMember(username1, Token.BrowserCryptoEngine);
         const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        const accs = await member1.linkAccounts('iron', alp);
+        const accs = await member1.linkAccounts(alp);
         account1 = accs[0];
     }
 };
@@ -40,7 +40,7 @@ const setUp2 = async () => {
         username2 = Token.Util.generateNonce();
         member2 = await Token.createMember(username2, Token.BrowserCryptoEngine);
         const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
-        await member2.linkAccounts('iron', alp);
+        await member2.linkAccounts(alp);
     }
 };
 
@@ -49,7 +49,7 @@ const setUp1Memory = async () => {
     username1Memory = Token.Util.generateNonce();
     member1Memory = await Token.createMember(username1Memory, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username1Memory, 100000, 'EUR');
-    const accs = await member1Memory.linkAccounts('iron', alp);
+    const accs = await member1Memory.linkAccounts(alp);
     account1Memory = accs[0];
 };
 
@@ -58,7 +58,7 @@ const setUp2Memory = async () => {
     username2Memory = Token.Util.generateNonce();
     member2Memory = await Token.createMember(username2Memory, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username2Memory, 100000, 'EUR');
-    await member2Memory.linkAccounts('iron', alp);
+    await member2Memory.linkAccounts(alp);
 };
 
 describe('Provisioning a new device', async () => {

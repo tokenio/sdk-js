@@ -202,12 +202,12 @@ export default class Member {
      * Links bank accounts to the member
      *
      * @param {string} bankId - bank to link
-     * @param {string} accountLinkPayloads - accountLinkPayload obtained from bank
+     * @param {string} bankAuthorization - bankAuthorization obtained from bank
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
-    linkAccounts(bankId, accountLinkPayloads) {
+    linkAccounts(bankAuthorization) {
         return Util.callAsync(this.linkAccounts, async () => {
-            const res = await this._client.linkAccounts(bankId, accountLinkPayloads);
+            const res = await this._client.linkAccounts(bankAuthorization);
             return res.data.accounts;
         });
     }
@@ -490,17 +490,46 @@ export default class Member {
             description = undefined,
             amount=0,
             destinations=[]) {
-        if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
-            throw new Error('Number of decimals in lifetimeAmount should be at most ' +
-                maxDecimals);
-        }
-        if (Util.countDecimals(amount) > maxDecimals) {
-            throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
-        }
+        this._validateDecimals(lifetimeAmount, amount);
         return Util.callAsync(this.createTransferToken, async () => {
             const res = await this._client.createTransferToken(
                 this._id,
                 accountId,
+                lifetimeAmount,
+                currency,
+                username,
+                description,
+                amount,
+                destinations);
+            return res.data.token;
+        });
+    }
+
+    /**
+     * Creates an unendorsed Transfer Token from a Bank Authorization
+     *
+     * @param {Object} authorization - bank authorization
+     * @param {double} lifetimeAmount - amount limit on the token
+     * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
+     * @param {string} username - username of the redeemer of this token
+     * @param {string} description - optional description for the token
+     * @param {double} amount - optional charge limit on the token
+     * @param {array} destinations - optional transfer instruction destinations
+     * @return {Promise} token - promise of a created transfer token
+     */
+    createTransferTokenWithAuth(
+            authorization,
+            lifetimeAmount,
+            currency,
+            username,
+            description = undefined,
+            amount=0,
+            destinations=[]) {
+        this._validateDecimals(lifetimeAmount, amount);
+        return Util.callAsync(this.createTransferTokenWithAuth, async () => {
+            const res = await this._client.createTransferTokenWithAuth(
+                this._id,
+                authorization,
                 lifetimeAmount,
                 currency,
                 username,
@@ -718,12 +747,12 @@ export default class Member {
      * @param {double} balance - balance of the account
      * @param {string} currency - currency of the account
      * @param {string} bankId - bankId of the test bank to use
-     * @returns {Array} account linking payloads to use with linkAccounts
+     * @returns {Array} bank authorization to use with linkAccounts
      */
     createTestBankAccount(balance, currency, bankId) {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency, bankId);
-            return res.data.accountLinkingPayloads;
+            return res.data.bankAuthorization;
         });
     }
 
@@ -750,6 +779,15 @@ export default class Member {
                 resolve(token);       // Token, already in json representation
             }
         });
+    }
 
+    _validateDecimals(lifetimeAmount, amount) {
+        if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
+            throw new Error('Number of decimals in lifetimeAmount should be at most ' +
+                maxDecimals);
+        }
+        if (Util.countDecimals(amount) > maxDecimals) {
+            throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
+        }
     }
 }

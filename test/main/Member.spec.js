@@ -100,14 +100,14 @@ describe('member tests', () => {
         });
 
         it('should link an account', async () => {
-            const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
-            const accs = await member.linkAccounts('iron', alp);
+            const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const accs = await member.linkAccounts(auth);
             assert.isAtLeast(accs.length, 1);
         });
 
         it('should get accounts', async () => {
-            const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
-            await member.linkAccounts('iron', alp);
+            const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            await member.linkAccounts(auth);
             const accs = await member.getAccounts();
             assert.isAtLeast(accs.length, 2);
         });

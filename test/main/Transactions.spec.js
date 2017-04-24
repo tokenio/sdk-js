@@ -19,12 +19,19 @@ let account2 = {};
 let token1 = {};
 let transfer1 = {};
 
+let destination1 = {
+    tokenDestination: {
+        accountId: Token.Util.generateNonce(),
+        memberId: Token.Util.generateNonce(),
+    }
+};
+
 // Set up a first member
 const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-    const accs = await member1.linkAccounts('iron', alp);
+    const accs = await member1.linkAccounts(alp);
     account1 = accs[0];
 };
 
@@ -33,7 +40,7 @@ const setUp2 = async () => {
     username2 = Token.Util.generateNonce();
     member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
-    const accs = await member2.linkAccounts('iron', alp);
+    const accs = await member2.linkAccounts(alp);
     account2 = accs[0];
 };
 
@@ -42,7 +49,7 @@ const setUp3 = async () => {
     const token = await member1.createTransferToken(account1.id, 38.71, 'EUR', username2);
     await member1.endorseToken(token.id);
     token1 = await member2.getToken(token.id);
-    transfer1 = await member2.redeemToken(token1, 10.21, 'EUR', 'giftcard');
+    transfer1 = await member2.redeemToken(token1, 10.21, 'EUR', 'giftcard', [destination1]);
 };
 
 describe('Transactions and transfers', () => {

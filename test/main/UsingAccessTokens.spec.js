@@ -19,7 +19,7 @@ const setUpGrantor = async () => {
     grantor = await Token.createMember(grantorUsername, Token.MemoryCryptoEngine);
     address = await grantor.addAddress("name", { city: 'San Francisco', country: 'US' });
     const alp = await BankClient.requestLinkAccounts(grantorUsername, 100000, 'EUR');
-    const accs = await grantor.linkAccounts('iron', alp);
+    const accs = await grantor.linkAccounts(alp);
     grantorAccount = accs[0];
 };
 

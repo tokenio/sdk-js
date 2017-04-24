@@ -11,8 +11,8 @@
  */
 export default async (member) => {
     // Generates a test bank account that we can link with
-    const res = await member.createTestBankAccount(200, 'EUR');
+    const auth = await member.createTestBankAccount(200, 'EUR');
 
-    // Links the account, by sending the encrypted payloads
-    const accounts = await member.linkAccounts(res.bankId, res.payloads);
+    // Links the account, by sending the bank authorization
+    const accounts = await member.linkAccounts(auth);
 }

@@ -23,7 +23,7 @@ const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
     const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-    const accs = await member1.linkAccounts('iron', alp);
+    const accs = await member1.linkAccounts(alp);
     account1 = accs[0];
 };
 

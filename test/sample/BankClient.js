@@ -55,7 +55,7 @@ export default {
                         accounts: [ randomAccNumber ]
                     }
                 });
-        return res2.data.payloads;
+        return res2.data;
     },
 
     getNotifications: async(subscriberId) => {
