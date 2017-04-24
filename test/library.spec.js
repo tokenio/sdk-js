@@ -16,8 +16,8 @@ describe('Token library', () => {
 
         const member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
         await member1.subscribeToNotifications("iron");
-        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        const accounts = await member1.linkAccounts("iron", alp);
+        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];
 
         const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
@@ -25,7 +25,12 @@ describe('Token library', () => {
         const token = await member1.createTransferToken(account.id, 9.24, 'EUR', username2);
         await member1.endorseToken(token.id);
 
-        await member2.redeemToken(token.id, 5, 'EUR');
+        await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [{
+            tokenDestination: {
+                accountId: Token.Util.generateNonce(),
+                memberId: Token.Util.generateNonce(),
+            }
+        }]);
         const transfers = await member1.getTransfers(token.id, null, 100);
 
         assert.isAtLeast(transfers.data.length, 1);

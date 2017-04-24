@@ -14,15 +14,23 @@ let account1 = {};
 
 let member2 = {};
 let username2 = '';
+let account2 = {};
 
 let token1 = {};
+
+let destination1 = {
+    tokenDestination: {
+        accountId: Token.Util.generateNonce(),
+        memberId: Token.Util.generateNonce(),
+    }
+};
 
 // Set up a first member
 const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
-    const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-    const accs = await member1.linkAccounts('iron', alp);
+    const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+    const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
 };
 
@@ -30,8 +38,9 @@ const setUp1 = async () => {
 const setUp2 = async () => {
     username2 = Token.Util.generateNonce();
     member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
-    const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
-    await member2.linkAccounts('iron', alp);
+    const auth = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
+    const accs = await member2.linkAccounts(auth);
+    account2 = accs[0];
 };
 
 // Set up an endorsed transfer token
@@ -46,17 +55,16 @@ describe('Token Redemptions', async () => {
     beforeEach(setUp3);
 
     it('should redeem a basic token', async () => {
-        const transfer = await member2.redeemToken(token1, 10.21, 'EUR');
+        const transfer = await member2.redeemToken(token1, 10.21, 'EUR', '', [destination1]);
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 
-    // TODO: Enable this test once we stabilize transfer instructions
-    xit('should create and redeem a token with destination', async () => {
+    it('should create and redeem a token with destination', async () => {
         const destinations = [{
-            tips: {
-                accountId: username2,
+            sepaDestination: {
+                iban: '123',
             },
         }];
         const token = await member1.createTransferToken(
@@ -69,15 +77,15 @@ describe('Token Redemptions', async () => {
                 destinations);
         await member1.endorseToken(token.id);
 
-        assert.isOk(token.payload.transfer.instructions.destinations[0].tips);
-        const transfer = await member2.redeemToken(token1, 10.21, 'EUR');
+        assert.isOk(token.payload.transfer.instructions.destinations[0].sepaDestination);
+        const transfer = await member2.redeemToken(token, 10.21, 'EUR');
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 
     it('should redeem a basic token by id', async () => {
-        const transfer = await member2.redeemToken(token1.id, 15.28, 'EUR');
+        const transfer = await member2.redeemToken(token1.id, 15.28, 'EUR', '', [destination1]);
         assert.equal(15.28, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
@@ -117,7 +125,7 @@ describe('Token Redemptions', async () => {
 
     it('should should redeem a token with notifications', async () => {
         await member1.subscribeToNotifications("iron");
-        const transfer = await member2.redeemToken(token1, 10.21, 'EUR');
+        const transfer = await member2.redeemToken(token1, 10.21, 'EUR', '', [destination1]);
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);

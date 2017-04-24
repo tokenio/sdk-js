@@ -9,8 +9,15 @@ export default async (payee, tokenId) => {
     // Payee gets the token to see details
     const transferToken = await payee.getToken(tokenId);
 
+    // Destination for sending the funds
+    const destination = {
+        sepaDestination: {
+            iban: '123',
+        }
+    }
+
     // Payer redeems the token, getting a transfer
-    const transfer = await payee.redeemToken(transferToken, 5, 'EUR');
+    const transfer = await payee.redeemToken(transferToken, 5, 'EUR', 'lunch', [destination]);
 
     return transfer;
 }

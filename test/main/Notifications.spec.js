@@ -67,7 +67,7 @@ describe('Notifications', () => {
       });
       await member1.unsubscribeFromNotifications(subscriber.id);
       try {
-          const status = await Token.notifyLinkAccounts(username1, "iron", 'bank-name', "alp...");
+          const status = await Token.notifyLinkAccounts(username1, "iron", 'bank-name', "auth...");
           return Promise.reject(new Error("Should fail"));
       } catch (err) {
           return true;
@@ -80,15 +80,19 @@ describe('Notifications', () => {
             PLATFORM: 'TEST',
             TARGET: '123',
         });
-        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        const status = await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
+        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const status = await Token.notifyLinkAccounts(
+                username1,
+                auth.bankId,
+                'bank-name',
+                auth.accounts);
         assert.equal(status, 'ACCEPTED');
     });
 
     it('should send a push for adding key', async () => {
         const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
-        const alp = await member1.subscribeToNotifications(target);
+        await member1.subscribeToNotifications(target);
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
     });
 
@@ -96,12 +100,12 @@ describe('Notifications', () => {
         const randomStr = '4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5B';
         const keys = Crypto.generateKeys();
         await member1.subscribeToNotifications(randomStr)
-        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         await Token.notifyLinkAccountsAndAddKey(
                 username1,
-                'iron',
+                auth.bankId,
                 'bank-name',
-                alp,
+                auth.accounts,
                 'Chrome 51.0',
                 keys,
                 KeyLevel.PRIVILEGED);
@@ -110,8 +114,8 @@ describe('Notifications', () => {
     it('should send an actual push to device', async () => {
         await member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000');
-        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        await Token.notifyLinkAccounts(username1, 'iron', 'bank-name', alp);
+        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        await Token.notifyLinkAccounts(username1, auth.bankId, 'bank-name', auth.accounts);
     });
 
     async function waitUntil(fn, resolve, reject, waitTime = 1, start = new Date().getTime()) {
@@ -137,7 +141,7 @@ describe('Notifications', () => {
         const notificationsEmpty = await member2.getNotifications(null, 100);
         assert.equal(notificationsEmpty.data.length, 0);
 
-        const alp = await member2.subscribeToNotifications(target);
+        const auth = await member2.subscribeToNotifications(target);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);

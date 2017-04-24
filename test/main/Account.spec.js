@@ -19,14 +19,14 @@ describe('Account tests', () => {
     });
 
     it('should get accounts', async () => {
-        const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
-        await member.linkAccounts('iron', alp);
+        const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        await member.linkAccounts(auth);
         await member.getAccounts();
     });
 
     it('should unlink accounts', async () => {
-        const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
-        await member.linkAccounts('iron', alp);
+        const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        await member.linkAccounts(auth);
         const linked = await member.getAccounts();
         assert.equal(linked.length, 1);
         await member.unlinkAccounts([linked[0].id ]);
@@ -35,8 +35,8 @@ describe('Account tests', () => {
     });
 
     it('should have name and id', async () => {
-        const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
-        await member.linkAccounts('iron', alp);
+        const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        await member.linkAccounts(auth);
         const accs = await member.getAccounts();
         assert.equal(accs.length, 1);
         assert.isOk(accs[0].name);
@@ -48,8 +48,8 @@ describe('Account tests', () => {
 
     describe('advances', () => {
         beforeEach(async () => {
-            const alp = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
-            const accs = await member.linkAccounts('iron', alp);
+            const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const accs = await member.linkAccounts(auth);
             account = accs[0];
         });
 

@@ -12,25 +12,28 @@ let username = '';
 describe('Banks test', () => {
     beforeEach(async () => {
         const keys = Crypto.generateKeys();
-        username = Token.Util.generateNonce();
+        username = 'token' + Token.Util.generateNonce();
         member = await Token.createMember(username, Token.MemoryCryptoEngine);
     });
 
     it('should get banks and bank info', async () => {
         const banks = await member.getBanks();
+        console.log(banks);
         assert.isAtLeast(banks.length, 1);
         assert.isOk(banks[0].id);
         assert.isOk(banks[0].name);
         assert.isOk(banks[0].logoUri);
 
-        const bankInfo = await member.getBankInfo(banks[0].id);
+        console.log(banks[5]);
+        const bankInfo = await member.getBankInfo(banks[5].id);
+        console.log(bankInfo)
         assert.isOk(bankInfo.linkingUri);
         assert.isOk(bankInfo.redirectUriRegex);
     });
 
     it('should link a fake bank', async () => {
        const res = await member.createTestBankAccount(200, 'EUR', 'iron');
-       const accounts = await member.linkAccounts(res.bankId, res.payloads);
+       const accounts = await member.linkAccounts(res);
        assert.isAtLeast(accounts.length, 1);
     });
 });
