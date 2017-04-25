@@ -66,12 +66,8 @@ describe('Notifications', () => {
           TARGET: '8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554',
       });
       await member1.unsubscribeFromNotifications(subscriber.id);
-      try {
-          const status = await Token.notifyLinkAccounts(username1, "iron", 'bank-name', "auth...");
-          return Promise.reject(new Error("Should fail"));
-      } catch (err) {
-          return true;
-      }
+        const status = await Token.notifyLinkAccounts(username1, "auth...");
+        assert.equal(status, "NO_SUBSCRIBERS");
     });
 
     it('should send a push for linking accounts', async () => {
@@ -81,11 +77,7 @@ describe('Notifications', () => {
             TARGET: '123',
         });
         const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        const status = await Token.notifyLinkAccounts(
-                username1,
-                auth.bankId,
-                'bank-name',
-                auth.accounts);
+        const status = await Token.notifyLinkAccounts(username1, auth);
         assert.equal(status, 'ACCEPTED');
     });
 
@@ -103,9 +95,7 @@ describe('Notifications', () => {
         const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         await Token.notifyLinkAccountsAndAddKey(
                 username1,
-                auth.bankId,
-                'bank-name',
-                auth.accounts,
+                auth,
                 'Chrome 51.0',
                 keys,
                 KeyLevel.PRIVILEGED);
@@ -115,7 +105,7 @@ describe('Notifications', () => {
         await member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000');
         const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        await Token.notifyLinkAccounts(username1, auth.bankId, 'bank-name', auth.accounts);
+        await Token.notifyLinkAccounts(username1, auth);
     });
 
     async function waitUntil(fn, resolve, reject, waitTime = 1, start = new Date().getTime()) {

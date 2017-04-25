@@ -171,17 +171,13 @@ class Token {
      * payload
      *
      * @param {string} username - username to notify
-     * @param {string} bankId - ID of the bank owning the accounts
-     * @param {string} bankName - name of the bank owning the accounts
-     * @param {string} accountLinkPayloads - accountLinkPayloads retrieved from the bank
+     * @param {string} bankAuthorization - bankAuthorization retrieved from bank
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccounts(username, bankId, bankName, accountLinkPayloads) {
+    notifyLinkAccounts(username, bankId, bankName, bankAuthorization) {
         const body = {
             linkAccounts: {
-                bankId,
-                bankName,
-                accountLinkPayloads
+                bankAuthorization,
             }
         };
         return Util.callAsync(this.notifyLinkAccounts, async () => {
@@ -223,21 +219,17 @@ class Token {
      * payload
      *
      * @param {string} username - username to notify
-     * @param {string} bankId - ID of the bank owning the accounts
-     * @param {string} bankName - name of the bank owning the accounts
-     * @param {string} accountLinkPayloads - accountsLinkPayload retrieved from the bank
+     * @param {string} bankAuthorization - bankAuthorization retrieved from bank
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
      * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccountsAndAddKey(username, bankId, bankName, accountLinkPayloads, keyName, key, level) {
+    notifyLinkAccountsAndAddKey(username, bankAuthorization, keyName, key, level) {
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
-                    bankId,
-                    bankName,
-                    accountLinkPayloads
+                    bankAuthorization,
                 },
                 addKey: {
                     name: keyName,
