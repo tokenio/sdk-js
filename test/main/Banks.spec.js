@@ -23,7 +23,7 @@ describe('Banks test', () => {
         assert.isOk(banks[0].name);
         assert.isOk(banks[0].logoUri);
 
-        const bankInfo = await member.getBankInfo(banks[5].id);
+        const bankInfo = await member.getBankInfo(banks[0].id);
         assert.isOk(bankInfo.linkingUri);
         assert.isOk(bankInfo.redirectUriRegex);
     });
