@@ -433,10 +433,12 @@ class AuthHttpClient {
             amount,
             destinations);
         payload.transfer.instructions.source = {
-            tokenSource: {
-                memberId,
-                accountId,
-            },
+            account: {
+                token: {
+                    memberId,
+                    accountId,
+                },
+            }
         };
         const config = {
             method: 'post',
@@ -479,9 +481,11 @@ class AuthHttpClient {
             amount,
             destinations);
         payload.transfer.instructions.source = {
-            bankAuthorizationSource: {
-                bankAuthorization: authorization,
-            },
+            account: {
+                bankAuthorizationSource: {
+                    tokenAuthorization: authorization,
+                },
+            }
         };
 
         const config = {

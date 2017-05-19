@@ -26,9 +26,11 @@ describe('Token library', () => {
         await member1.endorseToken(token.id);
 
         await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [{
-            tokenDestination: {
-                accountId: Token.Util.generateNonce(),
-                memberId: Token.Util.generateNonce(),
+            account: {
+                token: {
+                    accountId: Token.Util.generateNonce(),
+                    memberId: Token.Util.generateNonce(),
+                }
             }
         }]);
         const transfers = await member1.getTransfers(token.id, null, 100);

@@ -19,9 +19,11 @@ let account2 = {};
 let token1 = {};
 
 let destination1 = {
-    tokenDestination: {
-        accountId: Token.Util.generateNonce(),
-        memberId: Token.Util.generateNonce(),
+    account: {
+        token: {
+            accountId: Token.Util.generateNonce(),
+            memberId: Token.Util.generateNonce(),
+        }
     }
 };
 
@@ -63,9 +65,11 @@ describe('Token Redemptions', async () => {
 
     it('should create and redeem a token with destination', async () => {
         const destinations = [{
-            sepaDestination: {
-                iban: '123',
-            },
+            account: {
+                sepa: {
+                    iban: '123',
+                },
+            }
         }];
         const token = await member1.createTransferToken(
                 account1.id,
@@ -77,7 +81,7 @@ describe('Token Redemptions', async () => {
                 destinations);
         await member1.endorseToken(token.id);
 
-        assert.isOk(token.payload.transfer.instructions.destinations[0].sepaDestination);
+        assert.isOk(token.payload.transfer.instructions.destinations[0].account.sepa);
         const transfer = await member2.redeemToken(token, 10.21, 'EUR');
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
