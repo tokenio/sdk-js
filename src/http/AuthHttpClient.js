@@ -5,6 +5,8 @@ import AuthContext from "./AuthContext"
 import {urls, KeyLevel, transferTokenVersion, accessTokenVersion} from "../constants";
 import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
+
+const base64js = require('base64-js');
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
 
@@ -374,12 +376,20 @@ class AuthHttpClient {
     /**
      * Uploads a blob to the server.
      *
-     * @param {Object} blob payload
+     * @param {string} ownerId - owner of the blob
+     * @param {string} type - MIME type
+     * @param {string} name - name of the file
+     * @param {Buffer} data - data in bytes
      * @return {Object} response - response to the API call
      */
-    createBlob(payload) {
+    createBlob(ownerId, type, name, data) {
         const req = {
-            payload,
+            payload: {
+                ownerId,
+                type,
+                name,
+                data: base64js.fromByteArray(data),
+            },
         }
         const config = {
             method: 'post',
@@ -397,11 +407,31 @@ class AuthHttpClient {
      */
     getBlob(blobId) {
         const req = {
-            payload,
+            blobId,
         }
         const config = {
             method: 'get',
             url: `/blobs/${blobId}`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a blob that is a attached to a token.
+     *
+     * @param {string} tokenId
+     * @param {string} blobId
+     * @return {Object} response - response to the API call
+     */
+    getTokenBlob(tokenId, blobId) {
+        const req = {
+            tokenId,
+            blobId,
+        }
+        const config = {
+            method: 'get',
+            url: `tokens/${tokenId}/blobs/${blobId}`,
             data: req
         };
         return this._instance(config);
@@ -415,7 +445,7 @@ class AuthHttpClient {
      */
     getBlob(blobId) {
         const req = {
-            payload,
+            blobId,
         }
         const config = {
             method: 'get',

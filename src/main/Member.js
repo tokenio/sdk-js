@@ -742,6 +742,53 @@ export default class Member {
     }
 
     /**
+     * Uploads a blob to the server.
+     *
+     * @param {string} ownerId - owner of the blob
+     * @param {string} type - MIME type
+     * @param {string} name - name of the file
+     * @param {Buffer} data - data in bytes
+     * @return {Object} attachment - attachment
+     */
+    uploadAttachment(ownerId, type, name, data) {
+        return Util.callAsync(this.uploadAttachment, async () => {
+            const res = await this._client.createBlob(ownerId, type, name, data)
+            return {
+                blobId: res.data.blobId,
+                type,
+                name,
+            };
+        });
+    }
+
+    /**
+     * Downloads a blob from the server.
+     *
+     * @param {string} blobId - id of the blob
+     * @return {Object} blob - downloaded blob
+     */
+    downloadAttachment(blobId) {
+        return Util.callAsync(this.downloadAttachment, async () => {
+            const res = await this._client.getBlob(blobId)
+            return res.data.blob;
+        });
+    }
+
+    /**
+     * Downloads a blob from the server, that is attached to a token.
+     *
+     * @param {string} tokenId - id of the token
+     * @param {string} blobId - id of the blob
+     * @return {Object} blob - downloaded blob
+     */
+    downloadTokenAttachment(tokenId, blobId) {
+        return Util.callAsync(this.downloadTokenAttachment, async () => {
+            const res = await this._client.getTokenBlob(tokenId, blobId)
+            return res.data.blob;
+        });
+    }
+
+    /**
      * Creates a test bank account in a fake bank
      *
      * @param {double} balance - balance of the account

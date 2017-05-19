@@ -1,0 +1,30 @@
+import AuthHttpClient from "../http/AuthHttpClient";
+import Util from "../Util";
+import {maxDecimals, KeyLevel} from "../constants";
+
+/**
+ * Member object. Allows member-wide actions. Some calls return a promise, and some return
+ * objects
+ *
+ */
+export default class TransferTokenBuilder {
+
+    /**
+     * Represents a Builder for a transfer token.
+     *
+     * @constructor
+     * @param {string} env - The environment to use for this member
+     * @param {string} memberId - The id of this memberId
+     * @param {object} cryptoEngine - the cryptoEngine to use for signing and key storage
+     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * call error. For example: SDK version mismatch
+     */
+    constructor(client, member, amount, currency) {
+        this._client = client;
+        this._member = member;
+        this._amount = amount;
+        this._currency = currency;
+    }
+
+
+}
