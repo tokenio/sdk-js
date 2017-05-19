@@ -372,6 +372,60 @@ class AuthHttpClient {
     }
 
     /**
+     * Uploads a blob to the server.
+     *
+     * @param {Object} blob payload
+     * @return {Object} response - response to the API call
+     */
+    createBlob(payload) {
+        const req = {
+            payload,
+        }
+        const config = {
+            method: 'post',
+            url: `/blobs`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a blob.
+     *
+     * @param {string} blobId
+     * @return {Object} response - response to the API call
+     */
+    getBlob(blobId) {
+        const req = {
+            payload,
+        }
+        const config = {
+            method: 'get',
+            url: `/blobs/${blobId}`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a blob attached to a token.
+     *
+     * @param {string} blobId
+     * @return {Object} response - response to the API call
+     */
+    getBlob(blobId) {
+        const req = {
+            payload,
+        }
+        const config = {
+            method: 'get',
+            url: `/blobs/${blobId}`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
      * Gets all banks.
      *
      * @return {Object} response - response to the API call
