@@ -19,8 +19,10 @@ let account2 = {};
 let token1 = {};
 
 let destination1 = {
-    sepaDestination: {
-        iban: '123',
+    account: {
+        sepa: {
+            iban: '123',
+        }
     }
 };
 

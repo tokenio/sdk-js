@@ -11,8 +11,10 @@ export default async (payee, tokenId) => {
 
     // Destination for sending the funds
     const destination = {
-        sepaDestination: {
-            iban: '123',
+        account: {
+            sepa: {
+                iban: '123',
+            }
         }
     }
 

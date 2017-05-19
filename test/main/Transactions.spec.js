@@ -20,9 +20,11 @@ let token1 = {};
 let transfer1 = {};
 
 let destination1 = {
-    tokenDestination: {
-        accountId: Token.Util.generateNonce(),
-        memberId: Token.Util.generateNonce(),
+    account: {
+        token: {
+            accountId: Token.Util.generateNonce(),
+            memberId: Token.Util.generateNonce(),
+        }
     }
 };
 
