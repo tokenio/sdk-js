@@ -22,9 +22,91 @@ export default class TransferTokenBuilder {
     constructor(client, member, amount, currency) {
         this._client = client;
         this._member = member;
-        this._amount = amount;
-        this._currency = currency;
+
+        this._payload = {
+            version: transferTokenVersion,
+            nonce: Util.generateNonce(),
+            from: {
+                id: member.memberId,
+            },
+            transfer: {
+                currency,
+                lifetimeAmount: amount.toString(),
+                instructions: {
+                    source: null,
+                    destinations: [],
+                },
+                redeemer: {},
+                attachments: [],
+            },
+        };
     }
 
+    setAccountId(accountId) {
+        this._payload.transfer.instructions.source = {
+            account: {
+                token: {
+                    memberId: this._member.memberId,
+                    accountId,
+                },
+            }
+        };
+    }
 
+    setBankAuthorization(bankAuthorization) {
+        this._payload.transfer.instructions.source = {
+            account: {
+                tokenAuthorization: {
+                    bankAuthorization,
+                },
+            }
+        };
+    }
+
+    setExpiresAtMs(expiresAtMs) {
+        this._payload.expiresAtMs = expiresAtMs;
+    }
+
+    setEffectiveAtMs(effectiveAtMs) {
+        this._payload.effectiveAtMs = effectiveAtMs;
+    }
+
+    setChargeAmount(chargeAmount) {
+        this._payload.transfer.amount = chargeAmount;
+
+    setDescription(description) {
+        this._payload.description = description;
+    }
+
+    addDestination(endpoint) {
+        this._payload.transfer.instructions.destinations.push(endpoint);
+    }
+
+    setRedeemerUsername(redeemerUsername) {
+        this._payload.transfer.redeemer.username = redeemerUsername;
+    }
+
+    setRedeemerMemberId(redeemerMemberId) {
+        this._payload.transfer.redeemer.memberId = redeemerMemberId;
+    }
+
+    addAttachment(attachment) {
+        this._payload.transfer.attachments.push(attachment);
+    }
+
+    async execute() {
+        return Util.callAsync(this.execute, async () => {
+            if (!this._payload.transfer.instructions.source.account.token
+                && !this._payload.transfer.instructions.source.account.token) {
+                throw new Error('No source on token');
+            }
+            if (!this._payload.transfer.redeemer.username
+                && !this._payload.transfer.redeemer.memberId) {
+                throw new Error('No redeemer on token');
+            }
+
+            const res = await this._client.createTransferToken(this._payload);
+            return res.data.token;
+        });
+    }
 }

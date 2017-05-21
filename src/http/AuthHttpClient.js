@@ -489,41 +489,10 @@ class AuthHttpClient {
     /**
      * Creates a transfer token.
      *
-     * @param {string} memberId - memberId of the payer
-     * @param {string} accountId - accountId of the payer
-     * @param {Number} lifetimeAmount - total limit of use of token
-     * @param {string} currency - currency that the token uses
-     * @param {string} username - username of the payee
-     * @param {string} description - description on the token
-     * @param {Number} amount - max amount per charge
-     * @param {Array} destinations - optional transfer instruction destinations
+     * @param {Object} payload - payload of the token
      * @return {Object} response - response to the API call
      */
-    createTransferToken(
-        memberId,
-        accountId,
-        lifetimeAmount,
-        currency,
-        username,
-        description,
-        amount,
-        destinations) {
-        const payload = this._transferTokenPayload(
-            memberId,
-            lifetimeAmount,
-            currency,
-            username,
-            description,
-            amount,
-            destinations);
-        payload.transfer.instructions.source = {
-            account: {
-                token: {
-                    memberId,
-                    accountId,
-                },
-            }
-        };
+    createTransferToken(payload) {
         const config = {
             method: 'post',
             url: `/tokens`,
@@ -533,87 +502,6 @@ class AuthHttpClient {
         };
         return this._instance(config);
     }
-
-    /**
-     * Creates a transfer token with a bank authorization
-     *
-     * @param {string} memberId - memberId of the payer
-     * @param {Object} authorization - bank authorization
-     * @param {Number} lifetimeAmount - total limit of use of token
-     * @param {string} currency - currency that the token uses
-     * @param {string} username - username of the payee
-     * @param {string} description - description on the token
-     * @param {Number} amount - max amount per charge
-     * @param {Array} destinations - optional transfer instruction destinations
-     * @return {Object} response - response to the API call
-     */
-    createTransferTokenWithAuth(
-        memberId,
-        authorization,
-        lifetimeAmount,
-        currency,
-        username,
-        description,
-        amount,
-        destinations) {
-        const payload = this._transferTokenPayload(
-            memberId,
-            lifetimeAmount,
-            currency,
-            username,
-            description,
-            amount,
-            destinations);
-        payload.transfer.instructions.source = {
-            account: {
-                bankAuthorizationSource: {
-                    tokenAuthorization: authorization,
-                },
-            }
-        };
-
-        const config = {
-            method: 'post',
-            url: `/tokens`,
-            data: {
-                payload,
-            }
-        };
-        return this._instance(config);
-    }
-
-    _transferTokenPayload(
-        memberId,
-        lifetimeAmount,
-        currency,
-        username,
-        description,
-        amount,
-        destinations) {
-        return {
-            version: transferTokenVersion,
-            nonce: Util.generateNonce(),
-            from: {
-                id: memberId,
-            },
-            to: {
-                username,
-            },
-            transfer: {
-                currency,
-                lifetimeAmount: lifetimeAmount.toString(),
-                instructions: {
-                    destinations,
-                },
-                amount,
-                redeemer: {
-                    username,
-                },
-            },
-            description: description,
-        };
-    }
-
 
     /**
      * Creates an access token.
