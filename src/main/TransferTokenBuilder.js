@@ -2,11 +2,6 @@ import AuthHttpClient from "../http/AuthHttpClient";
 import Util from "../Util";
 import {maxDecimals, KeyLevel, transferTokenVersion} from "../constants";
 
-/**
- * Member object. Allows member-wide actions. Some calls return a promise, and some return
- * objects
- *
- */
 export default class TransferTokenBuilder {
 
     /**
