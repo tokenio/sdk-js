@@ -54,13 +54,6 @@ const randomArray = (len) => {
     return arr;
 }
 
-// // Set up an endorsed transfer token
-// const setUp3 = async () => {
-//     const token = await member1.createTransferToken(account1.id, 38.71, 'EUR', username2);
-//     await member1.endorseToken(token.id);
-//     token1 = await member2.getToken(token.id);
-// };
-
 describe('Blobs', async () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
@@ -84,11 +77,35 @@ describe('Blobs', async () => {
     it('Should attach a blob to token and get it', async () => {
         const data = randomArray(100);
         const attachment = await member2.uploadAttachment(
-                member2.memberId(),
+                member1.memberId(),
                 "text",
                 "randomFile.txt",
                 data);
 
-        const token =
+        const data2 = randomArray(1000);
+        const attachment2 = await member1.uploadAttachment(
+                member1.memberId(),
+                "js",
+                "code.js",
+                data2);
+
+        const token = await member1.createTransferToken(500, 'EUR')
+            .setAccountId(account1.id)
+            .setRedeemerUsername(username2)
+            .addAttachment(attachment)
+            .addAttachment(attachment2)
+            .execute();
+
+        await member1.endorseToken(token);
+
+        assert.equal(token.payload.transfer.attachments[0].blobId, attachment.blobId);
+        assert.equal(token.payload.transfer.attachments[0].type, attachment.type);
+        assert.equal(token.payload.transfer.attachments[0].name, attachment.name);
+
+        const lookedUp = await member1.downloadTokenAttachment(token.id, attachment.blobId);
+        const lookedUp2 = await member2.downloadTokenAttachment(token.id, attachment2.blobId);
+
+        assert.equal(base64js.fromByteArray(data), lookedUp.payload.data);
+        assert.equal(base64js.fromByteArray(data2), lookedUp2.payload.data);
     });
 });

@@ -47,7 +47,11 @@ const setUp2 = async () => {
 
 // Set up an endorsed transfer token
 const setUp3 = async () => {
-    const token = await member1.createTransferToken(account1.id, 38.71, 'EUR', username2);
+    const token = await member1.createTransferToken(38.71, 'EUR')
+            .setAccountId(account1.id)
+            .setRedeemerUsername(username2)
+            .execute();
+
     await member1.endorseToken(token.id);
     token1 = await member2.getToken(token.id);
 };
@@ -64,21 +68,18 @@ describe('Token Redemptions', async () => {
     });
 
     it('should create and redeem a token with destination', async () => {
-        const destinations = [{
+        const destination = {
             account: {
                 sepa: {
                     iban: '123',
                 },
             }
-        }];
-        const token = await member1.createTransferToken(
-                account1.id,
-                38.71,
-                'EUR',
-                username2,
-                '',
-                0,
-                destinations);
+        };
+        const token = await member1.createTransferToken(38.71, 'EUR')
+            .setAccountId(account1.id)
+            .setRedeemerUsername(username2)
+            .addDestination(destination)
+            .execute();
         await member1.endorseToken(token.id);
 
         assert.isOk(token.payload.transfer.instructions.destinations[0].account.sepa);

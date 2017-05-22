@@ -2,7 +2,7 @@ import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
-import {urls, KeyLevel, transferTokenVersion, accessTokenVersion} from "../constants";
+import {urls, KeyLevel, accessTokenVersion} from "../constants";
 import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
 
