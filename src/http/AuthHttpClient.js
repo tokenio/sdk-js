@@ -438,7 +438,7 @@ class AuthHttpClient {
     }
 
     /**
-     * Gets a blob attached to a token.
+     * Gets a blob from the server.
      *
      * @param {string} blobId
      * @return {Object} response - response to the API call
