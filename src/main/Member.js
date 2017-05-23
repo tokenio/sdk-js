@@ -695,8 +695,8 @@ export default class Member {
      * @param {Buffer} data - data in bytes
      * @return {Object} attachment - attachment
      */
-    uploadAttachment(ownerId, type, name, data) {
-        return Util.callAsync(this.uploadAttachment, async () => {
+    createBlob(ownerId, type, name, data) {
+        return Util.callAsync(this.createBlob, async () => {
             const res = await this._client.createBlob(ownerId, type, name, data)
             return {
                 blobId: res.data.blobId,
@@ -712,8 +712,8 @@ export default class Member {
      * @param {string} blobId - id of the blob
      * @return {Object} blob - downloaded blob
      */
-    downloadAttachment(blobId) {
-        return Util.callAsync(this.downloadAttachment, async () => {
+    getBlob(blobId) {
+        return Util.callAsync(this.getBlob, async () => {
             const res = await this._client.getBlob(blobId)
             return res.data.blob;
         });
@@ -726,8 +726,8 @@ export default class Member {
      * @param {string} blobId - id of the blob
      * @return {Object} blob - downloaded blob
      */
-    downloadTokenAttachment(tokenId, blobId) {
-        return Util.callAsync(this.downloadTokenAttachment, async () => {
+    getTokenBlob(tokenId, blobId) {
+        return Util.callAsync(this.getTokenBlob, async () => {
             const res = await this._client.getTokenBlob(tokenId, blobId)
             return res.data.blob;
         });

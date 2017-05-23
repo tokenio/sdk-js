@@ -1,5 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
+const base64js = require('base64-js');
+
 import 'babel-regenerator-runtime';
 
 const tokenIo = require('../../src');
@@ -84,7 +86,7 @@ describe('TransferTokenBuilder', () => {
 
     it('should create a token with attachments', async () => {
         const data = randomArray(300);
-        const attachment = await member2.uploadAttachment(
+        const attachment = await member2.createBlob(
                 member2.memberId(),
                 "text",
                 "randomFile.txt",
@@ -100,10 +102,34 @@ describe('TransferTokenBuilder', () => {
         assert.equal(token.payload.transfer.attachments[0].name, attachment.name);
     });
 
+    it('should create a token with attachments directly', async () => {
+        const data1 = randomArray(30);
+        const data2 = randomArray(40);
+        const data3 = randomArray(40);
+
+        const token = await member1.createTransferToken(100, defaultCurrency)
+            .setAccountId(account1.id)
+            .setRedeemerUsername(username2)
+            .addAttachmentData(member1.memberId(), "js", "file1.js", data1)
+            .addAttachmentData(member1.memberId(), "js", "file2.js", data2)
+            .addAttachmentData(member1.memberId(), "js", "file3.js", data3)
+            .execute();
+
+        await member1.endorseToken(token);
+        const blobId = token.payload.transfer.attachments[2].blobId;
+        const data = (await member1.getTokenBlob(token.id, blobId)).payload.data;
+        console.log(data);
+        assert.include([
+            base64js.fromByteArray(data1),
+            base64js.fromByteArray(data2),
+            base64js.fromByteArray(data3)],
+            data);
+    });
+
     it('should create a token with everything', async () => {
         const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
         const data = randomArray(300);
-        const attachment = await member2.uploadAttachment(
+        const attachment = await member2.createBlob(
                 member2.memberId(),
                 "text",
                 "randomFile.txt",

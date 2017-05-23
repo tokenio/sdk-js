@@ -17,6 +17,7 @@ export default class TransferTokenBuilder {
     constructor(client, member, lifetimeAmount, currency) {
         this._client = client;
         this._member = member;
+        this._blobPayloads = [];
 
         if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
@@ -124,6 +125,16 @@ export default class TransferTokenBuilder {
         return this;
     }
 
+    addAttachmentData(ownerId, type, name, data) {
+        this._blobPayloads.push({
+            ownerId,
+            type,
+            name,
+            data
+        });
+        return this;
+    }
+
     async execute() {
         return Util.callAsync(this.execute, async () => {
             if (!this._payload.transfer.instructions.source || (
@@ -135,7 +146,15 @@ export default class TransferTokenBuilder {
                 && !this._payload.transfer.redeemer.memberId) {
                 throw new Error('No redeemer on token');
             }
-
+            for (let i = 0; i < this._blobPayloads.length; i++) {
+                const payload = this._blobPayloads[i];
+                const attachment = await this._member.createBlob(
+                    payload.ownerId,
+                    payload.type,
+                    payload.name,
+                    payload.data);
+                this.addAttachment(attachment);
+            }
             const res = await this._client.createTransferToken(this._payload);
             return res.data.token;
         });
