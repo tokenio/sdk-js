@@ -36,7 +36,11 @@ const setUp2 = async () => {
 
 // Set up an endorsed transfer token
 const setUp3 = async () => {
-    const token = await member1.createTransferToken(account1.id, 38.71, 'EUR', username2);
+    const token = await member1.createTransferToken(38.71, 'EUR')
+        .setAccountId(account1.id)
+        .setRedeemerUsername(username2)
+        .setToUsername(username2)
+        .execute();
     await member1.endorseToken(token.id);
     token1 = await member2.getToken(token.id);
 };

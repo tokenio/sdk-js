@@ -2,9 +2,11 @@ import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext"
-import {urls, KeyLevel, transferTokenVersion, accessTokenVersion} from "../constants";
+import {urls, KeyLevel, accessTokenVersion} from "../constants";
 import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
+
+const base64js = require('base64-js');
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
 
@@ -372,6 +374,88 @@ class AuthHttpClient {
     }
 
     /**
+     * Uploads a blob to the server.
+     *
+     * @param {string} ownerId - owner of the blob
+     * @param {string} type - MIME type
+     * @param {string} name - name of the file
+     * @param {Buffer} data - data in bytes
+     * @return {Object} response - response to the API call
+     */
+    createBlob(ownerId, type, name, data) {
+        const req = {
+            payload: {
+                ownerId,
+                type,
+                name,
+                data: base64js.fromByteArray(data),
+            },
+        }
+        const config = {
+            method: 'post',
+            url: `/blobs`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a blob.
+     *
+     * @param {string} blobId
+     * @return {Object} response - response to the API call
+     */
+    getBlob(blobId) {
+        const req = {
+            blobId,
+        }
+        const config = {
+            method: 'get',
+            url: `/blobs/${blobId}`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a blob that is a attached to a token.
+     *
+     * @param {string} tokenId
+     * @param {string} blobId
+     * @return {Object} response - response to the API call
+     */
+    getTokenBlob(tokenId, blobId) {
+        const req = {
+            tokenId,
+            blobId,
+        }
+        const config = {
+            method: 'get',
+            url: `tokens/${tokenId}/blobs/${blobId}`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a blob from the server.
+     *
+     * @param {string} blobId
+     * @return {Object} response - response to the API call
+     */
+    getBlob(blobId) {
+        const req = {
+            blobId,
+        }
+        const config = {
+            method: 'get',
+            url: `/blobs/${blobId}`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
      * Gets all banks.
      *
      * @return {Object} response - response to the API call
@@ -405,41 +489,10 @@ class AuthHttpClient {
     /**
      * Creates a transfer token.
      *
-     * @param {string} memberId - memberId of the payer
-     * @param {string} accountId - accountId of the payer
-     * @param {Number} lifetimeAmount - total limit of use of token
-     * @param {string} currency - currency that the token uses
-     * @param {string} username - username of the payee
-     * @param {string} description - description on the token
-     * @param {Number} amount - max amount per charge
-     * @param {Array} destinations - optional transfer instruction destinations
+     * @param {Object} payload - payload of the token
      * @return {Object} response - response to the API call
      */
-    createTransferToken(
-        memberId,
-        accountId,
-        lifetimeAmount,
-        currency,
-        username,
-        description,
-        amount,
-        destinations) {
-        const payload = this._transferTokenPayload(
-            memberId,
-            lifetimeAmount,
-            currency,
-            username,
-            description,
-            amount,
-            destinations);
-        payload.transfer.instructions.source = {
-            account: {
-                token: {
-                    memberId,
-                    accountId,
-                },
-            }
-        };
+    createTransferToken(payload) {
         const config = {
             method: 'post',
             url: `/tokens`,
@@ -449,87 +502,6 @@ class AuthHttpClient {
         };
         return this._instance(config);
     }
-
-    /**
-     * Creates a transfer token with a bank authorization
-     *
-     * @param {string} memberId - memberId of the payer
-     * @param {Object} authorization - bank authorization
-     * @param {Number} lifetimeAmount - total limit of use of token
-     * @param {string} currency - currency that the token uses
-     * @param {string} username - username of the payee
-     * @param {string} description - description on the token
-     * @param {Number} amount - max amount per charge
-     * @param {Array} destinations - optional transfer instruction destinations
-     * @return {Object} response - response to the API call
-     */
-    createTransferTokenWithAuth(
-        memberId,
-        authorization,
-        lifetimeAmount,
-        currency,
-        username,
-        description,
-        amount,
-        destinations) {
-        const payload = this._transferTokenPayload(
-            memberId,
-            lifetimeAmount,
-            currency,
-            username,
-            description,
-            amount,
-            destinations);
-        payload.transfer.instructions.source = {
-            account: {
-                bankAuthorizationSource: {
-                    tokenAuthorization: authorization,
-                },
-            }
-        };
-
-        const config = {
-            method: 'post',
-            url: `/tokens`,
-            data: {
-                payload,
-            }
-        };
-        return this._instance(config);
-    }
-
-    _transferTokenPayload(
-        memberId,
-        lifetimeAmount,
-        currency,
-        username,
-        description,
-        amount,
-        destinations) {
-        return {
-            version: transferTokenVersion,
-            nonce: Util.generateNonce(),
-            from: {
-                id: memberId,
-            },
-            to: {
-                username,
-            },
-            transfer: {
-                currency,
-                lifetimeAmount: lifetimeAmount.toString(),
-                instructions: {
-                    destinations,
-                },
-                amount,
-                redeemer: {
-                    username,
-                },
-            },
-            description: description,
-        };
-    }
-
 
     /**
      * Creates an access token.

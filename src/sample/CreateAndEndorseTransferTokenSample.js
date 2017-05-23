@@ -8,7 +8,10 @@ export default async (payer, payeeUsername) => {
     const accounts = await payer.getAccounts();
 
     // Payer creates the token with the desired terms
-    const token = await payer.createTransferToken(accounts[0].id, 100.0, 'EUR', payeeUsername);
+    const token = await payer.createTransferToken(100.00, 'EUR')
+            .setAccountId(accounts[0].id)
+            .setRedeemerUsername(payeeUsername)
+            .execute();
 
     // Payer endorses the token, creating a digital signature on it
     const result = await payer.endorseToken(token);

@@ -1,4 +1,5 @@
 import AuthHttpClient from "../http/AuthHttpClient";
+import TransferTokenBuilder from "./TransferTokenBuilder";
 import Util from "../Util";
 import {maxDecimals, KeyLevel} from "../constants";
 
@@ -471,72 +472,16 @@ export default class Member {
     }
 
     /**
-     * Creates an unendorsed Transfer Token
+     * Creates a transfer token builder, that when executed, will create an transfer token by
+     * performing an API call.
      *
-     * @param {string} accountId - id of the source account
      * @param {double} lifetimeAmount - amount limit on the token
      * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
-     * @param {string} username - username of the redeemer of this token
-     * @param {string} description - optional description for the token
-     * @param {double} amount - optional charge limit on the token
-     * @param {array} destinations - optional transfer instruction destinations
-     * @return {Promise} token - promise of a created transfer token
+     * @return {TransferTokenBuilder} builder - builder for the token
      */
-    createTransferToken(
-            accountId,
-            lifetimeAmount,
-            currency,
-            username,
-            description = undefined,
-            amount=0,
-            destinations=[]) {
-        this._validateDecimals(lifetimeAmount, amount);
-        return Util.callAsync(this.createTransferToken, async () => {
-            const res = await this._client.createTransferToken(
-                this._id,
-                accountId,
-                lifetimeAmount,
-                currency,
-                username,
-                description,
-                amount,
-                destinations);
-            return res.data.token;
-        });
-    }
-
-    /**
-     * Creates an unendorsed Transfer Token from a Bank Authorization
-     *
-     * @param {Object} authorization - bank authorization
-     * @param {double} lifetimeAmount - amount limit on the token
-     * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
-     * @param {string} username - username of the redeemer of this token
-     * @param {string} description - optional description for the token
-     * @param {double} amount - optional charge limit on the token
-     * @param {array} destinations - optional transfer instruction destinations
-     * @return {Promise} token - promise of a created transfer token
-     */
-    createTransferTokenWithAuth(
-            authorization,
-            lifetimeAmount,
-            currency,
-            username,
-            description = undefined,
-            amount=0,
-            destinations=[]) {
-        this._validateDecimals(lifetimeAmount, amount);
-        return Util.callAsync(this.createTransferTokenWithAuth, async () => {
-            const res = await this._client.createTransferTokenWithAuth(
-                this._id,
-                authorization,
-                lifetimeAmount,
-                currency,
-                username,
-                description,
-                amount,
-                destinations);
-            return res.data.token;
+    createTransferToken(lifetimeAmount, currency) {
+        return Util.callSync(this.createTransferToken, () => {
+            return new TransferTokenBuilder(this._client, this, lifetimeAmount, currency);
         });
     }
 
@@ -742,6 +687,53 @@ export default class Member {
     }
 
     /**
+     * Uploads a blob to the server.
+     *
+     * @param {string} ownerId - owner of the blob
+     * @param {string} type - MIME type
+     * @param {string} name - name of the file
+     * @param {Buffer} data - data in bytes
+     * @return {Object} attachment - attachment
+     */
+    createBlob(ownerId, type, name, data) {
+        return Util.callAsync(this.createBlob, async () => {
+            const res = await this._client.createBlob(ownerId, type, name, data)
+            return {
+                blobId: res.data.blobId,
+                type,
+                name,
+            };
+        });
+    }
+
+    /**
+     * Downloads a blob from the server.
+     *
+     * @param {string} blobId - id of the blob
+     * @return {Object} blob - downloaded blob
+     */
+    getBlob(blobId) {
+        return Util.callAsync(this.getBlob, async () => {
+            const res = await this._client.getBlob(blobId)
+            return res.data.blob;
+        });
+    }
+
+    /**
+     * Downloads a blob from the server, that is attached to a token.
+     *
+     * @param {string} tokenId - id of the token
+     * @param {string} blobId - id of the blob
+     * @return {Object} blob - downloaded blob
+     */
+    getTokenBlob(tokenId, blobId) {
+        return Util.callAsync(this.getTokenBlob, async () => {
+            const res = await this._client.getTokenBlob(tokenId, blobId)
+            return res.data.blob;
+        });
+    }
+
+    /**
      * Creates a test bank account in a fake bank
      *
      * @param {double} balance - balance of the account
@@ -779,15 +771,5 @@ export default class Member {
                 resolve(token);       // Token, already in json representation
             }
         });
-    }
-
-    _validateDecimals(lifetimeAmount, amount) {
-        if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
-            throw new Error('Number of decimals in lifetimeAmount should be at most ' +
-                maxDecimals);
-        }
-        if (Util.countDecimals(amount) > maxDecimals) {
-            throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
-        }
     }
 }
