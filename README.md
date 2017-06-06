@@ -28,6 +28,15 @@ $ var TokenLib = require("token-io/dist/token-io.node.min.js")
 $ var Token = new TokenLib("prd");
 ```
 
+### Development Instructions
+
+If you're changing the SDK itself (instead of using the SDK to develop client code)...
+
+Install dependencies
+```sh
+$ yarn
+```
+
 To build:
 ```sh
 $ yarn run build
