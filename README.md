@@ -14,11 +14,6 @@ Install the npm package:
 $ npm install token-io
 ```
 
-Install dependencies
-```sh
-$ yarn
-```
-
 To use in a browser:
 
 ```sh
@@ -31,6 +26,15 @@ To use in node:
 ```sh
 $ var TokenLib = require("token-io/dist/token-io.node.min.js")
 $ var Token = new TokenLib("prd");
+```
+
+### Development Instructions
+
+If you're changing the SDK itself (instead of using the SDK to develop client code)...
+
+Install dependencies
+```sh
+$ yarn
 ```
 
 To build:

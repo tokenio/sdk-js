@@ -11,15 +11,15 @@ export default async (payee, tokenId) => {
     // Payee gets the token to see details
     const transferToken = await payee.getToken(tokenId);
 
-    var allImageContents = [];
+    var allContents = [];
 
     for (var ix = 0; ix < transferToken.payload.transfer.attachments.length; ix++) {
-	// attachments have metadata but not the "file" content
-	const att = transferToken.payload.transfer.attachments[ix];
+        // attachments have metadata but not the "file" content
+        const att = transferToken.payload.transfer.attachments[ix];
         // download the content of the attachment[s] we want
         const blob = await payee.getTokenBlob(tokenId, att.blobId);
-	const blobContents = base64js.toByteArray(blob.payload.data);
-        allImageContents.push(blobContents);
+        const blobContents = base64js.toByteArray(blob.payload.data);
+        allContents.push(blobContents);
     }
-    return allImageContents;
+    return allContents;
 }
