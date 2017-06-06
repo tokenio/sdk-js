@@ -134,6 +134,12 @@ describe('TransferTokenBuilder', () => {
                 "text",
                 "randomFile.txt",
                 data);
+        const pricing = {
+            sourceQuote: {
+                accountCurrency: 'EUR',
+                feesTotal: '0.88',
+            },
+        };
         const token = await member1.createTransferToken(100, defaultCurrency)
             .setBankAuthorization(auth)
             .setEffectiveAtMs(new Date().getTime())
@@ -152,6 +158,7 @@ describe('TransferTokenBuilder', () => {
             .setToMemberId(member2.memberId())
             .setDescription('A description')
             .addAttachment(attachment)
+            .setPricing(pricing)
             .execute();
 
         assert.equal(token.payload.transfer.attachments[0].blobId, attachment.blobId);
@@ -160,6 +167,7 @@ describe('TransferTokenBuilder', () => {
         assert.equal(token.payload.transfer.amount, 20);
         assert.equal(token.payload.transfer.lifetimeAmount, 100);
         assert.equal(token.payload.description, 'A description');
+        assert.deepEqual(token.payload.transfer.pricing.sourceQuote, pricing.sourceQuote);
         assert.isOk(token.payload.effectiveAtMs);
         assert.isOk(token.payload.expiresAtMs);
         assert.isOk(token.payload.to.username);

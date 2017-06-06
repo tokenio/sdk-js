@@ -135,6 +135,11 @@ export default class TransferTokenBuilder {
         return this;
     }
 
+    setPricing(pricing) {
+        this._payload.transfer.pricing = pricing;
+        return this;
+    }
+
     async execute() {
         return Util.callAsync(this.execute, async () => {
             if (!this._payload.transfer.instructions.source || (
