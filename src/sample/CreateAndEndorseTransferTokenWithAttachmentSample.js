@@ -1,7 +1,7 @@
 
 // Empty fake for simple example.
 function getImageData(filename) {
-    return new Uint8Array(0);
+    return new Uint8Array(42);
 }
 
 export default async (payer, payeeUsername) => {

@@ -14,6 +14,11 @@ Install the npm package:
 $ npm install token-io
 ```
 
+Install dependencies
+```sh
+$ yarn
+```
+
 To use in a browser:
 
 ```sh

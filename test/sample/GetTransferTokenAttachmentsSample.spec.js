@@ -16,6 +16,9 @@ describe('GetTransferTokenAttachmentsSample test', () => {
 
         const member2Username = await member2.firstUsername();
         const res = await CreateAndEndorseTransferTokenWithAttachmentSample(member, member2Username);
-        GetTransferTokenAttachmentsSample(member2, res.id);
+        const attachmentDatas = await GetTransferTokenAttachmentsSample(member2, res.id);
+
+        assert.equal(attachmentDatas.length, 1);
+        assert.equal(attachmentDatas[0].length, 42);
     });
 });
