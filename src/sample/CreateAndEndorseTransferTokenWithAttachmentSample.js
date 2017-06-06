@@ -18,8 +18,8 @@ export default async (payer, payeeUsername) => {
                   getImageData("invoice.jpg"))
               .execute();
 
-        // Payer endorses the token, creating a digital signature on it
-        const result = await payer.endorseToken(token);
+    // Payer endorses the token, creating a digital signature on it
+    const result = await payer.endorseToken(token);
 
-        return result.token;
+    return result.token;
 }
