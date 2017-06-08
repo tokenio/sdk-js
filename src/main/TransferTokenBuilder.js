@@ -275,6 +275,9 @@ export default class TransferTokenBuilder {
                 this.addAttachment(attachment);
             }
             const res = await this._client.createTransferToken(this._payload);
+            if (res.data.status !== "SUCCESS") {
+                throw new Error(res.status);
+            }
             return res.data.token;
         });
     }

@@ -495,7 +495,7 @@ class AuthHttpClient {
     createTransferToken(payload) {
         const config = {
             method: 'post',
-            url: `/tokens`,
+            url: `/tokens?type=transfer`,
             data: {
                 payload,
             }
@@ -527,7 +527,7 @@ class AuthHttpClient {
 
         const config = {
             method: 'post',
-            url: `/tokens`,
+            url: `/tokens?type=access`,
             data: {
                 payload,
             }
