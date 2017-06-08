@@ -522,7 +522,7 @@ class AuthHttpClient {
                 resources,
             },
             version: accessTokenVersion,
-            nonce: Util.generateNonce(),
+            refId: Util.generateNonce(),
         };
 
         const config = {
@@ -557,7 +557,7 @@ class AuthHttpClient {
                 },
                 issuer: tokenToCancel.payload.issuer,
                 version: accessTokenVersion,
-                nonce: Util.generateNonce(),
+                refId: Util.generateNonce(),
             },
         };
 
@@ -593,7 +593,7 @@ class AuthHttpClient {
             },
             issuer: tokenToCancel.payload.issuer,
             version: accessTokenVersion,
-            nonce: Util.generateNonce(),
+            refId: Util.generateNonce(),
         };
 
         const createReq = {
@@ -650,7 +650,7 @@ class AuthHttpClient {
      */
     redeemToken(transferToken, amount, currency, description, destinations) {
         const payload = {
-            nonce: Util.generateNonce(),
+            refId: Util.generateNonce(),
             tokenId: transferToken.id,
             amount: {
                 value: amount.toString(),

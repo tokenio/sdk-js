@@ -140,6 +140,7 @@ describe('TransferTokenBuilder', () => {
                 feesTotal: '0.88',
             },
         };
+        const refId = Token.Util.generateNonce();
         const token = await member1.createTransferToken(100, defaultCurrency)
             .setBankAuthorization(auth)
             .setEffectiveAtMs(new Date().getTime())
@@ -159,6 +160,7 @@ describe('TransferTokenBuilder', () => {
             .setDescription('A description')
             .addAttachment(attachment)
             .setPricing(pricing)
+            .setRefIf(refId)
             .execute();
 
         assert.equal(token.payload.transfer.attachments[0].blobId, attachment.blobId);
@@ -167,6 +169,7 @@ describe('TransferTokenBuilder', () => {
         assert.equal(token.payload.transfer.amount, 20);
         assert.equal(token.payload.transfer.lifetimeAmount, 100);
         assert.equal(token.payload.description, 'A description');
+        assert.equal(token.payload.refId, refId);
         assert.deepEqual(token.payload.transfer.pricing.sourceQuote, pricing.sourceQuote);
         assert.isOk(token.payload.effectiveAtMs);
         assert.isOk(token.payload.expiresAtMs);

@@ -26,7 +26,7 @@ export default class TransferTokenBuilder {
 
         this._payload = {
             version: transferTokenVersion,
-            nonce: Util.generateNonce(),
+            refId: Util.generateNonce(),
             from: {
                 id: member.memberId(),
             },
@@ -235,6 +235,17 @@ export default class TransferTokenBuilder {
      */
     setPurposeOfPayment(purposeOfPayment) {
         this._payload.transfer.instructions.transferPurpose = purposeOfPayment;
+        return this;
+    }
+
+    /**
+     * Sets the refId on the token.
+     *
+     * @param {string} refId - client generated reference id
+     * @return {TransferTokenBuilder}
+     */
+    setRefIf(refId) {
+        this._payload.refId = refId;
         return this;
     }
 
