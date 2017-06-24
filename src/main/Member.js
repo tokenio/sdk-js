@@ -424,6 +424,60 @@ export default class Member {
     }
 
     /**
+     * Replaces the authenticated member's public profile.
+     *
+     * @param {Object} profile - profile to set
+     * @return {Promise} profile - newly-set profile
+     */
+    setProfile(profile) {
+        return Util.callAsync(this.setProfile, async () => {
+            const res = await this._client.setProfile(profile);
+            return res.data.profile;
+        });
+    }
+
+    /**
+     * Gets a member's public profile.
+     *
+     * @param {string} id - member id whose profile to get
+     * @return {Promise} profile - profile
+     */
+    getProfile(id) {
+        return Util.callAsync(this.getProfile, async () => {
+            const res = await this._client.getProfile(id);
+            return res.data.profile;
+        });
+    }
+
+    /**
+     * Uploads the authenticated member's public profile.
+     *
+     * @param {string} type - MIME type
+     * @param {Buffer} data - data in bytes
+     * @return {Promise} empty - empty promise
+     */
+    setProfilePicture(type, data) {
+        return Util.callAsync(this.setProfilePicture, async () => {
+            const res = await this._client.setProfilePicture(type, data)
+            return;
+        });
+    }
+
+    /**
+     * Gets a member's public profile picture.
+     *
+     * @param {string} id - member id whose picture to get
+     * @param {Object} size - desired size category SMALL/MEDIUM/LARGE/ORIGINAL
+     * @return {Object} blob - downloaded blob
+     */
+    getProfilePicture(id, size) {
+        return Util.callAsync(this.getProfilePicture, async () => {
+            const res = await this._client.getProfilePicture(id, size)
+            return res.data.blob;
+        });
+    }
+
+    /**
      * Creates a new unendorsed access token.
      *
      * @param {string} username - the username of the grantee of the Access Token
