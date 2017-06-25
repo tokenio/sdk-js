@@ -777,19 +777,6 @@ class AuthHttpClient {
     //
 
     /**
-     * Gets the member's information.
-     *
-     * @return {Object} response - response to the API call
-     */
-    getMember() {
-        const config = {
-            method: 'get',
-            url: `/members`
-        };
-        return this._instance(config);
-    }
-
-    /**
      * Adds a key to the member.
      *
      * @param {string} prevHash - hash of the previous directory entry.

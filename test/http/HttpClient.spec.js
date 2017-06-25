@@ -47,4 +47,22 @@ describe('Unauthenticated', () => {
         }
         assert.isTrue(handlerCalled);
     });
+    it('should get a member', async () => {
+        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const res = await unauthenticatedClient.createMemberId();
+        const engine = new MemoryCryptoEngine(res.data.memberId);
+        const pk1 = engine.generateKey('PRIVILEGED');
+        const pk2 = engine.generateKey('STANDARD');
+        const pk3 = engine.generateKey('LOW');
+        assert.isOk(res.data.memberId);
+        const res2 = await unauthenticatedClient.approveFirstKeys(
+            res.data.memberId,
+            [pk1, pk2, pk3],
+            engine);
+        assert.isOk(res2.data.member);
+        const res3 = await unauthenticatedClient.getMember(res.data.memberId)
+        assert.isOk(res3.data.member);
+        assert.isOk(res3.data.member.lastHash);
+        assert.equal(res3.data.member.keys.length, 3);
+    });
 });
