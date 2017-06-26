@@ -61,6 +61,20 @@ class HttpClient {
     }
 
     /**
+     * Gets the member's information.
+     *
+     * @param {string} memberId - member id to lookup the member for
+     * @return {Object} response - response to the API call
+     */
+    getMember(memberId) {
+        const config = {
+            method: 'get',
+            url: `/members/${memberId}`
+        };
+        return this._instance(config);
+    }
+
+    /**
      * Notifies a user.
      *
      * @param {string} username - user to notify
