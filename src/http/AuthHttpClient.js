@@ -296,6 +296,7 @@ class AuthHttpClient {
                 type: type,
                 name: "profile",
                 data: base64js.fromByteArray(data),
+		accessMode: "PUBLIC",
             },
         }
         const config = {
