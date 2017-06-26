@@ -1,7 +1,8 @@
 import AuthHttpClient from "../http/AuthHttpClient";
+import HttpClient from "../http/HttpClient";
 import TransferTokenBuilder from "./TransferTokenBuilder";
 import Util from "../Util";
-import {maxDecimals, KeyLevel} from "../constants";
+import maxDecimals from "../constants";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -23,6 +24,7 @@ export default class Member {
     constructor(env, memberId, cryptoEngine, globalRpcErrorCallback) {
         this._id = memberId;
         this._client = new AuthHttpClient(env, memberId, cryptoEngine, globalRpcErrorCallback);
+        this._unauthenticatedClient = new HttpClient(env, globalRpcErrorCallback);
     }
 
     /**
@@ -811,7 +813,7 @@ export default class Member {
 
     _getMember() {
         return Util.callAsync(this._getMember, async () => {
-            const res = await this._client.getMember();
+            const res = await this._unauthenticatedClient.getMember(this._id);
             return res.data.member;
         });
     }
