@@ -247,6 +247,81 @@ class AuthHttpClient {
     }
 
     //
+    // PROFILES
+    //
+
+    /**
+     * Replaces the authenticated member's public profile.
+     *
+     * @param {Object} profile - profile to set
+     * @return {Object} response - response to the API call
+     */
+    setProfile(profile) {
+       const req = {
+           profile
+       }
+       const config = {
+           method: 'post',
+           url: `/members/profile`,
+           data: req
+       };
+       return this._instance(config);
+    }
+
+    /**
+     * Gets a member's public profile.
+     *
+     * @param {string} id - member id whose profile to get
+     * return {Object} response - response to the API call
+     */
+    getProfile(id) {
+        const config = {
+            method: 'get',
+            url: `/members/${id}/profile`,
+         }
+         return this._instance(config);
+    }
+
+    /**
+     * Uploads member's public profile picture.
+     *
+     * @param {string} type - MIME type
+     * @param {Buffer} data - data in bytes
+     * @return {Object} response - response to the API call
+     */
+    setProfilePicture(type, data) {
+        const req = {
+            payload: {
+                ownerId: this._memberId,
+                type: type,
+                name: "profile",
+                data: base64js.fromByteArray(data),
+		accessMode: "PUBLIC",
+            },
+        }
+        const config = {
+            method: 'post',
+            url: `/members/profilepicture`,
+            data: req
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets a member's public profile picture.
+     *
+     * @param {string} id - member Id whose picture to get
+     * @param {Object} size - desired size category: SMALL/MEDIUM/LARGE/ORIGINAL
+     * @return {Object} response - response to the API call
+     */
+    getProfilePicture(id, size) {
+        const config = {
+            method: 'get',
+            url: `/members/${id}/profilepicture/${size}`,
+        };
+        return this._instance(config);
+    }
+    //
     // ACCOUNTS
     //
 
@@ -425,14 +500,9 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     getTokenBlob(tokenId, blobId) {
-        const req = {
-            tokenId,
-            blobId,
-        }
         const config = {
             method: 'get',
             url: `tokens/${tokenId}/blobs/${blobId}`,
-            data: req
         };
         return this._instance(config);
     }
@@ -444,13 +514,9 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     getBlob(blobId) {
-        const req = {
-            blobId,
-        }
         const config = {
             method: 'get',
             url: `/blobs/${blobId}`,
-            data: req
         };
         return this._instance(config);
     }
