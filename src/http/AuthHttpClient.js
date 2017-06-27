@@ -315,14 +315,9 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     getProfilePicture(id, size) {
-        const req = {
-            id,
-	    size
-        }
         const config = {
             method: 'get',
             url: `/members/${id}/profilepicture/${size}`,
-            data: req
         };
         return this._instance(config);
     }
@@ -505,14 +500,9 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     getTokenBlob(tokenId, blobId) {
-        const req = {
-            tokenId,
-            blobId,
-        }
         const config = {
             method: 'get',
             url: `tokens/${tokenId}/blobs/${blobId}`,
-            data: req
         };
         return this._instance(config);
     }
@@ -524,13 +514,9 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     getBlob(blobId) {
-        const req = {
-            blobId,
-        }
         const config = {
             method: 'get',
             url: `/blobs/${blobId}`,
-            data: req
         };
         return this._instance(config);
     }

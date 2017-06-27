@@ -64,7 +64,7 @@ describe('Profiles', async () => {
 
     it('should create and get a profile picture', async () => {
         const gifData = tinyGifData();
-	await member1.setProfilePicture.setProfilePicture("image/gif", gifData);
+	await member1.setProfilePicture("image/gif", gifData);
 
         const blob = await member2.getProfilePicture(member1.memberId(), "ORIGINAL");
         assert.equal("image/gif", blob.payload.type);
