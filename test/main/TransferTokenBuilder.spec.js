@@ -160,7 +160,7 @@ describe('TransferTokenBuilder', () => {
             .setDescription('A description')
             .addAttachment(attachment)
             .setPricing(pricing)
-            .setRefIf(refId)
+            .setRefId(refId)
             .execute();
 
         assert.equal(token.payload.transfer.attachments[0].blobId, attachment.blobId);

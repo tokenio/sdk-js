@@ -244,7 +244,7 @@ export default class TransferTokenBuilder {
      * @param {string} refId - client generated reference id
      * @return {TransferTokenBuilder}
      */
-    setRefIf(refId) {
+    setRefId(refId) {
         this._payload.refId = refId;
         return this;
     }
