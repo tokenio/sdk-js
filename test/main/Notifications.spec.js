@@ -6,7 +6,6 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 import {KeyLevel} from "../../src/constants";
 
 const GET_NOTIFICATION_TIMEOUT_MS = 5000;
@@ -163,9 +162,8 @@ describe('Notifications', () => {
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
             waitUntil(async () => {
-                const notifications = await BankClient.getNotifications(subscriber.id);
-                assert.equal(notifications.length, 1);
-                const lookedUp = await BankClient.getNotification(
+                const notifications = await member1.getTestBankNotifications(subscriber.id);
+                const lookedUp = await member1.getTestBankNotification(
                         subscriber.id,
                         notifications[0].id);
                 assert.equal(lookedUp.id, notifications[0].id);

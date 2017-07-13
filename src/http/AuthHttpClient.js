@@ -1061,6 +1061,35 @@ class AuthHttpClient {
         };
         return this._instance(config);
     }
+
+    /**
+     * Gets test bank notification.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @param {string} notificationId - id of notification
+     * @return {Object} response - response to the API call
+     */
+    getTestBankNotification(subscriberId, notificationId) {
+        const config = {
+            method: 'get',
+            url: `/test/subscribers/${subscriberId}/notifications/${notificationId}`,
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets test bank notifications.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @return {Object} response - response to the API call
+     */
+    getTestBankNotifications(subscriberId) {
+        const config = {
+            method: 'get',
+            url: `/test/subscribers/${subscriberId}/notifications`,
+        };
+        return this._instance(config);
+    }
 }
 
 export default AuthHttpClient;

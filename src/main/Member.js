@@ -803,6 +803,33 @@ export default class Member {
         });
     }
 
+    /**
+     * Gets test bank notification.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @param {string} notificationId - id of notification
+     * @return {Object} response - response to the API call
+     */
+    getTestBankNotification(subscriberId, notificationId) {
+        return Util.callAsync(this.getTestBankNotification, async () => {
+            const res = await this._client.getTestBankNotification(subscriberId, notificationId);
+            return res.data.notification;
+        });
+    }
+
+    /**
+     * Gets test bank notifications.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @return {Object} response - response to the API call
+     */
+    getTestBankNotifications(subscriberId) {
+        return Util.callAsync(this.getTestBankNotifications, async () => {
+            const res = await this._client.getTestBankNotifications(subscriberId);
+            return res.data.notifications;
+        });
+    }
+
     _getPreviousHash() {
         return Util.callAsync(this._getPreviousHash, async () => {
             const member = await this._getMember();
