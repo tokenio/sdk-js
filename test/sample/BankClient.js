@@ -16,49 +16,6 @@ const instance = axios.create({
 });
 
 export default {
-    requestLinkAccounts: async (
-            username,
-            balance = 100000,
-            currency = defaultCurrency,
-            accountName = "123") => {
-
-        const randLastName = Token.Util.generateNonce();
-        const randomAccNumber = Token.Util.generateNonce();
-
-        const res = await instance(
-            {
-                method: 'put',
-                url: `/banks/${TEST_BIC}/clients`,
-                data: {
-                    firstName: "JS Test",
-                    lastName: "JS Testoff " + randLastName,
-                }
-            });
-        const client = res.data.client;
-        await instance(
-            {
-                method: 'put',
-                url: `/banks/${TEST_BIC}/clients/${client.id}/accounts`,
-                data: {
-                    name: accountName,
-                    account_number: randomAccNumber,
-                    balance: {
-                        value: balance,
-                        currency: currency
-                    }
-                }
-            });
-        const res2 = await instance({
-                    method: 'put',
-                    url: `/banks/${TEST_BIC}/clients/${client.id}/link-accounts`,
-                    data: {
-                        username: username,
-                        accounts: [ randomAccNumber ]
-                    }
-                });
-        return res2.data;
-    },
-
     getNotifications: async(subscriberId) => {
         const res = await instance({
             method: 'get',

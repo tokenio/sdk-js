@@ -794,12 +794,11 @@ export default class Member {
      *
      * @param {double} balance - balance of the account
      * @param {string} currency - currency of the account
-     * @param {string} bankId - bankId of the test bank to use
      * @returns {Array} bank authorization to use with linkAccounts
      */
-    createTestBankAccount(balance, currency, bankId) {
+    createTestBankAccount(balance, currency) {
         return Util.callAsync(this.createTestBankAccount, async () => {
-            const res = await this._client.createTestBankAccount(balance, currency, bankId);
+            const res = await this._client.createTestBankAccount(balance, currency);
             return res.data.bankAuthorization;
         });
     }
