@@ -1044,10 +1044,9 @@ class AuthHttpClient {
      *
      * @param {Number} balance - balance to put in the account
      * @param {string} currency - currency in the account
-     * @param {string} bankId - bankId of the test bank to use
      * @return {Object} response - response to the API call
      */
-    createTestBankAccount(balance, currency, bankId) {
+    createTestBankAccount(balance, currency) {
         const req = {
             balance: {
                 currency,
@@ -1055,16 +1054,39 @@ class AuthHttpClient {
             },
         };
 
-        if (bankId) {
-            req.tags = [{
-                key: 'bank-id',
-                value: bankId,
-            }];
-        }
         const config = {
             method: 'post',
             url: '/test/create-account',
             data: req,
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets test bank notification.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @param {string} notificationId - id of notification
+     * @return {Object} response - response to the API call
+     */
+    getTestBankNotification(subscriberId, notificationId) {
+        const config = {
+            method: 'get',
+            url: `/test/subscribers/${subscriberId}/notifications/${notificationId}`,
+        };
+        return this._instance(config);
+    }
+
+    /**
+     * Gets test bank notifications.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @return {Object} response - response to the API call
+     */
+    getTestBankNotifications(subscriberId) {
+        const config = {
+            method: 'get',
+            url: `/test/subscribers/${subscriberId}/notifications`,
         };
         return this._instance(config);
     }

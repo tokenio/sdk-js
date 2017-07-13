@@ -6,7 +6,6 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 
 let member1 = {};
 let username1 = '';
@@ -28,8 +27,8 @@ const setUp1 = async () => {
         window.localStorage.clear();
         username1 = Token.Util.generateNonce();
         member1 = await Token.createMember(username1, Token.BrowserCryptoEngine);
-        const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-        const accs = await member1.linkAccounts(alp);
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
+        const accs = await member1.linkAccounts(auth);
         account1 = accs[0];
     }
 };
@@ -39,8 +38,8 @@ const setUp2 = async () => {
     if (BROWSER) {
         username2 = Token.Util.generateNonce();
         member2 = await Token.createMember(username2, Token.BrowserCryptoEngine);
-        const alp = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
-        await member2.linkAccounts(alp);
+        const auth = await member2.createTestBankAccount(100000, 'EUR');
+        await member2.linkAccounts(auth);
     }
 };
 
@@ -48,8 +47,8 @@ const setUp2 = async () => {
 const setUp1Memory = async () => {
     username1Memory = Token.Util.generateNonce();
     member1Memory = await Token.createMember(username1Memory, Token.MemoryCryptoEngine);
-    const alp = await BankClient.requestLinkAccounts(username1Memory, 100000, 'EUR');
-    const accs = await member1Memory.linkAccounts(alp);
+    const auth = await member1Memory.createTestBankAccount(100000, 'EUR');
+    const accs = await member1Memory.linkAccounts(auth);
     account1Memory = accs[0];
 };
 
@@ -57,8 +56,8 @@ const setUp1Memory = async () => {
 const setUp2Memory = async () => {
     username2Memory = Token.Util.generateNonce();
     member2Memory = await Token.createMember(username2Memory, Token.MemoryCryptoEngine);
-    const alp = await BankClient.requestLinkAccounts(username2Memory, 100000, 'EUR');
-    await member2Memory.linkAccounts(alp);
+    const auth = await member2Memory.createTestBankAccount(100000, 'EUR');
+    await member2Memory.linkAccounts(auth);
 };
 
 describe('Provisioning a new device', async () => {

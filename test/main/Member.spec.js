@@ -6,7 +6,6 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 
 let member = {};
 let username = '';
@@ -100,13 +99,13 @@ describe('member tests', () => {
         });
 
         it('should link an account', async () => {
-            const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const auth = await member.createTestBankAccount(100000, 'EUR');
             const accs = await member.linkAccounts(auth);
             assert.isAtLeast(accs.length, 1);
         });
 
         it('should get accounts', async () => {
-            const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const auth = await member.createTestBankAccount(100000, 'EUR');
             await member.linkAccounts(auth);
             const accs = await member.getAccounts();
             assert.isAtLeast(accs.length, 2);

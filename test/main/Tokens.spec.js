@@ -6,7 +6,6 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 import {defaultCurrency, KeyLevel} from "../../src/constants";
 const some = require('lodash/some');
 const map = require('lodash/map');
@@ -22,8 +21,8 @@ let member2 = {};
 const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
-    const alp = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
-    const accs = await member1.linkAccounts(alp);
+    const auth = await member1.createTestBankAccount(100000, 'EUR');
+    const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
 };
 

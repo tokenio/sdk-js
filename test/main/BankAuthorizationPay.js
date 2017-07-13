@@ -6,7 +6,6 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 
 let member1 = {};
 let username1 = '';
@@ -30,14 +29,14 @@ let destination1 = {
 const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
-    const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+    const auth = await member1.createTestBankAccount(100000, 'EUR');
 };
 
 // Set up a second member
 const setUp2 = async () => {
     username2 = Token.Util.generateNonce();
     member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
-    const auth = await BankClient.requestLinkAccounts(username2, 100000, 'EUR');
+    const auth = await member2.createTestBankAccount(100000, 'EUR');
     const accs = await member2.linkAccounts(auth);
     account2 = accs[0];
 };
@@ -46,7 +45,7 @@ describe('Bank Authorization Payments', async () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
     it('should create a token from a bank authorization', async () => {
-        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         const token = await member1.createTransferToken(100, 'EUR')
             .setBankAuthorization(auth)
             .setToUsername(username2)
@@ -65,7 +64,7 @@ describe('Bank Authorization Payments', async () => {
     });
 
     it('should make a payment from a bank authorization', async () => {
-        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         const token = await member1.createTransferToken(100, 'EUR')
             .setBankAuthorization(auth)
             .setRedeemerUsername(username1)

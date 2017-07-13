@@ -4,8 +4,6 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-import BankClient from "./sample/BankClient";
-
 describe('Token library', () => {
     it("should perform a transfer flow", async () => {
         const username1 = Token.Util.generateNonce();
@@ -16,7 +14,7 @@ describe('Token library', () => {
 
         const member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
         await member1.subscribeToNotifications("iron");
-        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];
 

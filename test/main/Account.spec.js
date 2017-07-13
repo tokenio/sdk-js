@@ -5,7 +5,6 @@ import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 
 let member = {};
 let username = '';
@@ -19,13 +18,13 @@ describe('Account tests', () => {
     });
 
     it('should get accounts', async () => {
-        const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        const auth = await member.createTestBankAccount(10000, 'EUR');
         await member.linkAccounts(auth);
         await member.getAccounts();
     });
 
     it('should unlink accounts', async () => {
-        const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        const auth = await member.createTestBankAccount(100000, 'EUR');
         await member.linkAccounts(auth);
         const linked = await member.getAccounts();
         assert.equal(linked.length, 1);
@@ -35,7 +34,7 @@ describe('Account tests', () => {
     });
 
     it('should have name and id', async () => {
-        const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+        const auth = await member.createTestBankAccount(100000, 'EUR');
         await member.linkAccounts(auth);
         const accs = await member.getAccounts();
         assert.equal(accs.length, 1);
@@ -48,7 +47,7 @@ describe('Account tests', () => {
 
     describe('advances', () => {
         beforeEach(async () => {
-            const auth = await BankClient.requestLinkAccounts(username, 100000, 'EUR');
+            const auth = await member.createTestBankAccount(100000, 'EUR');
             const accs = await member.linkAccounts(auth);
             account = accs[0];
         });

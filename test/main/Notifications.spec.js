@@ -6,7 +6,6 @@ const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import BankClient from "../sample/BankClient";
 import {KeyLevel} from "../../src/constants";
 
 const GET_NOTIFICATION_TIMEOUT_MS = 5000;
@@ -76,7 +75,7 @@ describe('Notifications', () => {
             PLATFORM: 'TEST',
             TARGET: '123',
         });
-        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         const status = await Token.notifyLinkAccounts(username1, auth);
         assert.equal(status, 'ACCEPTED');
     });
@@ -92,7 +91,7 @@ describe('Notifications', () => {
         const randomStr = '4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5B';
         const keys = Crypto.generateKeys();
         await member1.subscribeToNotifications(randomStr)
-        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccountsAndAddKey(
                 username1,
                 auth,
@@ -104,7 +103,7 @@ describe('Notifications', () => {
     it('should send an actual push to device', async () => {
         await member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000');
-        const auth = await BankClient.requestLinkAccounts(username1, 100000, 'EUR');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccounts(username1, auth);
     });
 
@@ -163,9 +162,8 @@ describe('Notifications', () => {
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
             waitUntil(async () => {
-                const notifications = await BankClient.getNotifications(subscriber.id);
-                assert.equal(notifications.length, 1);
-                const lookedUp = await BankClient.getNotification(
+                const notifications = await member1.getTestBankNotifications(subscriber.id);
+                const lookedUp = await member1.getTestBankNotification(
                         subscriber.id,
                         notifications[0].id);
                 assert.equal(lookedUp.id, notifications[0].id);
