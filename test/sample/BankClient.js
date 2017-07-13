@@ -3,6 +3,7 @@ const axios = require('axios');
 import 'babel-regenerator-runtime';
 const tokenIo = require('../../src');
 const Token = new tokenIo(TEST_ENV);
+const TEST_BIC = 'IRONUSCA000'
 
 const urls = {
     local: 'http://localhost:8100',
@@ -27,7 +28,7 @@ export default {
         const res = await instance(
             {
                 method: 'put',
-                url: `/clients`,
+                url: `/banks/${TEST_BIC}/clients`,
                 data: {
                     firstName: "JS Test",
                     lastName: "JS Testoff " + randLastName,
@@ -37,7 +38,7 @@ export default {
         await instance(
             {
                 method: 'put',
-                url: `/clients/${client.id}/accounts`,
+                url: `/banks/${TEST_BIC}/clients/${client.id}/accounts`,
                 data: {
                     name: accountName,
                     account_number: randomAccNumber,
@@ -49,7 +50,7 @@ export default {
             });
         const res2 = await instance({
                     method: 'put',
-                    url: `/clients/${client.id}/link-accounts`,
+                    url: `/banks/${TEST_BIC}/clients/${client.id}/link-accounts`,
                     data: {
                         username: username,
                         accounts: [ randomAccNumber ]
