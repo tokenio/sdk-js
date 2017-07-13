@@ -30,7 +30,7 @@ let destination1 = {
 const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
-    const auth = await member1.createTestBankAccount(100000, 'EUR', 'iron');
+    const auth = await member1.createTestBankAccount(100000, 'EUR');
     const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
 };
@@ -39,7 +39,7 @@ const setUp1 = async () => {
 const setUp2 = async () => {
     username2 = Token.Util.generateNonce();
     member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
-    const auth = await member2.createTestBankAccount(100000, 'EUR', 'iron');
+    const auth = await member2.createTestBankAccount(100000, 'EUR');
     const accs = await member2.linkAccounts(auth);
     account2 = accs[0];
 };

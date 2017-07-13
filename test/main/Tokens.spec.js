@@ -21,7 +21,7 @@ let member2 = {};
 const setUp1 = async () => {
     username1 = Token.Util.generateNonce();
     member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
-    const auth = await member1.createTestBankAccount(100000, 'EUR', 'iron');
+    const auth = await member1.createTestBankAccount(100000, 'EUR');
     const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
 };

@@ -14,7 +14,7 @@ describe('Token library', () => {
 
         const member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
         await member1.subscribeToNotifications("iron");
-        const auth = await member1.createTestBankAccount(100000, 'EUR', 'iron');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];
 

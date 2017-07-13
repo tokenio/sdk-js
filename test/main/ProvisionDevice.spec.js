@@ -27,7 +27,7 @@ const setUp1 = async () => {
         window.localStorage.clear();
         username1 = Token.Util.generateNonce();
         member1 = await Token.createMember(username1, Token.BrowserCryptoEngine);
-        const auth = await member1.createTestBankAccount(100000, 'EUR', 'iron');
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
         const accs = await member1.linkAccounts(auth);
         account1 = accs[0];
     }
@@ -38,7 +38,7 @@ const setUp2 = async () => {
     if (BROWSER) {
         username2 = Token.Util.generateNonce();
         member2 = await Token.createMember(username2, Token.BrowserCryptoEngine);
-        const auth = await member2.createTestBankAccount(100000, 'EUR', 'iron');
+        const auth = await member2.createTestBankAccount(100000, 'EUR');
         await member2.linkAccounts(auth);
     }
 };
@@ -47,7 +47,7 @@ const setUp2 = async () => {
 const setUp1Memory = async () => {
     username1Memory = Token.Util.generateNonce();
     member1Memory = await Token.createMember(username1Memory, Token.MemoryCryptoEngine);
-    const auth = await member1Memory.createTestBankAccount(100000, 'EUR', 'iron');
+    const auth = await member1Memory.createTestBankAccount(100000, 'EUR');
     const accs = await member1Memory.linkAccounts(auth);
     account1Memory = accs[0];
 };
@@ -56,7 +56,7 @@ const setUp1Memory = async () => {
 const setUp2Memory = async () => {
     username2Memory = Token.Util.generateNonce();
     member2Memory = await Token.createMember(username2Memory, Token.MemoryCryptoEngine);
-    const auth = await member2Memory.createTestBankAccount(100000, 'EUR', 'iron');
+    const auth = await member2Memory.createTestBankAccount(100000, 'EUR');
     await member2Memory.linkAccounts(auth);
 };
 

@@ -18,13 +18,13 @@ describe('Account tests', () => {
     });
 
     it('should get accounts', async () => {
-        const auth = await member.createTestBankAccount(10000, 'EUR', 'iron');
+        const auth = await member.createTestBankAccount(10000, 'EUR');
         await member.linkAccounts(auth);
         await member.getAccounts();
     });
 
     it('should unlink accounts', async () => {
-        const auth = await member.createTestBankAccount(100000, 'EUR', 'iron');
+        const auth = await member.createTestBankAccount(100000, 'EUR');
         await member.linkAccounts(auth);
         const linked = await member.getAccounts();
         assert.equal(linked.length, 1);
@@ -34,7 +34,7 @@ describe('Account tests', () => {
     });
 
     it('should have name and id', async () => {
-        const auth = await member.createTestBankAccount(100000, 'EUR', 'iron');
+        const auth = await member.createTestBankAccount(100000, 'EUR');
         await member.linkAccounts(auth);
         const accs = await member.getAccounts();
         assert.equal(accs.length, 1);
@@ -47,7 +47,7 @@ describe('Account tests', () => {
 
     describe('advances', () => {
         beforeEach(async () => {
-            const auth = await member.createTestBankAccount(100000, 'EUR', 'iron');
+            const auth = await member.createTestBankAccount(100000, 'EUR');
             const accs = await member.linkAccounts(auth);
             account = accs[0];
         });

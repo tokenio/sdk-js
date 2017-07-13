@@ -99,13 +99,13 @@ describe('member tests', () => {
         });
 
         it('should link an account', async () => {
-            const auth = await member.createTestBankAccount(100000, 'EUR', 'iron');
+            const auth = await member.createTestBankAccount(100000, 'EUR');
             const accs = await member.linkAccounts(auth);
             assert.isAtLeast(accs.length, 1);
         });
 
         it('should get accounts', async () => {
-            const auth = await member.createTestBankAccount(100000, 'EUR', 'iron');
+            const auth = await member.createTestBankAccount(100000, 'EUR');
             await member.linkAccounts(auth);
             const accs = await member.getAccounts();
             assert.isAtLeast(accs.length, 2);
