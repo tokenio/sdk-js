@@ -276,7 +276,7 @@ export default class TransferTokenBuilder {
             }
             const res = await this._client.createTransferToken(this._payload);
             if (res.data.status !== "SUCCESS") {
-                throw new Error(res.status);
+                throw new Error(res.data.status);
             }
             return res.data.token;
         });
