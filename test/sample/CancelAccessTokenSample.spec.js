@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 const chai = require('chai');
 const assert = chai.assert;
 

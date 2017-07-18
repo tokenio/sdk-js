@@ -1,4 +1,4 @@
-import { tokenSdkVersion } from "../constants";
+import {tokenSdkVersion} from "../constants";
 
 /**
  * Class to add sdk version and type.

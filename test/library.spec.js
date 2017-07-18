@@ -1,5 +1,5 @@
-import tokenIo from "../src";
-const Token = new tokenIo(TEST_ENV);
+import TokenIo from "../src";
+const Token = new TokenIo(TEST_ENV);
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
@@ -8,9 +8,6 @@ describe('Token library', () => {
     it("should perform a transfer flow", async () => {
         const username1 = Token.Util.generateNonce();
         const username2 = Token.Util.generateNonce();
-
-        // For testing push notifications
-        const pushToken = '36f21423d991dfe63fc2e4b4177409d29141fd4bcbdb5bff202a10535581f97900';
 
         const member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
         await member1.subscribeToNotifications("iron");

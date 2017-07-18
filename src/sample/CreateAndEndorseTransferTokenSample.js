@@ -3,6 +3,7 @@
  *
  * @param {Member} payer - member that will fund the token
  * @param {string} payeeUsername - username of the payee member
+ * @return {Object} token - endorsed token
  */
 export default async (payer, payeeUsername) => {
     const accounts = await payer.getAccounts();
@@ -17,4 +18,4 @@ export default async (payer, payeeUsername) => {
     const result = await payer.endorseToken(token);
 
     return result.token;
-}
+};

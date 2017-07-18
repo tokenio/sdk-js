@@ -16,10 +16,10 @@ export default async (payee, tokenId) => {
                 iban: '123',
             }
         }
-    }
+    };
 
     // Payer redeems the token, getting a transfer
     const transfer = await payee.redeemToken(transferToken, 5, 'EUR', 'lunch', [destination]);
 
     return transfer;
-}
+};

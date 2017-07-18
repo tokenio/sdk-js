@@ -16,7 +16,7 @@ class HttpClient {
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env, globalRpcErrorCallback){
+    constructor(env, globalRpcErrorCallback) {
         this._instance = axios.create({
             baseURL: urls[env]
         });
@@ -30,7 +30,7 @@ class HttpClient {
         const errorHandler = new ErrorHandler(globalRpcErrorCallback);
         this._instance.interceptors.response.use(null, (error) => {
             throw errorHandler.handleError(error);
-        })
+        });
     }
 
     /**
@@ -99,7 +99,7 @@ class HttpClient {
      *
      * @param {string} memberId - id of the member
      * @param {Object} key - key to approve
-     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @param {Object} cryptoEngine - engine to use for signing
      * @return {Object} response - response to the API call
      */
     approveFirstKey(memberId, key, cryptoEngine) {
@@ -140,7 +140,7 @@ class HttpClient {
      *
      * @param {string} memberId - id of the member
      * @param {Array} keys - keys to approve
-     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @param {Object} cryptoEngine - engine to use for signing
      * @return {Object} response - response to the API call
      */
     approveFirstKeys(memberId, keys, cryptoEngine) {

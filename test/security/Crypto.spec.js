@@ -49,7 +49,7 @@ describe('Key management', () => {
                 obj: {
                     an: 'object',
                 }
-            }
+            };
             const sig = Crypto.signJson(json, keys);
             Crypto.verifyJson(json, sig, keys.publicKey);
 

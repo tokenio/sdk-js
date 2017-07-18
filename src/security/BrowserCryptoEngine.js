@@ -29,7 +29,7 @@ class BrowserCryptoEngine {
     /**
      * Constructs the engine, using an existing member/keys if it is in localStorage
      *
-     * @param memberId - memberId of the member we want to create the engine for
+     * @param {string} memberId - memberId of the member we want to create the engine for
      */
     constructor(memberId) {
         if (!BROWSER) {
@@ -63,13 +63,12 @@ class BrowserCryptoEngine {
             });
         }
         window.localStorage.activeMemberId = this._memberId;
-
     }
 
     /**
      * Get's the currently active memberId. This allows login without caching memberId somewhere
      *
-     * @returns {string} memberId - active memberId
+     * @return {string} memberId - active memberId
      */
     static getActiveMemberId() {
         const memberId = window.localStorage.activeMemberId;
@@ -84,13 +83,13 @@ class BrowserCryptoEngine {
      * old key if it exists (with the same security level).
      *
      * @param {string} securityLevel - security level of the key we want to create
-     * @returns {Key} key - generated key
+     * @return {Key} key - generated key
      */
     generateKey(securityLevel) {
         const keypair = Crypto.generateKeys(securityLevel);
         const loadedMember = this._loadMember();
         let replaced = false;
-        for (let i=0; i<loadedMember.keys.length; i++) {
+        for (let i = 0; i < loadedMember.keys.length; i++) {
             if (loadedMember.keys[i].level === keypair.level) {
                 loadedMember.keys[i] = keypair;
                 replaced = true;
@@ -113,7 +112,7 @@ class BrowserCryptoEngine {
      * strings and JSON objects.
      *
      * @param {string} securityLevel - security level of the key we want to use to sign
-     * @returns {Object} signer - signer object
+     * @return {Object} signer - signer object
      */
     createSigner(securityLevel) {
         const loadedMember = this._loadMember();
@@ -127,7 +126,7 @@ class BrowserCryptoEngine {
                         return Crypto.signJson(json, keys);
                     },
                     getKeyId: () => keys.id,
-                }
+                };
             }
         }
         throw new Error(`No key with level ${securityLevel} found`);
@@ -138,7 +137,7 @@ class BrowserCryptoEngine {
      * signatures by that key, on strings and JSON objects.
      *
      * @param {string} keyId - keyId that we want to use to verify
-     * @returns {Object} verifier - verifier object
+     * @return {Object} verifier - verifier object
      */
     createVerifier(keyId) {
         const loadedMember = this._loadMember();
@@ -151,23 +150,22 @@ class BrowserCryptoEngine {
                     verifyJson: (json, signature) => {
                         return Crypto.verifyJson(json, signature, keys.publicKey);
                     }
-                }
+                };
             }
         }
         throw new Error(`No key with id ${keyId} found`);
-
     }
 
     _loadMember() {
         if (!this._memberId) {
             throw new Error('Invalid memberId');
         }
-        const loadedMembers = window.localStorage.members
-            ? JSON.parse(window.localStorage.members)
-            : [];
+        const loadedMembers = window.localStorage.members ?
+            JSON.parse(window.localStorage.members) :
+            [];
         for (let member of loadedMembers) {
             if (member.id === this._memberId) {
-                for (let i=0; i<member.keys.length; i++) {
+                for (let i = 0; i < member.keys.length; i++) {
                     member.keys[i].publicKey = Crypto.bufferKey(member.keys[i].publicKey);
                     member.keys[i].secretKey = Crypto.bufferKey(member.keys[i].secretKey);
                 }
@@ -181,7 +179,7 @@ class BrowserCryptoEngine {
         const memberCopy = {
             id: member.id,
             keys: [],
-        }
+        };
         for (let keypair of member.keys) {
             memberCopy.keys.push({
                 id: keypair.id,
@@ -192,11 +190,11 @@ class BrowserCryptoEngine {
             });
         }
 
-        const loadedMembers = window.localStorage.members
-            ? JSON.parse(window.localStorage.members)
-            : [];
+        const loadedMembers = window.localStorage.members ?
+            JSON.parse(window.localStorage.members) :
+            [];
         let replaced = false;
-        for (let i=0; i<loadedMembers.length; i++) {
+        for (let i = 0; i < loadedMembers.length; i++) {
             if (loadedMembers[i].id === memberCopy.id) {
                 loadedMembers[i] = memberCopy;
                 replaced = true;

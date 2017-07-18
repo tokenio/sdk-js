@@ -10,15 +10,16 @@ let sjcl = null;
 /**
  * Initializes sjcl and mouse input collection, for IE10
  */
-if (!BROWSER) {}
-else if (window.crypto && window.crypto.getRandomValues) {}
-else if (window.msCrypto && window.msCrypto.getRandomValues) {}
-else {
+if (!BROWSER) {
+} else if (window.crypto && window.crypto.getRandomValues) {
+  // Do nothing, we have secure random crypto
+} else if (window.msCrypto && window.msCrypto.getRandomValues) {
+  // Do nothingm, we have secure random crypto
+} else {
     // Only set it up when it is necessary
     sjcl = require('sjcl');
     sjcl.random.startCollectors();
 }
-
 
 /**
  * Class providing static crypto primitives.
@@ -27,15 +28,16 @@ class Crypto {
     /**
      * Generates a keypair to use with the token System
      *
+     * @param {string} keyLevel - desired security level of key
      * @return {object} keyPair - keyPair
      */
     static generateKeys(keyLevel) {
         if (sjcl !== null) {
             if (sjcl.random.isReady()) {
                 nacl.setPRNG(function(x, n) {
-                    const randomWords = sjcl.random.randomWords(n/4);
+                    const randomWords = sjcl.random.randomWords(n / 4);
                     for (let i = 0; i < n; i++) {
-                        x[i] = Util.getByte(randomWords[Math.floor(i / 4)], i % 4)
+                        x[i] = Util.getByte(randomWords[Math.floor(i / 4)], i % 4);
                     }
                     return x;
                 });
@@ -91,7 +93,6 @@ class Crypto {
      * @param {string} message - message to verify
      * @param {string} signature - signature to verify
      * @param {Buffer} publicKey - public key to use for verification
-     * @return {empty} empty - returns nothing if successful
      */
     static verify(message, signature, publicKey) {
         const msg = Crypto.wrapBuffer(message);

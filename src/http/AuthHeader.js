@@ -75,9 +75,9 @@ class AuthHeader {
     }
 
     static _onBehalfOfHeader(context) {
-        if(context !== undefined &&
+        if (context !== undefined &&
             context.onBehalfOf !== undefined &&
-            context.onBehalfOf  !== '') {
+            context.onBehalfOf !== '') {
             return ',on-behalf-of=' + context.onBehalfOf;
         }
         return '';

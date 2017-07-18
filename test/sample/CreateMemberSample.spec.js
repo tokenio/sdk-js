@@ -1,6 +1,4 @@
-const chai = require('chai');
-const assert = chai.assert;
-
+/* eslint-disable new-cap */
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 

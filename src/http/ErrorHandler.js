@@ -20,7 +20,7 @@ class ErrorHandler {
      * Handles RPC error and calls the globalRpcErrorCallback.
      *
      * @param {object} error - error to handle
-     * @returns {object} error - original RPC error
+     * @return {object} error - original RPC error
      */
     handleError(error) {
         if (error.response && error.response.headers) {
@@ -33,8 +33,12 @@ class ErrorHandler {
                 console.log("Error details: ", tokenErrorDetails);
             }
 
-            if (tokenError && this._globalRpcErrorCallback) {
-                const mappedError = { name: tokenError, message: error.response.data };
+            if (this._globalRpcErrorCallback) {
+                const name = tokenError ? tokenError : 'UNKNOWN';
+                const mappedError = {
+                    name,
+                    message: error.response.data
+                };
                 this._globalRpcErrorCallback(mappedError);
                 return mappedError;
             }

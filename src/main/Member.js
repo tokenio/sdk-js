@@ -2,7 +2,7 @@ import AuthHttpClient from "../http/AuthHttpClient";
 import HttpClient from "../http/HttpClient";
 import TransferTokenBuilder from "./TransferTokenBuilder";
 import Util from "../Util";
-import maxDecimals from "../constants";
+import {maxDecimals} from "../constants";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -17,7 +17,7 @@ export default class Member {
      * @constructor
      * @param {string} env - The environment to use for this member
      * @param {string} memberId - The id of this memberId
-     * @param {object} cryptoEngine - the cryptoEngine to use for signing and key storage
+     * @param {Object} cryptoEngine - the cryptoEngine to use for signing and key storage
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
@@ -88,7 +88,6 @@ export default class Member {
         this._client.clearAccessToken();
     }
 
-
     /**
      * Approves a new key for this member
      *
@@ -113,7 +112,6 @@ export default class Member {
         return Util.callAsync(this.approveKeys, async () => {
             const prevHash = await this._getPreviousHash();
             await this._client.approveKeys(prevHash, keys);
-            return;
         });
     }
 
@@ -127,7 +125,6 @@ export default class Member {
         return Util.callAsync(this.removeKey, async () => {
             const prevHash = await this._getPreviousHash();
             await this._client.removeKey(prevHash, keyId);
-            return;
         });
     }
 
@@ -204,7 +201,6 @@ export default class Member {
     /**
      * Links bank accounts to the member
      *
-     * @param {string} bankId - bank to link
      * @param {string} bankAuthorization - bankAuthorization obtained from bank
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
@@ -219,13 +215,13 @@ export default class Member {
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
      * @param {Array} accountIds - account ids to unlink
-     * @returns {Promise} empty - empty promise
+     * @return {Promise} empty - empty promise
      */
-    unlinkAccounts(accountIds)  {
+    unlinkAccounts(accountIds) {
         return Util.callAsync(this.unlinkAccounts, async() => {
             await this._client.unlinkAccounts(accountIds);
             return;
-        })
+        });
     }
 
     /**
@@ -236,30 +232,31 @@ export default class Member {
     getAccounts() {
         return Util.callAsync(this.getAccounts, async () => {
             const res = await this._client.getAccounts();
-            return res.data.accounts === undefined
-                ? []
-                : res.data.accounts;
+            return res.data.accounts === undefined ?
+                [] :
+                res.data.accounts;
         });
     }
 
     /**
      * Looks up a member's account by Id
      *
+     * @param {string} accountId - accountId
      * @return {Promise} account - Promise resolving to the account
      */
     getAccount(accountId) {
         return Util.callAsync(this.getAccount, async () => {
             const res = await this._client.getAccount(accountId);
-            return res.data.account === undefined
-                ? []
-                : res.data.account;
+            return res.data.account === undefined ?
+                [] :
+                res.data.account;
         });
     }
 
     /**
      * Gets a list of all available banks for linking
      *
-     * @return {Array[object]} banks - list of banks
+     * @return {Promise} banks - list of banks
      */
     getBanks() {
         return Util.callAsync(this.getBanks, async () => {
@@ -272,7 +269,7 @@ export default class Member {
      * Gets the info of a bank, including a link for pairing accounts at this bank
      *
      * @param {string} bankId - id of the bank
-     * @returns {Object} bankInfo - info
+     * @return {Object} bankInfo - info
      */
     getBankInfo(bankId) {
         return Util.callAsync(this.getBankInfo, async () => {
@@ -295,7 +292,7 @@ export default class Member {
         return Util.callAsync(this.subscribeToNotifications, async () => {
             const res = await this._client.subscribeToNotifications(handler, handlerInstructions);
             return res.data.subscriber;
-        })
+        });
     }
 
     /**
@@ -306,9 +303,9 @@ export default class Member {
     getSubscribers() {
         return Util.callAsync(this.getSubscribers, async () => {
             const res = await this._client.getSubscribers();
-            return res.data.subscribers === undefined
-                ? []
-                : res.data.subscribers;
+            return res.data.subscribers === undefined ?
+                [] :
+                res.data.subscribers;
         });
     }
 
@@ -335,9 +332,9 @@ export default class Member {
     getNotifications(offset, limit) {
         return Util.callAsync(this.getNotifications, async () => {
             const res = await this._client.getNotifications(offset, limit);
-            const data = res.data.notifications === undefined
-                    ? []
-                    : res.data.notifications;
+            const data = res.data.notifications === undefined ?
+                    [] :
+                    res.data.notifications;
             return {
                 data,
                 offset: res.data.offset,
@@ -406,9 +403,9 @@ export default class Member {
     getAddresses() {
         return Util.callAsync(this.getAddresses, async () => {
             const res = await this._client.getAddresses();
-            return res.data.addresses === undefined
-                ? []
-                : res.data.addresses;
+            return res.data.addresses === undefined ?
+                [] :
+                res.data.addresses;
         });
     }
 
@@ -420,8 +417,7 @@ export default class Member {
      */
     deleteAddress(addressId) {
         return Util.callAsync(this.deleteAddress, async () => {
-            const res = await this._client.deleteAddress(addressId);
-            return;
+            await this._client.deleteAddress(addressId);
         });
     }
 
@@ -460,8 +456,7 @@ export default class Member {
      */
     setProfilePicture(type, data) {
         return Util.callAsync(this.setProfilePicture, async () => {
-            const res = await this._client.setProfilePicture(type, data)
-            return;
+            await this._client.setProfilePicture(type, data);
         });
     }
 
@@ -474,7 +469,7 @@ export default class Member {
      */
     getProfilePicture(id, size) {
         return Util.callAsync(this.getProfilePicture, async () => {
-            const res = await this._client.getProfilePicture(id, size)
+            const res = await this._client.getProfilePicture(id, size);
             return res.data.blob;
         });
     }
@@ -498,7 +493,7 @@ export default class Member {
      *
      * @param {Object} tokenToCancel - the old token to cancel
      * @param {Array} newResources - the new resources for this token to grant access to
-     * @returns {Promise} operationResult - the result of the operation
+     * @return {Promise} operationResult - the result of the operation
      */
     replaceAccessToken(tokenToCancel, newResources) {
         return Util.callAsync(this.replaceAccessToken, async () => {
@@ -515,7 +510,7 @@ export default class Member {
      *
      * @param {Object} tokenToCancel - the old token to cancel
      * @param {Array} newResources - the new resources for this token to grant access to
-     * @returns {Promise} operationResult - the result of the operation
+     * @return {Promise} operationResult - the result of the operation
      */
     replaceAndEndorseAccessToken(tokenToCancel, newResources) {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
@@ -564,9 +559,9 @@ export default class Member {
     getTransferTokens(offset, limit) {
         return Util.callAsync(this.getTransferTokens, async () => {
             const res = await this._client.getTokens('TRANSFER', offset, limit);
-            const data = res.data.tokens === undefined
-                    ? []
-                    : res.data.tokens;
+            const data = res.data.tokens === undefined ?
+                    [] :
+                    res.data.tokens;
             return {
                 data,
                 offset: res.data.offset,
@@ -584,9 +579,9 @@ export default class Member {
     getAccessTokens(offset, limit) {
         return Util.callAsync(this.getAccessTokens, async () => {
             const res = await this._client.getTokens('ACCESS', offset, limit);
-            const data = res.data.tokens === undefined
-                    ? []
-                    : res.data.tokens;
+            const data = res.data.tokens === undefined ?
+                    [] :
+                    res.data.tokens;
             return {
                 data,
                 offset: res.data.offset,
@@ -655,9 +650,9 @@ export default class Member {
                 amount,
                 currency,
                 description,
-                destinations)
+                destinations);
             return res.data.transfer;
-        })
+        });
     }
 
     /**
@@ -684,9 +679,9 @@ export default class Member {
     getTransfers(tokenId, offset, limit) {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
-            const data = res.data.transfers === undefined
-                    ? []
-                    : res.data.transfers;
+            const data = res.data.transfers === undefined ?
+                    [] :
+                    res.data.transfers;
             return {
                 data,
                 offset: res.data.offset,
@@ -732,9 +727,9 @@ export default class Member {
     getTransactions(accountId, offset, limit) {
         return Util.callAsync(this.getTransactions, async () => {
             const res = await this._client.getTransactions(accountId, offset, limit);
-            const data = res.data.transactions === undefined
-                    ? []
-                    : res.data.transactions;
+            const data = res.data.transactions === undefined ?
+                    [] :
+                    res.data.transactions;
             return {
                 data,
                 offset: res.data.offset,
@@ -753,7 +748,7 @@ export default class Member {
      */
     createBlob(ownerId, type, name, data) {
         return Util.callAsync(this.createBlob, async () => {
-            const res = await this._client.createBlob(ownerId, type, name, data)
+            const res = await this._client.createBlob(ownerId, type, name, data);
             return {
                 blobId: res.data.blobId,
                 type,
@@ -770,7 +765,7 @@ export default class Member {
      */
     getBlob(blobId) {
         return Util.callAsync(this.getBlob, async () => {
-            const res = await this._client.getBlob(blobId)
+            const res = await this._client.getBlob(blobId);
             return res.data.blob;
         });
     }
@@ -784,7 +779,7 @@ export default class Member {
      */
     getTokenBlob(tokenId, blobId) {
         return Util.callAsync(this.getTokenBlob, async () => {
-            const res = await this._client.getTokenBlob(tokenId, blobId)
+            const res = await this._client.getTokenBlob(tokenId, blobId);
             return res.data.blob;
         });
     }
@@ -794,7 +789,7 @@ export default class Member {
      *
      * @param {double} balance - balance of the account
      * @param {string} currency - currency of the account
-     * @returns {Array} bank authorization to use with linkAccounts
+     * @return {Array} bank authorization to use with linkAccounts
      */
     createTestBankAccount(balance, currency) {
         return Util.callAsync(this.createTestBankAccount, async () => {

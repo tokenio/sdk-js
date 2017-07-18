@@ -22,10 +22,10 @@ plugins.push(new webpack.DefinePlugin({
 }));
 
 fs.readdirSync('node_modules')
-    .filter(function (x) {
+    .filter(function(x) {
         return ['.bin'].indexOf(x) === -1;
     })
-    .forEach(function (mod) {
+    .forEach(function(mod) {
         nodeModules[mod] = 'commonjs ' + mod;
     });
 

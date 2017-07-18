@@ -1,6 +1,3 @@
-import nacl from "tweetnacl";
-import base64Url from "base64url";
-
 /**
  * Class to provide static utility functions.
  */
@@ -8,10 +5,10 @@ class Util {
     /**
      * Generates a random nonce
      *
-     * @returns string nonce
+     * @return {string} nonce - random string
      */
     static generateNonce() {
-        return Math.random().toString(36).substring(2);
+        return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
     }
 
     /**
@@ -20,7 +17,7 @@ class Util {
      *
      * @param {number} word - 32 bit value number, in 2s complement
      * @param {number} index - index of the byte to return
-     * @returns {number} result - the desired byte [0, 255]
+     * @return {number} result - the desired byte [0, 255]
      */
     static getByte(word, index) {
         if (index === 0) {
@@ -29,10 +26,9 @@ class Util {
             return (word & ((1 << 16) - 1)) >> 8;
         } else if (index === 2) {
             return (word & ((1 << 24)) - 1) >> 16;
-        } else {
-            const temp = (word & (((1 << 8) - 1) << 24)) >> 24;
-            return temp < 0 ? (256 + temp) : temp;
         }
+        const temp = (word & (((1 << 8) - 1) << 24)) >> 24;
+        return temp < 0 ? (256 + temp) : temp;
     }
 
     /**
@@ -42,7 +38,7 @@ class Util {
      * @return {Number} count - number of decimals
      */
    static countDecimals(value) {
-       if(Math.floor(value) === value) {
+       if (Math.floor(value) === value) {
            return 0;
        }
        return value.toString().split(".")[1].length || 0;
@@ -61,9 +57,9 @@ class Util {
         try {
             return await fn();
         } catch (err) {
-            const reason = (err.response !== undefined && err.response.data !== undefined)
-                    ? err.response.data
-                    : "UNKNOWN";
+            const reason = (err.response !== undefined && err.response.data !== undefined) ?
+                    err.response.data :
+                    "UNKNOWN";
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             return Promise.reject(err);
         }
@@ -79,9 +75,9 @@ class Util {
         try {
             return fn();
         } catch (err) {
-            const reason = (err.response !== undefined && err.response.data !== undefined)
-                    ? err.response.data
-                    : "UNKNOWN";
+            const reason = (err.response !== undefined && err.response.data !== undefined) ?
+                    err.response.data :
+                    "UNKNOWN";
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }

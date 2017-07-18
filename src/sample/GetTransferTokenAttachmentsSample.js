@@ -22,4 +22,4 @@ export default async (payee, tokenId) => {
         allContents.push(blobContents);
     }
     return allContents;
-}
+};

@@ -2,8 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
 
@@ -54,7 +54,7 @@ describe('member tests', () => {
             const firstUsername = await member.firstUsername();
             assert.isOk(firstUsername);
             assert.include(usernames, firstUsername);
-        })
+        });
 
         it('should add multiple usernames', async () => {
             const username = Token.Util.generateNonce();

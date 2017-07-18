@@ -3,10 +3,8 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
 const base64js = require('base64-js');
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
-
-import Crypto from "../../src/security/Crypto";
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 let member1 = {};
 let username1 = '';
@@ -14,18 +12,6 @@ let account1 = {};
 
 let member2 = {};
 let username2 = '';
-let account2 = {};
-
-let token1 = {};
-
-let destination1 = {
-    account: {
-        token: {
-            accountId: Token.Util.generateNonce(),
-            memberId: Token.Util.generateNonce(),
-        }
-    }
-};
 
 // Set up a first member
 const setUp1 = async () => {
@@ -40,18 +26,15 @@ const setUp1 = async () => {
 const setUp2 = async () => {
     username2 = Token.Util.generateNonce();
     member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
-    const auth = await member2.createTestBankAccount(100000, 'EUR');
-    const accs = await member2.linkAccounts(auth);
-    account2 = accs[0];
 };
 
 const randomArray = (len) => {
     const arr = new Uint8Array(len);
-    for (let i = 0; i < len; i ++) {
+    for (let i = 0; i < len; i++) {
         arr[i] = Math.floor((Math.random() * 256));
     }
     return arr;
-}
+};
 
 describe('Blobs', async () => {
     before(() => Promise.all([setUp1(), setUp2()]));

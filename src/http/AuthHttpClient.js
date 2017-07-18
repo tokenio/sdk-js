@@ -1,7 +1,9 @@
+/* eslint-disable camelcase */
+
 import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
-import AuthContext from "./AuthContext"
+import AuthContext from "./AuthContext";
 import {urls, KeyLevel, accessTokenVersion} from "../constants";
 import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
@@ -21,11 +23,11 @@ class AuthHttpClient {
      *
      * @param {string} env - desired env, such as 'prd'
      * @param {string} memberId - member making the requests
-     * @param {CryptoEngine} cryptoEngine - engine to use for signing
+     * @param {Object} cryptoEngine - engine to use for signing
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env, memberId, cryptoEngine, globalRpcErrorCallback){
+    constructor(env, memberId, cryptoEngine, globalRpcErrorCallback) {
         this._instance = axios.create({
             baseURL: urls[env]
         });
@@ -53,7 +55,7 @@ class AuthHttpClient {
         const errorHandler = new ErrorHandler(globalRpcErrorCallback);
         this._instance.interceptors.response.use(null, (error) => {
             throw errorHandler.handleError(error);
-        })
+        });
     }
 
     _resetRequestInterceptor() {
@@ -64,7 +66,7 @@ class AuthHttpClient {
             this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
             versionHeader.addVersionHeader(config);
             return config;
-        })
+        });
     }
 
     /**
@@ -259,7 +261,7 @@ class AuthHttpClient {
     setProfile(profile) {
        const req = {
            profile
-       }
+       };
        const config = {
            method: 'post',
            url: `/members/profile`,
@@ -272,13 +274,13 @@ class AuthHttpClient {
      * Gets a member's public profile.
      *
      * @param {string} id - member id whose profile to get
-     * return {Object} response - response to the API call
+     * @return {Object} response - response to the API call
      */
     getProfile(id) {
         const config = {
             method: 'get',
             url: `/members/${id}/profile`,
-         }
+         };
          return this._instance(config);
     }
 
@@ -296,9 +298,9 @@ class AuthHttpClient {
                 type: type,
                 name: "profile",
                 data: base64js.fromByteArray(data),
-		accessMode: "PUBLIC",
+    accessMode: "PUBLIC",
             },
-        }
+        };
         const config = {
             method: 'post',
             url: `/members/profilepicture`,
@@ -328,7 +330,7 @@ class AuthHttpClient {
     /**
      * Links accounts to the member.
      *
-     * @param {Object} bankAuthoriation - encrypted authorization to accounts
+     * @param {Object} bankAuthorization - encrypted authorization to accounts
      * @return {Object} response - response to the API call
      */
     linkAccounts(bankAuthorization) {
@@ -465,7 +467,7 @@ class AuthHttpClient {
                 name,
                 data: base64js.fromByteArray(data),
             },
-        }
+        };
         const config = {
             method: 'post',
             url: `/blobs`,
@@ -475,28 +477,10 @@ class AuthHttpClient {
     }
 
     /**
-     * Gets a blob.
-     *
-     * @param {string} blobId
-     * @return {Object} response - response to the API call
-     */
-    getBlob(blobId) {
-        const req = {
-            blobId,
-        }
-        const config = {
-            method: 'get',
-            url: `/blobs/${blobId}`,
-            data: req
-        };
-        return this._instance(config);
-    }
-
-    /**
      * Gets a blob that is a attached to a token.
      *
-     * @param {string} tokenId
-     * @param {string} blobId
+     * @param {string} tokenId - id of the token
+     * @param {string} blobId - id of the blob
      * @return {Object} response - response to the API call
      */
     getTokenBlob(tokenId, blobId) {
@@ -510,7 +494,7 @@ class AuthHttpClient {
     /**
      * Gets a blob from the server.
      *
-     * @param {string} blobId
+     * @param {string} blobId - id of the blob
      * @return {Object} response - response to the API call
      */
     getBlob(blobId) {

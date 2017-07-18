@@ -14,4 +14,4 @@ export default async (grantee, tokenId) => {
     // Clear the access token
     grantee.clearAccessToken();
     return accounts;
-}
+};

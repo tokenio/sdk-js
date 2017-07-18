@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars*/
 /**
  * Links a Token member and a bank.
  *
@@ -15,4 +16,4 @@ export default async (member) => {
 
     // Links the account, by sending the bank authorization
     const accounts = await member.linkAccounts(encryptedBankAuthorization);
-}
+};

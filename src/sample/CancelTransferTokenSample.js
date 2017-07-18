@@ -11,4 +11,4 @@ export default async (payer, tokenId) => {
 
     // Payer cancels the token
     return await payer.cancelToken(transferToken);
-}
+};

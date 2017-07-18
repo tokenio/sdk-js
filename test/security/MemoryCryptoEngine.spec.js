@@ -1,13 +1,11 @@
 const chai = require('chai');
 const assert = chai.assert;
-import Crypto from "../../src/security/Crypto";
 import MemoryCryptoEngine from "../../src/security/MemoryCryptoEngine";
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 if (BROWSER) {
     describe('Memory crypto engine', () => {
-
         it('should create the memory crypto engine', () => {
             const memberId = Token.Util.generateNonce();
             const engine = new MemoryCryptoEngine(memberId);
@@ -30,14 +28,14 @@ if (BROWSER) {
         it('should not create a bad signer', () => {
             const memberId = Token.Util.generateNonce();
             const engine = new MemoryCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
+            engine.generateKey('LOW');
             try {
-                const signerStandard = engine.createSigner('STANDARD');
+                engine.createSigner('STANDARD');
                 return Promise.reject(new Error("should fail"));
             } catch (err) {
                 assert.include(err.message, "No key");
             }
-        })
+        });
 
         it('should have a signer with a key id', () => {
             const memberId = Token.Util.generateNonce();
@@ -45,7 +43,7 @@ if (BROWSER) {
             const pk1 = engine.generateKey('LOW');
             const signerLow = engine.createSigner('LOW');
             assert.equal(signerLow.getKeyId(), pk1.id);
-        })
+        });
 
         it('should sign and verify', () => {
             const memberId = Token.Util.generateNonce();
@@ -55,7 +53,7 @@ if (BROWSER) {
             const verifier = engine.createVerifier(pk1.id);
             const sig = signer.sign('abcdefg');
             verifier.verify('abcdefg', sig);
-        })
+        });
 
         it('should sign and verify json', () => {
             const memberId = Token.Util.generateNonce();
@@ -63,9 +61,9 @@ if (BROWSER) {
             const pk1 = engine.generateKey('LOW');
             const signer = engine.createSigner('LOW');
             const verifier = engine.createVerifier(pk1.id);
-            const sig = signer.signJson({a: 5, c:14, b:-512});
-            verifier.verifyJson({a: 5, c:14, b:-512}, sig);
-        })
+            const sig = signer.signJson({a: 5, c: 14, b: -512});
+            verifier.verifyJson({a: 5, c: 14, b: -512}, sig);
+        });
 
         it('should fail to verify an invalid signature', () => {
             const memberId = Token.Util.generateNonce();
@@ -80,20 +78,19 @@ if (BROWSER) {
             } catch (err) {
                 assert.include(err.message, "Invalid signature");
             }
-        })
+        });
 
         it('should be able to create multiple engines', () => {
             const memberId = Token.Util.generateNonce();
             const engine = new MemoryCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
+            engine.generateKey('LOW');
             const engine2 = new MemoryCryptoEngine(memberId);
             const pk2 = engine2.generateKey('STANDARD');
-            const engine3 = new MemoryCryptoEngine(memberId);
             const signer = engine.createSigner('STANDARD');
             const verifier = engine2.createVerifier(pk2.id);
             const sig = signer.sign('abcdefg');
             verifier.verify('abcdefg', sig);
-        })
+        });
 
         it('should be able to log in with the active memberId', () => {
             const memberId = Token.Util.generateNonce();
@@ -102,8 +99,8 @@ if (BROWSER) {
             const engine = new MemoryCryptoEngine(memberId);
             const engine2 = new MemoryCryptoEngine(memberId2);
             const engine3 = new MemoryCryptoEngine(memberId3);
-            const pk1 = engine.generateKey('LOW');
-            const pk2 = engine2.generateKey('LOW');
+            engine.generateKey('LOW');
+            engine2.generateKey('LOW');
             const pk3 = engine3.generateKey('LOW');
 
             const engineNew = new MemoryCryptoEngine(
@@ -112,15 +109,15 @@ if (BROWSER) {
             const verifier = engineNew.createVerifier(pk3.id);
             const sig = signer.sign('abcdefg');
             verifier.verify('abcdefg', sig);
-        })
+        });
 
         it('should fail to log in to an empty browser', () => {
             try {
                 const engine = new MemoryCryptoEngine();
-                return Promise.reject(new Error("should fail to log in"));
+                return Promise.reject(new Error("should fail to log in", engine));
             } catch (err) {
                 assert.include(err.message, "Invalid memberId");
             }
-        })
+        });
     });
 }

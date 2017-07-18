@@ -51,7 +51,7 @@ class Token {
     usernameExists(username) {
         return Util.callAsync(this.usernameExists, async () => {
             const res = await this._unauthenticatedClient.getMemberId(username);
-            return res.data.memberId != null && res.data.memberId !== "";
+            return (res.data.memberId ? res.data.memberId !== "" : false);
         });
     }
 
@@ -72,12 +72,11 @@ class Token {
      * Creates a member with a username and a keypair, using the provided engine
      *
      * @param  {string} username - username to set for member
-     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
     createMember(username, CryptoEngine) {
         return Util.callAsync(this.createMember, async () => {
-            const keys = Crypto.generateKeys();
             const response = await this._unauthenticatedClient.createMemberId();
             const engine = new CryptoEngine(response.data.memberId);
             const pk1 = engine.generateKey('PRIVILEGED');
@@ -103,7 +102,7 @@ class Token {
      * existing device/keys.
      *
      * @param {string} username - user to provision the device for
-     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDevice(username, CryptoEngine) {
@@ -119,7 +118,7 @@ class Token {
             return {
                 memberId: res.data.memberId,
                 keys: [pk1, pk2, pk3],
-            }
+            };
         });
     }
 
@@ -129,7 +128,7 @@ class Token {
      * existing device/keys. This only generates one (LOW) key.
      *
      * @param {string} username - user to provision t he device for
-     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDeviceLow(username, CryptoEngine) {
@@ -144,7 +143,7 @@ class Token {
             return {
                 memberId: res.data.memberId,
                 keys: [pk1],
-            }
+            };
         });
     }
 
@@ -152,13 +151,13 @@ class Token {
      * Logs a member in from keys stored in the CryptoEngine. If memberId is not provided,
      * the last member to log on will be used
      *
-     * @param  {CryptoEngine class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param {string} memberId - optional id of the member we want to log in
      * @return {Promise} member - instantiated member
      */
     login(CryptoEngine, memberId) {
         return Util.callSync(this.login, () => {
-            if (!memberId && typeof CryptoEngine["getActiveMemberId"] === 'function') {
+            if (!memberId && typeof CryptoEngine.getActiveMemberId === 'function') {
                 memberId = CryptoEngine.getActiveMemberId();
             }
             const engine = new CryptoEngine(memberId);
@@ -171,6 +170,8 @@ class Token {
      * payload
      *
      * @param {string} username - username to notify
+     * @param {string} bankId - id of the bank
+     * @param {string} bankName - Name of the bank
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
      * @return {Promise} NotifyStatus - status
      */
