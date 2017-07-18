@@ -2,10 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
-
-import Crypto from "../../src/security/Crypto";
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 let member1 = {};
 let username1 = '';
@@ -16,7 +14,6 @@ let username2 = '';
 
 let member1Memory = {};
 let username1Memory = '';
-let account1Memory = {};
 
 let member2Memory = {};
 let username2Memory = '';
@@ -47,9 +44,6 @@ const setUp2 = async () => {
 const setUp1Memory = async () => {
     username1Memory = Token.Util.generateNonce();
     member1Memory = await Token.createMember(username1Memory, Token.MemoryCryptoEngine);
-    const auth = await member1Memory.createTestBankAccount(100000, 'EUR');
-    const accs = await member1Memory.linkAccounts(auth);
-    account1Memory = accs[0];
 };
 
 // Set up a second member in memory
@@ -88,7 +82,11 @@ describe('Provisioning a new device', async () => {
             window.localStorage.members = localStorageCache2;
             const memberLoggedIn = Token.login(Token.BrowserCryptoEngine, deviceInfo.memberId);
             assert.isAtLeast((await memberLoggedIn.keys()).length, 4);
-            const token = await memberLoggedIn.createTransferToken(account1.id, 38.71, 'EUR', username2);
+            const token = await memberLoggedIn.createTransferToken(38.71, 'EUR')
+                .setAccountId(account1.id)
+                .setRedeemerUsername(username2)
+                .setToUsername(username2)
+                .execute();
             const res = await memberLoggedIn.endorseToken(token.id);
             assert.equal(res.status, 'MORE_SIGNATURES_NEEDED');
         });
@@ -101,7 +99,9 @@ describe('Provisioning a new device', async () => {
     });
 
     it('should provision a new LOW device in memory', async() => {
-        const deviceInfo = await Token.provisionDeviceLow(username1Memory, Token.MemoryCryptoEngine);
+        const deviceInfo = await Token.provisionDeviceLow(
+            username1Memory,
+            Token.MemoryCryptoEngine);
         await member1Memory.approveKeys(deviceInfo.keys);
         const memberLoggedIn = Token.login(Token.MemoryCryptoEngine, deviceInfo.memberId);
         assert.isAtLeast((await memberLoggedIn.keys()).length, 4);

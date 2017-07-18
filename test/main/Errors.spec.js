@@ -2,10 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
-
-import Crypto from "../../src/security/Crypto";
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 let member1 = {};
 let username1 = '';
@@ -50,7 +48,7 @@ describe('Error handling', () => {
 
     it('Promise should reject', async() => {
         try {
-            const err = await member2.redeemToken(token1, 10000, 'EUR');
+            await member2.redeemToken(token1, 10000, 'EUR');
             return Promise.reject(new Error("Call should fail"));
         } catch (err) {
             assert.include(err.message, "redeemToken");

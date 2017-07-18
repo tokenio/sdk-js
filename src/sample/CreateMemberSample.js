@@ -2,7 +2,7 @@
  * Imports and sets up the SDK, and creates a Token member with the MemoryCryptoEngine
  * (which will store keys in memory).
  *
- * @returns {Member} member - created member
+ * @return {Member} member - created member
  */
 export default async () => {
     // Initializes SDK
@@ -17,4 +17,4 @@ export default async () => {
 
     // Creates a member, with keys stored in memory
     return await Token.createMember(username, Token.MemoryCryptoEngine);
-}
+};

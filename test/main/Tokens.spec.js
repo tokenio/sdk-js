@@ -2,11 +2,10 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
-import Crypto from "../../src/security/Crypto";
-import {defaultCurrency, KeyLevel} from "../../src/constants";
+import {defaultCurrency} from "../../src/constants";
 const some = require('lodash/some');
 const map = require('lodash/map');
 
@@ -36,15 +35,16 @@ describe('Tokens', () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
     it('should confirm username does not exist', async () => {
-      const exists = await Token.usernameExists(Token.Util.generateNonce());
-      assert.equal(exists, false);
+        const randomUsername = Token.Util.generateNonce();
+        const exists = await Token.usernameExists(randomUsername);
+        assert.equal(exists, false);
     });
 
     it('should confirm username exists', async () => {
-      const username = Token.Util.generateNonce();
-      await member1.addUsername(username);
-      const exists = await Token.usernameExists(username);
-      assert.equal(exists, true);
+        const username = Token.Util.generateNonce();
+        await member1.addUsername(username);
+        const exists = await Token.usernameExists(username);
+        assert.equal(exists, true);
     });
 
     it('should create a token, look it up, and endorse it', async () => {
@@ -67,7 +67,7 @@ describe('Tokens', () => {
         const res = await member1.endorseToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(res.token.payloadSignatures.length, 2);
-        assert.equal(res.status, 'SUCCESS')
+        assert.equal(res.status, 'SUCCESS');
     });
 
     it('should create a token and endorse it by id', async () => {
@@ -76,7 +76,7 @@ describe('Tokens', () => {
             .setRedeemerUsername(username2)
             .execute();
         const res = await member1.endorseToken(token.id);
-        assert.equal(res.status, 'SUCCESS')
+        assert.equal(res.status, 'SUCCESS');
 
         const lookedUp = await member1.getToken(token.id);
         assert.equal(lookedUp.payloadSignatures.length, 2);
@@ -91,7 +91,7 @@ describe('Tokens', () => {
         const res = await member1.cancelToken(token);
         assert.equal(token.payloadSignatures.length, 2);
         assert.equal(token.payloadSignatures[0].action, 'CANCELLED');
-        assert.equal(res.status, 'SUCCESS')
+        assert.equal(res.status, 'SUCCESS');
     });
 
     it('should create token and cancel it by id', async () => {
@@ -100,7 +100,7 @@ describe('Tokens', () => {
             .setRedeemerUsername(username2)
             .execute();
         const res = await member1.cancelToken(token.id);
-        assert.equal(res.status, 'SUCCESS')
+        assert.equal(res.status, 'SUCCESS');
 
         const lookedUp = await member1.getToken(token.id);
         assert.equal(lookedUp.payloadSignatures.length, 2);
@@ -135,7 +135,7 @@ describe('Tokens', () => {
             .setAccountId(account1.id)
             .setRedeemerUsername(username2)
             .execute();
-        await member1.endorseToken(token.id)
+        await member1.endorseToken(token.id);
         const lookedUp = await member2.getToken(token.id);
         assert.equal(lookedUp.id, token.id);
     });

@@ -1,10 +1,12 @@
+/* eslint-disable new-cap */
 const chai = require('chai');
 const assert = chai.assert;
 
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
-import CreateAndEndorseTransferTokenWithAttachmentSample from '../../src/sample/CreateAndEndorseTransferTokenWithAttachmentSample';
+import CreateAndEndorseTransferTokenWithAttachmentSample
+    from '../../src/sample/CreateAndEndorseTransferTokenWithAttachmentSample';
 import GetTransferTokenAttachmentsSample from '../../src/sample/GetTransferTokenAttachmentsSample';
 
 describe('GetTransferTokenAttachmentsSample test', () => {
@@ -15,7 +17,9 @@ describe('GetTransferTokenAttachmentsSample test', () => {
         await LinkMemberAndBankSample(member2);
 
         const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenWithAttachmentSample(member, member2Username);
+        const res = await CreateAndEndorseTransferTokenWithAttachmentSample(
+            member,
+            member2Username);
         const attachmentDatas = await GetTransferTokenAttachmentsSample(member2, res.id);
 
         assert.equal(attachmentDatas.length, 1);

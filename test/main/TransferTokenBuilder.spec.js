@@ -4,11 +4,10 @@ const base64js = require('base64-js');
 
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
-import Crypto from "../../src/security/Crypto";
-import {defaultCurrency, KeyLevel} from "../../src/constants";
+import {defaultCurrency} from "../../src/constants";
 
 let member1 = {};
 let username1 = '';
@@ -16,15 +15,14 @@ let account1 = {};
 
 let username2 = '';
 let member2 = {};
-let account2 = {};
 
 const randomArray = (len) => {
     const arr = new Uint8Array(len);
-    for (let i = 0; i < len; i ++) {
+    for (let i = 0; i < len; i++) {
         arr[i] = Math.floor((Math.random() * 256));
     }
     return arr;
-}
+};
 
 // Set up a first member
 const setUp1 = async () => {
@@ -38,9 +36,6 @@ const setUp1 = async () => {
 const setUp2 = async () => {
     username2 = Token.Util.generateNonce();
     member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
-    const auth = await member2.createTestBankAccount(100000, 'EUR');
-    const accs = await member2.linkAccounts(auth);
-    account2 = accs[0];
 };
 
 describe('TransferTokenBuilder', () => {
@@ -59,7 +54,7 @@ describe('TransferTokenBuilder', () => {
 
     it('should fail where there is no source', async () => {
         try {
-            const token = await member1.createTransferToken(100, defaultCurrency)
+            await member1.createTransferToken(100, defaultCurrency)
                 .setRedeemerUsername(username2)
                 .setDescription('Book purchase')
                 .execute();
@@ -68,11 +63,11 @@ describe('TransferTokenBuilder', () => {
             assert.include(err.message, "No source on token");
             return true;
         }
-    })
+    });
 
     it('should fail where there is no redeemer', async () => {
         try {
-            const token = await member1.createTransferToken(100, defaultCurrency)
+            await member1.createTransferToken(100, defaultCurrency)
                 .setAccountId(account1.id)
                 .setDescription('Book purchase')
                 .execute();
@@ -81,7 +76,7 @@ describe('TransferTokenBuilder', () => {
             assert.include(err.message, "No redeemer on token");
             return true;
         }
-    })
+    });
 
     it('should create a token with attachments', async () => {
         const data = randomArray(300);
@@ -117,7 +112,6 @@ describe('TransferTokenBuilder', () => {
         await member1.endorseToken(token);
         const blobId = token.payload.transfer.attachments[2].blobId;
         const data = (await member1.getTokenBlob(token.id, blobId)).payload.data;
-        console.log(data);
         assert.include([
             base64js.fromByteArray(data1),
             base64js.fromByteArray(data2),
@@ -142,7 +136,7 @@ describe('TransferTokenBuilder', () => {
         const refId = Token.Util.generateNonce();
         const token = await member1.createTransferToken(100, defaultCurrency)
             .setBankAuthorization(auth)
-            .setEffectiveAtMs(new Date().getTime())
+            .setEffectiveAtMs(new Date().getTime() - 2000)
             .setExpiresAtMs(new Date().getTime() + 10000)
             .setRedeemerUsername(username2)
             .setRedeemerMemberId(member2.memberId())

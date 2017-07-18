@@ -11,6 +11,7 @@ describe('Unauthenticated', () => {
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
     });
+
     it('should add a key', async () => {
         const unauthenticatedClient = new HttpClient(TEST_ENV);
         const res = await unauthenticatedClient.createMemberId();
@@ -26,6 +27,7 @@ describe('Unauthenticated', () => {
         assert.isOk(res2.data.member.lastHash);
         assert.equal(res2.data.member.keys.length, 1);
     });
+
     it('should call global handler on version mismatch error', async () => {
         let handlerCalled = false;
         const unauthenticatedClient = new HttpClient(TEST_ENV, (error) => {
@@ -43,10 +45,11 @@ describe('Unauthenticated', () => {
             await unauthenticatedClient.createMemberId();
             Promise.reject(new Error("should fail"));
         } catch (err) {
-            assert.include(err.message, "SDK");
+            assert.include(err.message, 'SDK');
         }
         assert.isTrue(handlerCalled);
     });
+
     it('should get a member', async () => {
         const unauthenticatedClient = new HttpClient(TEST_ENV);
         const res = await unauthenticatedClient.createMemberId();
@@ -60,7 +63,7 @@ describe('Unauthenticated', () => {
             [pk1, pk2, pk3],
             engine);
         assert.isOk(res2.data.member);
-        const res3 = await unauthenticatedClient.getMember(res.data.memberId)
+        const res3 = await unauthenticatedClient.getMember(res.data.memberId);
         assert.isOk(res3.data.member);
         assert.isOk(res3.data.member.lastHash);
         assert.equal(res3.data.member.keys.length, 3);

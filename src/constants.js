@@ -9,6 +9,7 @@ const urls = {
     local: 'http://localhost:8000',
     dev: 'https://api.dev.token.io',
     stg: 'https://api.stg.token.io',
+    sbx: 'https://api.sbx.token.io',
     prd: 'https://api.token.io',
 };
 

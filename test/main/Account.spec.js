@@ -2,8 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 import Crypto from "../../src/security/Crypto";
 
 let member = {};
@@ -28,7 +28,7 @@ describe('Account tests', () => {
         await member.linkAccounts(auth);
         const linked = await member.getAccounts();
         assert.equal(linked.length, 1);
-        await member.unlinkAccounts([linked[0].id ]);
+        await member.unlinkAccounts([linked[0].id]);
         const unlinked = await member.getAccounts();
         assert.equal(unlinked.length, 0);
     });
@@ -60,7 +60,7 @@ describe('Account tests', () => {
         });
 
         it('should get the balance', async () => {
-            const bal = await member.getBalance(account.id)
+            const bal = await member.getBalance(account.id);
             assert.equal(parseFloat(bal.current.value), 100000);
         });
 

@@ -1,6 +1,5 @@
-import AuthHttpClient from "../http/AuthHttpClient";
 import Util from "../Util";
-import {maxDecimals, KeyLevel, transferTokenVersion} from "../constants";
+import {maxDecimals, transferTokenVersion} from "../constants";
 
 export default class TransferTokenBuilder {
 
@@ -12,7 +11,6 @@ export default class TransferTokenBuilder {
      * @param {Object} member - member performing the request
      * @param {number} lifetimeAmount - the lifetime amount of the token
      * @param {string} currency - currency of the token
-     * @return {Object} builder - returns the initialized builder
      */
     constructor(client, member, lifetimeAmount, currency) {
         this._client = client;
@@ -47,7 +45,7 @@ export default class TransferTokenBuilder {
      * Sets the source accountId of the token.
      *
      * @param {string} accountId - source accountId
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setAccountId(accountId) {
         this._payload.transfer.instructions.source = {
@@ -65,7 +63,7 @@ export default class TransferTokenBuilder {
      * Sets the source bank authorization.
      *
      * @param {Object} authorization - bank authorization for source account
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setBankAuthorization(authorization) {
         this._payload.transfer.instructions.source = {
@@ -82,7 +80,7 @@ export default class TransferTokenBuilder {
      * Sets the expiration date of the token.
      *
      * @param {number} expiresAtMs - expiration date in milliseconds
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setExpiresAtMs(expiresAtMs) {
         this._payload.expiresAtMs = expiresAtMs;
@@ -93,7 +91,7 @@ export default class TransferTokenBuilder {
      * Sets the effective date of the token.
      *
      * @param {number} effectiveAtMs - effective date in milliseconds
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setEffectiveAtMs(effectiveAtMs) {
         this._payload.effectiveAtMs = effectiveAtMs;
@@ -104,7 +102,7 @@ export default class TransferTokenBuilder {
      * Sets the maximum charge amount of the token.
      *
      * @param {number} chargeAmount - maximum charge amount.
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setChargeAmount(chargeAmount) {
         if (Util.countDecimals(chargeAmount) > maxDecimals) {
@@ -118,7 +116,7 @@ export default class TransferTokenBuilder {
      * Sets the description of the token.
      *
      * @param {string} description - description
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setDescription(description) {
         this._payload.description = description;
@@ -129,7 +127,7 @@ export default class TransferTokenBuilder {
      * Add a transfer destination to the token.
      *
      * @param {object} endpoint - transfer endpoint
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     addDestination(endpoint) {
         this._payload.transfer.instructions.destinations.push(endpoint);
@@ -140,7 +138,7 @@ export default class TransferTokenBuilder {
      * Sets the username of the redeemer.
      *
      * @param {string} redeemerUsername - username of the redeemer
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerUsername(redeemerUsername) {
         this._payload.transfer.redeemer.username = redeemerUsername;
@@ -151,7 +149,7 @@ export default class TransferTokenBuilder {
      * Sets the memberId of the redeemer.
      *
      * @param {string} redeemerMemberId - memberId of the redeemer
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerMemberId(redeemerMemberId) {
         this._payload.transfer.redeemer.id = redeemerMemberId;
@@ -162,7 +160,7 @@ export default class TransferTokenBuilder {
      * Sets the username of the payee.
      *
      * @param {string} toUsername - username of the payee
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setToUsername(toUsername) {
         if (!this._payload.to) {
@@ -176,7 +174,7 @@ export default class TransferTokenBuilder {
      * Sets the memberId of the payee.
      *
      * @param {string} toMemberId - memberId of the payee
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setToMemberId(toMemberId) {
         if (!this._payload.to) {
@@ -190,7 +188,7 @@ export default class TransferTokenBuilder {
      * Adds an attachment to the token.
      *
      * @param {Object} attachment - attachment (metadata).
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     addAttachment(attachment) {
         this._payload.transfer.attachments.push(attachment);
@@ -204,7 +202,7 @@ export default class TransferTokenBuilder {
      * @param {string} type - MIME type of the file
      * @param {string} name - name of the file
      * @param {Buffer} data - byte array of the data of the file
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     addAttachmentData(ownerId, type, name, data) {
         this._blobPayloads.push({
@@ -220,7 +218,7 @@ export default class TransferTokenBuilder {
      * Sets the pricing (fees/fx) of the token.
      *
      * @param {Object} pricing - pricing of the token
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setPricing(pricing) {
         this._payload.transfer.pricing = pricing;
@@ -231,7 +229,7 @@ export default class TransferTokenBuilder {
      * Sets the purpose of payment of the token.
      *
      * @param {string} purposeOfPayment - purpose of payment
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setPurposeOfPayment(purposeOfPayment) {
         this._payload.transfer.instructions.transferPurpose = purposeOfPayment;
@@ -242,7 +240,7 @@ export default class TransferTokenBuilder {
      * Sets the refId on the token.
      *
      * @param {string} refId - client generated reference id
-     * @return {TransferTokenBuilder}
+     * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRefId(refId) {
         this._payload.refId = refId;
@@ -257,12 +255,12 @@ export default class TransferTokenBuilder {
     async execute() {
         return Util.callAsync(this.execute, async () => {
             if (!this._payload.transfer.instructions.source || (
-                !this._payload.transfer.instructions.source.account.token
-                && !this._payload.transfer.instructions.source.account.tokenAuthorization)) {
+                !this._payload.transfer.instructions.source.account.token &&
+                !this._payload.transfer.instructions.source.account.tokenAuthorization)) {
                 throw new Error('No source on token');
             }
-            if (!this._payload.transfer.redeemer.username
-                && !this._payload.transfer.redeemer.memberId) {
+            if (!this._payload.transfer.redeemer.username &&
+                !this._payload.transfer.redeemer.memberId) {
                 throw new Error('No redeemer on token');
             }
             for (let i = 0; i < this._blobPayloads.length; i++) {

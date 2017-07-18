@@ -2,8 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 let grantorUsername = '';
 let granteeUsername = '';
@@ -15,7 +15,7 @@ let grantorAccount = {};
 const setUpGrantor = async () => {
     grantorUsername = Token.Util.generateNonce();
     grantor = await Token.createMember(grantorUsername, Token.MemoryCryptoEngine);
-    address = await grantor.addAddress("name", { city: 'San Francisco', country: 'US' });
+    address = await grantor.addAddress("name", {city: 'San Francisco', country: 'US'});
     const auth = await grantor.createTestBankAccount(100000, 'EUR');
     const accs = await grantor.linkAccounts(auth);
     grantorAccount = accs[0];
@@ -27,7 +27,7 @@ const setupGrantee = async () => {
 };
 
 const setupToken = async () => {
-    const token = await grantor.createAccessToken(granteeUsername, [{ allAddresses: {} }]);
+    const token = await grantor.createAccessToken(granteeUsername, [{allAddresses: {}}]);
     await grantor.endorseToken(token);
     return token;
 };
@@ -71,7 +71,6 @@ describe('Using access tokens', async () => {
                 token,
                 [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-        const tokens2 = await grantee.usernames();
         grantee.useAccessToken(operationalResult.token.id);
         try {
             await grantee.getAddress(address.id);
@@ -136,7 +135,6 @@ describe('Using access tokens', async () => {
         assert.isAbove(tokens.data.length, 0);
     });
 
-
     it('cancel replaced token should work', async () => {
         const token = await setupToken();
         grantee.useAccessToken(token.id);
@@ -149,7 +147,6 @@ describe('Using access tokens', async () => {
             token,
             [{allBalances: {}}]);
         assert.equal(operationalResult.status, 'SUCCESS');
-        const tokens2 = await grantee.usernames();
         grantee.useAccessToken(operationalResult.token.id);
         await grantor.cancelToken(operationalResult.token.id);
         try {

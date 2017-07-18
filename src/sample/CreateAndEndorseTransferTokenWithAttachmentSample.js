@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc*/
 
 // Empty fake for simple example.
 function getImageData(filename) {
@@ -22,4 +23,4 @@ export default async (payer, payeeUsername) => {
     const result = await payer.endorseToken(token);
 
     return result.token;
-}
+};

@@ -15,13 +15,13 @@ class AuthContext {
      * @param {string} onBehalfOf - accessTokenId to use
      */
     set onBehalfOf(onBehalfOf) {
-        this._onBehalfOf = onBehalfOf
+        this._onBehalfOf = onBehalfOf;
     }
 
     /**
      * Gets the currently active memberId
      *
-     * @returns {string} onBehalfOf - accessTokenId being used
+     * @return {string} onBehalfOf - accessTokenId being used
      */
     get onBehalfOf() {
         return this._onBehalfOf;

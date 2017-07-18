@@ -1,9 +1,11 @@
+/* eslint-disable require-jsdoc */
+
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-const tokenIo = require('../../src');
-const Token = new tokenIo(TEST_ENV);
+const TokenIo = require('../../src');
+const Token = new TokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
 import {KeyLevel} from "../../src/constants";
@@ -22,7 +24,6 @@ describe('Notifications', () => {
     beforeEach(setUp1);
 
     it('should create and get subscribers', async () => {
-        const randomStr = Token.Util.generateNonce();
         const subscriber = await member1.subscribeToNotifications("token", {
             PLATFORM: 'TEST',
             TARGET: '123',
@@ -32,7 +33,6 @@ describe('Notifications', () => {
     });
 
     it('should create and get subscriber by Id', async () => {
-        const randomStr = Token.Util.generateNonce();
         const subscriber = await member1.subscribeToNotifications("token", {
             PLATFORM: 'ANDROID',
             TARGET: '123',
@@ -46,14 +46,12 @@ describe('Notifications', () => {
     });
 
     it('should create and get subscriber by Id, with bankId', async () => {
-        const randomStr = Token.Util.generateNonce();
         const subscriber = await member1.subscribeToNotifications("iron");
         const subscriber2 = await member1.getSubscriber(subscriber.id);
         assert.equal(subscriber.handler, subscriber2.handler);
     });
 
     it('should create and get subscriber by Id, with bankId', async () => {
-        const randomStr = Token.Util.generateNonce();
         const subscriber = await member1.subscribeToNotifications("iron");
         const subscriber2 = await member1.getSubscriber(subscriber.id);
         assert.equal(subscriber.handler, subscriber2.handler);
@@ -70,9 +68,8 @@ describe('Notifications', () => {
     });
 
     it('should send a push for linking accounts', async () => {
-        const target = Token.Util.generateNonce();
-        const subscriber = await member1.subscribeToNotifications("token", {
-            PLATFORM: 'TEST',
+        await member1.subscribeToNotifications("token", {
+            PLATFORM: 'ANDROID',
             TARGET: '123',
         });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
@@ -90,7 +87,7 @@ describe('Notifications', () => {
     it('should send a push for adding a key and linking accounts', async () => {
         const randomStr = '4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5B';
         const keys = Crypto.generateKeys();
-        await member1.subscribeToNotifications(randomStr)
+        await member1.subscribeToNotifications(randomStr);
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccountsAndAddKey(
                 username1,
@@ -101,7 +98,8 @@ describe('Notifications', () => {
     });
 
     it('should send an actual push to device', async () => {
-        await member1.subscribeToNotifications('DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
+        await member1.subscribeToNotifications(
+            'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
             '8E5F9402554000');
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccounts(username1, auth);
@@ -123,14 +121,16 @@ describe('Notifications', () => {
     }
 
     it('should get notifications with paging', async () => {
-        const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
         const username2 = Token.Util.generateNonce();
         const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
         const notificationsEmpty = await member2.getNotifications(null, 100);
         assert.equal(notificationsEmpty.data.length, 0);
 
-        const auth = await member2.subscribeToNotifications(target);
+        await member2.subscribeToNotifications(
+            'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
+            '8E5F9402554000');
+
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
@@ -157,7 +157,7 @@ describe('Notifications', () => {
     it('should send a and get push to fank', async () => {
         const keys = Crypto.generateKeys();
         const subscriber = await member1.subscribeToNotifications("iron", {
-            "platform": "ANDROID",
+            platform: "ANDROID",
         });
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {

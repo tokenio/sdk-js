@@ -1,10 +1,9 @@
 import Crypto from './Crypto';
-import {localStorageSchemaVersion} from '../constants';
 
 const globalStorage = {
     members: [],
     activeMemberId: "",
-}
+};
 
 /**
  * MemoryCryptoEngine: Implements the CryptoEngine interface.
@@ -32,7 +31,7 @@ class MemoryCryptoEngine {
     /**
      * Constructs the engine, using an existing member/keys if it exists in the storage
      *
-     * @param memberId - memberId of the member we want to create the engine for
+     * @param {string} memberId - memberId of the member we want to create the engine for
      */
     constructor(memberId) {
         if (!memberId) {
@@ -56,7 +55,7 @@ class MemoryCryptoEngine {
     /**
      * Get's the currently active memberId. This allows login without caching memberId somewhere
      *
-     * @returns {string} memberId - active memberId
+     * @return {string} memberId - active memberId
      */
     static getActiveMemberId() {
         const memberId = globalStorage.activeMemberId;
@@ -71,13 +70,13 @@ class MemoryCryptoEngine {
      * old key if it exists (with the same security level).
      *
      * @param {string} securityLevel - security level of the key we want to create
-     * @returns {Key} key - generated key
+     * @return {Key} key - generated key
      */
     generateKey(securityLevel) {
         const keypair = Crypto.generateKeys(securityLevel);
         const loadedMember = this._loadMember();
         let replaced = false;
-        for (let i=0; i<loadedMember.keys.length; i++) {
+        for (let i = 0; i < loadedMember.keys.length; i++) {
             if (loadedMember.keys[i].level === keypair.level) {
                 loadedMember.keys[i] = keypair;
                 replaced = true;
@@ -100,7 +99,7 @@ class MemoryCryptoEngine {
      * strings and JSON objects.
      *
      * @param {string} securityLevel - security level of the key we want to use to sign
-     * @returns {Object} signer - signer object
+     * @return {Object} signer - signer object
      */
     createSigner(securityLevel) {
         const loadedMember = this._loadMember();
@@ -114,7 +113,7 @@ class MemoryCryptoEngine {
                         return Crypto.signJson(json, keys);
                     },
                     getKeyId: () => keys.id,
-                }
+                };
             }
         }
         throw new Error(`No key with level ${securityLevel} found`);
@@ -125,7 +124,7 @@ class MemoryCryptoEngine {
      * signatures by that key, on strings and JSON objects.
      *
      * @param {string} keyId - keyId that we want to use to verify
-     * @returns {Object} verifier - verifier object
+     * @return {Object} verifier - verifier object
      */
     createVerifier(keyId) {
         const loadedMember = this._loadMember();
@@ -138,11 +137,10 @@ class MemoryCryptoEngine {
                     verifyJson: (json, signature) => {
                         return Crypto.verifyJson(json, signature, keys.publicKey);
                     }
-                }
+                };
             }
         }
         throw new Error(`No key with id ${keyId} found`);
-
     }
 
     _loadMember() {
@@ -161,7 +159,7 @@ class MemoryCryptoEngine {
                         publicKey: Crypto.bufferKey(key.publicKey),
                         secretKey: Crypto.bufferKey(key.secretKey)
                     })),
-                }
+                };
                 return memberCopy;
             }
         }
@@ -172,7 +170,7 @@ class MemoryCryptoEngine {
         const memberCopy = {
             id: member.id,
             keys: [],
-        }
+        };
         for (let keypair of member.keys) {
             memberCopy.keys.push({
                 id: keypair.id,
@@ -184,7 +182,7 @@ class MemoryCryptoEngine {
         }
 
         let replaced = false;
-        for (let i=0; i<globalStorage.members.length; i++) {
+        for (let i = 0; i < globalStorage.members.length; i++) {
             if (globalStorage.members[i].id === memberCopy.id) {
                 globalStorage.members[i] = memberCopy;
                 replaced = true;

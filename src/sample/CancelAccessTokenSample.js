@@ -11,4 +11,4 @@ export default async (grantor, tokenId) => {
 
     // Grantor cancels the token
     return await grantor.cancelToken(accessToken);
-}
+};

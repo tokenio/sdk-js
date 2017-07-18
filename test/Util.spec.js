@@ -24,4 +24,3 @@ describe('Util', () => {
         assert.equal(byte4, 204);
     });
 });
-
