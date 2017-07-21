@@ -78,16 +78,20 @@ describe('Notifications', () => {
     });
 
     it('should send a push for adding key', async () => {
-        const target = "DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900";
         const keys = Crypto.generateKeys();
-        await member1.subscribeToNotifications(target);
+        await member1.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: Token.Util.generateNonce(),
+        });
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
     });
 
     it('should send a push for adding a key and linking accounts', async () => {
-        const randomStr = '4011F723D5684EEB9D983DD718B2B2A484C23B7FB63FFBF15BE9F0F5ED239A5B';
         const keys = Crypto.generateKeys();
-        await member1.subscribeToNotifications(randomStr);
+        await member1.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: Token.Util.generateNonce(),
+        });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccountsAndAddKey(
                 username1,
@@ -98,9 +102,10 @@ describe('Notifications', () => {
     });
 
     it('should send an actual push to device', async () => {
-        await member1.subscribeToNotifications(
-            'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
-            '8E5F9402554000');
+        await member1.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: Token.Util.generateNonce(),
+        });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccounts(username1, auth);
     });
@@ -127,9 +132,10 @@ describe('Notifications', () => {
         const notificationsEmpty = await member2.getNotifications(null, 100);
         assert.equal(notificationsEmpty.data.length, 0);
 
-        await member2.subscribeToNotifications(
-            'DEV:9CF5BCAE80D74DEE05F040CBD57E1DC4F5FE8F1288A80A5061D58C1AD90FC77900' +
-            '8E5F9402554000');
+        await member2.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: Token.Util.generateNonce(),
+        });
 
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
