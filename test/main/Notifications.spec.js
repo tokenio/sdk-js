@@ -34,7 +34,7 @@ describe('Notifications', () => {
 
     it('should create and get subscriber by Id', async () => {
         const subscriber = await member1.subscribeToNotifications("token", {
-            PLATFORM: 'ANDROID',
+            PLATFORM: 'TEST',
             TARGET: '123',
         });
         const subscriber2 = await member1.getSubscriber(subscriber.id);
@@ -42,7 +42,7 @@ describe('Notifications', () => {
         assert.equal(
                 subscriber.handlerInstructions.PLATFORM,
                 subscriber2.handlerInstructions.PLATFORM);
-        assert.equal(subscriber2.handlerInstructions.PLATFORM, "ANDROID");
+        assert.equal(subscriber2.handlerInstructions.PLATFORM, "TEST");
     });
 
     it('should create and get subscriber by Id, with bankId', async () => {
@@ -69,7 +69,7 @@ describe('Notifications', () => {
 
     it('should send a push for linking accounts', async () => {
         await member1.subscribeToNotifications("token", {
-            PLATFORM: 'ANDROID',
+            PLATFORM: 'TEST',
             TARGET: '123',
         });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
@@ -157,7 +157,7 @@ describe('Notifications', () => {
     it('should send a and get push to fank', async () => {
         const keys = Crypto.generateKeys();
         const subscriber = await member1.subscribeToNotifications("iron", {
-            platform: "ANDROID",
+            platform: "TEST",
         });
         await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
