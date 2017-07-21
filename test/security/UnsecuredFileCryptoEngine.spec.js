@@ -4,12 +4,13 @@ import UnsecuredFileCryptoEngine from "../../src/security/UnsecuredFileCryptoEng
 const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
-if (!BROWSER) {
-    describe('Unsecured File crypto engine', () => {
-        it('should create the unsecured file crypto engine', () => {
-            const memberId = '123';
-            const engine = new UnsecuredFileCryptoEngine(memberId);
-            assert.isOk(engine);
-        });
+describe('Unsecured File crypto engine', () => {
+    it('should create the unsecured file crypto engine', () => {
+        const memberId = Token.Util.generateNonce();
+        UnsecuredFileCryptoEngine.setFilename('/Users/mariano54/Projects/Token/sdk-js/keys.json');
+        const engine = new UnsecuredFileCryptoEngine(memberId);
+
+        engine.generateKey('LOW');
+        assert.isOk(engine);
     });
-}
+});

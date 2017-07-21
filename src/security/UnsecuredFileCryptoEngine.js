@@ -1,15 +1,30 @@
 import Crypto from './Crypto';
 
 let fs;
-
 if (!BROWSER) {
     fs = require('fs');
 }
 
-const globalStorage = {
-    members: [],
-    activeMemberId: "",
-};
+class FileReadError extends Error {
+    constructor(...args) {
+        super(...args);
+        Error.captureStackTrace(this, FileReadError);
+    }
+}
+
+class JSONParseError extends Error {
+    constructor(...args) {
+        super(...args);
+        Error.captureStackTrace(this, JSONParseError);
+    }
+}
+
+class MemberNotFoundError extends Error {
+    constructor(...args) {
+        super(...args);
+        Error.captureStackTrace(this, MemberNotFoundError);
+    }
+}
 
 /**
  * MemoryCryptoEngine: Implements the CryptoEngine interface.
@@ -33,30 +48,16 @@ const globalStorage = {
  *
  */
 class UnsecuredFileCryptoEngine {
-
-    _readFile(filename) {
-        return new Promise((resolve, reject) => {
-            try {
-                fs.readFile(filename, {encoding: 'utf-8'}, (err, buffer) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(buffer);
-                    }
-                });
-            } catch (err) {
-                reject(err);
-            }
-        });
+    static setFilename(absoluteFilename) {
+        UnsecuredFileCryptoEngine.filename = absoluteFilename;
     }
 
     /**
      * Constructs the engine, using an existing member/keys if it exists in the storage
      *
      * @param {string} memberId - memberId of the member we want to create the engine for
-     * @param {string} absoluteFilename - absolute file name of the key file
      */
-    constructor(memberId, absoluteFilename) {
+    constructor(memberId) {
         if (BROWSER) {
             throw new Error("This crypto engine can only be used in node.js, not in browser.");
         }
@@ -64,14 +65,10 @@ class UnsecuredFileCryptoEngine {
             throw new Error("Invalid memberId");
         }
 
-        absoluteFilename = '/Users/mariano54/Projects/Token/sdk-js/keys.json';
-
-        this._readFile(absoluteFilename)
-            .then((data) => {
-                console.log('read', data);
-            }).catch((err) => {
-                console.log('err:', err);
-            });
+        this._member = {
+            id: memberId,
+            keys: [],
+        };
 
         // Check if file exists
         // If it does not exist:
@@ -100,7 +97,7 @@ class UnsecuredFileCryptoEngine {
      * @return {string} memberId - active memberId
      */
     static getActiveMemberId() {
-        const memberId = globalStorage.activeMemberId;
+        const memberId = UnsecuredFileCryptoEngine.activeMemberId;
         if (!memberId) {
             throw new Error('No active memberId on this browser');
         }
@@ -114,26 +111,26 @@ class UnsecuredFileCryptoEngine {
      * @param {string} securityLevel - security level of the key we want to create
      * @return {Key} key - generated key
      */
-    generateKey(securityLevel) {
-        const keypair = Crypto.generateKeys(securityLevel);
-        const loadedMember = this._loadMember();
-        let replaced = false;
+    async generateKey(securityLevel) {
+        const loadedMember = await this._loadMember();
+        let foundIndex = -1;
         for (let i = 0; i < loadedMember.keys.length; i++) {
-            if (loadedMember.keys[i].level === keypair.level) {
-                loadedMember.keys[i] = keypair;
-                replaced = true;
+            if (loadedMember.keys[i].level === securityLevel) {
+                foundIndex = i;
             }
         }
-        if (!replaced) {
+        if (foundIndex === -1) {
+            const keypair = Crypto.generateKeys(securityLevel);
             loadedMember.keys.push(keypair);
+            await this._saveMember(loadedMember);
+            return {
+                id: keypair.id,
+                level: keypair.level,
+                algorithm: keypair.algorithm,
+                publicKey: keypair.publicKey,
+            };
         }
-        this._saveMember(loadedMember);
-        return {
-            id: keypair.id,
-            level: keypair.level,
-            algorithm: keypair.algorithm,
-            publicKey: keypair.publicKey,
-        };
+        return loadedMember.keys[foundIndex];
     }
 
    /**
@@ -185,27 +182,37 @@ class UnsecuredFileCryptoEngine {
         throw new Error(`No key with id ${keyId} found`);
     }
 
-    _loadMember() {
-        if (!this._memberId) {
+    async _loadMember() {
+        if (!this._member.id) {
             throw new Error('Invalid memberId');
         }
-        const loadedMembers = globalStorage.members;
-        for (let member of loadedMembers) {
-            if (member.id === this._memberId) {
-                const memberCopy = {
-                    id: member.id,
-                    keys: member.keys.map((key) => ({
-                        id: key.id,
-                        algorithm: key.algorithm,
-                        level: key.level,
-                        publicKey: Crypto.bufferKey(key.publicKey),
-                        secretKey: Crypto.bufferKey(key.secretKey)
-                    })),
-                };
-                return memberCopy;
-            }
-        }
-        throw new Error('Member not found');
+        this._readFile(UnsecuredFileCryptoEngine.filename)
+            .then((data) => {
+                console.log('read', data);
+                try {
+                    const loadedMembers = JSON.parse(data);
+                    for (let member of loadedMembers) {
+                        if (member.id === this._memberId) {
+                            const memberCopy = {
+                                id: member.id,
+                                keys: member.keys.map((key) => ({
+                                    id: key.id,
+                                    algorithm: key.algorithm,
+                                    level: key.level,
+                                    publicKey: Crypto.bufferKey(key.publicKey),
+                                    secretKey: Crypto.bufferKey(key.secretKey)
+                                })),
+                            };
+                            return memberCopy;
+                        }
+                    }
+                    throw new MemberNotFoundError('Member not present in the key file');
+                } catch (err) {
+                    throw new JSONParseError('Invalid key file, JSON parsing failed');
+                }
+            }).catch(() => {
+                throw new FileReadError('Invalid key file, or does not exist');
+            });
     }
 
     _saveMember(member) {
@@ -224,16 +231,61 @@ class UnsecuredFileCryptoEngine {
         }
 
         let replaced = false;
-        for (let i = 0; i < globalStorage.members.length; i++) {
-            if (globalStorage.members[i].id === memberCopy.id) {
-                globalStorage.members[i] = memberCopy;
+        for (let i = 0; i < UnsecuredFileCryptoEngine.members.length; i++) {
+            if (UnsecuredFileCryptoEngine.members[i].id === memberCopy.id) {
+                UnsecuredFileCryptoEngine.members[i] = memberCopy;
                 replaced = true;
             }
         }
         if (!replaced) {
-            globalStorage.members.push(memberCopy);
+            UnsecuredFileCryptoEngine.members.push(memberCopy);
         }
     }
+
+    _readFile() {
+        return new Promise((resolve, reject) => {
+            try {
+                fs.readFile(UnsecuredFileCryptoEngine._filename, {encoding: 'utf-8'}, (err, buffer) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(buffer);
+                    }
+                });
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    _writeFile(data) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (UnsecuredFileCryptoEngine._writing) {
+                    reject('Already writing to this file');
+                }
+                UnsecuredFileCryptoEngine._writing = true;
+                fs.writeFile(
+                        UnsecuredFileCryptoEngine._filename,
+                        data,
+                        {encoding: 'utf-8'},
+                        (err) => {
+                    UnsecuredFileCryptoEngine._writing = false;
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            } catch (err) {
+                UnsecuredFileCryptoEngine._writing = false;
+                reject(err);
+            }
+        });
+    }
 }
+
+UnsecuredFileCryptoEngine._filename = "";
+UnsecuredFileCryptoEngine._writing = false;
 
 export default UnsecuredFileCryptoEngine;
