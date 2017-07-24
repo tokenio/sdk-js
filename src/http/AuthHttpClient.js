@@ -45,8 +45,14 @@ class AuthHttpClient {
         });
     }
 
+    /**
+     * Creates the necessary signer objects, based on the level requested.
+     * If the level is not available, attempts to fetch a lower level.
+     *
+     * @param {string} level - requested level of key
+     * @return {Promise} signer - object used to sign
+     */
     async getSigner(level) {
-        // Creates the necessary signers
         if (level === KeyLevel.LOW) {
             return await this._cryptoEngine.createSigner(KeyLevel.LOW);
         }
