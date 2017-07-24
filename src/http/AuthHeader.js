@@ -1,5 +1,5 @@
 const stringify = require('json-stable-stringify');
-import {signatureScheme} from "../constants";
+import {signatureScheme, KeyLevel} from "../constants";
 
 /**
  * Handles the addition of the http headers (with signature) to the request
@@ -9,11 +9,11 @@ class AuthHeader {
      * Creates an AuthHeader object with set url and signer
      *
      * @param {string} baseUrl - url to send requests to (gateway)
-     * @param {Object} signer - object to use for signing data
+     * @param {Object} client - client, to get the signer
      */
-    constructor(baseUrl, signer) {
+    constructor(baseUrl, client) {
         this._baseUrl = baseUrl;
-        this._signer = signer;
+        this._client = client;
     }
 
     /**
@@ -25,7 +25,7 @@ class AuthHeader {
      * @param {Object} config - request config
      * @param {AuthContext} context - auth context for access token redemption
      */
-    addAuthorizationHeader(memberId, config, context) {
+    async addAuthorizationHeader(memberId, config, context) {
         let now = new Date().getTime();
 
         // Parses out the base uri
@@ -58,13 +58,16 @@ class AuthHeader {
             payload.queryString = config.url.substring(config.url.indexOf("?") + 1);
         }
 
+        // Creates the signer object
+        const signer = await this._client.getSigner(KeyLevel.LOW);
+
         // Signs the Json string
-        const signature = this._signer.signJson(payload);
+        const signature = signer.signJson(payload);
 
         // Creates the authorization header, ands adds it to the request
         const header = signatureScheme + ' ' +
             'member-id=' + memberId + ',' +
-            'key-id=' + this._signer.getKeyId() + ',' +
+            'key-id=' + signer.getKeyId() + ',' +
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
             AuthHeader._onBehalfOfHeader(context);

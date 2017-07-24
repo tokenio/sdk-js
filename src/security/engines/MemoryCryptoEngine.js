@@ -1,4 +1,4 @@
-import Crypto from './Crypto';
+import Crypto from '../Crypto';
 
 const globalStorage = {
     members: [],
@@ -8,7 +8,7 @@ const globalStorage = {
 /**
  * MemoryCryptoEngine: Implements the CryptoEngine interface.
  *
- * Crypto engine to handle signatures, verifications, and key storage, in memory. Handles storage
+ * Crypto engines to handle signatures, verifications, and key storage, in memory. Handles storage
  * for multiple members at once, and uses the following schema:
  *
  * activeMemberId: 123,
@@ -29,9 +29,9 @@ const globalStorage = {
 class MemoryCryptoEngine {
 
     /**
-     * Constructs the engine, using an existing member/keys if it exists in the storage
+     * Constructs the engines, using an existing member/keys if it exists in the storage
      *
-     * @param {string} memberId - memberId of the member we want to create the engine for
+     * @param {string} memberId - memberId of the member we want to create the engines for
      */
     constructor(memberId) {
         if (!memberId) {

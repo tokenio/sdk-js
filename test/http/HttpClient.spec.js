@@ -3,7 +3,7 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
 import HttpClient from "../../src/http/HttpClient";
-import MemoryCryptoEngine from "../../src/security/MemoryCryptoEngine";
+import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
 
 describe('Unauthenticated', () => {
     it('should generate a memberId', async () => {

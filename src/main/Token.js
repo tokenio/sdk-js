@@ -1,6 +1,7 @@
 import Crypto from "../security/Crypto";
-import BrowserCryptoEngine from "../security/BrowserCryptoEngine";
-import MemoryCryptoEngine from "../security/MemoryCryptoEngine";
+import BrowserCryptoEngine from "../security/engines/BrowserCryptoEngine";
+import MemoryCryptoEngine from "../security/engines/MemoryCryptoEngine";
+import UnsecuredFileCryptoEngine from "../security/engines/UnsecuredFileCryptoEngine";
 import Util from "../Util";
 import Member from "../main/Member";
 import {KeyLevel} from "../constants";
@@ -18,10 +19,11 @@ class Token {
      * Construct the Token SDK object, pointing to the given environment.
      *
      * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     * @param {string} keyDir - absolute directory name of key storage directory
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd', globalRpcErrorCallback) {
+    constructor(env = 'prd', keyDir, globalRpcErrorCallback) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._unauthenticatedClient = new HttpClient(env, this._globalRpcErrorCallback);
@@ -35,11 +37,18 @@ class Token {
         /** Other utility functions */
         this.Util = Util;
 
-        /** Class for using the browser crypto engine */
+        /** Class for using the browser crypto engines */
         this.BrowserCryptoEngine = BrowserCryptoEngine;
 
-        /** Class for using the memory crypto engine */
+        /** Class for using the memory crypto engines */
         this.MemoryCryptoEngine = MemoryCryptoEngine;
+
+        if (keyDir) {
+            UnsecuredFileCryptoEngine.setDirRoot(keyDir);
+        }
+
+        /** Class for the Unsecured filestore key root */
+        this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
     }
 
     /**
@@ -69,19 +78,19 @@ class Token {
     }
 
     /**
-     * Creates a member with a username and a keypair, using the provided engine
+     * Creates a member with a username and a keypair, using the provided engines
      *
      * @param  {string} username - username to set for member
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engines to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
     createMember(username, CryptoEngine) {
         return Util.callAsync(this.createMember, async () => {
             const response = await this._unauthenticatedClient.createMemberId();
             const engine = new CryptoEngine(response.data.memberId);
-            const pk1 = engine.generateKey('PRIVILEGED');
-            const pk2 = engine.generateKey('STANDARD');
-            const pk3 = engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('PRIVILEGED');
+            const pk2 = await engine.generateKey('STANDARD');
+            const pk3 = await engine.generateKey('LOW');
             await this._unauthenticatedClient.approveFirstKeys(
                 response.data.memberId,
                 [pk1, pk2, pk3],
@@ -102,7 +111,7 @@ class Token {
      * existing device/keys.
      *
      * @param {string} username - user to provision the device for
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engines to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDevice(username, CryptoEngine) {
@@ -112,9 +121,9 @@ class Token {
                 throw new Error('Invalid username');
             }
             const engine = new CryptoEngine(res.data.memberId);
-            const pk1 = engine.generateKey('PRIVILEGED');
-            const pk2 = engine.generateKey('STANDARD');
-            const pk3 = engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('PRIVILEGED');
+            const pk2 = await engine.generateKey('STANDARD');
+            const pk3 = await engine.generateKey('LOW');
             return {
                 memberId: res.data.memberId,
                 keys: [pk1, pk2, pk3],
@@ -128,7 +137,7 @@ class Token {
      * existing device/keys. This only generates one (LOW) key.
      *
      * @param {string} username - user to provision t he device for
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engines to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDeviceLow(username, CryptoEngine) {
@@ -139,7 +148,7 @@ class Token {
             }
 
             const engine = new CryptoEngine(res.data.memberId);
-            const pk1 = engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('LOW');
             return {
                 memberId: res.data.memberId,
                 keys: [pk1],
@@ -151,7 +160,7 @@ class Token {
      * Logs a member in from keys stored in the CryptoEngine. If memberId is not provided,
      * the last member to log on will be used
      *
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {Class} CryptoEngine - engines to use for key creation and storage
      * @param {string} memberId - optional id of the member we want to log in
      * @return {Promise} member - instantiated member
      */

@@ -1,11 +1,11 @@
 const chai = require('chai');
 const assert = chai.assert;
-import MemoryCryptoEngine from "../../src/security/MemoryCryptoEngine";
-const TokenIo = require('../../src');
+import MemoryCryptoEngine from "../../../src/security/engines/MemoryCryptoEngine";
+const TokenIo = require('../../../src/index');
 const Token = new TokenIo(TEST_ENV);
 
-describe('Memory crypto engine', () => {
-    it('should create the memory crypto engine', () => {
+describe('Memory crypto engines', () => {
+    it('should create the memory crypto engines', () => {
         const memberId = Token.Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         assert.isOk(engine);
