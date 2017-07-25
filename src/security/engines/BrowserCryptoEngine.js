@@ -4,7 +4,7 @@ import {localStorageSchemaVersion} from '../../constants';
 /**
  * BrowserCryptoEngine: Implements the CryptoEngine interface.
  *
- * Crypto engines to handle signatures, verifications, and key storage, on browsers. Uses
+ * Crypto engine to handle signatures, verifications, and key storage, on browsers. Uses
  * LocalStorage as the storage location, and handles storage for multiple members at once.
  * Uses the following schema:
  *
@@ -27,9 +27,9 @@ import {localStorageSchemaVersion} from '../../constants';
  */
 class BrowserCryptoEngine {
     /**
-     * Constructs the engines, using an existing member/keys if it is in localStorage
+     * Constructs the engine, using an existing member/keys if it is in localStorage
      *
-     * @param {string} memberId - memberId of the member we want to create the engines for
+     * @param {string} memberId - memberId of the member we want to create the engine for
      */
     constructor(memberId) {
         if (!BROWSER) {

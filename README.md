@@ -100,7 +100,7 @@ This will run the tests using node.js.
 * User interface: bdd
 * Extra mocha options: --webpack-config config/webpack.config.node.js --timeout 60000 --watch --colors
 * All in directory:  Test directory: ....../sdk-js/test
-* No click apply, and click the plus sign on the top left. Create a new Mocha config that derives
+* Now click apply, and click the plus sign on the top left. Create a new Mocha config that derives
 from the default one.
 * Save and exit the menu, now run the new Mocha config that you just created, which will 
 run all the tests

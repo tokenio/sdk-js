@@ -613,7 +613,7 @@ class AuthHttpClient {
      */
     async replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
-        const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+        const cancelReq = await this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
             payload: {
@@ -650,7 +650,7 @@ class AuthHttpClient {
      */
     async replaceAndEndorseToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
-        const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+        const cancelReq = await this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const payload = {
             from: {
@@ -667,7 +667,7 @@ class AuthHttpClient {
 
         const createReq = {
             payload,
-            payload_signature: this._tokenOperationSignature(payload, 'endorsed')
+            payload_signature: await this._tokenOperationSignature(payload, 'endorsed')
         };
 
         const config = {

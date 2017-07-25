@@ -4,7 +4,7 @@ import FileSystem from '../PromiseFileSystem';
 /**
  * UnsecuredFileCryptoEngine: Implements the CryptoEngine interface.
  *
- * Crypto engines to handle signatures, verifications, and key storage, in a file. Uses the following
+ * Crypto engine to handle signatures, verifications, and key storage, in a file. Uses the following
  * schema
  *
  * filename: memberId
@@ -25,9 +25,9 @@ class UnsecuredFileCryptoEngine {
     }
 
     /**
-     * Constructs the engines, with no keys
+     * Constructs the engine, with no keys
      *
-     * @param {string} memberId - memberId of the member we want to create the engines for
+     * @param {string} memberId - memberId of the member we want to create the engine for
      */
     constructor(memberId) {
         if (BROWSER) {

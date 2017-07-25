@@ -37,10 +37,10 @@ class Token {
         /** Other utility functions */
         this.Util = Util;
 
-        /** Class for using the browser crypto engines */
+        /** Class for using the browser crypto engine */
         this.BrowserCryptoEngine = BrowserCryptoEngine;
 
-        /** Class for using the memory crypto engines */
+        /** Class for using the memory crypto engine */
         this.MemoryCryptoEngine = MemoryCryptoEngine;
 
         if (keyDir) {
@@ -78,10 +78,10 @@ class Token {
     }
 
     /**
-     * Creates a member with a username and a keypair, using the provided engines
+     * Creates a member with a username and a keypair, using the provided engine
      *
      * @param  {string} username - username to set for member
-     * @param  {Class} CryptoEngine - engines to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
     createMember(username, CryptoEngine) {
@@ -111,7 +111,7 @@ class Token {
      * existing device/keys.
      *
      * @param {string} username - user to provision the device for
-     * @param  {Class} CryptoEngine - engines to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDevice(username, CryptoEngine) {
@@ -137,7 +137,7 @@ class Token {
      * existing device/keys. This only generates one (LOW) key.
      *
      * @param {string} username - user to provision t he device for
-     * @param  {Class} CryptoEngine - engines to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDeviceLow(username, CryptoEngine) {
@@ -160,7 +160,7 @@ class Token {
      * Logs a member in from keys stored in the CryptoEngine. If memberId is not provided,
      * the last member to log on will be used
      *
-     * @param  {Class} CryptoEngine - engines to use for key creation and storage
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param {string} memberId - optional id of the member we want to log in
      * @return {Promise} member - instantiated member
      */

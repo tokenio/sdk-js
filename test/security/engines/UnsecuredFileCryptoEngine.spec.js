@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars*/
 import FileSystem from "../../../src/security/PromiseFileSystem";
 
 const chai = require('chai');
@@ -22,7 +23,7 @@ if (!BROWSER) {
 }
 const Token = new TokenIo(TEST_ENV, testDir);
 
-describe('Unsecured File crypto engines', () => {
+describe('Unsecured File crypto engine', () => {
     if (!BROWSER) {
         before('Should clean up the test directory', async () => {
             await fs.remove(testDir);
@@ -37,7 +38,7 @@ describe('Unsecured File crypto engines', () => {
             assert(!dirExists);
         });
 
-        it('should create the file crypto engines', () => {
+        it('should create the file crypto engine', () => {
             const memberId = Token.Util.generateNonce();
             const engine = new UnsecuredFileCryptoEngine(memberId);
             assert.isOk(engine);
@@ -131,8 +132,8 @@ describe('Unsecured File crypto engines', () => {
                     level: 'LOW',
                     algorithm: 'ED25519',
                     publicKey: 'b8uKAhTT_55wL1QCBaDLtclfeXOEf5Gm8qYY7KbghCo',
-                    secretKey: 'YLYhbPCsfJtKt5wvT69ocAwjTCaX8goEFgDIzS-zRD1vy4oCFNP_nnAvVAIFoMu1yV9' +
-                    '5c4R_kabyphjspuCEKg'
+                    secretKey: 'YLYhbPCsfJtKt5wvT69ocAwjTCaX8goEFgDIzS-zRD1vy4oCFNP_' +
+                    'nnAvVAIFoMu1yV95c4R_kabyphjspuCEKg'
                 }]
             });
 

@@ -99,7 +99,7 @@ class HttpClient {
      *
      * @param {string} memberId - id of the member
      * @param {Object} key - key to approve
-     * @param {Object} cryptoEngine - engines to use for signing
+     * @param {Object} cryptoEngine - engine to use for signing
      * @return {Object} response - response to the API call
      */
     async approveFirstKey(memberId, key, cryptoEngine) {
@@ -140,7 +140,7 @@ class HttpClient {
      *
      * @param {string} memberId - id of the member
      * @param {Array} keys - keys to approve
-     * @param {Object} cryptoEngine - engines to use for signing
+     * @param {Object} cryptoEngine - engine to use for signing
      * @return {Object} response - response to the API call
      */
     async approveFirstKeys(memberId, keys, cryptoEngine) {
