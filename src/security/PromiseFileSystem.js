@@ -20,7 +20,7 @@ class PromiseFileSystem {
         return new Promise((resolve, reject) => {
             fs.readFile(
                     PromiseFileSystem._getFullFilename(filename),
-                    PromiseFileSystem._encoding,
+                    PromiseFileSystem._options,
                     (err, buffer) => {
                 if (err) {
                     reject(err);
@@ -42,7 +42,7 @@ class PromiseFileSystem {
                 fs.writeFile(
                     PromiseFileSystem._getFullFilename(filename),
                     data,
-                    PromiseFileSystem._encoding,
+                    PromiseFileSystem._options,
                     (err) => {
                         if (err) {
                             reject(err);
@@ -72,7 +72,7 @@ class PromiseFileSystem {
     }
 }
 
-PromiseFileSystem._encoding = {encoding: 'utf-8'};
+PromiseFileSystem._options = {encoding: 'utf-8', mode: 0o700};
 PromiseFileSystem.dirRoot = null;
 
 export default PromiseFileSystem;
