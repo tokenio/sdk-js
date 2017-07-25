@@ -60,7 +60,8 @@ class UnsecuredFileCryptoEngine {
             if (!error.code === 'ENOENT') {
                 throw error;
             }
-            await FileSystem.writeFile(this._member.id, '');  // Creates the empty file
+            // Creates the empty file
+            await FileSystem.writeFile(this._member.id.split(':').join('_'), '');
         }
 
         const keypair = Crypto.generateKeys(securityLevel);
@@ -136,7 +137,7 @@ class UnsecuredFileCryptoEngine {
             throw new Error('Invalid memberId');
         }
 
-        const data = await FileSystem.readFile(this._member.id.replace(':', '_'));
+        const data = await FileSystem.readFile(this._member.id.split(':').join('_'));
         this._member.keys = JSON.parse(data).keys.map((keypair => ({
             id: keypair.id,
             algorithm: keypair.algorithm,
@@ -156,7 +157,9 @@ class UnsecuredFileCryptoEngine {
                 secretKey: Crypto.strKey(keypair.secretKey),
             })),
         };
-        await FileSystem.writeFile(this._member.id.replace(':', '_'), JSON.stringify(dataToWrite));
+        await FileSystem.writeFile(
+                this._member.id.split(':').join('_'),
+                JSON.stringify(dataToWrite));
     }
 }
 
