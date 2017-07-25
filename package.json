@@ -69,6 +69,7 @@
     "json-loader": "^0.5.4",
     "json-stable-stringify": "^1.0.1",
     "sjcl": "^1.0.6",
+    "token-io": "1.4.77",
     "tweetnacl": "^0.14.3"
   }
 }
