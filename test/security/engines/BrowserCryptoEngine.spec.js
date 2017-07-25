@@ -1,16 +1,16 @@
 const chai = require('chai');
 const assert = chai.assert;
-import BrowserCryptoEngine from "../../src/security/BrowserCryptoEngine";
-const TokenIo = require('../../src');
+import BrowserCryptoEngine from "../../../src/security/engines/BrowserCryptoEngine";
+const TokenIo = require('../../../src/index');
 const Token = new TokenIo(TEST_ENV);
 
-if (BROWSER) {
-    describe('Browser crypto engine', () => {
+describe('Browser crypto engines', () => {
+    if (BROWSER) {
         beforeEach(() => {
             window.localStorage.clear();
         });
 
-        it('should create the localStorage crypto engine', () => {
+        it('should create the localStorage crypto engines', () => {
             const memberId = Token.Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             assert.isOk(engine);
@@ -122,5 +122,5 @@ if (BROWSER) {
                 assert.include(err.message, "Invalid memberId");
             }
         });
-    });
-}
+    }
+});

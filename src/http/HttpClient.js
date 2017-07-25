@@ -102,8 +102,8 @@ class HttpClient {
      * @param {Object} cryptoEngine - engine to use for signing
      * @return {Object} response - response to the API call
      */
-    approveFirstKey(memberId, key, cryptoEngine) {
-        const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+    async approveFirstKey(memberId, key, cryptoEngine) {
+        const signer = await cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
             operations: [
@@ -143,8 +143,8 @@ class HttpClient {
      * @param {Object} cryptoEngine - engine to use for signing
      * @return {Object} response - response to the API call
      */
-    approveFirstKeys(memberId, keys, cryptoEngine) {
-        const signer = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+    async approveFirstKeys(memberId, keys, cryptoEngine) {
+        const signer = await cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
             operations: keys.map((key) => ({

@@ -92,15 +92,20 @@ with ESLint. (WebStorm > Preferences > Languages and Frameworks > Javascript > C
 This is useful to run tests very easily using the IDE, for fast iteration and testing.
 This will run the tests using node.js.
 
+* Make sure Karma Plugin is disabled: Webstorm > Preferences > Plugins
 * Click Run > Edit configurations.
 * Select Defaults > Mocha
 * Environment variables: TEST_ENV = sbx
 * Mocha package: ....../sdk-js/node_modules/mocha-webpack
 * User interface: bdd
 * Extra mocha options: --webpack-config config/webpack.config.node.js --timeout 60000 --watch --colors
-* All in directory:  Test directory: test
+* All in directory:  Test directory: ....../sdk-js/test
+* Now click apply, and click the plus sign on the top left. Create a new Mocha config that derives
+from the default one.
+* Save and exit the menu, now run the new Mocha config that you just created, which will 
+run all the tests
 * Now right click on any test or test file, and click Run, to run it in mocha. 
-This will compile the test using webpack, and run it against the development servers. 
+This will compile the test using webpack, and run it against the servers. 
 To change to another environment (dev) just change the test env.
 * You can also run it in debug mode by right clicking the test or file and clickig debug. In 
 order to do this, you must remove the timeout from the Extra Mocha Options, and you must 

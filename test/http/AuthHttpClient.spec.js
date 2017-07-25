@@ -4,7 +4,7 @@ import 'babel-regenerator-runtime';
 
 import HttpClient from "../../src/http/HttpClient";
 import AuthHttpClient from "../../src/http/AuthHttpClient";
-import MemoryCryptoEngine from "../../src/security/MemoryCryptoEngine";
+import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
 const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
