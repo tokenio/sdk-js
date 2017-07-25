@@ -72,7 +72,7 @@ class PromiseFileSystem {
     }
 }
 
-PromiseFileSystem._options = {encoding: 'utf-8', mode: 0o700};
+PromiseFileSystem._options = {encoding: 'utf-8', mode: 0o600};
 PromiseFileSystem.dirRoot = null;
 
 export default PromiseFileSystem;
