@@ -282,8 +282,8 @@ class AuthHttpClient {
            profile
        };
        const config = {
-           method: 'post',
-           url: `/members/profile`,
+           method: 'put',
+           url: `/profile`,
            data: req
        };
        return this._instance(config);
@@ -321,8 +321,8 @@ class AuthHttpClient {
             },
         };
         const config = {
-            method: 'post',
-            url: `/members/profilepicture`,
+            method: 'put',
+            url: `/profilepicture`,
             data: req
         };
         return this._instance(config);
