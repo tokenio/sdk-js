@@ -60,7 +60,8 @@ class UnsecuredFileCryptoEngine {
             if (!error.code === 'ENOENT') {
                 throw error;
             }
-            await FileSystem.writeFile(this._member.id, '');  // Creates the empty file
+            // Creates the empty file
+            await FileSystem.writeFile(this._member.id.replace(':', '_'), '');
         }
 
         const keypair = Crypto.generateKeys(securityLevel);
