@@ -27,9 +27,8 @@ describe('Token library', () => {
 
         await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [{
             account: {
-                token: {
-                    accountId: Token.Util.generateNonce(),
-                    memberId: Token.Util.generateNonce(),
+                sepa: {
+                    iban: Token.Util.generateNonce(),
                 }
             }
         }]);

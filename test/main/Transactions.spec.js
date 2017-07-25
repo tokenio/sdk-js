@@ -17,9 +17,8 @@ let transfer1 = {};
 
 let destination1 = {
     account: {
-        token: {
-            accountId: Token.Util.generateNonce(),
-            memberId: Token.Util.generateNonce(),
+        sepa: {
+            iban: Token.Util.generateNonce(),
         }
     }
 };
