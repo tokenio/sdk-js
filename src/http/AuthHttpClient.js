@@ -33,6 +33,7 @@ class AuthHttpClient {
         });
         this._memberId = memberId;
         this._cryptoEngine = cryptoEngine;
+        this._usernames = [];
 
         this._context = new AuthContext();
         this._authHeader = new AuthHeader(urls[env], this);
@@ -947,12 +948,13 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async addUsername(prevHash, username) {
+        this._usernames.push(username);
         const update = {
             memberId: this._memberId,
             operations: [
                 {
                     addUsername: {
-                        username
+                        username: Util.hashAndSerialize(username)
                     }
                 }
             ]
@@ -968,11 +970,12 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async addUsernames(prevHash, usernames) {
+        this._usernames = this._usernames.concat(usernames);
         const update = {
             memberId: this._memberId,
             operations: usernames.map((username) => ({
                 addUsername: {
-                    username
+                    username: Util.hashAndSerialize(username)
                 }
             })),
         };
@@ -987,12 +990,13 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async removeUsername(prevHash, username) {
+        this._usernames.splice(this._usernames.indexOf(username), 1);
         const update = {
             memberId: this._memberId,
             operations: [
                 {
                     removeUsername: {
-                        username
+                        username: Util.hashAndSerialize(username)
                     }
                 }
             ]
@@ -1008,15 +1012,35 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async removeUsernames(prevHash, usernames) {
+        this._usernames = this._usernames.filter(
+            x => usernames.indexOf(x) < 0);
         const update = {
             memberId: this._memberId,
             operations: usernames.map((username) => ({
                 removeUsername: {
-                    username
+                    username: Util.hashAndSerialize(username)
                 }
             })),
         };
         return this._memberUpdate(update, prevHash);
+    }
+
+    /**
+     * Return the usernames of the member
+     *
+     * @return {Object} response - response to the API call
+     */
+    async usernames() {
+        return this._usernames;
+    }
+
+    /**
+     * Return the first username of the member
+     *
+     * @return {Object} response - response to the API call
+     */
+    async firstUsername() {
+        return this._usernames.length ? this._usernames[0] : undefined;
     }
 
     async _memberUpdate(update, prevHash) {
@@ -1062,7 +1086,7 @@ class AuthHttpClient {
 
         const config = {
             method: 'post',
-            url: '/test/create-account',
+            url: `/test/create-account/${this._usernames[0]}`,
             data: req,
         };
         return this._instance(config);

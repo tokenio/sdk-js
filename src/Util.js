@@ -1,6 +1,9 @@
 /**
  * Class to provide static utility functions.
  */
+import sha256 from "fast-sha256";
+import bs58 from 'bs58';
+
 class Util {
     /**
      * Generates a random nonce
@@ -81,6 +84,16 @@ class Util {
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }
+    }
+
+    /**
+     * Support String to String hashing
+     *
+     * @param {String} value - string to be hashed
+     * @return {String} result - hashed string
+     */
+    static hashAndSerialize(value) {
+        return bs58.encode(sha256(Buffer.from(value, 'utf8')));
     }
 }
 export default Util;
