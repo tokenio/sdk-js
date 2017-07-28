@@ -1,6 +1,7 @@
 /**
  * Class to provide static utility functions.
  */
+
 class Util {
     /**
      * Generates a random nonce
@@ -81,6 +82,19 @@ class Util {
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }
+    }
+
+    /**
+     * Support String to String hashing
+     *
+     * @deprecated Should be deleted with PR-998
+     * @param {String} value - string to be hashed
+     * @return {String} result - hashed string
+     * TODO: Should be deleted with PR-998
+     */
+    static hashAndSerialize(value) {
+        return value;
+        // return bs58.encode(sha256(Buffer.from(value, 'utf8')));
     }
 }
 export default Util;

@@ -1,14 +1,15 @@
-import Crypto from './Crypto';
-import {localStorageSchemaVersion} from '../constants';
+import Crypto from '../Crypto';
+
+const globalStorage = {
+    members: [],
+    activeMemberId: "",
+};
 
 /**
- * BrowserCryptoEngine: Implements the CryptoEngine interface.
+ * MemoryCryptoEngine: Implements the CryptoEngine interface.
  *
- * Crypto engine to handle signatures, verifications, and key storage, on browsers. Uses
- * LocalStorage as the storage location, and handles storage for multiple members at once.
- * Uses the following schema:
- *
- * schemaVersion: 0.1,
+ * Crypto engine to handle signatures, verifications, and key storage, in memory. Handles storage
+ * for multiple members at once, and uses the following schema:
  *
  * activeMemberId: 123,
  * members: [
@@ -25,32 +26,18 @@ import {localStorageSchemaVersion} from '../constants';
  * ]
  *
  */
-class BrowserCryptoEngine {
+class MemoryCryptoEngine {
+
     /**
-     * Constructs the engine, using an existing member/keys if it is in localStorage
+     * Constructs the engine, using an existing member/keys if it exists in the storage
      *
      * @param {string} memberId - memberId of the member we want to create the engine for
      */
     constructor(memberId) {
-        if (!BROWSER) {
-            throw new Error("Browser Only");
-        }
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
 
-        // Clears the storage if we are using an old schema
-        let savedSchemaVersion;
-        try {
-            savedSchemaVersion = JSON.parse(window.localStorage.schemaVersion);
-        } catch (syntaxError) {
-            // If nothing yet in localStorage, continue
-        }
-
-        if (savedSchemaVersion < localStorageSchemaVersion) {
-            window.localStorage.clear();
-            window.localStorage.schemaVersion = JSON.stringify(localStorageSchemaVersion);
-        }
         this._memberId = memberId;
 
         // If member already exists, use its keys. Otherwise use an empty key store
@@ -62,7 +49,7 @@ class BrowserCryptoEngine {
                 keys: [],
             });
         }
-        window.localStorage.activeMemberId = this._memberId;
+        globalStorage.activeMemberId = this._memberId;
     }
 
     /**
@@ -71,7 +58,7 @@ class BrowserCryptoEngine {
      * @return {string} memberId - active memberId
      */
     static getActiveMemberId() {
-        const memberId = window.localStorage.activeMemberId;
+        const memberId = globalStorage.activeMemberId;
         if (!memberId) {
             throw new Error('No active memberId on this browser');
         }
@@ -79,7 +66,7 @@ class BrowserCryptoEngine {
     }
 
     /**
-     * Generates and stores a new key. Adds it to the localStorage, replacing the corresponding
+     * Generates and stores a new key. Adds it to the storage, replacing the corresponding
      * old key if it exists (with the same security level).
      *
      * @param {string} securityLevel - security level of the key we want to create
@@ -107,7 +94,7 @@ class BrowserCryptoEngine {
         };
     }
 
-    /**
+   /**
      * Creates a signer object using the key with the specified key level. This can sign
      * strings and JSON objects.
      *
@@ -160,16 +147,20 @@ class BrowserCryptoEngine {
         if (!this._memberId) {
             throw new Error('Invalid memberId');
         }
-        const loadedMembers = window.localStorage.members ?
-            JSON.parse(window.localStorage.members) :
-            [];
+        const loadedMembers = globalStorage.members;
         for (let member of loadedMembers) {
             if (member.id === this._memberId) {
-                for (let i = 0; i < member.keys.length; i++) {
-                    member.keys[i].publicKey = Crypto.bufferKey(member.keys[i].publicKey);
-                    member.keys[i].secretKey = Crypto.bufferKey(member.keys[i].secretKey);
-                }
-                return member;
+                const memberCopy = {
+                    id: member.id,
+                    keys: member.keys.map((key) => ({
+                        id: key.id,
+                        algorithm: key.algorithm,
+                        level: key.level,
+                        publicKey: Crypto.bufferKey(key.publicKey),
+                        secretKey: Crypto.bufferKey(key.secretKey)
+                    })),
+                };
+                return memberCopy;
             }
         }
         throw new Error('Member not found');
@@ -190,21 +181,17 @@ class BrowserCryptoEngine {
             });
         }
 
-        const loadedMembers = window.localStorage.members ?
-            JSON.parse(window.localStorage.members) :
-            [];
         let replaced = false;
-        for (let i = 0; i < loadedMembers.length; i++) {
-            if (loadedMembers[i].id === memberCopy.id) {
-                loadedMembers[i] = memberCopy;
+        for (let i = 0; i < globalStorage.members.length; i++) {
+            if (globalStorage.members[i].id === memberCopy.id) {
+                globalStorage.members[i] = memberCopy;
                 replaced = true;
             }
         }
         if (!replaced) {
-            loadedMembers.push(memberCopy);
+            globalStorage.members.push(memberCopy);
         }
-        window.localStorage.members = JSON.stringify(loadedMembers);
     }
 }
 
-export default BrowserCryptoEngine;
+export default MemoryCryptoEngine;

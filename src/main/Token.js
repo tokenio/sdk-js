@@ -1,6 +1,7 @@
 import Crypto from "../security/Crypto";
-import BrowserCryptoEngine from "../security/BrowserCryptoEngine";
-import MemoryCryptoEngine from "../security/MemoryCryptoEngine";
+import BrowserCryptoEngine from "../security/engines/BrowserCryptoEngine";
+import MemoryCryptoEngine from "../security/engines/MemoryCryptoEngine";
+import UnsecuredFileCryptoEngine from "../security/engines/UnsecuredFileCryptoEngine";
 import Util from "../Util";
 import Member from "../main/Member";
 import {KeyLevel} from "../constants";
@@ -18,10 +19,11 @@ class Token {
      * Construct the Token SDK object, pointing to the given environment.
      *
      * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     * @param {string} keyDir - absolute directory name of key storage directory
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd', globalRpcErrorCallback) {
+    constructor(env = 'prd', keyDir, globalRpcErrorCallback) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._unauthenticatedClient = new HttpClient(env, this._globalRpcErrorCallback);
@@ -40,6 +42,13 @@ class Token {
 
         /** Class for using the memory crypto engine */
         this.MemoryCryptoEngine = MemoryCryptoEngine;
+
+        if (keyDir) {
+            UnsecuredFileCryptoEngine.setDirRoot(keyDir);
+        }
+
+        /** Class for the Unsecured filestore key root */
+        this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
     }
 
     /**
@@ -79,9 +88,9 @@ class Token {
         return Util.callAsync(this.createMember, async () => {
             const response = await this._unauthenticatedClient.createMemberId();
             const engine = new CryptoEngine(response.data.memberId);
-            const pk1 = engine.generateKey('PRIVILEGED');
-            const pk2 = engine.generateKey('STANDARD');
-            const pk3 = engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('PRIVILEGED');
+            const pk2 = await engine.generateKey('STANDARD');
+            const pk3 = await engine.generateKey('LOW');
             await this._unauthenticatedClient.approveFirstKeys(
                 response.data.memberId,
                 [pk1, pk2, pk3],
@@ -112,9 +121,9 @@ class Token {
                 throw new Error('Invalid username');
             }
             const engine = new CryptoEngine(res.data.memberId);
-            const pk1 = engine.generateKey('PRIVILEGED');
-            const pk2 = engine.generateKey('STANDARD');
-            const pk3 = engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('PRIVILEGED');
+            const pk2 = await engine.generateKey('STANDARD');
+            const pk3 = await engine.generateKey('LOW');
             return {
                 memberId: res.data.memberId,
                 keys: [pk1, pk2, pk3],
@@ -139,7 +148,7 @@ class Token {
             }
 
             const engine = new CryptoEngine(res.data.memberId);
-            const pk1 = engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('LOW');
             return {
                 memberId: res.data.memberId,
                 keys: [pk1],

@@ -23,7 +23,7 @@ class AuthHttpClient {
      *
      * @param {string} env - desired env, such as 'prd'
      * @param {string} memberId - member making the requests
-     * @param {Object} cryptoEngine - engine to use for signing
+     * @param {Object} cryptoEngine - engines to use for signing
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
@@ -32,23 +32,11 @@ class AuthHttpClient {
             baseURL: urls[env]
         });
         this._memberId = memberId;
+        this._cryptoEngine = cryptoEngine;
+        this._usernames = [];
 
-        // Creates the necessary signers
-        this._signerLow = cryptoEngine.createSigner(KeyLevel.LOW);
-        this._signerStandard = cryptoEngine.createSigner(KeyLevel.LOW);
-        this._signerPrivileged = cryptoEngine.createSigner(KeyLevel.LOW);
-        try {
-            this._signerStandard = cryptoEngine.createSigner(KeyLevel.STANDARD);
-        } catch (err) {
-            this._signerStandard = this._signerLow; // If no Standard signer, uses Low
-        }
-        try {
-            this._signerPrivileged = cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
-        } catch (err) {
-            this._signerPrivileged = this._signerLow; // If no Privileged signer, uses Low
-        }
         this._context = new AuthContext();
-        this._authHeader = new AuthHeader(urls[env], this._signerLow);
+        this._authHeader = new AuthHeader(urls[env], this);
 
         this._resetRequestInterceptor();
 
@@ -58,12 +46,43 @@ class AuthHttpClient {
         });
     }
 
+    /**
+     * Creates the necessary signer objects, based on the level requested.
+     * If the level is not available, attempts to fetch a lower level.
+     *
+     * @param {string} level - requested level of key
+     * @return {Promise} signer - object used to sign
+     */
+    async getSigner(level) {
+        if (level === KeyLevel.LOW) {
+            return await this._cryptoEngine.createSigner(KeyLevel.LOW);
+        }
+        if (level === KeyLevel.STANDARD) {
+            try {
+                return await this._cryptoEngine.createSigner(KeyLevel.STANDARD);
+            } catch (err) {
+                return await this._cryptoEngine.createSigner(KeyLevel.LOW);
+            }
+        }
+        if (level === KeyLevel.PRIVILEGED) {
+            try {
+                return await this._cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+            } catch (err) {
+                try {
+                    return await this._cryptoEngine.createSigner(KeyLevel.STANDARD);
+                } catch (err2) {
+                    return await this._cryptoEngine.createSigner(KeyLevel.LOW);
+                }
+            }
+        }
+    }
+
     _resetRequestInterceptor() {
         this._instance.interceptors.request.eject(this._interceptor);
 
         const versionHeader = new VersionHeader();
-        this._interceptor = this._instance.interceptors.request.use((config) => {
-            this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
+        this._interceptor = this._instance.interceptors.request.use(async (config) => {
+            await this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
             versionHeader.addVersionHeader(config);
             return config;
         });
@@ -94,7 +113,7 @@ class AuthHttpClient {
      * @param {string} handlerInstructions - how to send the notification
      * @return {Object} response - response to the API call
      */
-    subscribeToNotifications(handler, handlerInstructions) {
+    async subscribeToNotifications(handler, handlerInstructions) {
         const req = {
             handler,
             handlerInstructions,
@@ -113,7 +132,7 @@ class AuthHttpClient {
      *
      * @return {Object} response - response to the API call
      */
-    getSubscribers() {
+    async getSubscribers() {
         const config = {
             method: 'get',
             url: `/subscribers`
@@ -127,7 +146,7 @@ class AuthHttpClient {
      * @param {string} subscriberId - Id of the subscriber to get
      * @return {Object} response - response to the API call
      */
-    getSubscriber(subscriberId) {
+    async getSubscriber(subscriberId) {
         const config = {
             method: 'get',
             url: `/subscribers/${subscriberId}`
@@ -142,7 +161,7 @@ class AuthHttpClient {
      * @param {Number} limit - how many to get
      * @return {Object} response - response to the API call
      */
-    getNotifications(offset, limit) {
+    async getNotifications(offset, limit) {
         const config = {
             method: 'get',
             url: `/notifications?offset=${offset}&limit=${limit}`,
@@ -156,7 +175,7 @@ class AuthHttpClient {
      * @param {string} notificationId - Id of the notification to get
      * @return {Object} response - response to the API call
      */
-    getNotification(notificationId) {
+    async getNotification(notificationId) {
         const config = {
             method: 'get',
             url: `/notifications/${notificationId}`
@@ -170,7 +189,7 @@ class AuthHttpClient {
      * @param {string} subscriberId - subscriber to delete
      * @return {Object} response - response to the API call
      */
-    unsubscribeFromNotifications(subscriberId) {
+    async unsubscribeFromNotifications(subscriberId) {
         const config = {
             method: 'delete',
             url: `/subscribers/${subscriberId}`
@@ -189,14 +208,15 @@ class AuthHttpClient {
      * @param {Object} address - address to add
      * @return {Object} response - response to the API call
      */
-    addAddress(name, address) {
+    async addAddress(name, address) {
+        const signer = await this.getSigner(KeyLevel.LOW);
         const req = {
             name,
             address,
             addressSignature: {
                 memberId: this._memberId,
-                keyId: this._signerLow.getKeyId(),
-                signature: this._signerLow.signJson(address),
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(address),
             }
         };
         const config = {
@@ -213,7 +233,7 @@ class AuthHttpClient {
      * @param {string} addressId - address to get
      * @return {Object} response - response to the API call
      */
-    getAddress(addressId) {
+    async getAddress(addressId) {
         const config = {
             method: 'get',
             url: `/addresses/${addressId}`
@@ -226,7 +246,7 @@ class AuthHttpClient {
      *
      * @return {Object} response - response to the API call
      */
-    getAddresses() {
+    async getAddresses() {
         const config = {
             method: 'get',
             url: `/addresses`
@@ -240,7 +260,7 @@ class AuthHttpClient {
      * @param {string} addressId - address to delete
      * @return {Object} response - response to the API call
      */
-    deleteAddress(addressId) {
+    async deleteAddress(addressId) {
         const config = {
             method: 'delete',
             url: `/addresses/${addressId}`
@@ -258,13 +278,13 @@ class AuthHttpClient {
      * @param {Object} profile - profile to set
      * @return {Object} response - response to the API call
      */
-    setProfile(profile) {
+    async setProfile(profile) {
        const req = {
            profile
        };
        const config = {
-           method: 'post',
-           url: `/members/profile`,
+           method: 'put',
+           url: `/profile`,
            data: req
        };
        return this._instance(config);
@@ -276,7 +296,7 @@ class AuthHttpClient {
      * @param {string} id - member id whose profile to get
      * @return {Object} response - response to the API call
      */
-    getProfile(id) {
+    async getProfile(id) {
         const config = {
             method: 'get',
             url: `/members/${id}/profile`,
@@ -291,19 +311,19 @@ class AuthHttpClient {
      * @param {Buffer} data - data in bytes
      * @return {Object} response - response to the API call
      */
-    setProfilePicture(type, data) {
+    async setProfilePicture(type, data) {
         const req = {
             payload: {
                 ownerId: this._memberId,
                 type: type,
                 name: "profile",
                 data: base64js.fromByteArray(data),
-    accessMode: "PUBLIC",
+                accessMode: "PUBLIC",
             },
         };
         const config = {
-            method: 'post',
-            url: `/members/profilepicture`,
+            method: 'put',
+            url: `/profilepicture`,
             data: req
         };
         return this._instance(config);
@@ -316,7 +336,7 @@ class AuthHttpClient {
      * @param {Object} size - desired size category: SMALL/MEDIUM/LARGE/ORIGINAL
      * @return {Object} response - response to the API call
      */
-    getProfilePicture(id, size) {
+    async getProfilePicture(id, size) {
         const config = {
             method: 'get',
             url: `/members/${id}/profilepicture/${size}`,
@@ -333,7 +353,7 @@ class AuthHttpClient {
      * @param {Object} bankAuthorization - encrypted authorization to accounts
      * @return {Object} response - response to the API call
      */
-    linkAccounts(bankAuthorization) {
+    async linkAccounts(bankAuthorization) {
         const req = {
             bankAuthorization
         };
@@ -351,7 +371,7 @@ class AuthHttpClient {
      * @param {Array} accountIds - account ids to unlink
      * @return {Object} response - response to the API call
      */
-    unlinkAccounts(accountIds) {
+    async unlinkAccounts(accountIds) {
         const req = {
             accountIds
         };
@@ -368,7 +388,7 @@ class AuthHttpClient {
      *
      * @return {Object} response - response to the API call
      */
-    getAccounts() {
+    async getAccounts() {
         const config = {
             method: 'get',
             url: `/accounts`
@@ -382,7 +402,7 @@ class AuthHttpClient {
      * @param {string} accountId - account to get
      * @return {Object} response - response to the API call
      */
-    getAccount(accountId) {
+    async getAccount(accountId) {
         const config = {
             method: 'get',
             url: `/accounts/${accountId}`
@@ -397,7 +417,7 @@ class AuthHttpClient {
      * @param {string} name - new name
      * @return {Object} response - response to the API call
      */
-    setAccountName(accountId, name) {
+    async setAccountName(accountId, name) {
         const config = {
             method: 'patch',
             url: `/accounts/${accountId}?name=${name}`
@@ -411,7 +431,7 @@ class AuthHttpClient {
      * @param {string} accountId - accountId
      * @return {Object} response - response to the API call
      */
-    getBalance(accountId) {
+    async getBalance(accountId) {
         const config = {
             method: 'get',
             url: `/accounts/${accountId}/balance`
@@ -426,7 +446,7 @@ class AuthHttpClient {
      * @param {string} transactionId - id of the transaction
      * @return {Object} response - response to the API call
      */
-    getTransaction(accountId, transactionId) {
+    async getTransaction(accountId, transactionId) {
         const config = {
             method: 'get',
             url: `/accounts/${accountId}/transactions/${transactionId}`
@@ -442,7 +462,7 @@ class AuthHttpClient {
      * @param {Number} limit - how many to get
      * @return {Object} response - response to the API call
      */
-    getTransactions(accountId, offset, limit) {
+    async getTransactions(accountId, offset, limit) {
         const config = {
             method: 'get',
             url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`
@@ -459,7 +479,7 @@ class AuthHttpClient {
      * @param {Buffer} data - data in bytes
      * @return {Object} response - response to the API call
      */
-    createBlob(ownerId, type, name, data) {
+    async createBlob(ownerId, type, name, data) {
         const req = {
             payload: {
                 ownerId,
@@ -483,7 +503,7 @@ class AuthHttpClient {
      * @param {string} blobId - id of the blob
      * @return {Object} response - response to the API call
      */
-    getTokenBlob(tokenId, blobId) {
+    async getTokenBlob(tokenId, blobId) {
         const config = {
             method: 'get',
             url: `tokens/${tokenId}/blobs/${blobId}`,
@@ -497,7 +517,7 @@ class AuthHttpClient {
      * @param {string} blobId - id of the blob
      * @return {Object} response - response to the API call
      */
-    getBlob(blobId) {
+    async getBlob(blobId) {
         const config = {
             method: 'get',
             url: `/blobs/${blobId}`,
@@ -510,7 +530,7 @@ class AuthHttpClient {
      *
      * @return {Object} response - response to the API call
      */
-    getBanks() {
+    async getBanks() {
         const config = {
             method: 'get',
             url: `/banks`
@@ -524,7 +544,7 @@ class AuthHttpClient {
      * @param {string} bankId - id of the bank to lookup
      * @return {Object} response - response to the API call
      */
-    getBankInfo(bankId) {
+    async getBankInfo(bankId) {
         const config = {
             method: 'get',
             url: `/banks/${bankId}/info`
@@ -542,7 +562,7 @@ class AuthHttpClient {
      * @param {Object} payload - payload of the token
      * @return {Object} response - response to the API call
      */
-    createTransferToken(payload) {
+    async createTransferToken(payload) {
         const config = {
             method: 'post',
             url: `/tokens?type=transfer`,
@@ -560,7 +580,7 @@ class AuthHttpClient {
      * @param {Array} resources - resources to give access to
      * @return {Object} response - response to the API call
      */
-    createAccessToken(username, resources) {
+    async createAccessToken(username, resources) {
         const payload = {
             from: {
                 id: this._memberId,
@@ -592,9 +612,9 @@ class AuthHttpClient {
      * @param {Array} newResources - new resources
      * @return {Object} response - response to the API call
      */
-    replaceToken(tokenToCancel, newResources) {
+    async replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
-        const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+        const cancelReq = await this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const createReq = {
             payload: {
@@ -629,9 +649,9 @@ class AuthHttpClient {
      * @param {Array} newResources - new resources
      * @return {Object} response - response to the API call
      */
-    replaceAndEndorseToken(tokenToCancel, newResources) {
+    async replaceAndEndorseToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
-        const cancelReq = this._tokenOperationRequest(tokenToCancel, 'cancelled');
+        const cancelReq = await this._tokenOperationRequest(tokenToCancel, 'cancelled');
 
         const payload = {
             from: {
@@ -648,7 +668,7 @@ class AuthHttpClient {
 
         const createReq = {
             payload,
-            payload_signature: this._tokenOperationSignature(payload, 'endorsed')
+            payload_signature: await this._tokenOperationSignature(payload, 'endorsed')
         };
 
         const config = {
@@ -668,7 +688,7 @@ class AuthHttpClient {
      * @param {Object} token - token to endorse
      * @return {Object} response - response to the API call
      */
-    endorseToken(token) {
+    async endorseToken(token) {
         return this._tokenOperation(
             token,
             'endorse',
@@ -681,7 +701,7 @@ class AuthHttpClient {
      * @param {Object} token - token to cancel
      * @return {Object} response - response to the API call
      */
-    cancelToken(token) {
+    async cancelToken(token) {
         return this._tokenOperation(
             token,
             'cancel',
@@ -698,7 +718,7 @@ class AuthHttpClient {
      * @param {Array} destinations - destinations money should go to
      * @return {Object} response - response to the API call
      */
-    redeemToken(transferToken, amount, currency, description, destinations) {
+    async redeemToken(transferToken, amount, currency, description, destinations) {
         const payload = {
             refId: Util.generateNonce(),
             tokenId: transferToken.id,
@@ -716,12 +736,13 @@ class AuthHttpClient {
             payload.destinations = destinations;
         }
 
+        const signer = await this.getSigner(KeyLevel.LOW);
         const req = {
             payload,
             payloadSignature: {
                 memberId: this._memberId,
-                keyId: this._signerLow.getKeyId(),
-                signature: this._signerLow.signJson(payload),
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(payload),
             }
         };
         const config = {
@@ -738,7 +759,7 @@ class AuthHttpClient {
      * @param {string} tokenId - id of the token to get
      * @return {Object} response - response to the API call
      */
-    getToken(tokenId) {
+    async getToken(tokenId) {
         const config = {
             method: 'get',
             url: `/tokens/${tokenId}`
@@ -754,7 +775,7 @@ class AuthHttpClient {
      * @param {Number} limit - how many to get
      * @return {Object} response - response to the API call
      */
-    getTokens(type, offset, limit) {
+    async getTokens(type, offset, limit) {
         const config = {
             method: 'get',
             url: `/tokens?type=${type}&offset=${offset}&limit=${limit}`
@@ -762,29 +783,30 @@ class AuthHttpClient {
         return this._instance(config);
     }
 
-    _tokenOperation(token, operation, suffix) {
+    async _tokenOperation(token, operation, suffix) {
         const tokenId = token.id;
         const config = {
             method: 'put',
             url: `/tokens/${tokenId}/${operation}`,
-            data: this._tokenOperationRequest(token, suffix)
+            data: await this._tokenOperationRequest(token, suffix)
         };
         return this._instance(config);
     }
 
-    _tokenOperationRequest(token, suffix) {
+    async _tokenOperationRequest(token, suffix) {
         return {
             tokenId: token.id,
-            signature: this._tokenOperationSignature(token.payload, suffix)
+            signature: await this._tokenOperationSignature(token.payload, suffix)
         };
     }
 
-    _tokenOperationSignature(tokenPayload, suffix) {
+    async _tokenOperationSignature(tokenPayload, suffix) {
         const payload = stringify(tokenPayload) + `.${suffix}`;
+        const signer = await this.getSigner(KeyLevel.STANDARD);
         return {
             memberId: this._memberId,
-            keyId: this._signerStandard.getKeyId(),
-            signature: this._signerStandard.sign(payload),
+            keyId: signer.getKeyId(),
+            signature: signer.sign(payload),
         };
     }
 
@@ -798,7 +820,7 @@ class AuthHttpClient {
      * @param {string} transferId - id of the transfer
      * @return {Object} response - response to the API call
      */
-    getTransfer(transferId) {
+    async getTransfer(transferId) {
         const config = {
             method: 'get',
             url: `/transfers/${transferId}`
@@ -814,7 +836,7 @@ class AuthHttpClient {
      * @param {Number} limit - how many to get
      * @return {Object} response - response to the API call
      */
-    getTransfers(tokenId, offset, limit) {
+    async getTransfers(tokenId, offset, limit) {
         const config = {
             method: 'get',
             url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
@@ -833,7 +855,7 @@ class AuthHttpClient {
      * @param {Object} key - key to add
      * @return {Object} response - response to the API call
      */
-    approveKey(prevHash, key) {
+    async approveKey(prevHash, key) {
         const update = {
             memberId: this._memberId,
             operations: [
@@ -860,7 +882,7 @@ class AuthHttpClient {
      * @param {Array} keys - keys to add
      * @return {Object} response - response to the API call
      */
-    approveKeys(prevHash, keys) {
+    async approveKeys(prevHash, keys) {
         const update = {
             memberId: this._memberId,
             operations: keys.map((key) => ({
@@ -885,7 +907,7 @@ class AuthHttpClient {
      * @param {string} keyId - keyId to remove
      * @return {Object} response - response to the API call
      */
-    removeKey(prevHash, keyId) {
+    async removeKey(prevHash, keyId) {
         const update = {
             memberId: this._memberId,
             operations: [
@@ -906,7 +928,7 @@ class AuthHttpClient {
      * @param {Array} keyIds - keys to remove
      * @return {Object} response - response to the API call
      */
-    removeKeys(prevHash, keyIds) {
+    async removeKeys(prevHash, keyIds) {
         const update = {
             memberId: this._memberId,
             operations: keyIds.map((keyId) => ({
@@ -925,13 +947,14 @@ class AuthHttpClient {
      * @param {string} username - username to add
      * @return {Object} response - response to the API call
      */
-    addUsername(prevHash, username) {
+    async addUsername(prevHash, username) {
+        this._usernames.push(username);
         const update = {
             memberId: this._memberId,
             operations: [
                 {
                     addUsername: {
-                        username
+                        username: Util.hashAndSerialize(username)
                     }
                 }
             ]
@@ -946,12 +969,13 @@ class AuthHttpClient {
      * @param {Array} usernames - usernames to add
      * @return {Object} response - response to the API call
      */
-    addUsernames(prevHash, usernames) {
+    async addUsernames(prevHash, usernames) {
+        this._usernames = this._usernames.concat(usernames);
         const update = {
             memberId: this._memberId,
             operations: usernames.map((username) => ({
                 addUsername: {
-                    username
+                    username: Util.hashAndSerialize(username)
                 }
             })),
         };
@@ -965,13 +989,14 @@ class AuthHttpClient {
      * @param {string} username - username to remove
      * @return {Object} response - response to the API call
      */
-    removeUsername(prevHash, username) {
+    async removeUsername(prevHash, username) {
+        this._usernames.splice(this._usernames.indexOf(username), 1);
         const update = {
             memberId: this._memberId,
             operations: [
                 {
                     removeUsername: {
-                        username
+                        username: Util.hashAndSerialize(username)
                     }
                 }
             ]
@@ -986,29 +1011,50 @@ class AuthHttpClient {
      * @param {string} usernames - usernames to remove
      * @return {Object} response - response to the API call
      */
-    removeUsernames(prevHash, usernames) {
+    async removeUsernames(prevHash, usernames) {
+        this._usernames = this._usernames.filter(
+            x => usernames.indexOf(x) < 0);
         const update = {
             memberId: this._memberId,
             operations: usernames.map((username) => ({
                 removeUsername: {
-                    username
+                    username: Util.hashAndSerialize(username)
                 }
             })),
         };
         return this._memberUpdate(update, prevHash);
     }
 
-    _memberUpdate(update, prevHash) {
+    /**
+     * Return the usernames of the member
+     *
+     * @return {Object} response - response to the API call
+     */
+    async usernames() {
+        return this._usernames;
+    }
+
+    /**
+     * Return the first username of the member
+     *
+     * @return {Object} response - response to the API call
+     */
+    async firstUsername() {
+        return this._usernames.length ? this._usernames[0] : undefined;
+    }
+
+    async _memberUpdate(update, prevHash) {
         if (prevHash !== '') {
             update.prevHash = prevHash;
         }
 
+        const signer = await this.getSigner(KeyLevel.PRIVILEGED);
         const req = {
             update,
             updateSignature: {
                 memberId: this._memberId,
-                keyId: this._signerPrivileged.getKeyId(),
-                signature: this._signerPrivileged.signJson(update),
+                keyId: signer.getKeyId(),
+                signature: signer.signJson(update),
             }
         };
         const config = {
@@ -1030,7 +1076,7 @@ class AuthHttpClient {
      * @param {string} currency - currency in the account
      * @return {Object} response - response to the API call
      */
-    createTestBankAccount(balance, currency) {
+    async createTestBankAccount(balance, currency) {
         const req = {
             balance: {
                 currency,
@@ -1040,7 +1086,7 @@ class AuthHttpClient {
 
         const config = {
             method: 'post',
-            url: '/test/create-account',
+            url: `/test/create-account/${this._usernames[0]}`,
             data: req,
         };
         return this._instance(config);
@@ -1053,7 +1099,7 @@ class AuthHttpClient {
      * @param {string} notificationId - id of notification
      * @return {Object} response - response to the API call
      */
-    getTestBankNotification(subscriberId, notificationId) {
+    async getTestBankNotification(subscriberId, notificationId) {
         const config = {
             method: 'get',
             url: `/test/subscribers/${subscriberId}/notifications/${notificationId}`,
@@ -1067,7 +1113,7 @@ class AuthHttpClient {
      * @param {string} subscriberId - id of subscriber
      * @return {Object} response - response to the API call
      */
-    getTestBankNotifications(subscriberId) {
+    async getTestBankNotifications(subscriberId) {
         const config = {
             method: 'get',
             url: `/test/subscribers/${subscriberId}/notifications`,

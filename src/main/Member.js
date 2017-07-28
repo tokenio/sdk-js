@@ -43,8 +43,7 @@ export default class Member {
      */
     usernames() {
         return Util.callAsync(this.usernames, async () => {
-            const member = await this._getMember();
-            return member.usernames;
+            return this._client.usernames();
         });
     }
 
@@ -55,8 +54,7 @@ export default class Member {
      */
     firstUsername() {
         return Util.callAsync(this.firstUsername, async () => {
-            const member = await this._getMember();
-            return member.usernames.length ? member.usernames[0] : undefined;
+            return this._client.firstUsername();
         });
     }
 
