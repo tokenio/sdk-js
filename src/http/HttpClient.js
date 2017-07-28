@@ -173,6 +173,26 @@ class HttpClient {
         };
         return this._instance(config);
     }
+
+    /**
+     * Sends a notification to a user to request a payment.
+     *
+     * @param {string} username - user to notify
+     * @param {Object} tokenPayload - requested transfer token
+     * @return {Object} response - response to the API call
+     */
+    notifyPaymentRequest(username, tokenPayload) {
+        const req = {
+            username,
+            tokenPayload
+        };
+        const config = {
+            method: 'post',
+            url: `/request-transfer`,
+            data: req
+        };
+        return this._instance(config);
+    }
 }
 
 export default HttpClient;

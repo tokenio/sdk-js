@@ -110,6 +110,24 @@ describe('Notifications', () => {
         await Token.notifyLinkAccounts(username1, auth);
     });
 
+    it('should send a push for a payment request', async () => {
+       const payeeUsername = Token.Util.generateNonce();
+       await Token.createMember(payeeUsername, Token.MemoryCryptoEngine);
+
+        await member1.subscribeToNotifications("token", {
+            PLATFORM: 'TEST',
+            TARGET: Token.Util.generateNonce(),
+        });
+
+        const status = await Token.notifyPaymentRequest(username1, {
+          description: 'payment request',
+          from: {username: username1},
+          to: {username: payeeUsername},
+          transfer: {amount: '100', currency: 'USD'}
+        });
+        assert.equal(status, 'ACCEPTED');
+    });
+
     async function waitUntil(fn, resolve, reject, waitTime = 1, start = new Date().getTime()) {
         try {
             await fn();

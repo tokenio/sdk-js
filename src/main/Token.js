@@ -257,6 +257,23 @@ class Token {
             return res.data.status;
         });
     }
+
+    /**
+     * Sends a notification to a user to request a payment.
+     *
+     * @param {string} username - user to notify
+     * @param {Object} tokenPayload - requested transfer token
+     * @return {Promise} NotifyStatus - status
+     */
+    notifyPaymentRequest(username, tokenPayload) {
+      if (!tokenPayload.refId) {
+        tokenPayload.refId = Util.generateNonce();
+      }
+      return Util.callAsync(this.notifyPaymentRequest, async () => {
+        const res = await this._unauthenticatedClient.notifyPaymentRequest(username, tokenPayload);
+        return res.data.status;
+      });
+    }
 }
 
 export default Token;
