@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.4.79",
+  "version": "1.4.80",
   "description": "",
   "main": "dist/token-io.min.js",
   "scripts": {
@@ -62,7 +62,6 @@
     "babel-regenerator-runtime": "^6.5.0",
     "base64-js": "^1.2.0",
     "base64url": "^2.0.0",
-    "bs58": "^4.0.1",
     "buffer": "3.4.3",
     "es6-promise": "^3.3.1",
     "esdoc": "^0.5.2",
