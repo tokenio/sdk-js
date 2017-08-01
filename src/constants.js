@@ -10,6 +10,7 @@ const urls = {
     dev: 'https://api.dev.token.io',
     stg: 'https://api.stg.token.io',
     sbx: 'https://api.sandbox.token.io',
+    int: 'https://api.int.token.io',
     prd: 'https://api.token.io',
 };
 
