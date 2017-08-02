@@ -1,4 +1,7 @@
 /* eslint-disable new-cap */
+const chai = require('chai');
+const assert = chai.assert;
+
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
@@ -17,6 +20,7 @@ describe('GetTransactionsSample test', () => {
         const member2Username = await member2.firstUsername();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
         await RedeemTransferTokenSample(member2, res.id);
-        await GetTransactionsSample(member);
+        const transactions = await GetTransactionsSample(member);
+        assert.equal(transactions.length, 1);
     });
 });
