@@ -2,6 +2,7 @@
  * Gets a member's recent transactions
  *
  * @param {Member} payer - payer member
+ * @return {Object} array of transactions
  */
 export default async (payer) => {
     const accounts = await payer.getAccounts();
