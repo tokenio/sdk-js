@@ -9,8 +9,8 @@ export default async (member) => {
     const accounts = await member.getAccounts();
     for (var i = 0; i < accounts.length; i++) {
         const balance = await member.getBalance(accounts[i].id);
-	const currency = balance.available.currency;
-	sums[currency] = (sums[currency] || 0) + parseFloat(balance.available.value);
+        const currency = balance.available.currency;
+        sums[currency] = (sums[currency] || 0) + parseFloat(balance.available.value);
     }
     return sums;
 };
