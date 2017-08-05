@@ -10,7 +10,7 @@ export default async (payer, transfer) => {
     const accountId = accounts[0].id;
 
     const transactionId = transfer.transactionId;
-    const transaction = payer.getTransaction(accountId, transactionId);
+    const transaction = await payer.getTransaction(accountId, transactionId);
 
     return transaction;
 };
