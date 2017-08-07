@@ -260,7 +260,7 @@ export default class TransferTokenBuilder {
                 throw new Error('No source on token');
             }
             if (!this._payload.transfer.redeemer.username &&
-                !this._payload.transfer.redeemer.memberId) {
+                !this._payload.transfer.redeemer.id) {
                 throw new Error('No redeemer on token');
             }
             for (let i = 0; i < this._blobPayloads.length; i++) {
