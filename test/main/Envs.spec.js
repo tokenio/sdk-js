@@ -3,7 +3,6 @@ import 'babel-regenerator-runtime';
 
 const assert = chai.assert;
 const TokenIo = require('../../src');
-const Token = new TokenIo(TEST_ENV);
 
 describe('Should handle environment', () => {
     it('should create a Token SDK object from a correct env', async () => {
