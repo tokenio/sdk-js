@@ -17,6 +17,10 @@ class HttpClient {
      * call error. For example: SDK version mismatch
      */
     constructor(env, globalRpcErrorCallback) {
+        if (!urls[env]) {
+            throw new Error('Invalid environment string. Please use one of: ' +
+                JSON.stringify(urls));
+        }
         this._instance = axios.create({
             baseURL: urls[env]
         });

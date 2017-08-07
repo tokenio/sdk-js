@@ -19,15 +19,15 @@ $ npm install token-io
 To use in a browser:
 
 ```sh
-$ var tokenLib = require("token-io");
-$ var Token = tokenLib(env = "sbx");
+$ var TokenLib = require("token-io");
+$ var Token = TokenLib(env = "sandbox");
 ```
 
 To use in node:
 
 ```sh
-$ var TokenLib = require("token-io/dist/token-io.node.min.js")
-$ var Token = new TokenLib("sbx");
+$ var TokenLib = require("token-io/dist/token-io.node.js")
+$ var Token = new TokenLib("sandbox");
 ```
 
 ## Developing/Changing the SDK
@@ -95,7 +95,7 @@ This will run the tests using node.js.
 * Make sure Karma Plugin is disabled: Webstorm > Preferences > Plugins
 * Click Run > Edit configurations.
 * Select Defaults > Mocha
-* Environment variables: TEST_ENV = sbx
+* Environment variables: TEST_ENV = sandbox
 * Mocha package: ....../sdk-js/node_modules/mocha-webpack
 * User interface: bdd
 * Extra mocha options: --webpack-config config/webpack.config.node.js --timeout 60000 --watch --colors
@@ -121,7 +121,7 @@ This is useful for testing changes which may only apply to browsers.
 * Select Defaults > Karma
 * Configuration file: ....../sdk-js/test/karma.config.js
 * Karma package: ......./sdk-js/node_modules/karma 
-* Environment variables: TEST_ENV = sbx
+* Environment variables: TEST_ENV = sandbox
 * After this, you can create different custom Karma configs which are based off of this one. For 
 example, you can create a BrowserDev config, which has a TEST_ENV = dev, and will run all the
 tests in stg. Then when you want to test your changes in the browser, against the dev environment,
