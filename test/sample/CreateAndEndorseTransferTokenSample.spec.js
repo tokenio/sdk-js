@@ -13,6 +13,7 @@ import CreateTransferTokenFromAuthSample
   from '../../src/sample/CreateTransferTokenFromAuthSample';
 import CreateTransferTokenToDestinationSample
   from '../../src/sample/CreateTransferTokenToDestinationSample';
+import RedeemTransferTokenSample from '../../src/sample/RedeemTransferTokenSample';
 
 describe('CreateAndEndorseTransferTokenSample test', () => {
     it('Should run the sample', async () => {
@@ -46,8 +47,11 @@ describe('CreateTransferTokenFromAuthSample test', () => {
         const member2Username = await member2.firstUsername();
         await LinkMemberAndBankSample(member2);
 
-        const res = await CreateTransferTokenFromAuthSample(member, member2Username);
-        assert.isAtLeast(res.payloadSignatures.length, 2);
+        const token = await CreateTransferTokenFromAuthSample(member, member2Username);
+        assert.isAtLeast(token.payloadSignatures.length, 2);
+
+        const transfer = await RedeemTransferTokenSample(member, token.id);
+        assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 });
 

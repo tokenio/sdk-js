@@ -47,12 +47,12 @@ $ yarn run build
 ```
 To test in node:
 ```sh
-$ yarn run testNodeSbx
+$ yarn run testNodeSandbox
 ```
 
 To test in the browser:
 ```sh
-$ yarn run testBrowserSbx
+$ yarn run testBrowserSandbox
 ```
 
 To update the version

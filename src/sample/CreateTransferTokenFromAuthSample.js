@@ -6,6 +6,8 @@
  * @return {Object} token - endorsed token
  */
 export default async (payer, payeeUsername) => {
+    const payerUsername = await payer.firstUsername();
+
     // Instead of a previously-linked account, the user can use an authorization from the bank.
     // Here, we simulate getting authorization via createTestBankAccount.
     const bankAuthorization = await payer.createTestBankAccount(120.0, "EUR");
@@ -13,7 +15,7 @@ export default async (payer, payeeUsername) => {
     // Payer creates the token with the desired terms
     const token = await payer.createTransferToken(100.00, 'EUR')
           .setBankAuthorization(bankAuthorization)
-          .setRedeemerUsername(payeeUsername)
+          .setRedeemerUsername(payerUsername)
           .setToUsername(payeeUsername)
           .execute();
 
