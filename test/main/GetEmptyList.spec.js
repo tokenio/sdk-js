@@ -6,12 +6,12 @@ const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
 let member1 = {};
-let username1 = '';
+let alias1 = '';
 
 describe('Empty tokens and accounts', () => {
     before(async () => {
-        username1 = Token.Util.generateNonce();
-        member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
+        alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
     });
 
     it('should see an empty list of accounts', async () => {

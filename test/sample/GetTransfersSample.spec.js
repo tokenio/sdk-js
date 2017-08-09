@@ -19,8 +19,8 @@ describe('GetTransfersSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
         const transfers = await GetTransfersSample(member);
         assert.equal(transfers.length, 1);
@@ -34,8 +34,8 @@ describe('GetTransferSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         const redeemedTransfer = await RedeemTransferTokenSample(member2, res.id);
         const fetchedTransfer = await GetTransferSample(member, redeemedTransfer.id);
         assert.equal(fetchedTransfer.payload.description, redeemedTransfer.payload.description);
@@ -49,8 +49,8 @@ describe('GetTransferTokensSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
         const transferTokens = await GetTransferTokensSample(member);
         assert.equal(transferTokens.length, 1);

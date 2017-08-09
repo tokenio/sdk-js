@@ -6,9 +6,9 @@ const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
 let member1 = {};
-let username1 = '';
+let alias1 = '';
 
-let username2 = '';
+let alias2 = '';
 
 let destination1 = {
     account: {
@@ -20,14 +20,14 @@ let destination1 = {
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Token.Util.generateNonce();
-    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
+    alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
 };
 
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Token.Util.generateNonce();
-    await Token.createMember(username2, Token.MemoryCryptoEngine);
+    alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    await Token.createMember(alias2, Token.MemoryCryptoEngine);
 };
 
 describe('Bank Authorization Payments', async () => {
@@ -37,8 +37,8 @@ describe('Bank Authorization Payments', async () => {
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         const token = await member1.createTransferToken(100, 'EUR')
             .setBankAuthorization(auth)
-            .setToUsername(username2)
-            .setRedeemerUsername(username2)
+            .setToAlias(alias2)
+            .setRedeemerAlias(alias2)
             .execute();
         const tokenLookedUp = await member1.getToken(token.id);
         assert.isOk(token);
@@ -55,8 +55,8 @@ describe('Bank Authorization Payments', async () => {
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         const token = await member1.createTransferToken(100, 'EUR')
             .setBankAuthorization(auth)
-            .setRedeemerUsername(username1)
-            .setToUsername(username2)
+            .setRedeemerAlias(alias1)
+            .setToAlias(alias2)
             .addDestination(destination1)
             .execute();
         await member1.endorseToken(token.id);

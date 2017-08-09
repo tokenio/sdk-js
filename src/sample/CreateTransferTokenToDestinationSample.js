@@ -2,16 +2,16 @@
  * Creates a transfer token from a bank authorization
  *
  * @param {Member} payer - member that will fund the token
- * @param {string} payeeUsername - username of the payee member
+ * @param {Object} payeeAlias - alias of the payee member
  * @return {Object} token - endorsed token
  */
-export default async (payer, payeeUsername) => {
+export default async (payer, payeeAlias) => {
     const accounts = await payer.getAccounts();
 
     // Payer creates the token with the desired terms
     const token = await payer.createTransferToken(100.00, 'EUR')
           .setAccountId(accounts[0].id)
-          .setRedeemerUsername(payeeUsername)
+          .setRedeemerAlias(payeeAlias)
           .addDestination({
                 account: {
                     sepa: {

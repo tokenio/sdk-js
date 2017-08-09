@@ -6,12 +6,12 @@ const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
 let member = {};
-let username = '';
+let alias = '';
 
 describe('Banks test', () => {
     beforeEach(async () => {
-        username = 'token' + Token.Util.generateNonce();
-        member = await Token.createMember(username, Token.MemoryCryptoEngine);
+        alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        member = await Token.createMember(alias, Token.MemoryCryptoEngine);
     });
 
     it('should get banks and bank info', async () => {

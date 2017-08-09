@@ -52,39 +52,39 @@ class Token {
     }
 
     /**
-     * Checks if a given username already exists
+     * Checks if a given alias already exists
      *
-     * @param {string} username - username to check
-     * @return {Promise} result - true if username exists, false otherwise
+     * @param {Object} alias - alias to check
+     * @return {Promise} result - true if alias exists, false otherwise
      */
-    usernameExists(username) {
-        return Util.callAsync(this.usernameExists, async () => {
-            const res = await this._unauthenticatedClient.getMemberId(username);
-            return (res.data.memberId ? res.data.memberId !== "" : false);
+    aliasExists(alias) {
+        return Util.callAsync(this.aliasExists, async () => {
+            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            return (res.data.member && res.data.member.id ? res.data.member.id !== "" : false);
         });
     }
 
     /**
-     * Retrieved a memberId given a username
+     * Resolve an alias to a member
      *
-     * @param {string} username - username to lookup
-     * @return {Promise} result - true if username exists, false otherwise
+     * @param {Object} alias - alias to lookup
+     * @return {Promise} result - Member object
      */
-    getMemberId(username) {
-        return Util.callAsync(this.getMemberId, async () => {
-            const res = await this._unauthenticatedClient.getMemberId(username);
-            return res.data.memberId;
+    resolveAlias(alias) {
+        return Util.callAsync(this.resolveAlias, async () => {
+            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            return res.data.member;
         });
     }
 
     /**
-     * Creates a member with a username and a keypair, using the provided engine
+     * Creates a member with a alias and a keypair, using the provided engine
      *
-     * @param  {string} username - username to set for member
+     * @param  {Object} alias - alias to set for member
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
-    createMember(username, CryptoEngine) {
+    createMember(alias, CryptoEngine) {
         return Util.callAsync(this.createMember, async () => {
             const response = await this._unauthenticatedClient.createMemberId();
             const engine = new CryptoEngine(response.data.memberId);
@@ -100,7 +100,7 @@ class Token {
                     response.data.memberId,
                     engine,
                     this._globalRpcErrorCallback);
-            await member.addUsername(username);
+            await member.addAlias(alias);
             return member;
         });
     }
@@ -110,22 +110,22 @@ class Token {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys.
      *
-     * @param {string} username - user to provision the device for
+     * @param {string} alias - user to provision the device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDevice(username, CryptoEngine) {
+    provisionDevice(alias, CryptoEngine) {
         return Util.callAsync(this.provisionDevice, async () => {
-            const res = await this._unauthenticatedClient.getMemberId(username);
-            if (!(res.data.memberId)) {
-                throw new Error('Invalid username');
+            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            if (!(res.data.member.id)) {
+                throw new Error('Invalid alias');
             }
-            const engine = new CryptoEngine(res.data.memberId);
+            const engine = new CryptoEngine(res.data.member.id);
             const pk1 = await engine.generateKey('PRIVILEGED');
             const pk2 = await engine.generateKey('STANDARD');
             const pk3 = await engine.generateKey('LOW');
             return {
-                memberId: res.data.memberId,
+                memberId: res.data.member.id,
                 keys: [pk1, pk2, pk3],
             };
         });
@@ -136,21 +136,21 @@ class Token {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys. This only generates one (LOW) key.
      *
-     * @param {string} username - user to provision t he device for
+     * @param {string} alias - user to provision t he device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDeviceLow(username, CryptoEngine) {
+    provisionDeviceLow(alias, CryptoEngine) {
         return Util.callAsync(this.provisionDeviceLow, async () => {
-            const res = await this._unauthenticatedClient.getMemberId(username);
-            if (!(res.data.memberId)) {
-                throw new Error('Invalid username');
+            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            if (!(res.data.member.id)) {
+                throw new Error('Invalid alias');
             }
 
-            const engine = new CryptoEngine(res.data.memberId);
+            const engine = new CryptoEngine(res.data.member.id);
             const pk1 = await engine.generateKey('LOW');
             return {
-                memberId: res.data.memberId,
+                memberId: res.data.member.id,
                 keys: [pk1],
             };
         });
@@ -178,20 +178,18 @@ class Token {
      * Notifies subscribers that accounts should be linked, and passes the bank id and
      * payload
      *
-     * @param {string} username - username to notify
-     * @param {string} bankId - id of the bank
-     * @param {string} bankName - Name of the bank
+     * @param {Object} alias - alias to notify
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccounts(username, bankId, bankName, bankAuthorization) {
+    notifyLinkAccounts(alias, bankAuthorization) {
         const body = {
             linkAccounts: {
                 bankAuthorization,
             }
         };
         return Util.callAsync(this.notifyLinkAccounts, async () => {
-            const res = await this._unauthenticatedClient.notify(username, body);
+            const res = await this._unauthenticatedClient.notify(alias, body);
             return res.data.status;
         });
     }
@@ -200,13 +198,13 @@ class Token {
      * Notifies subscribers that a key should be added and passes the public Key and
      * optional name
      *
-     * @param {string} username - username to notify
+     * @param {Object} alias - alias to notify
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
      * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
-    notifyAddKey(username, keyName, key, level) {
+    notifyAddKey(alias, keyName, key, level) {
         const body = {
             addKey: {
                 name: keyName,
@@ -219,7 +217,7 @@ class Token {
             }
         };
         return Util.callAsync(this.notifyAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(username, body);
+            const res = await this._unauthenticatedClient.notify(alias, body);
             return res.data.status;
         });
     }
@@ -228,14 +226,14 @@ class Token {
      * Notifies subscribed devices that accounts should be linked, and passes the bank id and
      * payload
      *
-     * @param {string} username - username to notify
+     * @param {Object} alias - alias to notify
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
      * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccountsAndAddKey(username, bankAuthorization, keyName, key, level) {
+    notifyLinkAccountsAndAddKey(alias, bankAuthorization, keyName, key, level) {
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
@@ -253,7 +251,7 @@ class Token {
             }
         };
         return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(username, body);
+            const res = await this._unauthenticatedClient.notify(alias, body);
             return res.data.status;
         });
     }
@@ -261,16 +259,16 @@ class Token {
     /**
      * Sends a notification to a user to request a payment.
      *
-     * @param {string} username - user to notify
+     * @param {Object} alias - user to notify
      * @param {Object} tokenPayload - requested transfer token
      * @return {Promise} NotifyStatus - status
      */
-    notifyPaymentRequest(username, tokenPayload) {
+    notifyPaymentRequest(alias, tokenPayload) {
       if (!tokenPayload.refId) {
         tokenPayload.refId = Util.generateNonce();
       }
       return Util.callAsync(this.notifyPaymentRequest, async () => {
-        const res = await this._unauthenticatedClient.notifyPaymentRequest(username, tokenPayload);
+        const res = await this._unauthenticatedClient.notifyPaymentRequest(alias, tokenPayload);
         return res.data.status;
       });
     }

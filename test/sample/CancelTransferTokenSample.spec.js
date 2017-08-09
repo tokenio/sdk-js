@@ -16,8 +16,8 @@ describe('CancelTransferTokenSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         const res2 = await CancelTransferTokenSample(member, res.id);
         assert.equal(res2.status, 'SUCCESS');
     });

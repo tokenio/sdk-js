@@ -10,10 +10,10 @@ const Token = new TokenIo(TEST_ENV);
 import {defaultCurrency} from "../../src/constants";
 
 let member1 = {};
-let username1 = '';
+let alias1 = '';
 let account1 = {};
 
-let username2 = '';
+let alias2 = '';
 let member2 = {};
 
 const randomArray = (len) => {
@@ -26,16 +26,16 @@ const randomArray = (len) => {
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Token.Util.generateNonce();
-    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
+    alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
     const auth = await member1.createTestBankAccount(100000, 'EUR');
     const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
 };
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Token.Util.generateNonce();
-    member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
+    alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);
 };
 
 describe('TransferTokenBuilder', () => {
@@ -44,7 +44,7 @@ describe('TransferTokenBuilder', () => {
     it('should create a basic token', async () => {
         const token = await member1.createTransferToken(100, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .setDescription('Book purchase')
             .execute();
 
@@ -55,7 +55,7 @@ describe('TransferTokenBuilder', () => {
     it('should fail where there is no source', async () => {
         try {
             await member1.createTransferToken(100, defaultCurrency)
-                .setRedeemerUsername(username2)
+                .setRedeemerAlias(alias2)
                 .setDescription('Book purchase')
                 .execute();
             return Promise.reject(new Error('should fail'));
@@ -87,7 +87,7 @@ describe('TransferTokenBuilder', () => {
                 data);
         const token = await member1.createTransferToken(100, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .addAttachment(attachment)
             .execute();
 
@@ -103,7 +103,7 @@ describe('TransferTokenBuilder', () => {
 
         const token = await member1.createTransferToken(100, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .addAttachmentData(member1.memberId(), "js", "file1.js", data1)
             .addAttachmentData(member1.memberId(), "js", "file2.js", data2)
             .addAttachmentData(member1.memberId(), "js", "file3.js", data3)
@@ -138,7 +138,7 @@ describe('TransferTokenBuilder', () => {
             .setBankAuthorization(auth)
             .setEffectiveAtMs(new Date().getTime() - 2000)
             .setExpiresAtMs(new Date().getTime() + 10000)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .setRedeemerMemberId(member2.memberId())
             .setChargeAmount(20)
             .addDestination({
@@ -148,7 +148,7 @@ describe('TransferTokenBuilder', () => {
                     },
                 }
             })
-            .setToUsername(username2)
+            .setToAlias(alias2)
             .setToMemberId(member2.memberId())
             .setDescription('A description')
             .addAttachment(attachment)
@@ -166,7 +166,7 @@ describe('TransferTokenBuilder', () => {
         assert.deepEqual(token.payload.transfer.pricing.sourceQuote, pricing.sourceQuote);
         assert.isOk(token.payload.effectiveAtMs);
         assert.isOk(token.payload.expiresAtMs);
-        assert.isOk(token.payload.to.username);
+        assert.isOk(token.payload.to.alias);
         assert.isOk(token.payload.to.id);
 
         await member1.endorseToken(token);

@@ -12,12 +12,12 @@ import {KeyLevel} from "../../src/constants";
 
 const GET_NOTIFICATION_TIMEOUT_MS = 5000;
 let member1 = {};
-let username1 = '';
+let alias1 = '';
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Token.Util.generateNonce();
-    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
+    alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
 };
 
 describe('Notifications', () => {
@@ -63,7 +63,8 @@ describe('Notifications', () => {
           TARGET: '8E8E256A58DE0F62F4A427202DF8CB07C6BD644AFFE93210BC49B8E5F9402554',
       });
       await member1.unsubscribeFromNotifications(subscriber.id);
-        const status = await Token.notifyLinkAccounts(username1, "auth...");
+        const auth = member1.createTestBankAccount(10000, 'EUR');
+        const status = await Token.notifyLinkAccounts(alias1, auth);
         assert.equal(status, "NO_SUBSCRIBERS");
     });
 
@@ -73,28 +74,28 @@ describe('Notifications', () => {
             TARGET: '123',
         });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
-        const status = await Token.notifyLinkAccounts(username1, auth);
+        const status = await Token.notifyLinkAccounts(alias1, auth);
         assert.equal(status, 'ACCEPTED');
     });
 
     it('should send a push for adding key', async () => {
-        const keys = Crypto.generateKeys();
+        const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
         await member1.subscribeToNotifications("token", {
             PLATFORM: 'TEST',
             TARGET: Token.Util.generateNonce(),
         });
-        await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
     });
 
     it('should send a push for adding a key and linking accounts', async () => {
-        const keys = Crypto.generateKeys();
+        const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
         await member1.subscribeToNotifications("token", {
             PLATFORM: 'TEST',
             TARGET: Token.Util.generateNonce(),
         });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         await Token.notifyLinkAccountsAndAddKey(
-                username1,
+                alias1,
                 auth,
                 'Chrome 51.0',
                 keys,
@@ -107,22 +108,22 @@ describe('Notifications', () => {
             TARGET: Token.Util.generateNonce(),
         });
         const auth = await member1.createTestBankAccount(100000, 'EUR');
-        await Token.notifyLinkAccounts(username1, auth);
+        await Token.notifyLinkAccounts(alias1, auth);
     });
 
     it('should send a push for a payment request', async () => {
-       const payeeUsername = Token.Util.generateNonce();
-       await Token.createMember(payeeUsername, Token.MemoryCryptoEngine);
+       const payeeAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+       await Token.createMember(payeeAlias, Token.MemoryCryptoEngine);
 
         await member1.subscribeToNotifications("token", {
             PLATFORM: 'TEST',
             TARGET: Token.Util.generateNonce(),
         });
 
-        const status = await Token.notifyPaymentRequest(username1, {
+        const status = await Token.notifyPaymentRequest(alias1, {
           description: 'payment request',
-          from: {username: username1},
-          to: {username: payeeUsername},
+          from: {alias: alias1},
+          to: {alias: payeeAlias},
           transfer: {amount: '100', currency: 'USD'}
         });
         assert.equal(status, 'ACCEPTED');
@@ -144,9 +145,9 @@ describe('Notifications', () => {
     }
 
     it('should get notifications with paging', async () => {
-        const keys = Crypto.generateKeys();
-        const username2 = Token.Util.generateNonce();
-        const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
+        const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
+        const alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        const member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);
         const notificationsEmpty = await member2.getNotifications(null, 100);
         assert.equal(notificationsEmpty.data.length, 0);
 
@@ -155,10 +156,10 @@ describe('Notifications', () => {
             TARGET: Token.Util.generateNonce(),
         });
 
-        await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        await Token.notifyAddKey(username2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
             waitUntil(async () => {
                 const notifications = await member2.getNotifications(null, 2);
@@ -179,11 +180,11 @@ describe('Notifications', () => {
     });
 
     it('should send a and get push to fank', async () => {
-        const keys = Crypto.generateKeys();
+        const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
         const subscriber = await member1.subscribeToNotifications("iron", {
             platform: "TEST",
         });
-        await Token.notifyAddKey(username1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
             waitUntil(async () => {
                 const notifications = await member1.getTestBankNotifications(subscriber.id);

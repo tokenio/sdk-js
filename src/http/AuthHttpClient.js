@@ -37,7 +37,6 @@ class AuthHttpClient {
         });
         this._memberId = memberId;
         this._cryptoEngine = cryptoEngine;
-        this._usernames = [];
 
         this._context = new AuthContext();
         this._authHeader = new AuthHeader(urls[env], this);
@@ -580,17 +579,17 @@ class AuthHttpClient {
     /**
      * Creates an access token.
      *
-     * @param {string} username - username of the grantee
+     * @param {Object} alias - alias of the grantee
      * @param {Array} resources - resources to give access to
      * @return {Object} response - response to the API call
      */
-    async createAccessToken(username, resources) {
+    async createAccessToken(alias, resources) {
         const payload = {
             from: {
                 id: this._memberId,
             },
             to: {
-                username,
+                alias,
              },
             access: {
                 resources,
@@ -945,106 +944,64 @@ class AuthHttpClient {
     }
 
     /**
-     * Adds a username to the member;
+     * Adds an alias to the member.
      *
      * @param {string} prevHash - hash of the previous directory entry.
-     * @param {string} username - username to add
+     * @param {Object} alias - alias to add
      * @return {Object} response - response to the API call
      */
-    async addUsername(prevHash, username) {
-        this._usernames.push(username);
+    async addAlias(prevHash, alias) {
+        return this.addAliases(prevHash, [alias]);
+    }
+
+    /**
+     * Adds aliases to the member.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Array} aliases - aliases to add
+     * @return {Object} response - response to the API call
+     */
+    async addAliases(prevHash, aliases) {
         const update = {
             memberId: this._memberId,
-            operations: [
-                {
-                    addUsername: {
-                        username: Util.hashAndSerialize(username)
-                    }
+            operations: aliases.map((alias) => ({
+                addAlias: {
+                    aliasHash: Util.hashAndSerializeAlias(alias)
                 }
-            ]
+            })),
         };
+
         return this._memberUpdate(update, prevHash);
     }
 
     /**
-     * Adds usernames to the member;
+     * Removes an alias from the member.
      *
      * @param {string} prevHash - hash of the previous directory entry.
-     * @param {Array} usernames - usernames to add
+     * @param {Object} alias - alias to remove
      * @return {Object} response - response to the API call
      */
-    async addUsernames(prevHash, usernames) {
-        this._usernames = this._usernames.concat(usernames);
+    async removeAlias(prevHash, alias) {
+        return this.removeAliases(prevHash, [alias]);
+    }
+
+    /**
+     * Removes aliases from the member.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Array} aliases - aliases to remove
+     * @return {Object} response - response to the API call
+     */
+    async removeAliases(prevHash, aliases) {
         const update = {
             memberId: this._memberId,
-            operations: usernames.map((username) => ({
-                addUsername: {
-                    username: Util.hashAndSerialize(username)
+            operations: aliases.map((alias) => ({
+                removeAlias: {
+                    aliasHash: Util.hashAndSerializeAlias(alias)
                 }
             })),
         };
         return this._memberUpdate(update, prevHash);
-    }
-
-    /**
-     * Removes a username from the member;
-     *
-     * @param {string} prevHash - hash of the previous directory entry.
-     * @param {string} username - username to remove
-     * @return {Object} response - response to the API call
-     */
-    async removeUsername(prevHash, username) {
-        this._usernames.splice(this._usernames.indexOf(username), 1);
-        const update = {
-            memberId: this._memberId,
-            operations: [
-                {
-                    removeUsername: {
-                        username: Util.hashAndSerialize(username)
-                    }
-                }
-            ]
-        };
-        return this._memberUpdate(update, prevHash);
-    }
-
-    /**
-     * Removes usernames from the member;
-     *
-     * @param {string} prevHash - hash of the previous directory entry.
-     * @param {string} usernames - usernames to remove
-     * @return {Object} response - response to the API call
-     */
-    async removeUsernames(prevHash, usernames) {
-        this._usernames = this._usernames.filter(
-            x => usernames.indexOf(x) < 0);
-        const update = {
-            memberId: this._memberId,
-            operations: usernames.map((username) => ({
-                removeUsername: {
-                    username: Util.hashAndSerialize(username)
-                }
-            })),
-        };
-        return this._memberUpdate(update, prevHash);
-    }
-
-    /**
-     * Return the usernames of the member
-     *
-     * @return {Object} response - response to the API call
-     */
-    async usernames() {
-        return this._usernames;
-    }
-
-    /**
-     * Return the first username of the member
-     *
-     * @return {Object} response - response to the API call
-     */
-    async firstUsername() {
-        return this._usernames.length ? this._usernames[0] : undefined;
     }
 
     async _memberUpdate(update, prevHash) {
@@ -1090,7 +1047,7 @@ class AuthHttpClient {
 
         const config = {
             method: 'post',
-            url: `/test/create-account/${this._usernames[0]}`,
+            url: `/test/create-account`,
             data: req,
         };
         return this._instance(config);

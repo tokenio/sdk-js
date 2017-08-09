@@ -147,8 +147,9 @@ describe('Unsecured File crypto engine', () => {
         });
 
         it('should be able to login a member', async () => {
+            const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
             const member =
-                await Token.createMember(Token.Util.generateNonce(), UnsecuredFileCryptoEngine);
+                await Token.createMember(alias, UnsecuredFileCryptoEngine);
             const memberId = member.memberId();
             const bankAuth = await member.createTestBankAccount('1001', 'EUR');
             const accounts = await member.linkAccounts(bankAuth);
