@@ -51,15 +51,15 @@ class HttpClient {
     }
 
     /**
-     * Gets a memberId given a username.
+     * Gets a member given an alias.
      *
-     * @param {string} username - username to lookup
+     * @param {Object} alias - alias to lookup
      * @return {Object} response - response to the API call
      */
-    getMemberId(username) {
+    resolveAlias(alias) {
         const config = {
             method: 'get',
-            url: `/memberid?username=${username}`
+            url: `/resolve-alias?value=${alias.value}&type=${alias.type}`
         };
         return this._instance(config);
     }
@@ -81,13 +81,13 @@ class HttpClient {
     /**
      * Notifies a user.
      *
-     * @param {string} username - user to notify
+     * @param {Object} alias - user to notify
      * @param {Object} body - body of the notification
      * @return {Object} response - response to the API call
      */
-    notify(username, body) {
+    notify(alias, body) {
         const req = {
-            username,
+            alias,
             body
         };
         const config = {
@@ -181,13 +181,13 @@ class HttpClient {
     /**
      * Sends a notification to a user to request a payment.
      *
-     * @param {string} username - user to notify
+     * @param {Object} alias - user to notify
      * @param {Object} tokenPayload - requested transfer token
      * @return {Object} response - response to the API call
      */
-    notifyPaymentRequest(username, tokenPayload) {
+    notifyPaymentRequest(alias, tokenPayload) {
         const req = {
-            username,
+            alias,
             tokenPayload
         };
         const config = {

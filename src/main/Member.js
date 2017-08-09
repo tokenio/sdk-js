@@ -37,24 +37,27 @@ export default class Member {
     }
 
     /**
-     * Gets all of the member's usernames
+     * Gets all of the member's aliases
+     * TODO: Replace with alias call to member service
      *
-     * @return {Promise} usernames - member's usernames
+     * @return {Promise} aliases - member's aliases
      */
-    usernames() {
-        return Util.callAsync(this.usernames, async () => {
-            return this._client.usernames();
+    aliases() {
+        return Util.callAsync(this.aliases, async () => {
+            const member = await this._getMember();
+            return member.aliasHashes;
         });
     }
 
     /**
-     * Gets the member's first username
+     * Gets the member's first alias
      *
-     * @return {Promise} username - member's username
+     * @return {Promise} alias - member's alias
      */
-    firstUsername() {
-        return Util.callAsync(this.firstUsername, async () => {
-            return this._client.firstUsername();
+    firstAlias() {
+        return Util.callAsync(this.firstAlias, async () => {
+            const member = await this._getMember();
+            return member.aliasHashes[0];
         });
     }
 
@@ -96,7 +99,6 @@ export default class Member {
         return Util.callAsync(this.approveKey, async () => {
             const prevHash = await this._getPreviousHash();
             await this._client.approveKey(prevHash, key);
-            return;
         });
     }
 
@@ -136,63 +138,58 @@ export default class Member {
         return Util.callAsync(this.removeKeys, async () => {
             const prevHash = await this._getPreviousHash();
             await this._client.removeKeys(prevHash, keyIds);
-            return;
         });
     }
 
     /**
-     * Adds a username to this member
+     * Adds an alias to this member
      *
-     * @param {string} username - username to add
+     * @param {Object} alias - alias to add
      * @return {Promise} empty - empty promise
      */
-    addUsername(username) {
-        return Util.callAsync(this.addUsername, async () => {
+    addAlias(alias) {
+        return Util.callAsync(this.addAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addUsername(prevHash, username);
-            return;
+            await this._client.addAlias(prevHash, alias);
         });
     }
 
     /**
-     * Adds usernames to this member
+     * Adds aliases to this member
      *
-     * @param {Array} usernames - usernames to add
+     * @param {Array} aliases - aliases to add
      * @return {Promise} empty - empty promise
      */
-    addUsernames(usernames) {
-        return Util.callAsync(this.addUsernames, async () => {
+    addAliases(aliases) {
+        return Util.callAsync(this.addAliases, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addUsernames(prevHash, usernames);
-            return;
+            await this._client.addAliases(prevHash, aliases);
         });
     }
 
     /**
-     * Removes a username from the memberId
+     * Removes an alias from the memberId
      *
-     * @param {string} username - username to remove
+     * @param {Object} alias - alias to remove
      * @return {Promise} empty - empty promise
      */
-    removeUsername(username) {
-        return Util.callAsync(this.removeUsername, async () => {
+    removeAlias(alias) {
+        return Util.callAsync(this.removeAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.removeUsername(prevHash, username);
-            return;
+            await this._client.removeAlias(prevHash, alias);
         });
     }
 
     /**
-     * Removes usernames from the memberId
+     * Removes aliases from the memberId
      *
-     * @param {Array} usernames - usernames to remove
+     * @param {Array} aliases - aliases to remove
      * @return {Promise} empty - empty promise
      */
-    removeUsernames(usernames) {
-        return Util.callAsync(this.removeUsernames, async () => {
+    removeAliases(aliases) {
+        return Util.callAsync(this.removeAliases, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.removeUsernames(prevHash, usernames);
-            return;
+            await this._client.removeAliases(prevHash, aliases);
         });
     }
 
@@ -218,7 +215,6 @@ export default class Member {
     unlinkAccounts(accountIds) {
         return Util.callAsync(this.unlinkAccounts, async() => {
             await this._client.unlinkAccounts(accountIds);
-            return;
         });
     }
 
@@ -362,7 +358,6 @@ export default class Member {
     unsubscribeFromNotifications(subscriberId) {
         return Util.callAsync(this.unsubscribeFromNotifications, async () => {
             await this._client.unsubscribeFromNotifications(subscriberId);
-            return;
         });
     }
 
@@ -475,13 +470,13 @@ export default class Member {
     /**
      * Creates a new unendorsed access token.
      *
-     * @param {string} username - the username of the grantee of the Access Token
+     * @param {Object} alias - the alias of the grantee of the Access Token
      * @param {array} resources - a list of resources to give access to
      * @return {Promise} token - promise of a created Access Token
      */
-    createAccessToken(username, resources) {
+    createAccessToken(alias, resources) {
         return Util.callAsync(this.createAccessToken, async () => {
-            const res = await this._client.createAccessToken(username, resources);
+            const res = await this._client.createAccessToken(alias, resources);
             return res.data.token;
         });
     }
@@ -628,7 +623,7 @@ export default class Member {
      * @param {int} amount - amount to redeemer
      * @param {string} currency - currency to redeem
      * @param {string} description - optional transfer description
-     * @param {arr} destinations - transfer destinations
+     * @param {Array} destinations - transfer destinations
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
     redeemToken(token, amount, currency, description, destinations = []) {

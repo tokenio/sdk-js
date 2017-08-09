@@ -5,16 +5,16 @@ import 'babel-regenerator-runtime';
 const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
-let grantorUsername = '';
-let granteeUsername = '';
+let grantorAlias = '';
+let granteeAlias = '';
 let grantor = {};
 let grantee = {};
 let address = {};
 let grantorAccount = {};
 
 const setUpGrantor = async () => {
-    grantorUsername = Token.Util.generateNonce();
-    grantor = await Token.createMember(grantorUsername, Token.MemoryCryptoEngine);
+    grantorAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    grantor = await Token.createMember(grantorAlias, Token.MemoryCryptoEngine);
     address = await grantor.addAddress("name", {city: 'San Francisco', country: 'US'});
     const auth = await grantor.createTestBankAccount(100000, 'EUR');
     const accs = await grantor.linkAccounts(auth);
@@ -22,12 +22,12 @@ const setUpGrantor = async () => {
 };
 
 const setupGrantee = async () => {
-    granteeUsername = Token.Util.generateNonce();
-    grantee = await Token.createMember(granteeUsername, Token.MemoryCryptoEngine);
+    granteeAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    grantee = await Token.createMember(granteeAlias, Token.MemoryCryptoEngine);
 };
 
 const setupToken = async () => {
-    const token = await grantor.createAccessToken(granteeUsername, [{allAddresses: {}}]);
+    const token = await grantor.createAccessToken(granteeAlias, [{allAddresses: {}}]);
     await grantor.endorseToken(token);
     return token;
 };

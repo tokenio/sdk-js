@@ -19,8 +19,8 @@ describe('CreateAndEndorseTransferTokenSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         assert.isAtLeast(res.payloadSignatures.length, 2);
     });
 });
@@ -41,11 +41,11 @@ describe('CreateTransferTokenToDestinationSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
-        const member2Username = await member2.firstUsername();
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const res = await CreateTransferTokenToDestinationSample(member, member2Username);
+        const res = await CreateTransferTokenToDestinationSample(member, member2Alias);
         assert.isAtLeast(res.payloadSignatures.length, 2);
     });
 });

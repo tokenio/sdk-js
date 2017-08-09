@@ -88,12 +88,12 @@ class Util {
      * Support String to String hashing
      *
      * @deprecated Should be deleted with PR-998
-     * @param {String} value - string to be hashed
+     * @param {String} alias - alias to be hashed
      * @return {String} result - hashed string
      * TODO: Should be deleted with PR-998
      */
-    static hashAndSerialize(value) {
-        return value;
+    static hashAndSerializeAlias(alias) {
+        return alias.value;
         // return bs58.encode(sha256(Buffer.from(value, 'utf8')));
     }
 }

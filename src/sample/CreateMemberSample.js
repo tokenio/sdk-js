@@ -9,12 +9,12 @@ export default async () => {
     const TokenLib = require('../../src');
     const Token = new TokenLib(TEST_ENV);
 
-    // Generate a random-nonsense-string username.
+    // Generate a random-nonsense-string alias.
     // ("john_doe" would be more typical than a random string.
-    // But if we run this code with the same username twice,
+    // But if we run this code with the same alias twice,
     // the second time it will fail because the name's already taken.)
-    const username = Token.Util.generateNonce();
+    const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
 
     // Creates a member, with keys stored in memory
-    return await Token.createMember(username, Token.MemoryCryptoEngine);
+    return await Token.createMember(alias, Token.MemoryCryptoEngine);
 };

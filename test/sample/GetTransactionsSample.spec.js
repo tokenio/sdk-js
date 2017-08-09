@@ -17,8 +17,8 @@ describe('GetTransactionsSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseTransferTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
         const transactions = await GetTransactionsSample(member);
         assert.equal(transactions.length, 1);

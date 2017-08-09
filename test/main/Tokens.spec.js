@@ -10,16 +10,16 @@ const some = require('lodash/some');
 const map = require('lodash/map');
 
 let member1 = {};
-let username1 = '';
+let alias1 = '';
 let account1 = {};
 
-let username2 = '';
+let alias2 = '';
 let member2 = {};
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Token.Util.generateNonce();
-    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
+    alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
     const auth = await member1.createTestBankAccount(100000, 'EUR');
     const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
@@ -27,37 +27,37 @@ const setUp1 = async () => {
 
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Token.Util.generateNonce();
-    member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
+    alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);
 };
 
 describe('Tokens', () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
-    it('should confirm username does not exist', async () => {
-        const randomUsername = Token.Util.generateNonce();
-        const exists = await Token.usernameExists(randomUsername);
+    it('should confirm alias does not exist', async () => {
+        const randomAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        const exists = await Token.aliasExists(randomAlias);
         assert.equal(exists, false);
     });
 
-    it('should confirm username exists', async () => {
-        const username = Token.Util.generateNonce();
-        await member1.addUsername(username);
-        const exists = await Token.usernameExists(username);
+    it('should confirm alias exists', async () => {
+        const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        await member1.addAlias(alias);
+        const exists = await Token.aliasExists(alias);
         assert.equal(exists, true);
     });
 
     it('should create a token, look it up, and endorse it', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
-        assert.equal(token.payload.issuer.username, 'iron');
+        assert.equal(token.payload.issuer.username, 'iron@token.io');
         assert.equal(token.payload.from.id, member1.memberId());
         assert.equal(token.payload.description, undefined);
-        assert.equal(token.payload.transfer.redeemer.username, username2);
+        assert.deepEqual(token.payload.transfer.redeemer.alias, alias2);
         assert.equal(token.payload.transfer.lifetimeAmount, 9.24);
         assert.equal(token.payload.transfer.currency, defaultCurrency);
 
@@ -73,7 +73,7 @@ describe('Tokens', () => {
     it('should create a token and endorse it by id', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         const res = await member1.endorseToken(token.id);
         assert.equal(res.status, 'SUCCESS');
@@ -86,7 +86,7 @@ describe('Tokens', () => {
     it('should create a token and cancel it', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         const res = await member1.cancelToken(token);
         assert.equal(token.payloadSignatures.length, 2);
@@ -97,7 +97,7 @@ describe('Tokens', () => {
     it('should create token and cancel it by id', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         const res = await member1.cancelToken(token.id);
         assert.equal(res.status, 'SUCCESS');
@@ -112,7 +112,7 @@ describe('Tokens', () => {
     it('should create token, and look it up', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         await member1.endorseToken(token.id);
         const pagedResult = await member1.getTransferTokens(null, 100);
@@ -123,7 +123,7 @@ describe('Tokens', () => {
     it('should create token, and look it up, second member', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         await member1.endorseToken(token.id);
         const pagedResult = await member2.getTransferTokens(null, 100);
@@ -133,7 +133,7 @@ describe('Tokens', () => {
     it('should create token, and look it up, second member, tokenId', async () => {
         const token = await member1.createTransferToken(9.24, defaultCurrency)
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
         await member1.endorseToken(token.id);
         const lookedUp = await member2.getToken(token.id);

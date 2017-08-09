@@ -16,10 +16,10 @@ describe('ReplaceAndEndorseAccessTokenSample test', () => {
         const member2 = await CreateMemberSample();
         await LinkMemberAndBankSample(member);
 
-        const member2Username = await member2.firstUsername();
-        await CreateAndEndorseAccessTokenSample(member, member2Username);
-        const foundToken = await GetAccessTokensSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        await CreateAndEndorseAccessTokenSample(member, member2Alias);
+        const foundToken = await GetAccessTokensSample(member, member2Alias);
         const something = await ReplaceAndEndorseAccessTokenSample(member, foundToken);
-        assert.equal(something.payload.to.username, member2Username);
+        assert.deepEqual(something.payload.to.alias, member2Alias);
     });
 });

@@ -16,10 +16,10 @@ describe('GetTransferTokenAttachmentsSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Username = await member2.firstUsername();
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
         const res = await CreateAndEndorseTransferTokenWithAttachmentSample(
             member,
-            member2Username);
+            member2Alias);
         const attachmentDatas = await GetTransferTokenAttachmentsSample(member2, res.id);
 
         assert.equal(attachmentDatas.length, 1);

@@ -14,8 +14,8 @@ describe('CancelAccessTokenSample test', () => {
         const member2 = await CreateMemberSample();
         await LinkMemberAndBankSample(member);
 
-        const member2Username = await member2.firstUsername();
-        const res = await CreateAndEndorseAccessTokenSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const res = await CreateAndEndorseAccessTokenSample(member, member2Alias);
         const res2 = await CancelAccessTokenSample(member, res.id);
         assert.equal(res2.status, 'SUCCESS');
     });

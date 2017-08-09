@@ -14,9 +14,9 @@ describe('GetAccessTokensSample test', () => {
         const member2 = await CreateMemberSample();
         await LinkMemberAndBankSample(member);
 
-        const member2Username = await member2.firstUsername();
-        const createdToken = await CreateAndEndorseAccessTokenSample(member, member2Username);
-        const foundToken = await GetAccessTokensSample(member, member2Username);
+        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const createdToken = await CreateAndEndorseAccessTokenSample(member, member2Alias);
+        const foundToken = await GetAccessTokensSample(member, member2Alias);
         assert.equal(createdToken.id, foundToken.id);
     });
 });

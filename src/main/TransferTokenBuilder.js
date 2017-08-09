@@ -135,20 +135,20 @@ export default class TransferTokenBuilder {
     }
 
     /**
-     * Sets the username of the redeemer.
+     * Sets the alias of the redeemer.
      *
-     * @param {string} redeemerUsername - username of the redeemer
+     * @param {Object} redeemerAlias - alias of the redeemer
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
-    setRedeemerUsername(redeemerUsername) {
-        this._payload.transfer.redeemer.username = redeemerUsername;
+    setRedeemerAlias(redeemerAlias) {
+        this._payload.transfer.redeemer.alias = redeemerAlias;
         return this;
     }
 
     /**
      * Sets the memberId of the redeemer.
      *
-     * @param {string} redeemerMemberId - memberId of the redeemer
+     * @param {Object} redeemerMemberId - memberId of the redeemer
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerMemberId(redeemerMemberId) {
@@ -157,16 +157,16 @@ export default class TransferTokenBuilder {
     }
 
     /**
-     * Sets the username of the payee.
+     * Sets the alias of the payee.
      *
-     * @param {string} toUsername - username of the payee
+     * @param {Object} toAlias - alias of the payee
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
-    setToUsername(toUsername) {
+    setToAlias(toAlias) {
         if (!this._payload.to) {
             this._payload.to = {};
         }
-        this._payload.to.username = toUsername;
+        this._payload.to.alias = toAlias;
         return this;
     }
 
@@ -259,7 +259,7 @@ export default class TransferTokenBuilder {
                 !this._payload.transfer.instructions.source.account.tokenAuthorization)) {
                 throw new Error('No source on token');
             }
-            if (!this._payload.transfer.redeemer.username &&
+            if (!this._payload.transfer.redeemer.alias &&
                 !this._payload.transfer.redeemer.id) {
                 throw new Error('No redeemer on token');
             }

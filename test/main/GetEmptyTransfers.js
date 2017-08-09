@@ -6,17 +6,17 @@ const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
 let member1 = {};
-let username1 = '';
+let alias1 = '';
 let account1 = {};
 
-let username2 = '';
+let alias2 = '';
 
 let token1 = {};
 
 // Set up a first member
 const setUp1 = async () => {
-    username1 = Token.Util.generateNonce();
-    member1 = await Token.createMember(username1, Token.MemoryCryptoEngine);
+    alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
     const auth = await member1.createTestBankAccount(100000, 'EUR');
     const accs = await member1.linkAccounts(auth);
     account1 = accs[0];
@@ -24,15 +24,15 @@ const setUp1 = async () => {
 
 // Set up a second member
 const setUp2 = async () => {
-    username2 = Token.Util.generateNonce();
-    await Token.createMember(username2, Token.MemoryCryptoEngine);
+    alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    await Token.createMember(alias2, Token.MemoryCryptoEngine);
 };
 
 // Set up an endorsed transfer token
 const setUp3 = async () => {
     token1 = await member1.createTransferToken(38.71, 'EUR')
             .setAccountId(account1.id)
-            .setRedeemerUsername(username2)
+            .setRedeemerAlias(alias2)
             .execute();
     return await member1.endorseToken(token1.id);
 };

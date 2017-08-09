@@ -5,7 +5,7 @@ function getImageData(filename) {
     return new Uint8Array(42);
 }
 
-export default async (payer, payeeUsername) => {
+export default async (payer, payeeAlias) => {
     const accounts = await payer.getAccounts();
 
     // Upload the data
@@ -17,7 +17,7 @@ export default async (payer, payeeUsername) => {
 
     const token = await payer.createTransferToken(100.00, 'EUR')
           .setAccountId(accounts[0].id)
-          .setRedeemerUsername(payeeUsername)
+          .setRedeemerAlias(payeeAlias)
           .addAttachment(attachment)    // attach reference to token
           .execute();
 

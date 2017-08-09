@@ -7,13 +7,13 @@ const Token = new TokenIo(TEST_ENV);
 import Crypto from "../../src/security/Crypto";
 
 let member = {};
-let username = '';
+let alias = '';
 
 describe('Account tests', () => {
     beforeEach(async () => {
-        const keys = Crypto.generateKeys();
-        username = Token.Util.generateNonce();
-        member = await Token.createMember(username, Token.MemoryCryptoEngine);
+        const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
+        alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        member = await Token.createMember(alias, Token.MemoryCryptoEngine);
         await member.approveKey(keys);
     });
 
@@ -53,8 +53,8 @@ describe('Account tests', () => {
         });
 
         it('should get an empty array when there are not accounts', async () => {
-            const username2 = Token.Util.generateNonce();
-            const member2 = await Token.createMember(username2, Token.MemoryCryptoEngine);
+            const alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            const member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);
             const accounts = await member2.getAccounts();
             assert.equal(accounts.length, 0);
         });

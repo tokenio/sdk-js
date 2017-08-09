@@ -31,6 +31,7 @@ describe('Unauthenticated', () => {
     it('should call global handler on version mismatch error', async () => {
         let handlerCalled = false;
         const unauthenticatedClient = new HttpClient(TEST_ENV, (error) => {
+            console.log(error);
             assert.equal(error.name, 'unsupported-client-version');
             handlerCalled = true;
         });

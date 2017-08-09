@@ -8,22 +8,22 @@ const Token = new TokenIo(TEST_ENV);
 import Crypto from "../../src/security/Crypto";
 
 let member = {};
-let username = '';
+let alias = '';
 
 describe('member tests', () => {
     before(async () => {
-        username = Token.Util.generateNonce();
-        member = await Token.createMember(username, Token.MemoryCryptoEngine);
+        alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        member = await Token.createMember(alias, Token.MemoryCryptoEngine);
     });
 
     describe('Creating a member', () => {
         it('should add a second key', async () => {
-            const keys = Crypto.generateKeys();
+            const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
             await member.approveKey(keys);
         });
 
         it('should add and remove a key', async () => {
-            const keys = Crypto.generateKeys();
+            const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
             await member.approveKey(keys);
             await member.removeKey(keys.id);
             const keys2 = await member.keys();
@@ -31,11 +31,11 @@ describe('member tests', () => {
         });
 
         it('should add and remove multiple keys', async () => {
-            const username = Token.Util.generateNonce();
-            let memberX = await Token.createMember(username, Token.MemoryCryptoEngine);
-            const keys = Crypto.generateKeys();
-            const keys2 = Crypto.generateKeys();
-            const keys3 = Crypto.generateKeys();
+            const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            let memberX = await Token.createMember(alias, Token.MemoryCryptoEngine);
+            const keys = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
+            const keys2 = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
+            const keys3 = Crypto.generateKeys(Token.KeyLevel.PRIVILEGED);
             await memberX.approveKeys(
                 [keys, keys2, keys3],
                 [Token.KeyLevel.LOW, Token.KeyLevel.STANDARD, Token.KeyLevel.LOW]);
@@ -46,51 +46,51 @@ describe('member tests', () => {
             assert.equal(pks2.length, 4);
         });
 
-        it('should add and get usernames', async () => {
-            const username = Token.Util.generateNonce();
-            await member.addUsername(username);
-            const usernames = await member.usernames();
-            assert.isAtLeast(usernames.length, 2);
-            const firstUsername = await member.firstUsername();
-            assert.isOk(firstUsername);
-            assert.include(usernames, firstUsername);
+        it('should add and get aliass', async () => {
+            const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            await member.addAlias(alias);
+            const aliases = await member.aliases();
+            assert.isAtLeast(aliases.length, 2);
+            const firstAlias = await member.firstAlias();
+            assert.isOk(firstAlias);
+            assert.include(aliases, firstAlias);
         });
 
-        it('should add multiple usernames', async () => {
-            const username = Token.Util.generateNonce();
-            const username2 = Token.Util.generateNonce();
-            const username3 = Token.Util.generateNonce();
-            await member.addUsernames([username, username2, username3]);
-            const usernames = await member.usernames();
-            assert.include(usernames, username);
-            assert.include(usernames, username2);
-            assert.include(usernames, username3);
+        it('should add multiple aliass', async () => {
+            const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            const alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            const alias3 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            await member.addAliases([alias, alias2, alias3]);
+            const aliases = await member.aliases();
+            assert.include(aliases, alias.value);
+            assert.include(aliases, alias2.value);
+            assert.include(aliases, alias3.value);
         });
 
-        it('should add and remove a username', async () => {
-            const newUsername = Token.Util.generateNonce();
-            await member.addUsername(newUsername);
-            await member.removeUsername(newUsername);
-            const usernames = await member.usernames();
-            assert.include(usernames, username);
-            assert.notInclude(usernames, newUsername);
+        it('should add and remove a alias', async () => {
+            const newAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            await member.addAlias(newAlias);
+            await member.removeAlias(newAlias);
+            const aliases = await member.aliases();
+            assert.include(aliases, alias.value);
+            assert.notInclude(aliases, newAlias.value);
         });
 
-        it('should remove multiple usernames', async () => {
-            const newUsername = Token.Util.generateNonce();
-            const newUsername2 = Token.Util.generateNonce();
-            await member.addUsername(newUsername);
-            await member.addUsername(newUsername2);
-            await member.removeUsernames([newUsername, newUsername2]);
-            const usernames = await member.usernames();
-            assert.include(usernames, username);
-            assert.notInclude(usernames, newUsername);
-            assert.notInclude(usernames, newUsername2);
+        it('should remove multiple aliases', async () => {
+            const newAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            const newAlias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            await member.addAlias(newAlias);
+            await member.addAlias(newAlias2);
+            await member.removeAliases([newAlias, newAlias2]);
+            const aliases = await member.aliases();
+            assert.include(aliases, alias.value);
+            assert.notInclude(aliases, newAlias.value);
+            assert.notInclude(aliases, newAlias2.value);
         });
 
-        it('should get all usernames', async () => {
-            const usernames = await member.usernames();
-            assert.isAtLeast(usernames.length, 1);
+        it('should get all aliases', async () => {
+            const aliases = await member.aliases();
+            assert.isAtLeast(aliases.length, 1);
         });
 
         it('should get all keys', async () => {
@@ -112,11 +112,11 @@ describe('member tests', () => {
         });
 
         it('should get the memberId', async () => {
-            const memId = await Token.getMemberId(username);
-            assert.equal(memId, member.memberId());
+            const mem = await Token.resolveAlias(alias);
+            assert.equal(mem.id, member.memberId());
 
-            const memId2 = await Token.getMemberId(Token.Util.generateNonce());
-            assert.isNotOk(memId2);
+            const mem2 = await Token.resolveAlias({type: 'USERNAME', value: Token.Util.generateNonce()});
+            assert.isNotOk(mem2);
         });
     });
 });

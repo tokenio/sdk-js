@@ -19,7 +19,7 @@ describe('Key management', () => {
 
     it('should sign a message', () => {
         for (var i = 0; i < 10; i++) {
-            const keys = Crypto.generateKeys();
+            const keys = Crypto.generateKeys('LOW');
             const sig = Crypto.sign('abc', keys);
             assert.isAtLeast(sig.length, 50);
         }
@@ -63,7 +63,7 @@ describe('Key management', () => {
     });
 
     it('should convert to and from string', () => {
-        const keys = Crypto.generateKeys();
+        const keys = Crypto.generateKeys('LOW');
         const keyStr = Crypto.strKey(keys.publicKey);
         assert.isAtLeast(keyStr.length, 5);
         const keyBuffer = Crypto.bufferKey(keyStr);
