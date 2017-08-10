@@ -9,11 +9,8 @@ import CreateAndEndorseTransferTokenSample
   from '../../src/sample/CreateAndEndorseTransferTokenSample';
 import CreateTransferTokenWithUnusualOptionsSample
   from '../../src/sample/CreateTransferTokenWithUnusualOptionsSample';
-import CreateTransferTokenFromAuthSample
-  from '../../src/sample/CreateTransferTokenFromAuthSample';
 import CreateTransferTokenToDestinationSample
   from '../../src/sample/CreateTransferTokenToDestinationSample';
-import RedeemTransferTokenSample from '../../src/sample/RedeemTransferTokenSample';
 
 describe('CreateAndEndorseTransferTokenSample test', () => {
     it('Should run the sample', async () => {
@@ -37,21 +34,6 @@ describe('CreateTransferTokenWithUnusualOptionsSample test', () => {
 
         const res = await CreateTransferTokenWithUnusualOptionsSample(member, member2);
         assert.isAtLeast(res.payloadSignatures.length, 2);
-    });
-});
-
-describe('CreateTransferTokenFromAuthSample test', () => {
-    it('Should run the sample', async () => {
-        const member = await CreateMemberSample();
-        const member2 = await CreateMemberSample();
-        const member2Username = await member2.firstUsername();
-        await LinkMemberAndBankSample(member2);
-
-        const token = await CreateTransferTokenFromAuthSample(member, member2Username);
-        assert.isAtLeast(token.payloadSignatures.length, 2);
-
-        const transfer = await RedeemTransferTokenSample(member, token.id);
-        assert.isAtLeast(transfer.payloadSignatures.length, 1);
     });
 });
 
