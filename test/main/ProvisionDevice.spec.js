@@ -108,5 +108,15 @@ describe('Provisioning a new device', async () => {
                     deviceInfo.memberId);
             assert.isAtLeast((await memberLoggedIn.keys()).length, 4);
         });
+
+        it('should fail with an incorrect alias', async () => {
+            try {
+                await Token.provisionDeviceLow(
+                    {type: 'USERNAME', value: Token.Util.generateNonce()},
+                    Token.UnsecuredFileCryptoEngine);
+            } catch (e) {
+                assert.include(e.message, 'alias');
+            }
+        });
     }
 });
