@@ -117,7 +117,7 @@ class Token {
     provisionDevice(alias, CryptoEngine) {
         return Util.callAsync(this.provisionDevice, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
-            if (!(res.data.member.id)) {
+            if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
             const engine = new CryptoEngine(res.data.member.id);
@@ -143,7 +143,7 @@ class Token {
     provisionDeviceLow(alias, CryptoEngine) {
         return Util.callAsync(this.provisionDeviceLow, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
-            if (!(res.data.member.id)) {
+            if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
 
