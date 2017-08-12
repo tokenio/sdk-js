@@ -7,7 +7,8 @@
  * @return {Array} accounts - grantor accounts
  */
 export default async (grantee, tokenId) => {
-    // Use the access token, now making API calls on behalf of the grantor, and get accounts
+    // Use the access token, now making API calls
+    // on behalf of the grantor, and get accounts
     grantee.useAccessToken(tokenId);
     const accounts = await grantee.getAccounts();
 

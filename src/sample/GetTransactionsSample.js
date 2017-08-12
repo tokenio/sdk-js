@@ -8,7 +8,10 @@ export default async (payer) => {
     const accounts = await payer.getAccounts();
     const accountId = accounts[0].id;
 
-    const pagedResult = await payer.getTransactions(accountId, "", 10);
+    const pagedResult = await payer.getTransactions(
+        accountId,
+        "",
+        10);
     return pagedResult.data;
 };
 

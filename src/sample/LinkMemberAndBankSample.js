@@ -11,9 +11,10 @@
  * @param {Member} member - Token member to link to a bank
  */
 export default async (member) => {
-    // Generates a test bank account that we can link with
-    const encryptedBankAuthorization = await member.createTestBankAccount(200, 'EUR');
+    // Generates a test bank account that we can link with.
+    // Gives us an encrypted BankAuthorization
+    const auth = await member.createTestBankAccount(200, 'EUR');
 
-    // Links the account, by sending the bank authorization
-    const accounts = await member.linkAccounts(encryptedBankAuthorization);
+    // Links the account by sending the BankAuthorization
+    const accounts = await member.linkAccounts(auth);
 };
