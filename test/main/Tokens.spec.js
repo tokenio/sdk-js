@@ -54,8 +54,7 @@ describe('Tokens', () => {
             .execute();
         assert.isAtLeast(token.id.length, 5);
         assert.equal(token.payload.version, '1.0');
-        assert.equal(token.payload.issuer.alias.value, 'iron@token.io');
-        assert.equal(token.payload.issuer.alias.type, 'EMAIL');
+        assert.equal(token.payload.issuer.username, 'iron@token.io');
         assert.equal(token.payload.from.id, member1.memberId());
         assert.equal(token.payload.description, undefined);
         assert.deepEqual(token.payload.transfer.redeemer.alias, alias2);
