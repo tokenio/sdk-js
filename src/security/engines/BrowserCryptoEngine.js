@@ -1,5 +1,5 @@
 import Crypto from '../Crypto';
-import {localStorageSchemaVersion} from '../../constants';
+import config from "../../config.json";
 
 /**
  * BrowserCryptoEngine: Implements the CryptoEngine interface.
@@ -47,9 +47,9 @@ class BrowserCryptoEngine {
             // If nothing yet in localStorage, continue
         }
 
-        if (savedSchemaVersion < localStorageSchemaVersion) {
+        if (savedSchemaVersion < config.localStorageSchemaVersion) {
             window.localStorage.clear();
-            window.localStorage.schemaVersion = JSON.stringify(localStorageSchemaVersion);
+            window.localStorage.schemaVersion = JSON.stringify(config.localStorageSchemaVersion);
         }
         this._memberId = memberId;
 

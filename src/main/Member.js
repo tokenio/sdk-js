@@ -2,7 +2,7 @@ import AuthHttpClient from "../http/AuthHttpClient";
 import HttpClient from "../http/HttpClient";
 import TransferTokenBuilder from "./TransferTokenBuilder";
 import Util from "../Util";
-import {maxDecimals} from "../constants";
+import config from "../config.json";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -635,8 +635,9 @@ export default class Member {
             if (currency === undefined) {
                 currency = finalToken.payload.transfer.currency;
             }
-            if (Util.countDecimals(amount) > maxDecimals) {
-                throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
+            if (Util.countDecimals(amount) > config.maxDecimals) {
+                throw new Error(
+                    `Number of decimals in amount should be at most ${config.maxDecimals}`);
             }
             const res = await this._client.redeemToken(
                 finalToken,

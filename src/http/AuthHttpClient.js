@@ -4,7 +4,7 @@ import Crypto from "../security/Crypto";
 import Util from "../Util";
 import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext";
-import {urls, KeyLevel, accessTokenVersion} from "../constants";
+import config from "../config.json";
 import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
 
@@ -28,18 +28,18 @@ class AuthHttpClient {
      * call error. For example: SDK version mismatch
      */
     constructor(env, memberId, cryptoEngine, globalRpcErrorCallback) {
-        if (!urls[env]) {
+        if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
-                JSON.stringify(urls));
+                JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: urls[env]
+            baseURL: config.urls[env]
         });
         this._memberId = memberId;
         this._cryptoEngine = cryptoEngine;
 
         this._context = new AuthContext();
-        this._authHeader = new AuthHeader(urls[env], this);
+        this._authHeader = new AuthHeader(config.urls[env], this);
 
         this._resetRequestInterceptor();
 
@@ -57,24 +57,24 @@ class AuthHttpClient {
      * @return {Promise} signer - object used to sign
      */
     async getSigner(level) {
-        if (level === KeyLevel.LOW) {
-            return await this._cryptoEngine.createSigner(KeyLevel.LOW);
+        if (level === config.KeyLevel.LOW) {
+            return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
         }
-        if (level === KeyLevel.STANDARD) {
+        if (level === config.KeyLevel.STANDARD) {
             try {
-                return await this._cryptoEngine.createSigner(KeyLevel.STANDARD);
+                return await this._cryptoEngine.createSigner(config.KeyLevel.STANDARD);
             } catch (err) {
-                return await this._cryptoEngine.createSigner(KeyLevel.LOW);
+                return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
             }
         }
-        if (level === KeyLevel.PRIVILEGED) {
+        if (level === config.KeyLevel.PRIVILEGED) {
             try {
-                return await this._cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+                return await this._cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
             } catch (err) {
                 try {
-                    return await this._cryptoEngine.createSigner(KeyLevel.STANDARD);
+                    return await this._cryptoEngine.createSigner(config.KeyLevel.STANDARD);
                 } catch (err2) {
-                    return await this._cryptoEngine.createSigner(KeyLevel.LOW);
+                    return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
                 }
             }
         }
@@ -84,10 +84,10 @@ class AuthHttpClient {
         this._instance.interceptors.request.eject(this._interceptor);
 
         const versionHeader = new VersionHeader();
-        this._interceptor = this._instance.interceptors.request.use(async (config) => {
-            await this._authHeader.addAuthorizationHeader(this._memberId, config, this._context);
-            versionHeader.addVersionHeader(config);
-            return config;
+        this._interceptor = this._instance.interceptors.request.use(async (request) => {
+            await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
+            versionHeader.addVersionHeader(request);
+            return request;
         });
     }
 
@@ -122,12 +122,12 @@ class AuthHttpClient {
             handlerInstructions,
         };
 
-        const config = {
+        const request = {
             method: 'post',
             url: `/subscribers`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -136,11 +136,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getSubscribers() {
-        const config = {
+        const request = {
             method: 'get',
             url: `/subscribers`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -150,11 +150,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getSubscriber(subscriberId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/subscribers/${subscriberId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -165,11 +165,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getNotifications(offset, limit) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/notifications?offset=${offset}&limit=${limit}`,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -179,11 +179,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getNotification(notificationId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/notifications/${notificationId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -193,11 +193,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async unsubscribeFromNotifications(subscriberId) {
-        const config = {
+        const request = {
             method: 'delete',
             url: `/subscribers/${subscriberId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     //
@@ -212,7 +212,7 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async addAddress(name, address) {
-        const signer = await this.getSigner(KeyLevel.LOW);
+        const signer = await this.getSigner(config.KeyLevel.LOW);
         const req = {
             name,
             address,
@@ -222,12 +222,12 @@ class AuthHttpClient {
                 signature: signer.signJson(address),
             }
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/addresses`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -237,11 +237,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getAddress(addressId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/addresses/${addressId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -250,11 +250,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getAddresses() {
-        const config = {
+        const request = {
             method: 'get',
             url: `/addresses`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -264,11 +264,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async deleteAddress(addressId) {
-        const config = {
+        const request = {
             method: 'delete',
             url: `/addresses/${addressId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     //
@@ -285,12 +285,12 @@ class AuthHttpClient {
        const req = {
            profile
        };
-       const config = {
+       const request = {
            method: 'put',
            url: `/profile`,
            data: req
        };
-       return this._instance(config);
+       return this._instance(request);
     }
 
     /**
@@ -300,11 +300,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getProfile(id) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/members/${id}/profile`,
          };
-         return this._instance(config);
+         return this._instance(request);
     }
 
     /**
@@ -324,12 +324,12 @@ class AuthHttpClient {
                 accessMode: "PUBLIC",
             },
         };
-        const config = {
+        const request = {
             method: 'put',
             url: `/profilepicture`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -340,11 +340,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getProfilePicture(id, size) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/members/${id}/profilepicture/${size}`,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
     //
     // ACCOUNTS
@@ -360,12 +360,12 @@ class AuthHttpClient {
         const req = {
             bankAuthorization
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/accounts`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -378,12 +378,12 @@ class AuthHttpClient {
         const req = {
             accountIds
         };
-        const config = {
+        const request = {
             method: 'delete',
             url: `/accounts`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -392,11 +392,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getAccounts() {
-        const config = {
+        const request = {
             method: 'get',
             url: `/accounts`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -406,11 +406,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getAccount(accountId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/accounts/${accountId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -421,11 +421,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async setAccountName(accountId, name) {
-        const config = {
+        const request = {
             method: 'patch',
             url: `/accounts/${accountId}?name=${name}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -435,11 +435,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getBalance(accountId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/accounts/${accountId}/balance`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -450,11 +450,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTransaction(accountId, transactionId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/accounts/${accountId}/transactions/${transactionId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -466,11 +466,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTransactions(accountId, offset, limit) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -491,12 +491,12 @@ class AuthHttpClient {
                 data: base64js.fromByteArray(data),
             },
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/blobs`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -507,11 +507,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTokenBlob(tokenId, blobId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `tokens/${tokenId}/blobs/${blobId}`,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -521,11 +521,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getBlob(blobId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/blobs/${blobId}`,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -534,11 +534,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getBanks() {
-        const config = {
+        const request = {
             method: 'get',
             url: `/banks`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -548,11 +548,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getBankInfo(bankId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/banks/${bankId}/info`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     //
@@ -566,14 +566,14 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async createTransferToken(payload) {
-        const config = {
+        const request = {
             method: 'post',
             url: `/tokens?type=transfer`,
             data: {
                 payload,
             }
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -594,18 +594,18 @@ class AuthHttpClient {
             access: {
                 resources,
             },
-            version: accessTokenVersion,
+            version: config.accessTokenVersion,
             refId: Util.generateNonce(),
         };
 
-        const config = {
+        const request = {
             method: 'post',
             url: `/tokens?type=access`,
             data: {
                 payload,
             }
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -629,12 +629,12 @@ class AuthHttpClient {
                     resources: newResources,
                 },
                 issuer: tokenToCancel.payload.issuer,
-                version: accessTokenVersion,
+                version: config.accessTokenVersion,
                 refId: Util.generateNonce(),
             },
         };
 
-        const config = {
+        const request = {
             method: 'post',
             url: `/tokens/${cancelTokenId}/replace`,
             data: {
@@ -642,7 +642,7 @@ class AuthHttpClient {
                 create_token: createReq
             }
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -665,7 +665,7 @@ class AuthHttpClient {
                 resources: newResources,
             },
             issuer: tokenToCancel.payload.issuer,
-            version: accessTokenVersion,
+            version: config.accessTokenVersion,
             refId: Util.generateNonce(),
         };
 
@@ -674,7 +674,7 @@ class AuthHttpClient {
             payload_signature: await this._tokenOperationSignature(payload, 'endorsed')
         };
 
-        const config = {
+        const request = {
             method: 'post',
             url: `/tokens/${cancelTokenId}/replace`,
             data: {
@@ -682,7 +682,7 @@ class AuthHttpClient {
                 create_token: createReq
             }
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -739,7 +739,7 @@ class AuthHttpClient {
             payload.destinations = destinations;
         }
 
-        const signer = await this.getSigner(KeyLevel.LOW);
+        const signer = await this.getSigner(config.KeyLevel.LOW);
         const req = {
             payload,
             payloadSignature: {
@@ -748,12 +748,12 @@ class AuthHttpClient {
                 signature: signer.signJson(payload),
             }
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/transfers`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -763,11 +763,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getToken(tokenId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/tokens/${tokenId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -779,21 +779,21 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTokens(type, offset, limit) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/tokens?type=${type}&offset=${offset}&limit=${limit}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     async _tokenOperation(token, operation, suffix) {
         const tokenId = token.id;
-        const config = {
+        const request = {
             method: 'put',
             url: `/tokens/${tokenId}/${operation}`,
             data: await this._tokenOperationRequest(token, suffix)
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     async _tokenOperationRequest(token, suffix) {
@@ -805,7 +805,7 @@ class AuthHttpClient {
 
     async _tokenOperationSignature(tokenPayload, suffix) {
         const payload = stringify(tokenPayload) + `.${suffix}`;
-        const signer = await this.getSigner(KeyLevel.STANDARD);
+        const signer = await this.getSigner(config.KeyLevel.STANDARD);
         return {
             memberId: this._memberId,
             keyId: signer.getKeyId(),
@@ -824,11 +824,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTransfer(transferId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/transfers/${transferId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -840,11 +840,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTransfers(tokenId, offset, limit) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     //
@@ -1009,7 +1009,7 @@ class AuthHttpClient {
             update.prevHash = prevHash;
         }
 
-        const signer = await this.getSigner(KeyLevel.PRIVILEGED);
+        const signer = await this.getSigner(config.KeyLevel.PRIVILEGED);
         const req = {
             update,
             updateSignature: {
@@ -1018,12 +1018,12 @@ class AuthHttpClient {
                 signature: signer.signJson(update),
             }
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/members/${this._memberId}/updates`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     //
@@ -1045,12 +1045,12 @@ class AuthHttpClient {
             },
         };
 
-        const config = {
+        const request = {
             method: 'post',
             url: `/test/create-account`,
             data: req,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -1061,11 +1061,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTestBankNotification(subscriberId, notificationId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/test/subscribers/${subscriberId}/notifications/${notificationId}`,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -1075,11 +1075,11 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTestBankNotifications(subscriberId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/test/subscribers/${subscriberId}/notifications`,
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 }
 

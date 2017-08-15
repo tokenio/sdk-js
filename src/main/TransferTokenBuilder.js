@@ -1,5 +1,5 @@
 import Util from "../Util";
-import {maxDecimals, transferTokenVersion} from "../constants";
+import config from "../config.json";
 
 export default class TransferTokenBuilder {
 
@@ -17,13 +17,13 @@ export default class TransferTokenBuilder {
         this._member = member;
         this._blobPayloads = [];
 
-        if (Util.countDecimals(lifetimeAmount) > maxDecimals) {
+        if (Util.countDecimals(lifetimeAmount) > config.maxDecimals) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
-                maxDecimals);
+                config.maxDecimals);
         }
 
         this._payload = {
-            version: transferTokenVersion,
+            version: config.transferTokenVersion,
             refId: Util.generateNonce(),
             from: {
                 id: member.memberId(),

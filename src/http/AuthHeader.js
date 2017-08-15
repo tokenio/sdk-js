@@ -1,5 +1,5 @@
 const stringify = require('json-stable-stringify');
-import {signatureScheme, KeyLevel} from "../constants";
+import config from "../config.json";
 
 /**
  * Handles the addition of the http headers (with signature) to the request
@@ -22,14 +22,14 @@ class AuthHeader {
      * All of it goes into the Authorization http header.
      *
      * @param {string} memberId - memberId making the request
-     * @param {Object} config - request config
+     * @param {Object} request - request
      * @param {AuthContext} context - auth context for access token redemption
      */
-    async addAuthorizationHeader(memberId, config, context) {
+    async addAuthorizationHeader(memberId, request, context) {
         let now = new Date().getTime();
 
         // Parses out the base uri
-        let uriPath = config.url.replace(this._baseUrl, '');
+        let uriPath = request.url.replace(this._baseUrl, '');
 
         // Makes sure the uri is formatted correctly
         uriPath = uriPath.substring(0, 1) === '/' ? uriPath : uriPath + '/';
@@ -41,38 +41,38 @@ class AuthHeader {
             uriPath = uriPath.substring(0, uriPath.indexOf("?"));
         }
 
-        // Creates the payload from the config info
+        // Creates the payload from the request info
         const payload = {
-            method: config.method.toUpperCase(),
+            method: request.method.toUpperCase(),
             uriHost: this._baseUrl.replace('http://', '').replace('https://', ''),
             uriPath,
             createdAtMs: now.toString()
         };
 
-        if (config.data !== undefined && config.data !== '') {
-            payload.requestBody = stringify(config.data);
+        if (request.data !== undefined && request.data !== '') {
+            payload.requestBody = stringify(request.data);
         }
 
         // Signs the query string as well, if it exists
-        if (config.url.indexOf("?") !== -1) {
-            payload.queryString = config.url.substring(config.url.indexOf("?") + 1);
+        if (request.url.indexOf("?") !== -1) {
+            payload.queryString = request.url.substring(request.url.indexOf("?") + 1);
         }
 
         // Creates the signer object
-        const signer = await this._client.getSigner(KeyLevel.LOW);
+        const signer = await this._client.getSigner(config.KeyLevel.LOW);
 
         // Signs the Json string
         const signature = signer.signJson(payload);
 
         // Creates the authorization header, ands adds it to the request
-        const header = signatureScheme + ' ' +
+        const header = config.signatureScheme + ' ' +
             'member-id=' + memberId + ',' +
             'key-id=' + signer.getKeyId() + ',' +
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
             AuthHeader._onBehalfOfHeader(context);
 
-        config.headers = {
+        request.headers = {
             Authorization: header
         };
     }
