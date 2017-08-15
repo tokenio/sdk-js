@@ -115,7 +115,10 @@ describe('member tests', () => {
             const mem = await Token.resolveAlias(alias);
             assert.equal(mem.id, member.memberId());
 
-            const mem2 = await Token.resolveAlias({type: 'USERNAME', value: Token.Util.generateNonce()});
+            const mem2 = await Token.resolveAlias({
+                type: 'USERNAME',
+                value: Token.Util.generateNonce()
+            });
             assert.isNotOk(mem2);
         });
     });

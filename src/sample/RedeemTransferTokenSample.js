@@ -19,7 +19,12 @@ export default async (payee, tokenId) => {
     };
 
     // Payer redeems the token, getting a transfer
-    const transfer = await payee.redeemToken(transferToken, 5, 'EUR', 'lunch', [destination]);
+    const transfer = await payee.redeemToken(
+        transferToken,
+        5,
+        'EUR',
+        'lunch',
+        [destination]);
 
     return transfer;
 };

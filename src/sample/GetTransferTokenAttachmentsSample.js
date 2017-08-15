@@ -13,9 +13,10 @@ export default async (payee, tokenId) => {
 
     var allContents = [];
 
-    for (var ix = 0; ix < transferToken.payload.transfer.attachments.length; ix++) {
+    const transferBody = transferToken.payload.transfer;
+    for (var ix = 0; ix < transferBody.attachments.length; ix++) {
         // attachments have metadata but not the "file" content
-        const att = transferToken.payload.transfer.attachments[ix];
+        const att = transferBody.attachments[ix];
         // download the content of the attachment[s] we want
         const blob = await payee.getTokenBlob(tokenId, att.blobId);
         const blobContents = base64js.toByteArray(blob.payload.data);
