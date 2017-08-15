@@ -4,7 +4,7 @@ import MemoryCryptoEngine from "../security/engines/MemoryCryptoEngine";
 import UnsecuredFileCryptoEngine from "../security/engines/UnsecuredFileCryptoEngine";
 import Util from "../Util";
 import Member from "../main/Member";
-import {KeyLevel} from "../constants";
+import config from "../config.json";
 import HttpClient from "../http/HttpClient";
 
 // Promise polyfill for IE and older browsers
@@ -29,7 +29,7 @@ class Token {
         this._unauthenticatedClient = new HttpClient(env, this._globalRpcErrorCallback);
 
         /** Available security levels for keys */
-        this.KeyLevel = KeyLevel;
+        this.KeyLevel = config.KeyLevel;
 
         /** Crypto utility functions */
         this.Crypto = Crypto;

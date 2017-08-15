@@ -5,7 +5,7 @@ import 'babel-regenerator-runtime';
 const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
-import {defaultCurrency} from "../../src/constants";
+import config from "../../src/config.json";
 const some = require('lodash/some');
 const map = require('lodash/map');
 
@@ -48,7 +48,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token, look it up, and endorse it', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();
@@ -60,7 +60,7 @@ describe('Tokens', () => {
         assert.equal(token.payload.description, undefined);
         assert.deepEqual(token.payload.transfer.redeemer.alias, alias2);
         assert.equal(token.payload.transfer.lifetimeAmount, 9.24);
-        assert.equal(token.payload.transfer.currency, defaultCurrency);
+        assert.equal(token.payload.transfer.currency, config.defaultCurrency);
 
         const tokenLookedUp = await member1.getToken(token.id);
         assert.equal(token.id, tokenLookedUp.id);
@@ -72,7 +72,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token and endorse it by id', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();
@@ -85,7 +85,7 @@ describe('Tokens', () => {
     });
 
     it('should create a token and cancel it', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();
@@ -96,7 +96,7 @@ describe('Tokens', () => {
     });
 
     it('should create token and cancel it by id', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();
@@ -111,7 +111,7 @@ describe('Tokens', () => {
     });
 
     it('should create token, and look it up', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();
@@ -122,7 +122,7 @@ describe('Tokens', () => {
     });
 
     it('should create token, and look it up, second member', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();
@@ -132,7 +132,7 @@ describe('Tokens', () => {
     });
 
     it('should create token, and look it up, second member, tokenId', async () => {
-        const token = await member1.createTransferToken(9.24, defaultCurrency)
+        const token = await member1.createTransferToken(9.24, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .execute();

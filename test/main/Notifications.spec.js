@@ -8,7 +8,6 @@ const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
 import Crypto from "../../src/security/Crypto";
-import {KeyLevel} from "../../src/constants";
 
 const GET_NOTIFICATION_TIMEOUT_MS = 5000;
 let member1 = {};
@@ -84,7 +83,7 @@ describe('Notifications', () => {
             PLATFORM: 'TEST',
             TARGET: Token.Util.generateNonce(),
         });
-        await Token.notifyAddKey(alias1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias1, "Chrome 54.1", keys, Token.KeyLevel.PRIVILEGED);
     });
 
     it('should send a push for adding a key and linking accounts', async () => {
@@ -99,7 +98,7 @@ describe('Notifications', () => {
                 auth,
                 'Chrome 51.0',
                 keys,
-                KeyLevel.PRIVILEGED);
+                Token.KeyLevel.PRIVILEGED);
     });
 
     it('should send an actual push to device', async () => {
@@ -156,10 +155,10 @@ describe('Notifications', () => {
             TARGET: Token.Util.generateNonce(),
         });
 
-        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
-        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, Token.KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, Token.KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, Token.KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias2, "Chrome 54.1", keys, Token.KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
             waitUntil(async () => {
                 const notifications = await member2.getNotifications(null, 2);
@@ -184,7 +183,7 @@ describe('Notifications', () => {
         const subscriber = await member1.subscribeToNotifications("iron", {
             platform: "TEST",
         });
-        await Token.notifyAddKey(alias1, "Chrome 54.1", keys, KeyLevel.PRIVILEGED);
+        await Token.notifyAddKey(alias1, "Chrome 54.1", keys, Token.KeyLevel.PRIVILEGED);
         return new Promise((resolve, reject) => {
             waitUntil(async () => {
                 const notifications = await member1.getTestBankNotifications(subscriber.id);

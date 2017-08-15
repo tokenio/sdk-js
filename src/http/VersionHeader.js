@@ -1,5 +1,3 @@
-import {tokenSdkVersion} from "../constants";
-
 /**
  * Class to add sdk version and type.
  */
@@ -11,7 +9,7 @@ class VersionHeader {
      */
     addVersionHeader(config) {
         config.headers['token-sdk'] = 'js';
-        config.headers['token-sdk-version'] = tokenSdkVersion;
+        config.headers['token-sdk-version'] = TOKEN_VERSION;
     }
 }
 

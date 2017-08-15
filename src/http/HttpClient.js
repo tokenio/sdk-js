@@ -1,5 +1,5 @@
+import config from "../config.json";
 import Crypto from "../security/Crypto";
-import {urls, KeyLevel} from "../constants";
 import ErrorHandler from "./ErrorHandler";
 import VersionHeader from "./VersionHeader";
 
@@ -17,18 +17,18 @@ class HttpClient {
      * call error. For example: SDK version mismatch
      */
     constructor(env, globalRpcErrorCallback) {
-        if (!urls[env]) {
+        if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
-                JSON.stringify(urls));
+                JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: urls[env]
+            baseURL: config.urls[env]
         });
 
         const versionHeader = new VersionHeader();
-        this._instance.interceptors.request.use((config) => {
-            versionHeader.addVersionHeader(config);
-            return config;
+        this._instance.interceptors.request.use((request) => {
+            versionHeader.addVersionHeader(request);
+            return request;
         });
 
         const errorHandler = new ErrorHandler(globalRpcErrorCallback);
@@ -43,11 +43,11 @@ class HttpClient {
      * @return {Object} response - response to the API call
      */
     createMemberId() {
-        const config = {
+        const request = {
             method: 'post',
             url: '/members'
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -57,11 +57,11 @@ class HttpClient {
      * @return {Object} response - response to the API call
      */
     resolveAlias(alias) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/resolve-alias?value=${alias.value}&type=${alias.type}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -71,11 +71,11 @@ class HttpClient {
      * @return {Object} response - response to the API call
      */
     getMember(memberId) {
-        const config = {
+        const request = {
             method: 'get',
             url: `/members/${memberId}`
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -90,12 +90,12 @@ class HttpClient {
             alias,
             body
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/notify`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -107,7 +107,7 @@ class HttpClient {
      * @return {Object} response - response to the API call
      */
     async approveFirstKey(memberId, key, cryptoEngine) {
-        const signer = await cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+        const signer = await cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
             operations: [
@@ -131,12 +131,12 @@ class HttpClient {
                 signature: signer.signJson(update)
             }
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/members/${memberId}/updates`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -148,7 +148,7 @@ class HttpClient {
      * @return {Object} response - response to the API call
      */
     async approveFirstKeys(memberId, keys, cryptoEngine) {
-        const signer = await cryptoEngine.createSigner(KeyLevel.PRIVILEGED);
+        const signer = await cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
             operations: keys.map((key) => ({
@@ -170,12 +170,12 @@ class HttpClient {
                 signature: signer.signJson(update)
             }
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/members/${memberId}/updates`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 
     /**
@@ -190,12 +190,12 @@ class HttpClient {
             alias,
             tokenPayload
         };
-        const config = {
+        const request = {
             method: 'post',
             url: `/request-transfer`,
             data: req
         };
-        return this._instance(config);
+        return this._instance(request);
     }
 }
 

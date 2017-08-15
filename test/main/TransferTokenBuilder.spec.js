@@ -7,7 +7,7 @@ import 'babel-regenerator-runtime';
 const TokenIo = require('../../src');
 const Token = new TokenIo(TEST_ENV);
 
-import {defaultCurrency} from "../../src/constants";
+import config from "../../src/config.json";
 
 let member1 = {};
 let alias1 = '';
@@ -42,7 +42,7 @@ describe('TransferTokenBuilder', () => {
     before(() => Promise.all([setUp1(), setUp2()]));
 
     it('should create a basic token', async () => {
-        const token = await member1.createTransferToken(100, defaultCurrency)
+        const token = await member1.createTransferToken(100, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .setDescription('Book purchase')
@@ -54,7 +54,7 @@ describe('TransferTokenBuilder', () => {
 
     it('should fail where there is no source', async () => {
         try {
-            await member1.createTransferToken(100, defaultCurrency)
+            await member1.createTransferToken(100, config.defaultCurrency)
                 .setRedeemerAlias(alias2)
                 .setDescription('Book purchase')
                 .execute();
@@ -67,7 +67,7 @@ describe('TransferTokenBuilder', () => {
 
     it('should fail where there is no redeemer', async () => {
         try {
-            await member1.createTransferToken(100, defaultCurrency)
+            await member1.createTransferToken(100, config.defaultCurrency)
                 .setAccountId(account1.id)
                 .setDescription('Book purchase')
                 .execute();
@@ -85,7 +85,7 @@ describe('TransferTokenBuilder', () => {
                 "text",
                 "randomFile.txt",
                 data);
-        const token = await member1.createTransferToken(100, defaultCurrency)
+        const token = await member1.createTransferToken(100, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .addAttachment(attachment)
@@ -101,7 +101,7 @@ describe('TransferTokenBuilder', () => {
         const data2 = randomArray(40);
         const data3 = randomArray(40);
 
-        const token = await member1.createTransferToken(100, defaultCurrency)
+        const token = await member1.createTransferToken(100, config.defaultCurrency)
             .setAccountId(account1.id)
             .setRedeemerAlias(alias2)
             .addAttachmentData(member1.memberId(), "js", "file1.js", data1)
@@ -134,7 +134,7 @@ describe('TransferTokenBuilder', () => {
             },
         };
         const refId = Token.Util.generateNonce();
-        const token = await member1.createTransferToken(100, defaultCurrency)
+        const token = await member1.createTransferToken(100, config.defaultCurrency)
             .setBankAuthorization(auth)
             .setEffectiveAtMs(new Date().getTime() - 2000)
             .setExpiresAtMs(new Date().getTime() + 10000)
@@ -170,6 +170,6 @@ describe('TransferTokenBuilder', () => {
         assert.isOk(token.payload.to.id);
 
         await member1.endorseToken(token);
-        await member2.redeemToken(token, 15, defaultCurrency);
+        await member2.redeemToken(token, 15, config.defaultCurrency);
     });
 });
