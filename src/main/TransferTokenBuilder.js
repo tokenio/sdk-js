@@ -17,9 +17,9 @@ export default class TransferTokenBuilder {
         this._member = member;
         this._blobPayloads = [];
 
-        if (Util.countDecimals(lifetimeAmount) > config.maxDecimals) {
+        if (Util.countDecimals(lifetimeAmount) > config.decimalPrecision) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
-                config.maxDecimals);
+                config.decimalPrecision);
         }
 
         this._payload = {
@@ -105,8 +105,8 @@ export default class TransferTokenBuilder {
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setChargeAmount(chargeAmount) {
-        if (Util.countDecimals(chargeAmount) > maxDecimals) {
-            throw new Error(`Number of decimals in amount should be at most ${maxDecimals}`);
+        if (Util.countDecimals(chargeAmount) > config.decimalPrecision) {
+            throw new Error(`Number of decimals in amount should be at most ${config.decimalPrecision}`);
         }
         this._payload.transfer.amount = chargeAmount;
         return this;

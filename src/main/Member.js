@@ -635,9 +635,9 @@ export default class Member {
             if (currency === undefined) {
                 currency = finalToken.payload.transfer.currency;
             }
-            if (Util.countDecimals(amount) > config.maxDecimals) {
+            if (Util.countDecimals(amount) > config.decimalPrecision) {
                 throw new Error(
-                    `Number of decimals in amount should be at most ${config.maxDecimals}`);
+                    `Number of decimals in amount should be at most ${config.decimalPrecision}`);
             }
             const res = await this._client.redeemToken(
                 finalToken,

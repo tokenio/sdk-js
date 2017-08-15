@@ -11,7 +11,7 @@
     "transferTokenVersion": "1.0",
     "accessTokenVersion": "1.0",
     "defaultCurrency": "EUR",
-    "maxDecimals": 4,
+    "decimalPrecision": 4,
     "KeyLevel": {
         "PRIVILEGED": "PRIVILEGED",
         "STANDARD": "STANDARD",
