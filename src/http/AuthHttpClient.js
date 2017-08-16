@@ -282,15 +282,15 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async setProfile(profile) {
-       const req = {
-           profile
-       };
-       const request = {
-           method: 'put',
-           url: `/profile`,
-           data: req
-       };
-       return this._instance(request);
+        const req = {
+            profile
+        };
+        const request = {
+            method: 'put',
+            url: `/profile`,
+            data: req
+        };
+        return this._instance(request);
     }
 
     /**
@@ -303,8 +303,8 @@ class AuthHttpClient {
         const request = {
             method: 'get',
             url: `/members/${id}/profile`,
-         };
-         return this._instance(request);
+        };
+        return this._instance(request);
     }
 
     /**
@@ -346,6 +346,7 @@ class AuthHttpClient {
         };
         return this._instance(request);
     }
+
     //
     // ACCOUNTS
     //
@@ -590,7 +591,7 @@ class AuthHttpClient {
             },
             to: {
                 alias,
-             },
+            },
             access: {
                 resources,
             },
@@ -970,8 +971,14 @@ class AuthHttpClient {
                 }
             })),
         };
+        const metadata = aliases.map((alias) => ({
+            addAliasMetadata: {
+                aliasHash: Util.hashAndSerializeAlias(alias),
+                alias
+            }
+        }));
 
-        return this._memberUpdate(update, prevHash);
+        return this._memberUpdate(update, prevHash, metadata);
     }
 
     /**
@@ -1004,9 +1011,12 @@ class AuthHttpClient {
         return this._memberUpdate(update, prevHash);
     }
 
-    async _memberUpdate(update, prevHash) {
+    async _memberUpdate(update, prevHash, metadata) {
         if (prevHash !== '') {
             update.prevHash = prevHash;
+        }
+        if (typeof metadata === "undefined") {
+            metadata = [];
         }
 
         const signer = await this.getSigner(config.KeyLevel.PRIVILEGED);
@@ -1016,7 +1026,8 @@ class AuthHttpClient {
                 memberId: this._memberId,
                 keyId: signer.getKeyId(),
                 signature: signer.signJson(update),
-            }
+            },
+            metadata
         };
         const request = {
             method: 'post',
