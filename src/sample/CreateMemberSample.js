@@ -5,16 +5,21 @@
  * @return {Member} member - created member
  */
 export default async () => {
-    // Initializes SDK
+    // Initialize SDK:
     const TokenLib = require('../../src');
     const Token = new TokenLib(TEST_ENV);
 
     // Generate a random-nonsense-string alias.
-    // ("john_doe" would be more typical than a random string.
+    // ("name@token.io" would be more typical than a random string.
     // But if we run this code with the same alias twice,
-    // the second time it will fail because the name's already taken.)
-    const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+    // the 2nd time it will fail because the name is taken.)
+    const alias = {
+        type: 'USERNAME',
+        value: Token.Util.generateNonce()
+    };
 
-    // Creates a member, with keys stored in memory
-    return await Token.createMember(alias, Token.MemoryCryptoEngine);
+    // Create a member with keys stored in memory:
+    return await Token.createMember(
+        alias,
+        Token.MemoryCryptoEngine);
 };
