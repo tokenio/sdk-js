@@ -1,6 +1,9 @@
 /**
  * Class to provide static utility functions.
  */
+import bs58 from 'bs58';
+import sha256 from "fast-sha256";
+import stringify from "json-stable-stringify";
 
 class Util {
     /**
@@ -38,11 +41,11 @@ class Util {
      * @param {Number} value - number
      * @return {Number} count - number of decimals
      */
-   static countDecimals(value) {
-       if (Math.floor(value) === value) {
-           return 0;
-       }
-       return value.toString().split(".")[1].length || 0;
+    static countDecimals(value) {
+        if (Math.floor(value) === value) {
+            return 0;
+        }
+        return value.toString().split(".")[1].length || 0;
     }
 
     /**
@@ -59,12 +62,13 @@ class Util {
             return await fn();
         } catch (err) {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
-                    err.response.data :
-                    "UNKNOWN";
+                err.response.data :
+                "UNKNOWN";
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             return Promise.reject(err);
         }
     }
+
     /**
      * Helper method similar to the one above, but without promises
      *
@@ -77,24 +81,22 @@ class Util {
             return fn();
         } catch (err) {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
-                    err.response.data :
-                    "UNKNOWN";
+                err.response.data :
+                "UNKNOWN";
             err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }
     }
 
     /**
-     * Support String to String hashing
+     * Support alias hashing
      *
-     * @deprecated Should be deleted with PR-998
-     * @param {String} alias - alias to be hashed
-     * @return {String} result - hashed string
-     * TODO: Should be deleted with PR-998
+     * @param {Object} alias - alias to be hashed
+     * @return {String} result - hashed alias
      */
     static hashAndSerializeAlias(alias) {
-        return alias.value;
-        // return bs58.encode(sha256(Buffer.from(value, 'utf8')));
+        return bs58.encode(sha256(Buffer.from(stringify(alias), 'utf8')));
     }
 }
+
 export default Util;
