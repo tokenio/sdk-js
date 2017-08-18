@@ -93,8 +93,12 @@ class Util {
      *
      * @param {Object} alias - alias to be hashed
      * @return {String} result - hashed alias
+     * TODO(PR-1138): remove username support
      */
     static hashAndSerializeAlias(alias) {
+        if (alias.type === 'USERNAME') {
+            return alias.value;
+        }
         return bs58.encode(sha256(Buffer.from(stringify(alias), 'utf8')));
     }
 }
