@@ -23,4 +23,13 @@ describe('Util', () => {
         assert.equal(byte3, 122);
         assert.equal(byte4, 204);
     });
+
+    it('should hash the alias', () => {
+        const alias = {
+            type: 'EMAIL',
+            value: 'alias@token.io'
+        };
+        assert.equal(Util.hashAndSerializeAlias(alias),
+            '5cmRKhdQaKFrkso7E4UHyY6AB5yUN2UE6JLfAJCQDZo2');
+    });
 });
