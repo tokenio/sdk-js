@@ -6,6 +6,7 @@
  */
 export default async () => {
     // Initialize SDK:
+    // 'sandbox' is a good value for TEST_ENV here.
     const TokenLib = require('../../src');
     const Token = new TokenLib(TEST_ENV);
 
