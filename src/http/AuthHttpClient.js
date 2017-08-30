@@ -720,11 +720,15 @@ class AuthHttpClient {
      * @param {string} currency - currency to charge
      * @param {string} description - description of the transfer
      * @param {Array} destinations - destinations money should go to
+     * @param {string} refId - reference Id to attach to the transfer
      * @return {Object} response - response to the API call
      */
-    async redeemToken(transferToken, amount, currency, description, destinations) {
+    async redeemToken(transferToken, amount, currency, description, destinations, refId) {
+        if (!refId) {
+            refId = Util.generateNonce();
+        }
         const payload = {
-            refId: Util.generateNonce(),
+            refId: refId,
             tokenId: transferToken.id,
             amount: {
                 value: amount.toString(),

@@ -624,9 +624,13 @@ export default class Member {
      * @param {string} currency - currency to redeem
      * @param {string} description - optional transfer description
      * @param {Array} destinations - transfer destinations
+     * @param {string} refId - Id that will be set on created Transfer.
+     *                         Token uses this to detect duplicates.
+     *                         Caller might use this to recognize the transfer.
+     *                         If param empty, transfer will have random refId.
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
-    redeemToken(token, amount, currency, description, destinations = []) {
+    redeemToken(token, amount, currency, description, destinations = [], refId = null) {
         return Util.callAsync(this.redeemToken, async () => {
             const finalToken = await this._resolveToken(token);
             if (amount === undefined) {
@@ -644,7 +648,8 @@ export default class Member {
                 amount,
                 currency,
                 description,
-                destinations);
+                destinations,
+                refId);
             return res.data.transfer;
         });
     }
