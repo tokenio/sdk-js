@@ -1,3 +1,5 @@
+import Util from "../Util";
+
 /**
  * Redeems a transfer token.
  *
@@ -6,6 +8,12 @@
  * @return {Object} transfer - created transfer
  */
 export default async (payee, tokenId) => {
+    // We'll use this as a reference ID. Normally, a payee who
+    // explicitly sets a reference ID would use an ID from a db.
+    // E.g., an online merchant might use the ID of a "shopping cart".
+    // We don't have a db, so we fake it with a random string:
+    const cartId = Util.generateNonce();
+
     // Payee gets the token to see details
     const transferToken = await payee.getToken(tokenId);
 
@@ -24,7 +32,8 @@ export default async (payee, tokenId) => {
         5,
         'EUR',
         'lunch',
-        [destination]);
+        [destination],
+        cartId);
 
     return transfer;
 };

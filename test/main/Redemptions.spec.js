@@ -53,10 +53,12 @@ describe('Token Redemptions', async () => {
     beforeEach(setUp3);
 
     it('should redeem a basic token', async () => {
-        const transfer = await member2.redeemToken(token1, 10.21, 'EUR', '', [destination1]);
+        const refId = Token.Util.generateNonce();
+        const transfer = await member2.redeemToken(token1, 10.21, 'EUR', '', [destination1], refId);
         assert.equal(10.21, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
+        assert.equal(refId, transfer.payload.refId);
     });
 
     it('should create and redeem a token with destination', async () => {
@@ -86,6 +88,7 @@ describe('Token Redemptions', async () => {
         assert.equal(15.28, transfer.payload.amount.value);
         assert.equal('EUR', transfer.payload.amount.currency);
         assert.isAtLeast(transfer.payloadSignatures.length, 1);
+        assert.isAtLeast(transfer.payload.refId.length, 1);
         const bal = await member1.getBalance(account1.id);
         assert.isAtLeast(100000, bal.current.value);
     });

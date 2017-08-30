@@ -106,7 +106,8 @@ export default class TransferTokenBuilder {
      */
     setChargeAmount(chargeAmount) {
         if (Util.countDecimals(chargeAmount) > config.decimalPrecision) {
-            throw new Error(`Number of decimals in amount should be at most ${config.decimalPrecision}`);
+            throw new Error('Number of decimals in amount should be at most ' +
+                            config.decimalPrecision);
         }
         this._payload.transfer.amount = chargeAmount;
         return this;
