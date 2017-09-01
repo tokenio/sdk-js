@@ -7,3 +7,4 @@ mocha.json
 *.log
 dist
 doc
+keys
