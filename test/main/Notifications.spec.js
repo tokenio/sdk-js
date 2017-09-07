@@ -119,7 +119,7 @@ describe('Notifications', () => {
             TARGET: Token.Util.generateNonce(),
         });
 
-        const status = await Token.notifyPaymentRequest(alias1, {
+        const status = await Token.notifyPaymentRequest({
           description: 'payment request',
           from: {alias: alias1},
           to: {alias: payeeAlias},

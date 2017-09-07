@@ -181,13 +181,11 @@ class HttpClient {
     /**
      * Sends a notification to a user to request a payment.
      *
-     * @param {Object} alias - user to notify
      * @param {Object} tokenPayload - requested transfer token
      * @return {Object} response - response to the API call
      */
-    notifyPaymentRequest(alias, tokenPayload) {
+    notifyPaymentRequest(tokenPayload) {
         const req = {
-            alias,
             tokenPayload
         };
         const request = {
