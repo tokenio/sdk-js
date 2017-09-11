@@ -259,16 +259,15 @@ class Token {
     /**
      * Sends a notification to a user to request a payment.
      *
-     * @param {Object} alias - user to notify
      * @param {Object} tokenPayload - requested transfer token
      * @return {Promise} NotifyStatus - status
      */
-    notifyPaymentRequest(alias, tokenPayload) {
+    notifyPaymentRequest(tokenPayload) {
       if (!tokenPayload.refId) {
         tokenPayload.refId = Util.generateNonce();
       }
       return Util.callAsync(this.notifyPaymentRequest, async () => {
-        const res = await this._unauthenticatedClient.notifyPaymentRequest(alias, tokenPayload);
+        const res = await this._unauthenticatedClient.notifyPaymentRequest(tokenPayload);
         return res.data.status;
       });
     }
