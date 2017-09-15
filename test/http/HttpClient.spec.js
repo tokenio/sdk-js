@@ -32,6 +32,7 @@ describe('Unauthenticated', () => {
         let handlerCalled = false;
         const unauthenticatedClient = new HttpClient(TEST_ENV, (error) => {
             console.log(error);
+            console.log('Got error.name: ' + error.name);
             assert.equal(error.name, 'unsupported-client-version');
             handlerCalled = true;
         });
