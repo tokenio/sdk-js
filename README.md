@@ -1,8 +1,13 @@
 # Token JavaScript SDK
 
-A javascript SDK for interacting with the Token System. Visit Token at http://token.io, and view
-the docs at http://developer.token.io. For looking at the available API, look at the samples, as well
-as the Member and Token classes. Docs for this API can be found at http://developer.token.io/sdk/esdoc/
+A javascript SDK for interacting with TokenOS.
+
+* Token company information: http://token.io
+* TokenOS developer documentation: http://developer.token.io
+* SDK documentation: http://developer.token.io/sdk/
+* Reference documentation: http://developer.token.io/sdk/esdoc/
+
+API is in `src/main`; sample code is in `src/samples`.
 
 ## Using the SDK
 ### Installation
