@@ -1,0 +1,10 @@
+node_modules
+.tmp
+.DS_Store
+.idea/
+**/.DS_Store
+mocha.json
+*.log
+dist
+doc
+keys
