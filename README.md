@@ -2,10 +2,10 @@
 
 A javascript SDK for interacting with TokenOS.
 
-* Token company information: http://token.io
-* TokenOS developer documentation: http://developer.token.io
-* SDK documentation: http://developer.token.io/sdk/
-* Reference documentation: http://developer.token.io/sdk/esdoc/
+* Token company information: https://token.io
+* TokenOS developer documentation: https://developer.token.io
+* SDK documentation: https://developer.token.io/sdk/
+* Reference documentation: https://developer.token.io/sdk/esdoc/
 
 API is in `src/main`; sample code is in `src/samples`.
 
