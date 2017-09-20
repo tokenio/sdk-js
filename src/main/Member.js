@@ -277,7 +277,7 @@ export default class Member {
      * new device requests, linking account requests, or transfer notifications
      *
      * @param {string} handler - who is handling the notifications
-     * @param {string} handlerInstructions - how to send the notification
+     * @param {Object} handlerInstructions - map of strings with delivery options
      * @return {Promise} subscriber - Subscriber
      */
     subscribeToNotifications(
