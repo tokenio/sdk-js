@@ -24,6 +24,7 @@ class PollNotificationsSample {
          * poll for notifications
          */
         async function helper() {
+            // getNotifications doc extract start:
             const pagedList = await member.getNotifications(null, 10);
             if (pagedList.data.length > 0) {
                 const notification = pagedList.data[0];
@@ -37,6 +38,7 @@ class PollNotificationsSample {
                 }
                 return;
             }
+            // getNotifications doc extract end
             if (retries >= 0) {
                 console.log("Don't see notifications yet. Sleeping...");
                 retries -= 1;
