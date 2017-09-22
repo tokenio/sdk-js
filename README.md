@@ -84,18 +84,20 @@ easier.
 
 The linter is run when the tests are executed (if using yarn). 
 
-### IDE support (Webstorm)
+### IDE support (Webstorm) and Testing
 
 Webstorm IDE allows fast development as well as an easy way to run tests. It also suports linting
 with ESLint. (WebStorm > Preferences > Languages and Frameworks > Javascript > Code Quality Tools > Eslint).
 
 * First, make sure you have the latest version of Webstorm installed. 
 * Then, open the sdk-js-tests directory from Webstorm.
+* Follow the set up for your preferred testing suite: Mocha or Karma
 
+Note: You cannot use both Karma and Mocha at the same time. However, you can set up the two and switch between the two by changing the Plugin Preferences.
 
 #### Set the default settings for Mocha:
 This is useful to run tests very easily using the IDE, for fast iteration and testing.
-This will run the tests using node.js.
+This will run the tests using node.js. Mocha allows you run individual tests within the same test suite.
 
 * Make sure Karma Plugin is disabled: Webstorm > Preferences > Plugins
 * Click Run > Edit configurations.
@@ -119,7 +121,7 @@ write the word 'debugger;' on the line which you wish the debugger to stop.
 section, add an NPM script, and under scripts, put "lint".
 
 #### Set the default settings for Karma:
-This is useful for testing changes which may only apply to browsers. 
+This is useful for testing changes which may only apply to browsers.
 
 * First go to WebStorm > Preferences > Plugins, and make sure Karma is enabled
 * Click Run > Edit configurations.
