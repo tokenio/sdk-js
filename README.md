@@ -90,7 +90,7 @@ Webstorm IDE allows fast development as well as an easy way to run tests. It als
 with ESLint. (WebStorm > Preferences > Languages and Frameworks > Javascript > Code Quality Tools > Eslint).
 
 * First, make sure you have the latest version of Webstorm installed. 
-* Then, open the sdk-js directory from Webstorm.
+* Then, open the sdk-js-tests directory from Webstorm.
 
 
 #### Set the default settings for Mocha:
@@ -101,10 +101,10 @@ This will run the tests using node.js.
 * Click Run > Edit configurations.
 * Select Defaults > Mocha
 * Environment variables: TEST_ENV = sandbox
-* Mocha package: ....../sdk-js/node_modules/mocha-webpack
+* Mocha package: ....../sdk-js-tests/node_modules/mocha-webpack
 * User interface: bdd
 * Extra mocha options: --webpack-config config/webpack.config.node.js --timeout 60000 --watch --colors
-* All in directory:  Test directory: ....../sdk-js/test
+* All in directory:  Test directory: ....../sdk-js-tests/test
 * Now click apply, and click the plus sign on the top left. Create a new Mocha config that derives
 from the default one.
 * Save and exit the menu, now run the new Mocha config that you just created, which will 
@@ -124,8 +124,8 @@ This is useful for testing changes which may only apply to browsers.
 * First go to WebStorm > Preferences > Plugins, and make sure Karma is enabled
 * Click Run > Edit configurations.
 * Select Defaults > Karma
-* Configuration file: ....../sdk-js/test/karma.config.js
-* Karma package: ......./sdk-js/node_modules/karma 
+* Configuration file: ....../sdk-js-tests/test/karma.config.js
+* Karma package: ......./sdk-js-tests/node_modules/karma 
 * Environment variables: TEST_ENV = sandbox
 * After this, you can create different custom Karma configs which are based off of this one. For 
 example, you can create a BrowserDev config, which has a TEST_ENV = dev, and will run all the
