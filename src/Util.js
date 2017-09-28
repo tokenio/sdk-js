@@ -15,6 +15,16 @@ class Util {
         return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
     }
 
+    static stringEndsWith(str, suffix) {
+        if (((str === null) || (str === '')) || ((suffix === null) || (suffix === ''))) {
+            return false;
+        }
+
+        str = str.toString();
+        suffix = suffix.toString();
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    }
+
     /**
      * Gets the specified byte of the 4 byte word, according to index. Assumes 2s complement
      * representation of the word

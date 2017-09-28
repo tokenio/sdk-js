@@ -49,6 +49,26 @@ class Token {
 
         /** Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
+
+        /** If we're on a token page, sets up an iframe to avoid CORS preflights **/
+        if (BROWSER && Util.stringEndsWith(document.domain, config.corsDomainSuffix)) {
+            const setupAPI = function() {
+                window.XMLHttpRequest = this.contentWindow.XMLHttpRequest;
+                window.fetch = this.contentWindow.fetch;
+            };
+
+            let iframe = document.getElementById('tokenApiIframe');
+            if (iframe === null) {
+                console.log('creating new iframe');
+                iframe = document.createElement('iframe');
+                iframe.id = 'tokenApiIframe';
+                iframe.src = config.urls[env] + '/iframe';
+                iframe.style.position = 'absolute';
+                iframe.style.left = '-9999px';
+                iframe.onload = setupAPI;
+                document.body.appendChild(iframe);
+            }
+        }
     }
 
     /**

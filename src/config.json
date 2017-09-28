@@ -2,7 +2,7 @@
     "signatureScheme": "Token-Ed25519-SHA512",
     "urls": {
         "local": "http://localhost:8000",
-        "dev": "https://api.dev.token.io",
+        "dev": "http://api.dev.token.io:8000",
         "stg": "https://api.stg.token.io",
         "sandbox": "https://api.sandbox.token.io",
         "int": "https://api.int.token.io",
@@ -12,6 +12,7 @@
     "accessTokenVersion": "1.0",
     "defaultCurrency": "EUR",
     "decimalPrecision": 4,
+    "corsDomainSuffix": "token.io",
     "KeyLevel": {
         "PRIVILEGED": "PRIVILEGED",
         "STANDARD": "STANDARD",
