@@ -59,7 +59,6 @@ class Token {
 
             let iframe = document.getElementById('tokenApiIframe');
             if (iframe === null) {
-                console.log('creating new iframe');
                 iframe = document.createElement('iframe');
                 iframe.id = 'tokenApiIframe';
                 iframe.src = config.urls[env] + '/iframe';
