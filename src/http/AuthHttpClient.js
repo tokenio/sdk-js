@@ -417,7 +417,6 @@ class AuthHttpClient {
     /**
      * Gets the default bank account.
      *
-     * @param {string} memberId - the member id
      * @return {Promise} response - the default bank account
      */
     async getDefaultAccount() {
@@ -432,7 +431,6 @@ class AuthHttpClient {
      * Sets the member's default bank account.
      *
      * @param {string} accountId - the bank account id
-     * @param {string} memberId - the member id
      * @return {Promise} a promise
      */
     async setDefaultAccount(accountId) {
