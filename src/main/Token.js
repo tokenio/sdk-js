@@ -51,7 +51,8 @@ class Token {
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
 
         /** If we're on a token page, sets up an iframe to avoid CORS preflights **/
-        if (BROWSER && Util.stringEndsWith(document.domain, config.corsDomainSuffix)) {
+        if (BROWSER && (Util.stringEndsWith(document.domain, config.corsDomainSuffix) ||
+                document.domain === config.corsDomainSuffix.substring(1))) {
             const setupAPI = function() {
                 window.XMLHttpRequest = this.contentWindow.XMLHttpRequest;
                 window.fetch = this.contentWindow.fetch;
