@@ -15,11 +15,17 @@ class Util {
         return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
     }
 
+    /**
+     * Tests if a string ends with a suffix,
+     *
+     * @param {string} str - the string to test
+     * @param {string} suffix - the suffix to test
+     * @return {boolean} endsWith - true if it does
+     */
     static stringEndsWith(str, suffix) {
         if (((str === null) || (str === '')) || ((suffix === null) || (suffix === ''))) {
             return false;
         }
-
         str = str.toString();
         suffix = suffix.toString();
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -110,6 +116,58 @@ class Util {
             return alias.value;
         }
         return bs58.encode(sha256(Buffer.from(stringify(alias), 'utf8')));
+    }
+
+    /**
+     * If we're on a token page, sets up an iframe to avoid CORS preflights. All requests in this
+     * window will be routed through the iframe.
+     *
+     * @param {string} suffix - domain suffix for Iframe passthrough
+     * @param {string} url - base url for the API gateway
+     */
+    static enableIframePassthrough(suffix, url) {
+        if (BROWSER && (Util.stringEndsWith(document.domain, suffix) ||
+                document.domain === suffix.substring(1))) {
+            const setupAPI = function() {
+                window.oldXMLHttpRequest = window.XMLHttpRequest;
+                window.oldFetch = window.fetch;
+                window.XMLHttpRequest = this.contentWindow.XMLHttpRequest;
+                window.fetch = this.contentWindow.fetch;
+            };
+
+            let iframe = document.getElementById('tokenApiIframe');
+            if (iframe === null) {
+                console.log('Creating a new iframe');
+                iframe = document.createElement('iframe');
+                iframe.id = 'tokenApiIframe';
+                iframe.src = url + '/iframe';
+                iframe.style.position = 'absolute';
+                iframe.style.left = '-9999px';
+                iframe.onload = setupAPI;
+                document.body.appendChild(iframe);
+            }
+        }
+    }
+
+    /**
+     * If we're on a token page, this disables passthrough
+     *
+     * @param {string} suffix - domain suffix for Iframe passthrough
+     */
+    static disableIframePassthrough(suffix) {
+        if (BROWSER && (Util.stringEndsWith(document.domain, suffix) ||
+                document.domain === suffix.substring(1))) {
+            if (window.oldXMLHttpRequest) {
+                window.XMLHttpRequest = window.oldXMLHttpRequest;
+            }
+            if (window.oldFetch) {
+                window.fetch = window.oldFetch;
+            }
+            let iframe = document.getElementById('tokenApiIframe');
+            if (iframe !== null) {
+                document.body.removeChild(iframe);
+            }
+        }
     }
 }
 

@@ -49,26 +49,23 @@ class Token {
 
         /** Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
+    }
 
-        /** If we're on a token page, sets up an iframe to avoid CORS preflights **/
-        if (BROWSER && (Util.stringEndsWith(document.domain, config.corsDomainSuffix) ||
-                document.domain === config.corsDomainSuffix.substring(1))) {
-            const setupAPI = function() {
-                window.XMLHttpRequest = this.contentWindow.XMLHttpRequest;
-                window.fetch = this.contentWindow.fetch;
-            };
+    /**
+     * If we're on a token page, sets up an iframe to avoid CORS preflights. All requests in this
+     * window will be routed through the iframe.
+     *
+     * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     */
+    static enableIframePassthrough(env) {
+        Util.enableIframePassthrough(config.corsDomainSuffix, config.urls[env]);
+    }
 
-            let iframe = document.getElementById('tokenApiIframe');
-            if (iframe === null) {
-                iframe = document.createElement('iframe');
-                iframe.id = 'tokenApiIframe';
-                iframe.src = config.urls[env] + '/iframe';
-                iframe.style.position = 'absolute';
-                iframe.style.left = '-9999px';
-                iframe.onload = setupAPI;
-                document.body.appendChild(iframe);
-            }
-        }
+    /**
+     * If we're on a token page, this disables passthrough
+     */
+    static disableIframePassthrough() {
+        Util.disableIframePassthrough(config.corsDomainSuffix);
     }
 
     /**
