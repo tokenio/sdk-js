@@ -12,6 +12,7 @@
     "accessTokenVersion": "1.0",
     "defaultCurrency": "EUR",
     "decimalPrecision": 4,
+    "corsDomainSuffix": ".token.io",
     "KeyLevel": {
         "PRIVILEGED": "PRIVILEGED",
         "STANDARD": "STANDARD",

@@ -52,6 +52,23 @@ class Token {
     }
 
     /**
+     * If we're on a token page, sets up an iframe to avoid CORS preflights. All requests in this
+     * window will be routed through the iframe.
+     *
+     * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     */
+    static enableIframePassthrough(env) {
+        Util.enableIframePassthrough(config.corsDomainSuffix, config.urls[env]);
+    }
+
+    /**
+     * If we're on a token page, this disables passthrough
+     */
+    static disableIframePassthrough() {
+        Util.disableIframePassthrough(config.corsDomainSuffix);
+    }
+
+    /**
      * Checks if a given alias already exists
      *
      * @param {Object} alias - alias to check

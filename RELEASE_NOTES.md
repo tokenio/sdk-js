@@ -1,3 +1,9 @@
+## Release 1.4.94
+
+### Iframe
+
+The JS SDK now uses an iframe to the Token API server, when being called under a token domain. This removes the preflight request, and speeds up the experience.
+
 ## Release 1.4.91
 
 ### notifyPaymentRequest
