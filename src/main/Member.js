@@ -248,6 +248,43 @@ export default class Member {
     }
 
     /**
+     * Gets the default bank account.
+     *
+     * @return {Promise} the default bank account
+     */
+    getDefaultAccount() {
+        return Util.callAsync(this.getDefaultAccount, async () => {
+            const res = await this._client.getDefaultAccount(this.memberId());
+            return res.data.account;
+        });
+    }
+
+    /**
+     * Sets the member's default bank account.
+     *
+     * @param {string} accountId - the bank account id
+     * @return {Promise} account - the account if found
+     */
+    setDefaultAccount(accountId) {
+        return Util.callAsync(this.setDefaultAccount, async () => {
+            const res = await this._client.setDefaultAccount(accountId, this.memberId());
+            return res.data.account;
+        });
+    }
+
+    /**
+     * Looks up if this account is default.
+     *
+     * @param {string} accountId - the bank account id
+     * @return {Promise} response - true if the account is default; false otherwise
+     */
+    isDefaultAccount(accountId) {
+        return Util.callAsync(this.isDefaultAccount, async () => {
+            return await this.getDefaultAccount().id === accountId;
+        });
+    }
+
+    /**
      * Gets a list of all available banks for linking
      *
      * @return {Promise} banks - list of banks

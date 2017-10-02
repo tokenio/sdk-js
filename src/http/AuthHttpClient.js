@@ -415,6 +415,35 @@ class AuthHttpClient {
     }
 
     /**
+     * Gets the default bank account.
+     *
+     * @return {Promise} response - the default bank account
+     */
+    async getDefaultAccount() {
+        const request = {
+            method: 'get',
+            url: `/members/${this._memberId}/default-account`
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Sets the member's default bank account.
+     *
+     * @param {string} accountId - the bank account id
+     * @return {Promise} a promise
+     */
+    async setDefaultAccount(accountId) {
+        const req = {accountId};
+        const request = {
+            method: 'put',
+            url: `/members/${this._memberId}/default-account`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Sets the name of an account.
      *
      * @param {string} accountId - account
