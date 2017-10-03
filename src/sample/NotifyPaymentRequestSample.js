@@ -15,10 +15,7 @@ export default async (Token, payee, payerAlias) => {
     // We don't have a db, so we fake it with a random string:
     const cartId = Util.generateNonce();
 
-    const payeeAlias = {
-        type: 'USERNAME',
-        value: await payee.firstAlias()
-    };
+    const payeeAlias = await payee.firstAlias();
 
     // Payment request is a TokenPayload
     // protocol buffer.

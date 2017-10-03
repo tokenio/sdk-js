@@ -22,10 +22,7 @@ describe('NotifyPaymentRequestSample test', () => {
             TARGET: Token.Util.generateNonce(),
         });
 
-        const payerAlias = {
-            type: 'USERNAME',
-            value: await payer.firstAlias()
-        };
+        const payerAlias = await payer.firstAlias();
         const res = await NotifyPaymentRequestSample(Token, payee, payerAlias);
         assert.equal(res, 'ACCEPTED');
     });

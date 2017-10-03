@@ -19,7 +19,7 @@ describe('GetTransfersSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
         const transfers = await GetTransfersSample(member);
@@ -34,7 +34,7 @@ describe('GetTransferSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         const redeemedTransfer = await RedeemTransferTokenSample(member2, res.id);
         const fetchedTransfer = await GetTransferSample(member, redeemedTransfer.id);
@@ -49,7 +49,7 @@ describe('GetTransferTokensSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
         const transferTokens = await GetTransferTokensSample(member);

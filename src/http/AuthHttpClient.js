@@ -989,6 +989,21 @@ class AuthHttpClient {
     }
 
     /**
+     * Gets logged-in member's aliases, verified or not.
+     *
+     * @return {Object} response object; has aliases, unverifiedAliases
+     */
+    async getAliases() {
+        const req = {};
+        const request = {
+            method: 'get',
+            url: '/aliases',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Adds aliases to the member.
      *
      * @param {string} prevHash - hash of the previous directory entry.

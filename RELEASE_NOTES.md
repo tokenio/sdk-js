@@ -1,12 +1,21 @@
-## Release 1.4.94
+## Release 1.4.95
+
+### Member.firstAlias
+
+Member.firstAlias' return type changed from a string (like
+"address@example.com") to alias structure (like
+{ type: "EMAIL", value: "address@example.com" } ).
 
 ### Iframe
 
-The JS SDK now uses an iframe to the Token API server, when being called under a token domain. This removes the preflight request, and speeds up the experience.
+The JS SDK now uses an iframe to the Token API server, when being called
+under a token domain. This removes the preflight request, and speeds up
+the experience.
 
 ## Release 1.4.91
 
 ### notifyPaymentRequest
 
-There has been a change to the parameters for the method notifyPaymentRequest. The Alias parameter has been removed,
-the method now receives a single parameter, the TokenPayload.
+There has been a change to the parameters for the method notifyPaymentRequest.
+The Alias parameter has been removed, the method now receives a single
+parameter, the TokenPayload.
