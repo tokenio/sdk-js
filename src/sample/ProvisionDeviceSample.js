@@ -20,20 +20,18 @@ class PollNotificationsSample {
         const deviceInfo = await Token.provisionDeviceLow(
             alias,
             Token.UnsecuredFileCryptoEngine);
-        for (var ix = 0; ix < deviceInfo.keys.length; ix++) {
-            const key = deviceInfo.keys[ix];
-            if (key.level === Token.KeyLevel.LOW) {
-                const notifyStatus = await Token.notifyAddKey(
-                    alias,
-                    'SDK Sample',
-                    key,
-                    Token.KeyLevel.LOW);
-                if (notifyStatus !== "ACCEPTED") {
-                    console.log("notifyAddKey got " + notifyStatus);
-                }
-                return key;
-            }
+        const lowKey = deviceInfo.keys.filter(
+            k => k.level === Token.KeyLevel.LOW
+        )[0];
+        const notifyStatus = await Token.notifyAddKey(
+            alias,
+            'SDK Sample',
+            lowKey,
+            Token.KeyLevel.LOW);
+        if (notifyStatus !== "ACCEPTED") {
+            console.log("notifyAddKey got " + notifyStatus);
         }
+        return lowKey;
     }
 
     /* Log in on provisioned device (assuming
