@@ -17,7 +17,7 @@ class PollNotificationsSample {
         // We mostly test in "node" mode, not "Browser"
         // mode so use UnsecuredFileCryptoEngine
         // instead of BrowserCryptoEngine.
-        const deviceInfo = await Token.provisionDevice(
+        const deviceInfo = await Token.provisionDeviceLow(
             alias,
             Token.UnsecuredFileCryptoEngine);
         for (var ix = 0; ix < deviceInfo.keys.length; ix++) {
