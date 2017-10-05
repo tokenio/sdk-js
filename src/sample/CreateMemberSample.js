@@ -11,12 +11,15 @@ export default async () => {
     const Token = new TokenLib(TEST_ENV);
 
     // Generate a random-nonsense-string alias.
-    // ("name@token.io" would be more typical than a random string.
+    // ("name@token.io" would be more typical than a random address.
     // But if we run this code with the same alias twice,
     // the 2nd time it will fail because the name is taken.)
+    //
+    // In _test_ environments, we can use this email address
+    // without verifying them. But this wouldn't work in production.
     const alias = {
-        type: 'USERNAME',
-        value: Token.Util.generateNonce()
+        type: 'EMAIL',
+        value: 'alias-' + Token.Util.generateNonce() + '@token.io'
     };
 
     // Create a member with keys stored in memory:
