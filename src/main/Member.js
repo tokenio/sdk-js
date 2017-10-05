@@ -38,14 +38,13 @@ export default class Member {
 
     /**
      * Gets all of the member's aliases
-     * TODO: Replace with alias call to member service
      *
      * @return {Promise} aliases - member's aliases
      */
     aliases() {
         return Util.callAsync(this.aliases, async () => {
-            const member = await this._getMember();
-            return member.aliasHashes;
+            const res = await this._client.getAliases();
+            return res.data.aliases;
         });
     }
 

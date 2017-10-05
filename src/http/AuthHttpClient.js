@@ -994,11 +994,9 @@ class AuthHttpClient {
      * @return {Object} response object; has aliases, unverifiedAliases
      */
     async getAliases() {
-        const req = {};
         const request = {
             method: 'get',
-            url: '/aliases',
-            data: req,
+            url: '/aliases'
         };
         return this._instance(request);
     }
