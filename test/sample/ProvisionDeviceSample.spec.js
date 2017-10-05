@@ -13,10 +13,7 @@ describe('ProvisionDeviceSample test', () => {
             const Token = new TokenLib(TEST_ENV, './keys');
             const member = await CreateMemberSample();
             await member.subscribeToNotifications("iron");
-            const alias = {
-                type: 'USERNAME',
-                value: await member.firstAlias()
-            };
+            const alias = await member.firstAlias();
             const key = await ProvisionDeviceSample.provision(Token, alias);
             await member.approveKey(key);
 
