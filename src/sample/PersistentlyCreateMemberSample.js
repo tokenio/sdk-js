@@ -18,8 +18,8 @@ export default async () => {
     // But if we run this code with the same alias twice,
     // the 2nd time it will fail because the name is taken.)
     const alias = {
-        type: 'USERNAME',
-        value: Token.Util.generateNonce()
+        type: 'EMAIL',
+        value: "alias-" + Token.Util.generateNonce() + "@example.com"
     };
 
     // Create a member with keys stored in memory:
