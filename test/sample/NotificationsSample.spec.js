@@ -18,10 +18,7 @@ describe('NotificationsSample test', () => {
         await LinkMemberAndBankSample(payer);
         await LinkMemberAndBankSample(payee);
 
-        const payerAlias = {
-            type: 'USERNAME',
-            value: await payer.firstAlias()
-        };
+        const payerAlias = await payer.firstAlias();
         const res = await NotifyPaymentRequestSample(Token, payee, payerAlias);
         assert.isOk(res);
 

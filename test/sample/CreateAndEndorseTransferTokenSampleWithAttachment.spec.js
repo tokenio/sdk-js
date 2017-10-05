@@ -17,7 +17,7 @@ describe('CreateAndEndorseTransferTokenWithAttachmentSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res =
             await CreateAndEndorseTransferTokenWithAttachmentSample(member, member2Alias);
         assert.isAtLeast(res.payloadSignatures.length, 2);
@@ -31,7 +31,7 @@ describe('CreateTransferTokenAttachSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res =
             await CreateTransferTokenAttachSample(member, member2Alias);
         assert.isAtLeast(res.payloadSignatures.length, 2);

@@ -15,7 +15,7 @@ describe('ReplaceAccessTokenSample test', () => {
         const member2 = await CreateMemberSample();
         await LinkMemberAndBankSample(member);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         await CreateAndEndorseAccessTokenSample(member, member2Alias);
         const foundToken = await GetAccessTokensSample(member, member2Alias);
         const something = await ReplaceAccessTokenSample(member, foundToken);

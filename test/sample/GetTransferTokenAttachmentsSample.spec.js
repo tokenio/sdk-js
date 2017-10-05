@@ -16,7 +16,7 @@ describe('GetTransferTokenAttachmentsSample test', () => {
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseTransferTokenWithAttachmentSample(
             member,
             member2Alias);
