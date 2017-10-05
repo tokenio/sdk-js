@@ -13,7 +13,7 @@ describe('CreateAndEndorseAccessTokenSample test', () => {
         const member2 = await CreateMemberSample();
         await LinkMemberAndBankSample(member);
 
-        const member2Alias = {type: 'USERNAME', value: await member2.firstAlias()};
+        const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseAccessTokenSample(member, member2Alias);
         assert.isAtLeast(res.payloadSignatures.length, 2);
     });

@@ -56,8 +56,8 @@ export default class Member {
      */
     firstAlias() {
         return Util.callAsync(this.firstAlias, async () => {
-            const member = await this._getMember();
-            return member.aliasHashes[0];
+            const res = await this._client.getAliases();
+            return res.data.aliases[0];
         });
     }
 
