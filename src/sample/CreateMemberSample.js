@@ -15,8 +15,8 @@ export default async () => {
     // But if we run this code with the same alias twice,
     // the 2nd time it will fail because the name is taken.)
     //
-    // In _test_ environments, we can use this email address
-    // without verifying them. But this wouldn't work in production.
+    // In test environments, we can use this email as an alias
+    // without verifying it; but in production, we couldn't.
     const alias = {
         type: 'EMAIL',
         value: 'alias-' + Token.Util.generateNonce() + '@token.io'
