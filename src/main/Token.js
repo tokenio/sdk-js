@@ -85,7 +85,7 @@ class Token {
      * Resolve an alias to a member
      *
      * @param {Object} alias - alias to lookup
-     * @return {Promise} result - Member object
+     * @return {Promise} result - TokenMember protobuf object
      */
     resolveAlias(alias) {
         return Util.callAsync(this.resolveAlias, async () => {
