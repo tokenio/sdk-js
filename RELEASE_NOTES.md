@@ -1,3 +1,13 @@
+## Release 1.4.96
+
+### Member.aliases
+
+Member.aliases' return type changed from an
+array of strings (like
+["address@example.com"]) to an array of
+alias structures (like
+[ { type: "EMAIL", value: "address@example.com" } ] ).
+
 ## Release 1.4.95
 
 ### Member.firstAlias
