@@ -552,7 +552,7 @@ export default class Member {
     }
 
     /**
-     * Creates a transfer token builder, that when executed, will create an transfer token by
+     * Creates a transfer token builder, that when executed, will create a transfer token by
      * performing an API call.
      *
      * @param {double} lifetimeAmount - amount limit on the token
