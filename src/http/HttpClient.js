@@ -1,6 +1,7 @@
 import config from "../config.json";
 import Crypto from "../security/Crypto";
 import ErrorHandler from "./ErrorHandler";
+import DeveloperHeader from "./DeveloperHeader";
 import VersionHeader from "./VersionHeader";
 
 const axios = require('axios');
@@ -26,8 +27,10 @@ class HttpClient {
         });
 
         const versionHeader = new VersionHeader();
+        const developerHeader = new DeveloperHeader();
         this._instance.interceptors.request.use((request) => {
             versionHeader.addVersionHeader(request);
+            developerHeader.addDeveloperHeader(request);
             return request;
         });
 

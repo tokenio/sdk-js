@@ -6,6 +6,7 @@ import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext";
 import config from "../config.json";
 import ErrorHandler from "./ErrorHandler";
+import DeveloperHeader from "./DeveloperHeader";
 import VersionHeader from "./VersionHeader";
 
 const base64js = require('base64-js');
@@ -84,9 +85,11 @@ class AuthHttpClient {
         this._instance.interceptors.request.eject(this._interceptor);
 
         const versionHeader = new VersionHeader();
+        const developerHeader = new DeveloperHeader();
         this._interceptor = this._instance.interceptors.request.use(async (request) => {
             await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
             versionHeader.addVersionHeader(request);
+            developerHeader.addDeveloperHeader(request);
             return request;
         });
     }
