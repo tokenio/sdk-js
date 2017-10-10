@@ -194,7 +194,12 @@ class Token {
                 memberId = CryptoEngine.getActiveMemberId();
             }
             const engine = new CryptoEngine(memberId);
-            return new Member(this._env, memberId, engine, this._globalRpcErrorCallback, this._developerKey);
+            return new Member(
+                this._env,
+                memberId,
+                engine,
+                this._globalRpcErrorCallback,
+                this._developerKey);
         });
     }
 
