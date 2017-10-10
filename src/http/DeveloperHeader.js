@@ -1,15 +1,25 @@
-import config from "../config.json";
 /**
  * Class to add sdk developer key.
  */
 class DeveloperHeader {
     /**
-     * Adds the developer key the request config.
+     * Initializes the developer header with the developer key.
      *
-     * @param {Object} conf - config of the request
+     * @param {string} developerKey - the developer key, by default empty
      */
-    addDeveloperHeader(conf) {
-        conf.headers['token-dev-key'] = config.developerKey;
+     constructor(developerKey = "") {
+         this._developerKey = developerKey;
+     }
+
+    /**
+     * Adds the developer key to the request config if not empty.
+     *
+     * @param {Object} config - config of the request
+     */
+    addDeveloperHeader(config) {
+        if (this._developerKey !== "") {
+            config.headers['token-dev-key'] = this._developerKey;
+        }
     }
 }
 

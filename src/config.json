@@ -18,6 +18,5 @@
         "STANDARD": "STANDARD",
         "LOW": "LOW"
     },
-    "localStorageSchemaVersion": 0.1,
-    "developerKey": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI"
+    "localStorageSchemaVersion": 0.1
 }

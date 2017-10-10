@@ -15,9 +15,10 @@ class HttpClient {
      *
      * @param {string} env - environment to point to, like 'prd'
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * @param {string} developerKey - the developer key
      * call error. For example: SDK version mismatch
      */
-    constructor(env, globalRpcErrorCallback) {
+    constructor(env, globalRpcErrorCallback, developerKey) {
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -27,7 +28,7 @@ class HttpClient {
         });
 
         const versionHeader = new VersionHeader();
-        const developerHeader = new DeveloperHeader();
+        const developerHeader = new DeveloperHeader(developerKey);
         this._instance.interceptors.request.use((request) => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
