@@ -26,8 +26,8 @@ class AuthHttpClient {
      * @param {string} memberId - member making the requests
      * @param {Object} cryptoEngine - engines to use for signing
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
-     * @param {string} developerKey - the developer key
      * call error. For example: SDK version mismatch
+     * @param {string} developerKey - the developer key
      */
     constructor(env, memberId, cryptoEngine, globalRpcErrorCallback, developerKey) {
         if (!config.urls[env]) {

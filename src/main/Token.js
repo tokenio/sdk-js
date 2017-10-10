@@ -50,6 +50,9 @@ class Token {
             UnsecuredFileCryptoEngine.setDirRoot(keyDir);
         }
 
+        /** Developer key*/
+        this._developerKey = developerKey;
+
         /** Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
     }
@@ -119,7 +122,8 @@ class Token {
                     this._env,
                     response.data.memberId,
                     engine,
-                    this._globalRpcErrorCallback);
+                    this._globalRpcErrorCallback,
+                    this._developerKey);
             await member.addAlias(alias);
             return member;
         });
@@ -190,7 +194,7 @@ class Token {
                 memberId = CryptoEngine.getActiveMemberId();
             }
             const engine = new CryptoEngine(memberId);
-            return new Member(this._env, memberId, engine, this._globalRpcErrorCallback);
+            return new Member(this._env, memberId, engine, this._globalRpcErrorCallback, this._developerKey);
         });
     }
 
