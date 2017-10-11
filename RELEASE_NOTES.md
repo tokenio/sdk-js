@@ -1,3 +1,11 @@
+## Release 1.4.97
+
+Added developer key verification to api calls. The following classes now require a developerKey when instantiated:
+* Token
+* Member
+* HttpClient
+* AuthHttpClient
+
 ## Release 1.4.96
 
 ### Member.aliases
