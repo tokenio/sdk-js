@@ -57,12 +57,12 @@ describe('AuthHttpClient', () => {
             engine);
         await client.addAlias(
             res2.data.member.lastHash,
-            {type: 'USERNAME', value: Token.Util.generateNonce()});
+            Token.Util.randomAlias());
         const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res3.data.member.aliasHashes.length, 1);
         await client.addAlias(
             res3.data.member.lastHash,
-            {type: 'USERNAME', value: Token.Util.generateNonce()});
+            Token.Util.randomAlias());
         const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res4.data.member.aliasHashes.length, 2);
     });
@@ -82,10 +82,10 @@ describe('AuthHttpClient', () => {
             engine);
         await client.addAlias(
             res2.data.member.lastHash,
-            {type: 'USERNAME', value: Token.Util.generateNonce()});
+            Token.Util.randomAlias());
         const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res3.data.member.aliasHashes.length, 1);
-        const secondAlias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        const secondAlias = Token.Util.randomAlias();
         await client.addAlias(res3.data.member.lastHash, secondAlias);
         const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res4.data.member.aliasHashes.length, 2);
