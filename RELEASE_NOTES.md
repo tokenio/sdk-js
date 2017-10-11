@@ -1,4 +1,4 @@
-## Release 1.4.97
+## Release 1.4.98
 
 Added developer key verification to api calls. The following classes now require a developerKey when instantiated:
 * Token
