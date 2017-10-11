@@ -6,8 +6,8 @@ import 'babel-regenerator-runtime';
 
 describe('Token library', () => {
     it("should perform a transfer flow", async () => {
-        const alias1 = {type: 'USERNAME', value: Token.Util.generateNonce()};
-        const alias2 = {type: 'USERNAME', value: Token.Util.generateNonce()};
+        const alias1 = Token.Util.randomAlias();
+        const alias2 = Token.Util.randomAlias();
 
         const member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
         await member1.subscribeToNotifications("iron");
