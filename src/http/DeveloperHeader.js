@@ -18,7 +18,8 @@ class DeveloperHeader {
      */
     addDeveloperHeader(config) {
         if (this._developerKey === "") {
-            throw new ReferenceError('No developer key provided.');
+            throw new ReferenceError("Please provide a developer key."
+                + " Contact Token for more details.");
         } else {
             config.headers['token-dev-key'] = this._developerKey;
         }
