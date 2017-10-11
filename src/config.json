@@ -21,6 +21,10 @@
     "localStorageSchemaVersion": 0.1,
     "devKey": {
         "local": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI",
-        "dev": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI"
+        "dev": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI",
+        "stg": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI",
+        "sandbox": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI",
+        "int": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI",
+        "prd": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI"
     }
 }
