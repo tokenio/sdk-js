@@ -16,6 +16,18 @@ class Util {
     }
 
     /**
+     * Generates a random alias. Handy for tests.
+     *
+     * @return {Object} alias protobuf
+     */
+    static randomAlias() {
+        return {
+            type: 'EMAIL',
+            value: 'test-' + Util.generateNonce() + '@example.com'
+        };
+    }
+
+    /**
      * Tests if a string ends with a suffix,
      *
      * @param {string} str - the string to test
