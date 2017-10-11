@@ -14,11 +14,11 @@ class HttpClient {
      * Creates the client with the given environment.
      *
      * @param {string} env - environment to point to, like 'prd'
-     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * @param {string} developerKey - the developer key
+     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env, globalRpcErrorCallback, developerKey) {
+    constructor(env, developerKey, globalRpcErrorCallback) {
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));

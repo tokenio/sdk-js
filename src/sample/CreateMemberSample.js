@@ -8,7 +8,8 @@ export default async () => {
     // Initialize SDK:
     // 'sandbox' is a good value for TEST_ENV here.
     const TokenLib = require('../../src');
-    const Token = new TokenLib(TEST_ENV);
+    const devKey = require("../../src/config.json").devKey[TEST_ENV];
+    const Token = new TokenLib(TEST_ENV, devKey);
 
     // Generate a random-nonsense-string alias.
     // ("name@token.io" would be more typical than a random address.

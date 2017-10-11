@@ -5,15 +5,17 @@ import 'babel-regenerator-runtime';
 import HttpClient from "../../src/http/HttpClient";
 import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
 
+const devKey = require("../../src/config.json").devKey[TEST_ENV];
+
 describe('Unauthenticated', () => {
     it('should generate a memberId', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
     });
 
     it('should add a key', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
@@ -30,7 +32,7 @@ describe('Unauthenticated', () => {
 
     it('should call global handler on version mismatch error', async () => {
         let handlerCalled = false;
-        const unauthenticatedClient = new HttpClient(TEST_ENV, (error) => {
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey, (error) => {
             console.log(error);
             assert.equal(error.name, 'unsupported-client-version');
             handlerCalled = true;
@@ -52,7 +54,7 @@ describe('Unauthenticated', () => {
     });
 
     it('should get a member', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         const engine = new MemoryCryptoEngine(res.data.memberId);
         const pk1 = engine.generateKey('PRIVILEGED');

@@ -19,17 +19,18 @@ class Token {
      * Construct the Token SDK object, pointing to the given environment.
      *
      * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     * @param {string} developerKey - the developer key
      * @param {string} keyDir - absolute directory name of key storage directory
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
-     * @param {string} developerKey - the developer key
      * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd', keyDir, globalRpcErrorCallback, developerKey) {
+    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._unauthenticatedClient = new HttpClient(
             env,
-            this._globalRpcErrorCallback, developerKey);
+            developerKey,
+            this._globalRpcErrorCallback);
 
         /** Available security levels for keys */
         this.KeyLevel = config.KeyLevel;
@@ -122,8 +123,8 @@ class Token {
                     this._env,
                     response.data.memberId,
                     engine,
-                    this._globalRpcErrorCallback,
-                    this._developerKey);
+                    this._developerKey,
+                    this._globalRpcErrorCallback);
             await member.addAlias(alias);
             return member;
         });
@@ -198,8 +199,8 @@ class Token {
                 this._env,
                 memberId,
                 engine,
-                this._globalRpcErrorCallback,
-                this._developerKey);
+                this._developerKey,
+                this._globalRpcErrorCallback);
         });
     }
 

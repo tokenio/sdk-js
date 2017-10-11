@@ -25,11 +25,11 @@ class AuthHttpClient {
      * @param {string} env - desired env, such as 'prd'
      * @param {string} memberId - member making the requests
      * @param {Object} cryptoEngine - engines to use for signing
+     * @param {string} developerKey - the developer key
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
-     * @param {string} developerKey - the developer key
      */
-    constructor(env, memberId, cryptoEngine, globalRpcErrorCallback, developerKey) {
+    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback) {
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));

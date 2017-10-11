@@ -17,7 +17,9 @@ class DeveloperHeader {
      * @param {Object} config - config of the request
      */
     addDeveloperHeader(config) {
-        if (this._developerKey !== "") {
+        if (this._developerKey === "") {
+            throw new ReferenceError('No developer key provided.');
+        } else {
             config.headers['token-dev-key'] = this._developerKey;
         }
     }

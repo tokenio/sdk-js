@@ -18,5 +18,9 @@
         "STANDARD": "STANDARD",
         "LOW": "LOW"
     },
-    "localStorageSchemaVersion": 0.1
+    "localStorageSchemaVersion": 0.1,
+    "devKey": {
+        "local": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI",
+        "dev": "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI"
+    }
 }
