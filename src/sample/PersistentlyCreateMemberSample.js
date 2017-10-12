@@ -1,15 +1,16 @@
 /**
  * Imports and sets up the SDK, and creates a Token member with the MemoryCryptoEngine
  * (which will store keys in memory).
- *
+ * @param {string} developerKey - developer key
  * @return {Member} member - created member
  */
-export default async () => {
+export default async (developerKey) => {
     // Initialize SDK:
     const TokenLib = require('../../src');
     const Token = new TokenLib(
         // sandbox test environment:
         'sandbox',
+        developerKey,
         // persist member secret keys in dir:
         './keys');
 
