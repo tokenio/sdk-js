@@ -19,14 +19,18 @@ class Token {
      * Construct the Token SDK object, pointing to the given environment.
      *
      * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     * @param {string} developerKey - the developer key
      * @param {string} keyDir - absolute directory name of key storage directory
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd', keyDir, globalRpcErrorCallback) {
+    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
-        this._unauthenticatedClient = new HttpClient(env, this._globalRpcErrorCallback);
+        this._unauthenticatedClient = new HttpClient(
+            env,
+            developerKey,
+            this._globalRpcErrorCallback);
 
         /** Available security levels for keys */
         this.KeyLevel = config.KeyLevel;
@@ -46,6 +50,9 @@ class Token {
         if (keyDir) {
             UnsecuredFileCryptoEngine.setDirRoot(keyDir);
         }
+
+        /** Developer key*/
+        this._developerKey = developerKey;
 
         /** Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
@@ -116,6 +123,7 @@ class Token {
                     this._env,
                     response.data.memberId,
                     engine,
+                    this._developerKey,
                     this._globalRpcErrorCallback);
             await member.addAlias(alias);
             return member;
@@ -187,7 +195,12 @@ class Token {
                 memberId = CryptoEngine.getActiveMemberId();
             }
             const engine = new CryptoEngine(memberId);
-            return new Member(this._env, memberId, engine, this._globalRpcErrorCallback);
+            return new Member(
+                this._env,
+                memberId,
+                engine,
+                this._developerKey,
+                this._globalRpcErrorCallback);
         });
     }
 

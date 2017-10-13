@@ -1,6 +1,7 @@
 import TestUtil from './TestUtil';
 import TokenIo from "../src";
-const Token = new TokenIo(TEST_ENV);
+const devKey = require("../src/config.json").devKey[TEST_ENV];
+const Token = new TokenIo(TEST_ENV, devKey);
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';

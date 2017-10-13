@@ -6,6 +6,7 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import UnsecuredFileCryptoEngine from "../../../src/security/engines/UnsecuredFileCryptoEngine";
 const TokenIo = require('../../../src/index');
+const devKey = require("../../../src/config.json").devKey[TEST_ENV];
 
 let fs;
 let path;
@@ -21,7 +22,7 @@ if (!BROWSER) {
         path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
         'test'), 'testDir');
 }
-const Token = new TokenIo(TEST_ENV, testDir);
+const Token = new TokenIo(TEST_ENV, devKey, testDir);
 
 describe('Unsecured File crypto engine', () => {
     if (!BROWSER) {

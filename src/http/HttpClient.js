@@ -1,6 +1,7 @@
 import config from "../config.json";
 import Crypto from "../security/Crypto";
 import ErrorHandler from "./ErrorHandler";
+import DeveloperHeader from "./DeveloperHeader";
 import VersionHeader from "./VersionHeader";
 
 const axios = require('axios');
@@ -13,10 +14,11 @@ class HttpClient {
      * Creates the client with the given environment.
      *
      * @param {string} env - environment to point to, like 'prd'
+     * @param {string} developerKey - the developer key
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env, globalRpcErrorCallback) {
+    constructor(env, developerKey, globalRpcErrorCallback) {
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -26,8 +28,10 @@ class HttpClient {
         });
 
         const versionHeader = new VersionHeader();
+        const developerHeader = new DeveloperHeader(developerKey);
         this._instance.interceptors.request.use((request) => {
             versionHeader.addVersionHeader(request);
+            developerHeader.addDeveloperHeader(request);
             return request;
         });
 
