@@ -148,7 +148,7 @@ describe('Unsecured File crypto engine', () => {
         });
 
         it('should be able to login a member', async () => {
-            const alias = {type: 'USERNAME', value: Token.Util.generateNonce()};
+            const alias = Token.Util.randomAlias();
             const member =
                 await Token.createMember(alias, UnsecuredFileCryptoEngine);
             const memberId = member.memberId();
