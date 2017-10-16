@@ -5,10 +5,9 @@ import 'babel-regenerator-runtime';
 import HttpClient from "../../src/http/HttpClient";
 import AuthHttpClient from "../../src/http/AuthHttpClient";
 import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
+import Util from '../../src/Util';
 
 const devKey = require("../../src/config.json").devKey[TEST_ENV];
-const TokenIo = require('../../src');
-const Token = new TokenIo(TEST_ENV, devKey);
 
 describe('AuthHttpClient', () => {
     it('should add a second key', async () => {
@@ -59,12 +58,12 @@ describe('AuthHttpClient', () => {
             engine);
         await client.addAlias(
             res2.data.member.lastHash,
-            Token.Util.randomAlias());
+            Util.randomAlias());
         const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res3.data.member.aliasHashes.length, 1);
         await client.addAlias(
             res3.data.member.lastHash,
-            Token.Util.randomAlias());
+            Util.randomAlias());
         const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res4.data.member.aliasHashes.length, 2);
     });
@@ -84,10 +83,10 @@ describe('AuthHttpClient', () => {
             engine);
         await client.addAlias(
             res2.data.member.lastHash,
-            Token.Util.randomAlias());
+            Util.randomAlias());
         const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res3.data.member.aliasHashes.length, 1);
-        const secondAlias = Token.Util.randomAlias();
+        const secondAlias = Util.randomAlias();
         await client.addAlias(res3.data.member.lastHash, secondAlias);
         const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res4.data.member.aliasHashes.length, 2);
