@@ -5,12 +5,13 @@ import 'babel-regenerator-runtime';
 import HttpClient from "../../src/http/HttpClient";
 import AuthHttpClient from "../../src/http/AuthHttpClient";
 import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
-const TokenIo = require('../../src');
-const Token = new TokenIo(TEST_ENV);
+import Util from '../../src/Util';
+
+const devKey = require("../../src/config.json").devKey[TEST_ENV];
 
 describe('AuthHttpClient', () => {
     it('should add a second key', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
@@ -27,14 +28,14 @@ describe('AuthHttpClient', () => {
     });
 
     it('should remove a key', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
         const pk1 = engine.generateKey('PRIVILEGED');
         const pk2 = engine.generateKey('STANDARD');
         const pk3 = engine.generateKey('LOW');
-        const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine);
+        const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine, devKey);
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
             [pk1, pk2, pk3],
@@ -43,13 +44,13 @@ describe('AuthHttpClient', () => {
     });
 
     it('should add aliases', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         const engine = new MemoryCryptoEngine(res.data.memberId);
         const pk1 = engine.generateKey('PRIVILEGED');
         const pk2 = engine.generateKey('STANDARD');
         const pk3 = engine.generateKey('LOW');
-        const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine);
+        const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine, devKey);
         assert.isOk(res.data.memberId);
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
@@ -57,35 +58,35 @@ describe('AuthHttpClient', () => {
             engine);
         await client.addAlias(
             res2.data.member.lastHash,
-            Token.Util.randomAlias());
+            Util.randomAlias());
         const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res3.data.member.aliasHashes.length, 1);
         await client.addAlias(
             res3.data.member.lastHash,
-            Token.Util.randomAlias());
+            Util.randomAlias());
         const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res4.data.member.aliasHashes.length, 2);
     });
 
     it('should remove aliases', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV);
+        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
         const pk1 = engine.generateKey('PRIVILEGED');
         const pk2 = engine.generateKey('STANDARD');
         const pk3 = engine.generateKey('LOW');
-        const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine);
+        const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine, devKey);
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
             [pk1, pk2, pk3],
             engine);
         await client.addAlias(
             res2.data.member.lastHash,
-            Token.Util.randomAlias());
+            Util.randomAlias());
         const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res3.data.member.aliasHashes.length, 1);
-        const secondAlias = Token.Util.randomAlias();
+        const secondAlias = Util.randomAlias();
         await client.addAlias(res3.data.member.lastHash, secondAlias);
         const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
         assert.equal(res4.data.member.aliasHashes.length, 2);

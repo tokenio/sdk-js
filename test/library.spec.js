@@ -1,5 +1,7 @@
+import TestUtil from './TestUtil';
 import TokenIo from "../src";
-const Token = new TokenIo(TEST_ENV);
+const devKey = require("../src/config.json").devKey[TEST_ENV];
+const Token = new TokenIo(TEST_ENV, devKey);
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
@@ -32,8 +34,10 @@ describe('Token library', () => {
                 }
             }
         }]);
-        const transfers = await member1.getTransfers(token.id, null, 100);
 
-        assert.isAtLeast(transfers.data.length, 1);
+        await TestUtil.waitUntil(async () => {
+            const transfers = await member1.getTransfers(token.id, null, 100);
+            assert.isAtLeast(transfers.data.length, 1);
+        });
     });
 });

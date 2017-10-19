@@ -6,6 +6,7 @@ import AuthHeader from "./AuthHeader";
 import AuthContext from "./AuthContext";
 import config from "../config.json";
 import ErrorHandler from "./ErrorHandler";
+import DeveloperHeader from "./DeveloperHeader";
 import VersionHeader from "./VersionHeader";
 
 const base64js = require('base64-js');
@@ -24,10 +25,11 @@ class AuthHttpClient {
      * @param {string} env - desired env, such as 'prd'
      * @param {string} memberId - member making the requests
      * @param {Object} cryptoEngine - engines to use for signing
+     * @param {string} developerKey - the developer key
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * call error. For example: SDK version mismatch
      */
-    constructor(env, memberId, cryptoEngine, globalRpcErrorCallback) {
+    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback) {
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -40,6 +42,8 @@ class AuthHttpClient {
 
         this._context = new AuthContext();
         this._authHeader = new AuthHeader(config.urls[env], this);
+
+        this._developerKey = developerKey;
 
         this._resetRequestInterceptor();
 
@@ -84,9 +88,11 @@ class AuthHttpClient {
         this._instance.interceptors.request.eject(this._interceptor);
 
         const versionHeader = new VersionHeader();
+        const developerHeader = new DeveloperHeader(this._developerKey);
         this._interceptor = this._instance.interceptors.request.use(async (request) => {
             await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
             versionHeader.addVersionHeader(request);
+            developerHeader.addDeveloperHeader(request);
             return request;
         });
     }

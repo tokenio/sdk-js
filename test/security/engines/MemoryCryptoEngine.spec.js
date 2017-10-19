@@ -1,18 +1,17 @@
 const chai = require('chai');
 const assert = chai.assert;
 import MemoryCryptoEngine from "../../../src/security/engines/MemoryCryptoEngine";
-const TokenIo = require('../../../src/index');
-const Token = new TokenIo(TEST_ENV);
+import Util from '../../../src/Util';
 
 describe('Memory crypto engines', () => {
     it('should create the memory crypto engines', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         assert.isOk(engine);
     });
 
     it('should generate keys', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = engine.generateKey('LOW');
         const pk2 = engine.generateKey('STANDARD');
@@ -25,7 +24,7 @@ describe('Memory crypto engines', () => {
     });
 
     it('should not create a bad signer', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         engine.generateKey('LOW');
         try {
@@ -37,7 +36,7 @@ describe('Memory crypto engines', () => {
     });
 
     it('should have a signer with a key id', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = engine.generateKey('LOW');
         const signerLow = engine.createSigner('LOW');
@@ -45,7 +44,7 @@ describe('Memory crypto engines', () => {
     });
 
     it('should sign and verify', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = engine.generateKey('LOW');
         const signer = engine.createSigner('LOW');
@@ -55,7 +54,7 @@ describe('Memory crypto engines', () => {
     });
 
     it('should sign and verify json', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = engine.generateKey('LOW');
         const signer = engine.createSigner('LOW');
@@ -65,7 +64,7 @@ describe('Memory crypto engines', () => {
     });
 
     it('should fail to verify an invalid signature', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = engine.generateKey('LOW');
         const signer = engine.createSigner('LOW');
@@ -80,7 +79,7 @@ describe('Memory crypto engines', () => {
     });
 
     it('should be able to create multiple engines', () => {
-        const memberId = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         engine.generateKey('LOW');
         const engine2 = new MemoryCryptoEngine(memberId);
@@ -92,9 +91,9 @@ describe('Memory crypto engines', () => {
     });
 
     it('should be able to log in with the active memberId', () => {
-        const memberId = Token.Util.generateNonce();
-        const memberId2 = Token.Util.generateNonce();
-        const memberId3 = Token.Util.generateNonce();
+        const memberId = Util.generateNonce();
+        const memberId2 = Util.generateNonce();
+        const memberId3 = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const engine2 = new MemoryCryptoEngine(memberId2);
         const engine3 = new MemoryCryptoEngine(memberId3);

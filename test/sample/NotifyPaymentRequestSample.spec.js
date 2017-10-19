@@ -10,7 +10,8 @@ import NotifyPaymentRequestSample from '../../src/sample/NotifyPaymentRequestSam
 describe('NotifyPaymentRequestSample test', () => {
     it('Should run the sample', async () => {
         const TokenLib = require('../../src');
-        const Token = new TokenLib(TEST_ENV);
+        const devKey = require("../../src/config.json").devKey[TEST_ENV];
+        const Token = new TokenLib(TEST_ENV, devKey);
 
         const payee = await CreateMemberSample();
         const payer = await CreateMemberSample();

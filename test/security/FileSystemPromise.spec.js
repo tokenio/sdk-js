@@ -2,8 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import FileSystem from '../../src/security/PromiseFileSystem';
-const TokenIo = require('../../src');
-const Token = new TokenIo(TEST_ENV);
+import Util from '../../src/Util';
 
 let fs;
 let path;
@@ -30,7 +29,7 @@ describe('Filesystem', () => {
         });
 
         it('should write and read a file', async () => {
-            const randomFilename = Token.Util.generateNonce();
+            const randomFilename = Util.generateNonce();
 
             await FileSystem.writeFile(randomFilename, '12345');
             const result = await FileSystem.readFile(randomFilename);
@@ -42,7 +41,7 @@ describe('Filesystem', () => {
         });
 
         it('should fail to read a nonexistant file', async () => {
-            const randomFilename = Token.Util.generateNonce();
+            const randomFilename = Util.generateNonce();
             try {
                 await FileSystem.readFile(randomFilename);
                 return Promise.reject('Should throw an error');
@@ -52,7 +51,7 @@ describe('Filesystem', () => {
         });
 
         it('should create an empty file', async () => {
-            const randomFilename = Token.Util.generateNonce();
+            const randomFilename = Util.generateNonce();
 
             await FileSystem.writeFile(randomFilename, '');
             const result = await FileSystem.readFile(randomFilename);
@@ -64,7 +63,7 @@ describe('Filesystem', () => {
         });
 
         it('should override a file', async () => {
-            const randomFilename = Token.Util.generateNonce();
+            const randomFilename = Util.generateNonce();
 
             await FileSystem.writeFile(randomFilename, '12345');
             await FileSystem.writeFile(randomFilename, JSON.stringify({a: 1, b: 2}));

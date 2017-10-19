@@ -1,8 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 import BrowserCryptoEngine from "../../../src/security/engines/BrowserCryptoEngine";
-const TokenIo = require('../../../src/index');
-const Token = new TokenIo(TEST_ENV);
+import Util from '../../../src/Util';
 
 describe('Browser crypto engines', () => {
     if (BROWSER) {
@@ -11,14 +10,14 @@ describe('Browser crypto engines', () => {
         });
 
         it('should create the localStorage crypto engines', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             assert.isOk(engine);
             assert.include(window.localStorage.members, memberId);
         });
 
         it('should generate keys', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const pk1 = engine.generateKey('LOW');
             const pk2 = engine.generateKey('STANDARD');
@@ -31,7 +30,7 @@ describe('Browser crypto engines', () => {
         });
 
         it('should not create a bad signer', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             try {
                 engine.createSigner('STANDARD');
@@ -42,7 +41,7 @@ describe('Browser crypto engines', () => {
         });
 
         it('should have a signer with a key id', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const pk1 = engine.generateKey('LOW');
             const signerLow = engine.createSigner('LOW');
@@ -50,7 +49,7 @@ describe('Browser crypto engines', () => {
         });
 
         it('should sign and verify', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const pk1 = engine.generateKey('LOW');
             const signer = engine.createSigner('LOW');
@@ -60,7 +59,7 @@ describe('Browser crypto engines', () => {
         });
 
         it('should sign and verify json', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const pk1 = engine.generateKey('LOW');
             const signer = engine.createSigner('LOW');
@@ -70,7 +69,7 @@ describe('Browser crypto engines', () => {
         });
 
         it('should fail to verify an invalid signature', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const pk1 = engine.generateKey('LOW');
             const signer = engine.createSigner('LOW');
@@ -85,7 +84,7 @@ describe('Browser crypto engines', () => {
         });
 
         it('should be able to create multiple engines', () => {
-            const memberId = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const engine2 = new BrowserCryptoEngine(memberId);
             const pk2 = engine2.generateKey('STANDARD');
@@ -96,9 +95,9 @@ describe('Browser crypto engines', () => {
         });
 
         it('should be able to log in with the active memberId', () => {
-            const memberId = Token.Util.generateNonce();
-            const memberId2 = Token.Util.generateNonce();
-            const memberId3 = Token.Util.generateNonce();
+            const memberId = Util.generateNonce();
+            const memberId2 = Util.generateNonce();
+            const memberId3 = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const engine2 = new BrowserCryptoEngine(memberId2);
             const engine3 = new BrowserCryptoEngine(memberId3);
