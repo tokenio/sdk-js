@@ -23,7 +23,7 @@ class Util {
     static randomAlias() {
         return {
             type: 'EMAIL',
-            value: 'test-' + Util.generateNonce() + '@example.com'
+            value: 'test-' + Util.generateNonce() + '+noverify@example.com'
         };
     }
 
