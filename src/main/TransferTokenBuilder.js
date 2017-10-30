@@ -34,6 +34,7 @@ export default class TransferTokenBuilder {
                 instructions: {
                     source: null,
                     destinations: [],
+                    metadata: {},
                 },
                 redeemer: {},
                 attachments: [],
@@ -233,7 +234,7 @@ export default class TransferTokenBuilder {
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setPurposeOfPayment(purposeOfPayment) {
-        this._payload.transfer.instructions.transferPurpose = purposeOfPayment;
+        this._payload.transfer.instructions.metadata.transferPurpose = purposeOfPayment;
         return this;
     }
 
