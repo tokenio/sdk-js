@@ -205,8 +205,14 @@ export default class Member {
      */
     useDefaultRecoveryRule() {
         return Util.callAsync(this.useDefaultRecoveryRule, async () => {
+            const agentResponse = await this._client.getDefaultRecoveryAgent();
             const prevHash = await this._getPreviousHash();
-            const res = await this._client.useDefaultRecoveryRule(prevHash);
+            const rule = {
+                recoveryRule: {
+                    primaryAgent: agentResponse.data.memberId
+                }
+            };
+            const res = await this._client.addRecoveryRule(prevHash, rule);
             return res.data.member.recoveryRule;
         });
     }
