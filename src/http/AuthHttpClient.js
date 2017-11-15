@@ -1008,6 +1008,39 @@ class AuthHttpClient {
     }
 
     /**
+     * Get default recovery agent.
+     * @return {Object} GetDefaultAgentResponse proto buffer
+     */
+    async getDefaultRecoveryAgent() {
+        const request = {
+            method: 'get',
+            url: '/recovery/defaults/agent'
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Set member's recovery rule to "normal consumer" rule.
+     * (As of Nov 2017, this rule was: To recover, verify an alias.)
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @return {Object} UpdateMemberResponse proto buffer
+     */
+    async useDefaultRecoveryRule(prevHash) {
+        const defaultAgentResponse = await this.getDefaultRecoveryAgent();
+        const update = {
+            memberId: this._memberId,
+            operations: [{
+                recoveryRules: {
+                    recoveryRule: {
+                        primaryAgent: defaultAgentResponse.data.memberId
+                    }
+                }
+            }]
+        };
+        return this._memberUpdate(update, prevHash);
+    }
+
+    /**
      * Adds aliases to the member.
      *
      * @param {string} prevHash - hash of the previous directory entry.

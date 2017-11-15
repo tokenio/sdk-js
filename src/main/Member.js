@@ -199,6 +199,19 @@ export default class Member {
     }
 
     /**
+     * Set the "normal consumer" rule as member's recovery rule.
+     * (As of Nov 2017, this rule was: To recover, verify an alias.)
+     * @return {Promise} promise containing RecoveryRule proto buffer.
+     */
+    useDefaultRecoveryRule() {
+        return Util.callAsync(this.useDefaultRecoveryRule, async () => {
+            const prevHash = await this._getPreviousHash();
+            const res = await this._client.useDefaultRecoveryRule(prevHash);
+            return res.data.member.recoveryRule;
+        });
+    }
+
+    /**
      * Links bank accounts to the member
      *
      * @param {string} bankAuthorization - bankAuthorization obtained from bank
