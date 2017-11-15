@@ -29,8 +29,8 @@ class PollNotificationsSample {
             if (pagedList.data.length > 0) {
                 const notification = pagedList.data[0];
                 switch (notification.content.type) {
-                case "PAYMENT_REQUEST":
-                    // console.log("Payment Request: ", JSON.stringify(notification));
+                case "PAYEE_TRANSFER_PROCESSED":
+                    // console.log("Transfer Processed: ", JSON.stringify(notification));
                     break;
                 default:
                     // console.log("Got Notification: ", JSON.stringify(notification));

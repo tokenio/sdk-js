@@ -1,28 +1,29 @@
 /* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import PollNotificationsSample from '../../src/sample/PollNotificationsSample';
-import NotifyPaymentRequestSample from '../../src/sample/NotifyPaymentRequestSample';
 
 describe('NotificationsSample test', () => {
     it('PollNotificationsSample should run', async () => {
-        const TokenLib = require('../../src');
-        const devKey = require("../../src/config.json").devKey[TEST_ENV];
-        const Token = new TokenLib(TEST_ENV, devKey);
         const payer = await CreateMemberSample();
-        await PollNotificationsSample.subscribeMember(payer);
         const payee = await CreateMemberSample();
-        await LinkMemberAndBankSample(payer);
+        await PollNotificationsSample.subscribeMember(payee);
+        const auth = await payer.createTestBankAccount(200, 'EUR');
+        const accounts = await payer.linkAccounts(auth);
         await LinkMemberAndBankSample(payee);
 
         const payerAlias = await payer.firstAlias();
-        const res = await NotifyPaymentRequestSample(Token, payee, payerAlias);
-        assert.isOk(res);
 
-        await PollNotificationsSample.get(payer);
+        const token = await payer.createTransferToken(100.00, 'EUR')
+              .setAccountId(accounts[0].id)
+              .setRedeemerAlias(payerAlias)
+              .setToAlias(await payee.firstAlias())
+              .addDestination({account: {token: {memberId: payee.memberId()}}})
+              .execute();
+        await payer.endorseToken(token);
+        await payer.redeemToken(token, 100.00, "EUR", "transfer notify sample");
+
+        await PollNotificationsSample.get(payee);
     });
 });
