@@ -258,7 +258,8 @@ export default class TransferTokenBuilder {
         return Util.callAsync(this.execute, async () => {
             if (!this._payload.transfer.instructions.source || (
                 !this._payload.transfer.instructions.source.account.token &&
-                !this._payload.transfer.instructions.source.account.tokenAuthorization)) {
+                !this._payload.transfer.instructions.source.account.tokenAuthorization &&
+                !this._payload.transfer.instructions.source.account.bank)) {
                 throw new Error('No source on token');
             }
             if (!this._payload.transfer.redeemer.alias &&
@@ -275,6 +276,11 @@ export default class TransferTokenBuilder {
                 this.addAttachment(attachment);
             }
             const res = await this._client.createTransferToken(this._payload);
+            if (res.data.status === "FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED") {
+                let error = new Error("FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED");
+                error.authorizationDetails = res.data.authorizationDetails;
+                throw error;
+            }
             if (res.data.status !== "SUCCESS") {
                 throw new Error(res.data.status);
             }
