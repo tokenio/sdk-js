@@ -7,6 +7,7 @@ import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import GetAccessTokensSample from '../../src/sample/GetAccessTokensSample';
+import TestUtil from '../TestUtil';
 
 describe('GetAccessTokensSample test', () => {
     it('Should run the sample', async () => {
@@ -16,7 +17,9 @@ describe('GetAccessTokensSample test', () => {
 
         const member2Alias = await member2.firstAlias();
         const createdToken = await CreateAndEndorseAccessTokenSample(member, member2Alias);
-        const foundToken = await GetAccessTokensSample(member, member2Alias);
-        assert.equal(createdToken.id, foundToken.id);
+        TestUtil.waitUntil(async () => {
+            const foundToken = await GetAccessTokensSample(member, member2Alias);
+            assert.equal(createdToken.id, foundToken.id);
+        });
     });
 });
