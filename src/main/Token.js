@@ -104,7 +104,8 @@ class Token {
     /**
      * Creates a member with a alias and a keypair, using the provided engine
      *
-     * @param  {Object} alias - alias to set for member
+     * @param  {Object} alias - alias to set for member,
+     *                  empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
@@ -125,7 +126,9 @@ class Token {
                     engine,
                     this._developerKey,
                     this._globalRpcErrorCallback);
-            await member.addAlias(alias);
+            if (Object.keys(alias).length !== 0) {
+                await member.addAlias(alias);
+            }
             return member;
         });
     }
