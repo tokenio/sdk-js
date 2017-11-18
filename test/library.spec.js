@@ -41,3 +41,11 @@ describe('Token library', () => {
         });
     });
 });
+
+describe('Token library', () => {
+    it('should create a member with no aliases', async () => {
+        const guest = await Token.createMember({}, Token.MemoryCryptoEngine);
+        const aliases = await guest.aliases();
+        assert.isUndefined(aliases);
+    });
+});
