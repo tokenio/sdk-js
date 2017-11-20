@@ -105,7 +105,7 @@ class Token {
      * Creates a member with a alias and a keypair, using the provided engine
      *
      * @param  {Object} alias - alias to set for member,
-     *                  empty object for a temporary member without an alias
+     *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
