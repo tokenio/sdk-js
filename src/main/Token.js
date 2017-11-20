@@ -126,7 +126,7 @@ class Token {
                     engine,
                     this._developerKey,
                     this._globalRpcErrorCallback);
-            if (Object.keys(alias).length !== 0) {
+            if (alias && Object.keys(alias).length !== 0) {
                 await member.addAlias(alias);
             }
             return member;
