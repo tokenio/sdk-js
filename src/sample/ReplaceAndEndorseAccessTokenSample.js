@@ -8,6 +8,8 @@
 export default async (grantor, oldToken) => {
     const result = await grantor.replaceAndEndorseAccessToken(
         oldToken,
-        [{allAddresses: {}}]);
+        [{allAccounts: {}},
+         {allBalances: {}},
+         {allAddresses: {}}]);
     return result.token;
 };
