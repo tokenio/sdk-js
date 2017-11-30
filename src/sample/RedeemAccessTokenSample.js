@@ -4,7 +4,7 @@
  *
  * @param {Member} grantee - grantee member
  * @param {string} tokenId - id of the token to redeem
- * @return {Array} accounts - grantor accounts
+ * @return {Object} balance0 - balance of one account
  */
 export default async (grantee, tokenId) => {
     // Use the access token, now making API calls
@@ -12,7 +12,10 @@ export default async (grantee, tokenId) => {
     grantee.useAccessToken(tokenId);
     const accounts = await grantee.getAccounts();
 
-    // Clear the access token
+    // Get informtion we want:
+    const balance0 = await grantee.getBalance(accounts[0].id);
+
+    // When done using access, clear the access token:
     grantee.clearAccessToken();
-    return accounts;
+    return balance0.current;
 };
