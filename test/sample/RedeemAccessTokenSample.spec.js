@@ -16,8 +16,8 @@ describe('RedeemAccessTokenSample test', () => {
 
         const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseAccessTokenSample(member, member2Alias);
-        const accounts = await RedeemAccessTokenSample(member2, res.id);
+        const balance = await RedeemAccessTokenSample(member2, res.id);
 
-        assert.isAtLeast(accounts.length, 1);
+        assert.isAtLeast(parseFloat(balance.value), 1);
     });
 });
