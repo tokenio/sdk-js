@@ -644,7 +644,10 @@ export default class Member {
     }
 
     /**
-     * Endorses a token
+     * Endorses a token. If this SDK client doesn't have a sufficiently
+     * privileged key to endorse the token, this will return
+     * MORE_SIGNATURES_NEEDED and the system pushes a notification to
+     * the member prompting them to use a higher-privilege key.
      *
      * @param {Token} token - Transfer token to endorse. Can also be a {string} tokenId
      * @return {Promise} token - Promise of endorsed transfer token
