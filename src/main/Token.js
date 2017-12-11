@@ -185,15 +185,15 @@ class Token {
     }
 
     /**
-     * Logs a member in from keys stored in the CryptoEngine. If memberId is not provided,
-     * the last member to log on will be used
+     * Returns "logged-in" member that uses keys already in the CryptoEngine.
+     * If memberId is not provided, the last member to "log in" will be used.
      *
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param {string} memberId - optional id of the member we want to log in
      * @return {Promise} member - instantiated member
      */
-    login(CryptoEngine, memberId) {
-        return Util.callSync(this.login, () => {
+    getMember(CryptoEngine, memberId) {
+        return Util.callSync(this.getMember, () => {
             if (!memberId && typeof CryptoEngine.getActiveMemberId === 'function') {
                 memberId = CryptoEngine.getActiveMemberId();
             }

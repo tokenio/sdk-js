@@ -34,16 +34,16 @@ class PollNotificationsSample {
         return lowKey;
     }
 
-    /* Log in on provisioned device (assuming
+    /* Get member on provisioned device (assuming
      * "remote" member approved key).
      *
      * @param {Object} Token - Token SDK client
      * @param {Object} alias - alias of member to provision
      * @return {Object} Member, logged in on this device
      */
-    static async login(Token, alias) {
+    static async getMember(Token, alias) {
         const memberStruct = await Token.resolveAlias(alias);
-        const localLoggedIn = Token.login(
+        const localLoggedIn = Token.getMember(
             Token.UnsecuredFileCryptoEngine,
             memberStruct.id);
         return localLoggedIn;

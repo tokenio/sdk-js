@@ -155,7 +155,7 @@ describe('Unsecured File crypto engine', () => {
             const bankAuth = await member.createTestBankAccount('1001', 'EUR');
             const accounts = await member.linkAccounts(bankAuth);
 
-            const memberLoggedIn = await Token.login(UnsecuredFileCryptoEngine, memberId);
+            const memberLoggedIn = await Token.getMember(UnsecuredFileCryptoEngine, memberId);
             const bankAccounts = await memberLoggedIn.getAccounts();
 
             assert.isAtLeast(bankAccounts.length, 1);
