@@ -235,12 +235,14 @@ class Token {
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
      * @param {string} level - key level
+     * @param {string} expiresMs - when the UI will time out
      * @return {Promise} NotifyStatus - status
      */
-    notifyAddKey(alias, keyName, key, level) {
+    notifyAddKey(alias, keyName, key, level, expiresMs) {
         const body = {
             addKey: {
                 name: keyName,
+                expiresMs,
                 key: {
                     id: key.id,
                     level: level,

@@ -89,6 +89,17 @@ export default class TransferTokenBuilder {
     }
 
     /**
+     * Sets the endorse token timeout.
+     *
+     * @param {number} endorseUntilMs - time at which no more endorsements can be made
+     * @return {TransferTokenBuilder} builder - returns back the builder object
+     */
+    setEndorseUntilMs(endorseUntilMs) {
+        this._payload.endorseUntilMs = endorseUntilMs;
+        return this;
+    }
+
+    /**
      * Sets the effective date of the token.
      *
      * @param {number} effectiveAtMs - effective date in milliseconds

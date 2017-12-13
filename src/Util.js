@@ -149,7 +149,6 @@ class Util {
 
             let iframe = document.getElementById('tokenApiIframe');
             if (iframe === null) {
-                console.log('Creating a new iframe');
                 iframe = document.createElement('iframe');
                 iframe.id = 'tokenApiIframe';
                 iframe.src = url + '/iframe';
