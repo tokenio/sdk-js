@@ -19,7 +19,7 @@ describe('ProvisionDeviceSample test', () => {
             const key = await ProvisionDeviceSample.provision(Token, alias);
             await member.approveKey(key);
 
-            const localLoggedIn = await ProvisionDeviceSample.login(Token, alias);
+            const localLoggedIn = await ProvisionDeviceSample.getMember(Token, alias);
             assert.equal(member.memberId(), localLoggedIn.memberId());
         });
     }
