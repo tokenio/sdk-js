@@ -1,3 +1,7 @@
+## Release 1.4.105
+
+The "login" method was renamed to "getMember".
+
 ## Release 1.4.98
 
 Added developer key verification to api calls. The following classes now require a developerKey when instantiated:
