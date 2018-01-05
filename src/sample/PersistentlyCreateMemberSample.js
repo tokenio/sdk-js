@@ -24,7 +24,11 @@ export default async (developerKey) => {
     };
 
     // Create a member with keys stored in memory:
-    return await Token.createMember(
+    const member = await Token.createMember(
         alias,
         Token.UnsecuredFileCryptoEngine);
+
+    // let user recover member by verifying email if they lose keys
+    await member.useDefaultRecoveryRule();
+    return member;
 };
