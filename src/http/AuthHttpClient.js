@@ -206,6 +206,19 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    async triggerStepUpNotification(stepUp) {
+        const type = stepUp.tokenId ? 'tokenStepUp' : 'requestStepUp';
+        const req = {
+            [type]: stepUp
+        };
+        const request = {
+            method: 'post',
+            url: `/notify/stepup`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
     //
     // ADDRESSES
     //

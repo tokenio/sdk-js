@@ -298,13 +298,13 @@ class Token {
      * @return {Promise} NotifyStatus - status
      */
     notifyPaymentRequest(tokenPayload) {
-      if (!tokenPayload.refId) {
-        tokenPayload.refId = Util.generateNonce();
-      }
-      return Util.callAsync(this.notifyPaymentRequest, async () => {
-        const res = await this._unauthenticatedClient.notifyPaymentRequest(tokenPayload);
-        return res.data.status;
-      });
+        if (!tokenPayload.refId) {
+            tokenPayload.refId = Util.generateNonce();
+        }
+        return Util.callAsync(this.notifyPaymentRequest, async () => {
+            const res = await this._unauthenticatedClient.notifyPaymentRequest(tokenPayload);
+            return res.data.status;
+        });
     }
 }
 

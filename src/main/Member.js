@@ -422,6 +422,12 @@ export default class Member {
         });
     }
 
+    triggerStepUpNotification(stepUp) {
+        return Util.callAsync(this.triggerStepUpNotification, async () => {
+            return await this._client.triggerStepUpNotification(stepUp);
+        });
+    }
+
     /**
      * Creates an address for this member, and saves it
      *
