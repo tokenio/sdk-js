@@ -423,6 +423,19 @@ export default class Member {
     }
 
     /**
+     * Triggers a step up notification on the user's app
+     *
+     * @param {object} stepUp - can be tokenStepUp or requestStepUp
+     * @return {Promise} - notification status
+     */
+    triggerStepUpNotification(stepUp) {
+        return Util.callAsync(this.triggerStepUpNotification, async () => {
+            const res = await this._client.triggerStepUpNotification(stepUp);
+            return res.data.status;
+        });
+    }
+
+    /**
      * Creates an address for this member, and saves it
      *
      * @param {string} name - name of the address (e.g 'Home')
