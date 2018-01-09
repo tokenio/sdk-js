@@ -424,7 +424,8 @@ export default class Member {
 
     triggerStepUpNotification(stepUp) {
         return Util.callAsync(this.triggerStepUpNotification, async () => {
-            return await this._client.triggerStepUpNotification(stepUp);
+            const res = await this._client.triggerStepUpNotification(stepUp);
+            return res.data.status;
         });
     }
 
