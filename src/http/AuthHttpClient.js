@@ -485,8 +485,9 @@ class AuthHttpClient {
      */
     async getBalance(accountId) {
         const request = {
-            method: 'get',
-            url: `/accounts/${accountId}/balance`
+            method: 'post',
+            url: `/account/balance`,
+            data: {accountId},
         };
         return this._instance(request);
     }
@@ -500,8 +501,9 @@ class AuthHttpClient {
      */
     async getTransaction(accountId, transactionId) {
         const request = {
-            method: 'get',
-            url: `/accounts/${accountId}/transactions/${transactionId}`
+            method: 'post',
+            url: `/account/transaction`,
+            data: {accountId, transactionId},
         };
         return this._instance(request);
     }
@@ -516,8 +518,12 @@ class AuthHttpClient {
      */
     async getTransactions(accountId, offset, limit) {
         const request = {
-            method: 'get',
-            url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`
+            method: 'post',
+            url: `/account/transactions`,
+            data: {
+                accountId,
+                page: {offset, limit}
+            },
         };
         return this._instance(request);
     }
