@@ -522,7 +522,7 @@ class AuthHttpClient {
             url: `/account/transactions`,
             data: {
                 accountId,
-                page: {offset, limit}
+                page: {offset: offset || '', limit}
             },
         };
         return this._instance(request);
