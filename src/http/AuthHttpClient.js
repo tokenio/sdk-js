@@ -503,7 +503,7 @@ class AuthHttpClient {
         const request = {
             method: 'post',
             url: `/account/transaction`,
-            data: {accountId},
+            data: {accountId, transactionId},
         };
         return this._instance(request);
     }
@@ -520,7 +520,10 @@ class AuthHttpClient {
         const request = {
             method: 'post',
             url: `/account/transactions`,
-            data: {accountId},
+            data: {
+                accountId,
+                page: {offset, limit}
+            },
         };
         return this._instance(request);
     }
