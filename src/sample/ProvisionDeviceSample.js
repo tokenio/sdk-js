@@ -3,7 +3,7 @@
  * That is, how a member logs in with one device when their
  * account "lives" on another device.
  */
-class PollNotificationsSample {
+class ProvisionDeviceSample {
 
     /**
      * Provision device: generate a key and ask member
@@ -49,4 +49,4 @@ class PollNotificationsSample {
         return localLoggedIn;
     }
 }
-export default PollNotificationsSample;
+export default ProvisionDeviceSample;
