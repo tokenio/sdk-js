@@ -25,7 +25,7 @@ class UnsecuredFileCryptoEngine {
     }
 
     /**
-     * Constructs the engine, with no keys
+     * Constructs the engine
      *
      * @param {string} memberId - memberId of the member we want to create the engine for
      */
@@ -42,7 +42,7 @@ class UnsecuredFileCryptoEngine {
 
         this._member = {
             id: memberId,
-            keys: [],
+            keys: [], // filled in by _loadMember() as needed
         };
     }
 
@@ -94,15 +94,7 @@ class UnsecuredFileCryptoEngine {
         await this._loadMember();
         for (let keys of this._member.keys) {
             if (keys.level === securityLevel) {
-                return {
-                    sign: (message) => {
-                        return Crypto.sign(message, keys);
-                    },
-                    signJson: (json) => {
-                        return Crypto.signJson(json, keys);
-                    },
-                    getKeyId: () => keys.id,
-                };
+                return Crypto.createSignerFromKeypair(keys);
             }
         }
         throw new Error(`No key with level ${securityLevel} found`);
@@ -119,14 +111,7 @@ class UnsecuredFileCryptoEngine {
         await this._loadMember();
         for (let keys of this._member.keys) {
             if (keys.id === keyId) {
-                return {
-                    verify: (message, signature) => {
-                        return Crypto.verify(message, signature, keys.publicKey);
-                    },
-                    verifyJson: (json, signature) => {
-                        return Crypto.verifyJson(json, signature, keys.publicKey);
-                    }
-                };
+                return Crypto.createVerifierFromKeypair(keys);
             }
         }
         throw new Error(`No key with id ${keyId} found`);
