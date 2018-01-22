@@ -76,6 +76,25 @@ class Crypto {
     }
 
     /**
+     * Helper function for crypto engine createSigner:
+     * returns a signer that uses a keypair.
+     *
+     * @param {Key} keypair, such as returned by Token.Crypto.generatekeys
+     * @return {Object} signer, as expected from a crypto engine createSigner
+     */
+    static createSignerFromKeypair(keypair) {
+        return {
+            sign: (message) => {
+                return Crypto.sign(message, keypair);
+            },
+            signJson: (json) => {
+                return Crypto.signJson(json, keypair);
+            },
+            getKeyId: () => keypair.id,
+        };
+    }
+
+    /**
      * Verifies a signature on json. Throws if verification fails.
      *
      * @param {Object} json - json message to verify
@@ -102,6 +121,25 @@ class Crypto {
             throw new Error(
                 `Invalid signature ${signature} on message ${message} with pk ${publicKey}`);
         }
+    }
+
+    /**
+     * Helper function for crypto engine createVerifier:
+     * returns a signer that uses a keypair.
+     *
+     * @param {Key} keypair, such as returned by Token.Crypto.generatekeys. (It's OK
+     *                       if this "keypair" has no secretKey.)
+     * @return {Object} verifier, as expected from a crypto engine createVerifier
+     */
+    static createVerifierFromKeypair(keypair) {
+        return {
+            verify: (message, signature) => {
+                return Crypto.verify(message, signature, keypair.publicKey);
+            },
+            verifyJson: (json, signature) => {
+                return Crypto.verifyJson(json, signature, keypair.publicKey);
+            }
+        };
     }
 
     /**

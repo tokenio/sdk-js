@@ -118,15 +118,7 @@ class BrowserCryptoEngine {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {
             if (keys.level === securityLevel) {
-                return {
-                    sign: (message) => {
-                        return Crypto.sign(message, keys);
-                    },
-                    signJson: (json) => {
-                        return Crypto.signJson(json, keys);
-                    },
-                    getKeyId: () => keys.id,
-                };
+                return Crypto.createSignerFromKeyPair(keys);
             }
         }
         throw new Error(`No key with level ${securityLevel} found`);
@@ -143,14 +135,7 @@ class BrowserCryptoEngine {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {
             if (keys.id === keyId) {
-                return {
-                    verify: (message, signature) => {
-                        return Crypto.verify(message, signature, keys.publicKey);
-                    },
-                    verifyJson: (json, signature) => {
-                        return Crypto.verifyJson(json, signature, keys.publicKey);
-                    }
-                };
+                return Crypto.createVerifierFromKeypair(keys);
             }
         }
         throw new Error(`No key with id ${keyId} found`);
