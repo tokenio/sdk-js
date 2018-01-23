@@ -440,7 +440,7 @@ export default class Member {
      *
      * @param {string} name - name of the address (e.g 'Home')
      * @param {object} address - address
-     * @return {Promise} empty - empty promise
+     * @return {Promise} promise of AddressRecord structure
      */
     addAddress(name, address) {
         return Util.callAsync(this.addAddress, async () => {
@@ -453,7 +453,7 @@ export default class Member {
      * Gets the member's address
      *
      * @param {string} addressId - the address id
-     * @return {Promise} address - the address
+     * @return {Promise} address - AddressRecord structure
      */
     getAddress(addressId) {
         return Util.callAsync(this.getAddress, async () => {
@@ -465,7 +465,7 @@ export default class Member {
     /**
      * Gets the member's addresses
      *
-     * @return {Promise} addresses - Addresses
+     * @return {Promise} addresses - list of AddressRecord structures
      */
     getAddresses() {
         return Util.callAsync(this.getAddresses, async () => {
