@@ -33,4 +33,12 @@ describe('MemberFunctions test', () => {
         const addresses = await MemberFunctionsSample.addresses(member);
         assert.equal(addresses.length, 1);
     });
+
+    it('Should run the profiles sample', async () => {
+        const member = await CreateMemberSample();
+        const profile = await MemberFunctionsSample.profiles(member);
+        assert.isOk(profile);
+        assert.isOk(profile.displayNameFirst);
+        assert.isOk(profile.displayNameLast);
+    });
 });
