@@ -104,7 +104,6 @@ class MemberMethodsSample {
         await member.setProfilePicture("image/jpeg", jpeg);
 
         const profile = await member.getProfile(member.memberId());
-        console.log(profile);
         return profile;
     }
 }
