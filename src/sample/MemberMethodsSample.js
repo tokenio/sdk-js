@@ -1,3 +1,7 @@
+/**
+ * Sample code for some misc Member methods.
+ */
+
 const base64js = require('base64-js');
 
 /**
@@ -27,7 +31,7 @@ function loadPicture(ignoredFileName) {
     );
 }
 
-class MemberFunctionsSample {
+class MemberMethodsSample {
     static async aliases(Token, member) {
         const alias1 = (await member.aliases())[0]; // or member.firstAlias();
         const alias2 = {
@@ -50,13 +54,6 @@ class MemberFunctionsSample {
 
         const resolved = await Token.resolveAlias(alias4);
         return resolved;
-        // {
-        //   "id": "m:4AaVmfKfY9DQ9tuqWJcEwq9VkXpo:5zKtXEAq",
-        //   "alias": {
-        //     "type":"EMAIL",
-        //     "value":"alias4-v6rpfo+noverify@token.io"}
-        //   }
-        // }
     }
 
     static async keys(Token, member) {
@@ -73,6 +70,9 @@ class MemberFunctionsSample {
     }
 
     static async addresses(member) {
+        // This sample code uses a few of the fields available in
+        // an address; for full list (place, province, ...), see
+        // https://developer.token.io/sdk/pbdoc/io_token_proto_common_address.html
         const address1 = {
             houseNumber: '221B',
             street: 'Baker St',
@@ -105,13 +105,8 @@ class MemberFunctionsSample {
 
         const profile = await member.getProfile(member.memberId());
         console.log(profile);
-        // {
-        //   displayNameFirst: 'Tycho',
-        //   displayNameLast: 'Nestoris',
-        //   originalPictureId: 'b:2aT7GiHkqhDzpLw...rfBaag4jw:5zKtXEAq'
-        // }
         return profile;
     }
 }
 
-export default MemberFunctionsSample;
+export default MemberMethodsSample;
