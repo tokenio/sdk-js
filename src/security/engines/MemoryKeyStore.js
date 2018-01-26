@@ -47,7 +47,6 @@ class MemoryKeyStore {
         throw new Error(`No key with id ${keyId} found`);
     }
     async listKeys(memberId) {
-        console.log(globalStorage);
         if (!globalStorage[memberId]) {
             throw new Error(`member ${memberId} not found`);
         }

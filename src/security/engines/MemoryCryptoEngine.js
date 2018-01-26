@@ -30,7 +30,8 @@ class MemoryCryptoEngine extends KeyStoreCryptoEngine {
     }
 
     /**
-     * Get's the currently active memberId. This allows login without caching memberId somewhere
+     * Gets the currently active memberId.
+     * This allows login without caching memberId somewhere
      *
      * @return {string} memberId - active memberId
      */

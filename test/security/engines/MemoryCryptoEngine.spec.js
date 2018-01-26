@@ -41,7 +41,6 @@ describe('Memory crypto engines', () => {
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = await await engine.generateKey('LOW');
         const signerLow = await await engine.createSigner('LOW');
-        console.log(signerLow);
         assert.equal(signerLow.getKeyId(), pk1.id);
     });
 
@@ -49,8 +48,8 @@ describe('Memory crypto engines', () => {
         const memberId = Util.generateNonce();
         const engine = new MemoryCryptoEngine(memberId);
         const pk1 = await await engine.generateKey('LOW');
-        const signer = await await engine.createSigner('LOW');
-        const verifier = await await engine.createVerifier(pk1.id);
+        const signer = await engine.createSigner('LOW');
+        const verifier = await engine.createVerifier(pk1.id);
         const sig = signer.sign('abcdefg');
         verifier.verify('abcdefg', sig);
     });

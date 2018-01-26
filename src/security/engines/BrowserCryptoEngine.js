@@ -118,7 +118,7 @@ class BrowserCryptoEngine {
         const loadedMember = this._loadMember();
         for (let keys of loadedMember.keys) {
             if (keys.level === securityLevel) {
-                return Crypto.createSignerFromKeyPair(keys);
+                return Crypto.createSignerFromKeypair(keys);
             }
         }
         throw new Error(`No key with level ${securityLevel} found`);

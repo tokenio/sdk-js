@@ -4,11 +4,15 @@ chai.use(chaiAsPromised);
 
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
+import BrowserKeyStore from "../../../src/security/engines/BrowserKeyStore";
 import MemoryKeyStore from "../../../src/security/engines/MemoryKeyStore";
 import Crypto from "../../../src/security/Crypto";
 import Util from '../../../src/Util';
 
-const keyStores = [MemoryKeyStore];
+var keyStores = [MemoryKeyStore, BrowserKeyStore];
+if (!BROWSER) {
+    keyStores = [MemoryKeyStore]; // TODO += FS
+}
 
 describe('Key store', () => {
     keyStores.forEach((KeyStore) => {
