@@ -40,7 +40,7 @@ class BrowserCryptoEngine {
         }
 
         // Clears the storage if we are using an old schema
-        let savedSchemaVersion;
+        let savedSchemaVersion = 0;
         try {
             savedSchemaVersion = JSON.parse(window.localStorage.schemaVersion);
         } catch (syntaxError) {

@@ -1,4 +1,4 @@
-import CryptoEngine from './CryptoEngine';
+import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import MemoryKeyStore from './MemoryKeyStore';
 
 /**
@@ -22,9 +22,24 @@ import MemoryKeyStore from './MemoryKeyStore';
  * ]
  *
  */
-class MemoryCryptoEngine extends CryptoEngine {
+const globalKeyStore = new MemoryKeyStore();
+
+class MemoryCryptoEngine extends KeyStoreCryptoEngine {
     constructor(memberId) {
-        super(memberId, new MemoryKeyStore());
+        super(memberId, globalKeyStore);
+    }
+
+    /**
+     * Get's the currently active memberId. This allows login without caching memberId somewhere
+     *
+     * @return {string} memberId - active memberId
+     */
+    static getActiveMemberId() {
+        const memberId = MemoryKeyStore.getActiveMemberId();
+        if (!memberId) {
+            throw new Error('No active memberId on this browser');
+        }
+        return memberId;
     }
 }
 

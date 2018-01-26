@@ -1,6 +1,6 @@
 import Crypto from '../Crypto';
 
-class CryptoEngine {
+class KeyStoreCryptoEngine {
     constructor(memberId, keystore) {
         console.log("CE.constructor");
         if (!memberId) {
@@ -47,4 +47,4 @@ class CryptoEngine {
     }
 }
 
-export default CryptoEngine;
+export default KeyStoreCryptoEngine;
