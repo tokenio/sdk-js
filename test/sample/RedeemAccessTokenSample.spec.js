@@ -44,9 +44,5 @@ describe('RedeemAccessTokenSample test', () => {
 
         const balance2 = await RedeemAccessTokenSample.carefullyUse(grantee, token1.id);
         assert.isAtLeast(parseFloat(balance2.value), 1);
-
-        grantor.unlinkAccounts([account1.id, account2.id]);
-        const balance3 = await RedeemAccessTokenSample.carefullyUse(grantee, token1.id);
-        assert(!balance3.value);
     });
 });
