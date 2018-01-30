@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 import BrowserCryptoEngine from "../../../src/security/engines/BrowserCryptoEngine";
 import Util from '../../../src/Util';
 
@@ -13,7 +14,6 @@ describe('Browser crypto engines', () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             assert.isOk(engine);
-            assert.include(window.localStorage.members, memberId);
         });
 
         it('should generate keys', async () => {
@@ -32,6 +32,7 @@ describe('Browser crypto engines', () => {
         it('should not create a bad signer', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
+            await engine.generateKey('LOW');
             try {
                 await engine.createSigner('STANDARD');
                 return Promise.reject(new Error("should fail"));
@@ -101,8 +102,8 @@ describe('Browser crypto engines', () => {
             const engine = new BrowserCryptoEngine(memberId);
             const engine2 = new BrowserCryptoEngine(memberId2);
             const engine3 = new BrowserCryptoEngine(memberId3);
-            engine.generateKey('LOW');
-            engine2.generateKey('LOW');
+            await engine.generateKey('LOW');
+            await engine2.generateKey('LOW');
             const pk3 = await engine3.generateKey('LOW');
 
             const engineNew = new BrowserCryptoEngine(

@@ -1,5 +1,5 @@
-import Crypto from '../Crypto';
-import FileSystem from '../PromiseFileSystem';
+import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
+import UnsecuredFileKeyStore from './UnsecuredFileKeyStore';
 
 /**
  * UnsecuredFileCryptoEngine: Implements the CryptoEngine interface.
@@ -11,17 +11,29 @@ import FileSystem from '../PromiseFileSystem';
  *
  * file contents: {
  *    "keys":[{
- *        "id":"HxxJ-LKfhYVSDMgC",
+ *        "id":"HxxJ-LKfhYVSDMgC", // key ID
  *        "level":"LOW",
  *        "algorithm":"ED25519",
- *        "publicKey":"wHhFB13fbFVwXGkHPToWASQCQUdUndNOmqUW3hJegQQ",
- *        "secretKey":"YgnDobEA0HojV85keOYHmyGxIR9NTHuLZvM7YXvJBR1Sd006apRbeEl6BBA"
+ *        "publicKey":"wHhFB13fbFVwXGkHPToWASQCQ3hJegQQ", // Crypto.strKey( public key )
+ *        "secretKey":"YgnDobEA0HoZvM7YXvJBR1Sd006apRbeEl6BBA" // Crypto.strKey( secret key )
  *    }],
  * }
  */
-class UnsecuredFileCryptoEngine {
+const globalKeyStore = new UnsecuredFileKeyStore();
+
+var dirRootSet = null;
+
+class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
+    /**
+     * Set the dir in which we'll store key-files.
+     * When an sdk user calls Token = new TokenLib('sandbox', './keys'),
+     * that calls UnsecuredFileCryptoEngine.setDirRoot('./keys')
+     *
+     * @param {string} dirRoot - path
+     */
     static setDirRoot(dirRoot) {
-        FileSystem.dirRoot = dirRoot;
+        UnsecuredFileKeyStore.setDirRoot(dirRoot);
+        dirRootSet = dirRoot;
     }
 
     /**
@@ -36,115 +48,25 @@ class UnsecuredFileCryptoEngine {
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
-        if (!FileSystem.dirRoot) {
+        if (!dirRootSet) {
             throw new Error("No valid directory set");
         }
 
-        this._member = {
-            id: memberId,
-            keys: [], // filled in by _loadMember() as needed
-        };
+        super(memberId, globalKeyStore);
     }
 
     /**
-     * Generates and stores a new key. Adds it to the storage, replacing the corresponding
-     * old key if it exists (with the same security level).
+     * Get ID of "active" member. (This would make more sense in browser,
+     * where we'd use it to keep track of browser-linked member.)
      *
-     * @param {string} securityLevel - security level of the key we want to create
-     * @return {Key} key - generated key
+     * @return {string} member ID of active member (or throw if none such);
      */
-    async generateKey(securityLevel) {
-        try {
-            await this._loadMember();
-        } catch (error) {
-            if (!error.code === 'ENOENT') {
-                throw error;
-            }
-            // Creates the empty file
-            await FileSystem.writeFile(this._member.id.split(':').join('_'), '');
+    static getActiveMemberId() {
+        const memberId = UnsecuredFileKeyStore.getActiveMemberId();
+        if (!memberId) {
+            throw new Error('No active memberId on this browser');
         }
-
-        const keypair = Crypto.generateKeys(securityLevel);
-
-        let found = false;
-        for (let i = 0; i < this._member.keys.length; i++) {
-            const k = this._member.keys[i];
-            if (k.level === securityLevel) {
-                found = true;
-                this._member.keys[i] = keypair;
-            }
-        }
-
-        if (!found) {
-            this._member.keys.push(keypair);
-        }
-
-        await this._saveMember();
-        return keypair;
-    }
-
-   /**
-     * Creates a signer object using the key with the specified key level. This can sign
-     * strings and JSON objects.
-     *
-     * @param {string} securityLevel - security level of the key we want to use to sign
-     * @return {Object} signer - signer object
-     */
-    async createSigner(securityLevel) {
-        await this._loadMember();
-        for (let keys of this._member.keys) {
-            if (keys.level === securityLevel) {
-                return Crypto.createSignerFromKeypair(keys);
-            }
-        }
-        throw new Error(`No key with level ${securityLevel} found`);
-    }
-
-    /**
-     * Creates a verifier object using the key with the specified key id. This can verify
-     * signatures by that key, on strings and JSON objects.
-     *
-     * @param {string} keyId - keyId that we want to use to verify
-     * @return {Object} verifier - verifier object
-     */
-    async createVerifier(keyId) {
-        await this._loadMember();
-        for (let keys of this._member.keys) {
-            if (keys.id === keyId) {
-                return Crypto.createVerifierFromKeypair(keys);
-            }
-        }
-        throw new Error(`No key with id ${keyId} found`);
-    }
-
-    async _loadMember() {
-        if (!this._member.id) {
-            throw new Error('Invalid memberId');
-        }
-
-        const data = await FileSystem.readFile(this._member.id.split(':').join('_'));
-        this._member.keys = JSON.parse(data).keys.map((keypair => ({
-            id: keypair.id,
-            algorithm: keypair.algorithm,
-            level: keypair.level,
-            publicKey: Crypto.bufferKey(keypair.publicKey),
-            secretKey: Crypto.bufferKey(keypair.secretKey)
-        })));
-    }
-
-    async _saveMember() {
-        const dataToWrite = {
-            keys: this._member.keys.map((keypair) => ({
-                id: keypair.id,
-                level: keypair.level,
-                algorithm: keypair.algorithm,
-                publicKey: Crypto.strKey(keypair.publicKey),
-                secretKey: Crypto.strKey(keypair.secretKey),
-            })),
-        };
-        await FileSystem.writeFile(
-                this._member.id.split(':').join('_'),
-                JSON.stringify(dataToWrite));
+        return memberId;
     }
 }
 

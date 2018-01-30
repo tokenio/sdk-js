@@ -1,28 +1,21 @@
 import Crypto from '../Crypto';
-import config from "../../config.json";
+import FileSystem from '../PromiseFileSystem';
 
-class BrowserKeyStore {
-    _checkSchemaVersion() {
-        // Clears the storage if we are using an old schema
-        let savedSchemaVersion = 0;
-        try {
-            savedSchemaVersion = JSON.parse(window.localStorage.schemaVersion);
-        } catch (syntaxError) {
-            // If nothing yet in localStorage, continue
-        }
+var globals = {
+    activeMemberId: ''
+};
 
-        if (savedSchemaVersion < config.localStorageSchemaVersion) {
-            window.localStorage.clear();
-            window.localStorage.schemaVersion = JSON.stringify(config.localStorageSchemaVersion);
-        }
+class UnsecuredFileKeyStore {
+    static setDirRoot(dirRoot) {
+        FileSystem.dirRoot = dirRoot;
     }
 
     /**
-     * Store a member's keypair.
+     * Store a keypair.
      *
      * @param {string} memberId - ID of member
-     * @param {Object} keypair - keypair to store
-     * @return {Object} keypair - same ketypair
+     * @param {Object} keypair - keypair
+     * @return {Object} keypair - same keypair
      */
     async put(memberId, keypair) {
         if (!memberId) {
@@ -34,16 +27,16 @@ class BrowserKeyStore {
         if (!keypair.level) {
             throw new Error("Don't know what level to put key");
         }
-        if (!BROWSER) {
-            throw new Error("Browser Only");
+        if (BROWSER) {
+            throw new Error("Not available on browser");
         }
-        var member = this._loadMember(memberId);
+        var member = await this._loadMember(memberId);
         if (!member) {
             member = {};
         }
         member[keypair.level] = keypair;
-        this._saveMember(memberId, member);
-        BrowserKeyStore.setActiveMemberId(memberId);
+        await this._saveMember(memberId, member);
+        UnsecuredFileKeyStore.setActiveMemberId(memberId);
         return keypair;
     }
 
@@ -61,8 +54,8 @@ class BrowserKeyStore {
         if (!level) {
             throw new Error("Don't know what key level to get");
         }
-        if (!BROWSER) {
-            throw new Error("Browser Only");
+        if (BROWSER) {
+            throw new Error("Not available on browser");
         }
         const member = await this._loadMember(memberId);
         if (!member) {
@@ -71,7 +64,7 @@ class BrowserKeyStore {
         if (!member[level]) {
             throw new Error(`No key with level ${level} found`);
         }
-        BrowserKeyStore.setActiveMemberId(memberId);
+        UnsecuredFileKeyStore.setActiveMemberId(memberId);
         return member[level];
     }
 
@@ -89,17 +82,17 @@ class BrowserKeyStore {
         if (!keyId) {
             throw new Error(`Don't know id of key to get`);
         }
-        if (!BROWSER) {
-            throw new Error("Browser Only");
+        if (BROWSER) {
+            throw new Error("Not available on browser");
         }
-        const member = this._loadMember(memberId);
+        const member = await this._loadMember(memberId);
         if (!member) {
             throw new Error(`member ${memberId} not found`);
         }
         for (let level in member) {
             if (Object.prototype.hasOwnProperty.call(member, level)) {
                 if (member[level].id === keyId) {
-                    BrowserKeyStore.setActiveMemberId(memberId);
+                    UnsecuredFileKeyStore.setActiveMemberId(memberId);
                     return member[level];
                 }
             }
@@ -117,16 +110,16 @@ class BrowserKeyStore {
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
-        if (!BROWSER) {
-            throw new Error("Browser Only");
+        if (BROWSER) {
+            throw new Error("Not available on browser");
         }
-        const member = this._loadMember(memberId);
+        const member = await this._loadMember(memberId);
         if (!member) {
             if (!member) {
                 throw new Error(`member ${memberId} not found`);
             }
         }
-        BrowserKeyStore.setActiveMemberId(memberId);
+        UnsecuredFileKeyStore.setActiveMemberId(memberId);
         return Object.values(member);
     }
 
@@ -136,16 +129,16 @@ class BrowserKeyStore {
      * @param {string} memberId - ID of member
      */
     static setActiveMemberId(memberId) {
-        window.localStorage.activeMemberId = memberId;
+        globals.activeMemberId = memberId;
     }
 
-   /**
+    /**
      * Get the ID of the most recently active member.
      *
      * @return {string} ID of member
      */
     static getActiveMemberId() {
-        const memberId = window.localStorage.activeMemberId;
+        const memberId = globals.activeMemberId;
         if (!memberId) {
             throw new Error('No active memberId on this browser');
         }
@@ -154,32 +147,26 @@ class BrowserKeyStore {
 
     /**
      * Save a member's keys.
+     *
      * @param {string} memberId - member Id
      * @param {Object} member - obj dict of keys { "LOW": {...}, "STANDARD": {...}, ... }
      */
-    _saveMember(memberId, member) {
-        this._checkSchemaVersion();
-        var members;
-        try {
-            members = JSON.parse(window.localStorage.members);
-        } catch (ex) {
-            // oh well
-        }
-        if (!members) {
-            members = {};
-        }
-        const memberCopy = {}; // like member, but Crypto.strKey( keys )
-        for (const [level, key] of Object.entries(member)) {
-            memberCopy[level] = Object.assign({}, key);
+    async _saveMember(memberId, member) {
+        // instead of { LOW: {...}, ... } we want [ {...}, ... ]
+        // convert keys from buffer -> string
+        const strKeys = Object.values(member).map((key) => {
+            const copy = Object.assign({}, key);
             if (key.publicKey) {
-                memberCopy[level].publicKey = Crypto.strKey(key.publicKey);
+                copy.publicKey = Crypto.strKey(key.publicKey);
             }
             if (key.secretKey) {
-                memberCopy[level].secretKey = Crypto.strKey(key.secretKey);
+                copy.secretKey = Crypto.strKey(key.secretKey);
             }
-        }
-        members[memberId] = memberCopy;
-        window.localStorage.members = JSON.stringify(members);
+            return copy;
+        });
+        await FileSystem.writeFile(
+                memberId.split(':').join('_'),
+            JSON.stringify({keys: strKeys}));
     }
 
     /**
@@ -188,28 +175,27 @@ class BrowserKeyStore {
      * @param {string} memberId - ID of member
      * @return {Object} object dict level : key {"LOW": {...}, "STANDARD": {...}, ...}
      */
-    _loadMember(memberId) {
-        this._checkSchemaVersion();
-        var members;
+    async _loadMember(memberId) {
+        var data;
         try {
-            members = JSON.parse(window.localStorage.members);
-        } catch (ex) {
-            return null;
+            data = await FileSystem.readFile(memberId.split(':').join('_'));
+        } catch (error) {
+            data = '{"keys":[]}';
         }
-        if (!Object.prototype.hasOwnProperty.call(members, memberId)) {
-            return null;
-        }
-        const member = members[memberId];
-        for (const [level, key] of Object.entries(member)) {
+        const keyList = JSON.parse(data).keys || [];
+        var member = {};
+        for (var i = 0; i < keyList.length; i++) {
+            const key = keyList[i];
             if (key.publicKey) {
-                member[level].publicKey = Crypto.bufferKey(key.publicKey);
+                key.publicKey = Crypto.bufferKey(key.publicKey);
             }
             if (key.secretKey) {
-                member[level].secretKey = Crypto.bufferKey(key.secretKey);
+                key.secretKey = Crypto.bufferKey(key.secretKey);
             }
+            member[key.level] = key;
         }
         return member;
     }
 }
 
-export default BrowserKeyStore;
+export default UnsecuredFileKeyStore;

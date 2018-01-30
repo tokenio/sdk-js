@@ -7,19 +7,21 @@ import MemoryKeyStore from './MemoryKeyStore';
  * Crypto engine to handle signatures, verifications, and key storage, in memory. Handles storage
  * for multiple members at once, and uses the following schema:
  *
- * activeMemberId: 123,
- * members: [
- *  {
- *      id: 123
- *      keys: [{
- *          id: 456,
+ * {
+ *   "ACTIVE": "m:12345:678", // member ID of most-recently active member
+ *   "m:12345:678": { // a member's keys:
+ *     "PRIVILEGED": {
+ *          id: "456", // key ID
  *          algorithm: ED25519,
  *          level: PRIVILEGED,
- *          publicKey: 789,
- *          secretKey: 012,
- *      }]
- *  }
- * ]
+ *          publicKey: Buffer(...), // public key data
+ *          secretKey: Buffer(...), // secret key data
+ *      },
+ *     "LOW": {...},
+ *     "STANDARD": {...},
+ *   },
+ *   "m:91011:12d": {...} // other member's keys...
+ * }
  *
  */
 const globalKeyStore = new MemoryKeyStore();

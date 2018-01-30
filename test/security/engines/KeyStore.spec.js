@@ -6,15 +6,46 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import BrowserKeyStore from "../../../src/security/engines/BrowserKeyStore";
 import MemoryKeyStore from "../../../src/security/engines/MemoryKeyStore";
+import UnsecuredFileKeyStore from "../../../src/security/engines/UnsecuredFileKeyStore";
 import Crypto from "../../../src/security/Crypto";
 import Util from '../../../src/Util';
 
 var keyStores = [MemoryKeyStore, BrowserKeyStore];
+let testDir;
+let fs;
+
 if (!BROWSER) {
-    keyStores = [MemoryKeyStore]; // TODO += FS
+    const path = require('path');
+    fs = require('fs-extra');
+
+    // Goes back four dirs to find project base. Does this in order to create the testing dir
+    // in the right place. Assumes process argv[1] is mocha binary
+    testDir = path.join(path.join(
+        path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
+        'test'), 'testDir');
+
+    UnsecuredFileKeyStore.setDirRoot(testDir);
+
+    keyStores = [MemoryKeyStore, UnsecuredFileKeyStore];
 }
 
 describe('Key store', () => {
+    before('should clean up the test directory', async () => {
+        if (!BROWSER) {
+            await fs.remove(testDir);
+            const dirExists = await fs.exists(testDir);
+            assert(!dirExists);
+        }
+    });
+
+    after('should clean up the test directory', async () => {
+        if (!BROWSER) {
+            await fs.remove(testDir);
+            const dirExists = await fs.exists(testDir);
+            assert(!dirExists);
+        }
+    });
+
     keyStores.forEach((KeyStore) => {
         it('should create the keyStore and generate keys', async () => {
             const keyStore = new KeyStore();
@@ -129,7 +160,10 @@ describe('Key store', () => {
                 [keyPairLow2, keyPairStandard2, keyPairPrivileged2]);
         });
 
-        it('should set and get active memeber Id', async () => {
+        it('should set and get active member Id (if defined)', async () => {
+            if (!KeyStore.setActiveMemberId) {
+                return;
+            }
             const keyStore = new KeyStore();
             const keyPairLow = Crypto.generateKeys("LOW");
             const memberId = Util.generateNonce();
@@ -142,9 +176,9 @@ describe('Key store', () => {
 
             assert.equal(KeyStore.getActiveMemberId(), memberId2);
 
-            KeyStore.setActiveMemberId(memberId);
+            await KeyStore.setActiveMemberId(memberId);
 
-            assert.equal(KeyStore.getActiveMemberId(), memberId);
+            assert.equal(await KeyStore.getActiveMemberId(), memberId);
         });
 
         it('should fail to put, if no memberId or key', async () => {
