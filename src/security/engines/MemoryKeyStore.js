@@ -6,7 +6,7 @@ class MemoryKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {Object} keypair - keypair to store
-     * @return {Object} keypair - same ketypair
+     * @return {Object} keypair - same keypair
      */
     async put(memberId, keypair) {
         if (!memberId) {
