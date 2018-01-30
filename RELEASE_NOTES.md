@@ -1,9 +1,3 @@
-## Release VERSION TODO
-
-MemoryCryptoEngine and BrowserCryptoEngine functions are now async.
-(Before, UnsecuredFileCryptoEngine was async but the others weren't.
-Now, all are async.)
-
 ## Release 1.4.105
 
 The "login" method was renamed to "getMember".

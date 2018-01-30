@@ -15,9 +15,9 @@ describe('AuthHttpClient', () => {
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
-        const pk1 = await engine.generateKey('PRIVILEGED');
-        const pk2 = await engine.generateKey('STANDARD');
-        const pk3 = await engine.generateKey('LOW');
+        const pk1 = engine.generateKey('PRIVILEGED');
+        const pk2 = engine.generateKey('STANDARD');
+        const pk3 = engine.generateKey('LOW');
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
             [pk1, pk2, pk3],
@@ -32,9 +32,9 @@ describe('AuthHttpClient', () => {
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
-        const pk1 = await engine.generateKey('PRIVILEGED');
-        const pk2 = await engine.generateKey('STANDARD');
-        const pk3 = await engine.generateKey('LOW');
+        const pk1 = engine.generateKey('PRIVILEGED');
+        const pk2 = engine.generateKey('STANDARD');
+        const pk3 = engine.generateKey('LOW');
         const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine, devKey);
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
@@ -47,9 +47,9 @@ describe('AuthHttpClient', () => {
         const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         const engine = new MemoryCryptoEngine(res.data.memberId);
-        const pk1 = await engine.generateKey('PRIVILEGED');
-        const pk2 = await engine.generateKey('STANDARD');
-        const pk3 = await engine.generateKey('LOW');
+        const pk1 = engine.generateKey('PRIVILEGED');
+        const pk2 = engine.generateKey('STANDARD');
+        const pk3 = engine.generateKey('LOW');
         const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine, devKey);
         assert.isOk(res.data.memberId);
         const res2 = await unauthenticatedClient.approveFirstKeys(
@@ -73,9 +73,9 @@ describe('AuthHttpClient', () => {
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
-        const pk1 = await engine.generateKey('PRIVILEGED');
-        const pk2 = await engine.generateKey('STANDARD');
-        const pk3 = await engine.generateKey('LOW');
+        const pk1 = engine.generateKey('PRIVILEGED');
+        const pk2 = engine.generateKey('STANDARD');
+        const pk3 = engine.generateKey('LOW');
         const client = new AuthHttpClient(TEST_ENV, res.data.memberId, engine, devKey);
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
