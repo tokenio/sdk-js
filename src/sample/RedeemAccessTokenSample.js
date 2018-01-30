@@ -30,7 +30,7 @@ class RedeemAccessTokenSample {
      *
      * @param {Member} grantee - grantee member
      * @param {string} tokenId - id of the token to redeem
-     * @return {Object} balance0 - balance of one account
+     * @return {Object} balance of one account (or {} if no access to any accounts)
      */
     static async carefullyUse(grantee, tokenId) {
         var accessToken = await grantee.getToken(tokenId);
@@ -64,12 +64,25 @@ class RedeemAccessTokenSample {
             }
         }
         if (Object.keys(accountIds).length < 1) {
+            // don't have access to any account, return empty
             return {};
         }
-        const account0Id = Object.keys(accountIds)[0];
-        const balance0 = await grantee.getBalance(account0Id);
-        grantee.clearAccessToken();
-        return balance0.current;
+        for (i = 0; i < Object.keys(accountIds).length; i++) {
+            try {
+                const accountId = Object.keys(accountIds)[i];
+                const balance = await grantee.getBalance(accountId);
+                grantee.clearAccessToken();
+                return balance.current;
+            } catch (ex) {
+                // If grantor previously un-linked an account, then grantee can't get its balance.
+                if (ex.response && ex.response.data && ex.response.data.startsWith &&
+                    ex.response.data.startsWith("FAILED_PRECONDITION")) {
+                    continue;
+                }
+            }
+        }
+        // don't have access to any account, return empty
+        return {};
     }
 }
 export default RedeemAccessTokenSample;
