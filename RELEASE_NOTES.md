@@ -1,4 +1,4 @@
-## Release VERSION TODO
+## Release 1.4.108
 
 MemoryCryptoEngine and BrowserCryptoEngine functions are now async.
 (Before, UnsecuredFileCryptoEngine was async but the others weren't.
