@@ -40,14 +40,12 @@ class AuthContext {
     }
 
     /**
-     * Gets the key level and resets it to low
+     * Gets the key level
      *
      * @return {string} keyLevel - key level being used
      */
     get keyLevel() {
-        const level = this._keyLevel;
-        this._keyLevel = config.KeyLevel.LOW;
-        return level;
+        return this._keyLevel;
     }
 }
 

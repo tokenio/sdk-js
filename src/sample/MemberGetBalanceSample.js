@@ -11,10 +11,10 @@ export default async (member) => {
     var sums = {};
     const accounts = await member.getAccounts();
     for (var i = 0; i < accounts.length; i++) {
-        const balance = await member.getBalance(accounts[i].id, config.KeyLevel.STANDARD);
-        const currency = balance.balance.available.currency;
+        const balanceResponse = await member.getBalance(accounts[i].id, config.KeyLevel.STANDARD);
+        const currency = balanceResponse.balance.available.currency;
         sums[currency] = (sums[currency] || 0) +
-            parseFloat(balance.balance.available.value);
+            parseFloat(balanceResponse.balance.available.value);
     }
     return sums;
 };

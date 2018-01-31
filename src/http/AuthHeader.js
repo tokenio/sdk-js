@@ -88,7 +88,9 @@ class AuthHeader {
 
     static _keyLevel(context) {
         if (context !== undefined) {
-            return context.keyLevel;
+            const level = context.keyLevel;
+            context.keyLevel = config.KeyLevel.LOW;
+            return level;
         }
         return config.KeyLevel.LOW;
     }

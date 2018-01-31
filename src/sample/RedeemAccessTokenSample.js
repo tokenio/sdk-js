@@ -72,9 +72,9 @@ class RedeemAccessTokenSample {
         for (i = 0; i < Object.keys(accountIds).length; i++) {
             try {
                 const accountId = Object.keys(accountIds)[i];
-                const balance = await grantee.getBalance(accountId, config.KeyLevel.STANDARD);
+                const balanceResponse = await grantee.getBalance(accountId, config.KeyLevel.STANDARD);
                 grantee.clearAccessToken();
-                return balance.balance.current;
+                return balanceResponse.balance.current;
             } catch (ex) {
                 // If grantor previously un-linked an account, then grantee can't get its balance.
                 if (ex.response && ex.response.data && ex.response.data.startsWith &&
