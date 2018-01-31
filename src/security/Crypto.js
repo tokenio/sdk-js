@@ -79,7 +79,7 @@ class Crypto {
      * Helper function for crypto engine createSigner:
      * returns a signer that uses a keypair.
      *
-     * @param {Key} keypair, such as returned by Token.Crypto.generatekeys
+     * @param {Key} keypair - such as returned by Token.Crypto.generatekeys
      * @return {Object} signer, as expected from a crypto engine createSigner
      */
     static createSignerFromKeypair(keypair) {
@@ -127,7 +127,7 @@ class Crypto {
      * Helper function for crypto engine createVerifier:
      * returns a signer that uses a keypair.
      *
-     * @param {Key} keypair, such as returned by Token.Crypto.generatekeys. (It's OK
+     * @param {Key} keypair - such as returned by Token.Crypto.generatekeys. (It's OK
      *                       if this "keypair" has no secretKey.)
      * @return {Object} verifier, as expected from a crypto engine createVerifier
      */
