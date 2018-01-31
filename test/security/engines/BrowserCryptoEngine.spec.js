@@ -1,5 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
+import 'babel-regenerator-runtime';
 import BrowserCryptoEngine from "../../../src/security/engines/BrowserCryptoEngine";
 import Util from '../../../src/Util';
 
@@ -13,67 +14,67 @@ describe('Browser crypto engines', () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             assert.isOk(engine);
-            assert.include(window.localStorage.members, memberId);
         });
 
-        it('should generate keys', () => {
+        it('should generate keys', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
-            const pk2 = engine.generateKey('STANDARD');
-            const pk3 = engine.generateKey('PRIVILEGED');
-            const pk4 = engine.generateKey('PRIVILEGED');
+            const pk1 = await engine.generateKey('LOW');
+            const pk2 = await engine.generateKey('STANDARD');
+            const pk3 = await engine.generateKey('PRIVILEGED');
+            const pk4 = await engine.generateKey('PRIVILEGED');
             assert.isOk(pk1);
             assert.isOk(pk2);
             assert.isOk(pk3);
             assert.isOk(pk4);
         });
 
-        it('should not create a bad signer', () => {
+        it('should not create a bad signer', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
+            await engine.generateKey('LOW');
             try {
-                engine.createSigner('STANDARD');
+                await engine.createSigner('STANDARD');
                 return Promise.reject(new Error("should fail"));
             } catch (err) {
                 assert.include(err.message, "No key");
             }
         });
 
-        it('should have a signer with a key id', () => {
+        it('should have a signer with a key id', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
-            const signerLow = engine.createSigner('LOW');
+            const pk1 = await engine.generateKey('LOW');
+            const signerLow = await engine.createSigner('LOW');
             assert.equal(signerLow.getKeyId(), pk1.id);
         });
 
-        it('should sign and verify', () => {
+        it('should sign and verify', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
-            const signer = engine.createSigner('LOW');
-            const verifier = engine.createVerifier(pk1.id);
+            const pk1 = await engine.generateKey('LOW');
+            const signer = await engine.createSigner('LOW');
+            const verifier = await engine.createVerifier(pk1.id);
             const sig = signer.sign('abcdefg');
             verifier.verify('abcdefg', sig);
         });
 
-        it('should sign and verify json', () => {
+        it('should sign and verify json', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
-            const signer = engine.createSigner('LOW');
-            const verifier = engine.createVerifier(pk1.id);
+            const pk1 = await engine.generateKey('LOW');
+            const signer = await engine.createSigner('LOW');
+            const verifier = await engine.createVerifier(pk1.id);
             const sig = signer.signJson({a: 5, c: 14, b: -512});
             verifier.verifyJson({a: 5, c: 14, b: -512}, sig);
         });
 
-        it('should fail to verify an invalid signature', () => {
+        it('should fail to verify an invalid signature', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
-            const pk1 = engine.generateKey('LOW');
-            const signer = engine.createSigner('LOW');
-            const verifier = engine.createVerifier(pk1.id);
+            const pk1 = await engine.generateKey('LOW');
+            const signer = await engine.createSigner('LOW');
+            const verifier = await engine.createVerifier(pk1.id);
             const sig = signer.sign('abcdefg');
             try {
                 verifier.verify('bcdefg', sig);
@@ -83,37 +84,37 @@ describe('Browser crypto engines', () => {
             }
         });
 
-        it('should be able to create multiple engines', () => {
+        it('should be able to create multiple engines', async () => {
             const memberId = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const engine2 = new BrowserCryptoEngine(memberId);
-            const pk2 = engine2.generateKey('STANDARD');
-            const signer = engine.createSigner('STANDARD');
-            const verifier = engine2.createVerifier(pk2.id);
+            const pk2 = await engine2.generateKey('STANDARD');
+            const signer = await engine.createSigner('STANDARD');
+            const verifier = await engine2.createVerifier(pk2.id);
             const sig = signer.sign('abcdefg');
             verifier.verify('abcdefg', sig);
         });
 
-        it('should be able to log in with the active memberId', () => {
+        it('should be able to log in with the active memberId', async () => {
             const memberId = Util.generateNonce();
             const memberId2 = Util.generateNonce();
             const memberId3 = Util.generateNonce();
             const engine = new BrowserCryptoEngine(memberId);
             const engine2 = new BrowserCryptoEngine(memberId2);
             const engine3 = new BrowserCryptoEngine(memberId3);
-            engine.generateKey('LOW');
-            engine2.generateKey('LOW');
-            const pk3 = engine3.generateKey('LOW');
+            await engine.generateKey('LOW');
+            await engine2.generateKey('LOW');
+            const pk3 = await engine3.generateKey('LOW');
 
             const engineNew = new BrowserCryptoEngine(
                 BrowserCryptoEngine.getActiveMemberId());
-            const signer = engineNew.createSigner('LOW');
-            const verifier = engineNew.createVerifier(pk3.id);
+            const signer = await engineNew.createSigner('LOW');
+            const verifier = await engineNew.createVerifier(pk3.id);
             const sig = signer.sign('abcdefg');
             verifier.verify('abcdefg', sig);
         });
 
-        it('should fail to log in to an empty browser', () => {
+        it('should fail to log in to an empty browser', async () => {
             try {
                 const engine = new BrowserCryptoEngine();
                 return Promise.reject(new Error("should fail to log in", engine));

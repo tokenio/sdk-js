@@ -19,7 +19,7 @@ describe('Unauthenticated', () => {
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
-        const pk1 = engine.generateKey('PRIVILEGED');
+        const pk1 = await engine.generateKey('PRIVILEGED');
         const res2 = await unauthenticatedClient.approveFirstKey(
             res.data.memberId,
             pk1,
@@ -57,9 +57,9 @@ describe('Unauthenticated', () => {
         const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
         const res = await unauthenticatedClient.createMemberId();
         const engine = new MemoryCryptoEngine(res.data.memberId);
-        const pk1 = engine.generateKey('PRIVILEGED');
-        const pk2 = engine.generateKey('STANDARD');
-        const pk3 = engine.generateKey('LOW');
+        const pk1 = await engine.generateKey('PRIVILEGED');
+        const pk2 = await engine.generateKey('STANDARD');
+        const pk3 = await engine.generateKey('LOW');
         assert.isOk(res.data.memberId);
         const res2 = await unauthenticatedClient.approveFirstKeys(
             res.data.memberId,
