@@ -1,3 +1,5 @@
+import config from "../config.json";
+
 /**
  * Gets transaction information about a recently-completed transfer.
  *
@@ -12,7 +14,8 @@ export default async (payer, transfer) => {
     const transactionId = transfer.transactionId;
     const transaction = await payer.getTransaction(
         accountId,
-        transactionId);
+        transactionId,
+        config.KeyLevel.STANDARD);
 
     return transaction;
 };

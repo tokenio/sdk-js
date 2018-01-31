@@ -59,7 +59,7 @@ class AuthHeader {
         }
 
         // Creates the signer object
-        const signer = await this._client.getSigner(config.KeyLevel.LOW);
+        const signer = await this._client.getSigner(AuthHeader._keyLevel(context));
 
         // Signs the Json string
         const signature = signer.signJson(payload);
@@ -84,6 +84,13 @@ class AuthHeader {
             return ',on-behalf-of=' + context.onBehalfOf;
         }
         return '';
+    }
+
+    static _keyLevel(context) {
+        if (context !== undefined) {
+            return context.keyLevel;
+        }
+        return config.KeyLevel.LOW;
     }
 }
 

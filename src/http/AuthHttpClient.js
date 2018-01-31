@@ -481,13 +481,14 @@ class AuthHttpClient {
      * Gets the balance of an account.
      *
      * @param {string} accountId - accountId
+     * @param {string} keyLevel - key level
      * @return {Object} response - response to the API call
      */
-    async getBalance(accountId) {
+    async getBalance(accountId, keyLevel) {
+        this._context.keyLevel = keyLevel;
         const request = {
-            method: 'post',
-            url: `/account/balance`,
-            data: {accountId},
+            method: 'get',
+            url: `/accounts/${accountId}/balance`,
         };
         return this._instance(request);
     }
@@ -497,13 +498,14 @@ class AuthHttpClient {
      *
      * @param {string} accountId - account that initiated the transaction
      * @param {string} transactionId - id of the transaction
+     * @param {string} keyLevel - key level
      * @return {Object} response - response to the API call
      */
-    async getTransaction(accountId, transactionId) {
+    async getTransaction(accountId, transactionId, keyLevel) {
+        this._context.keyLevel = keyLevel;
         const request = {
-            method: 'post',
-            url: `/account/transaction`,
-            data: {accountId, transactionId},
+            method: 'get',
+            url: `/accounts/${accountId}/transaction/${transactionId}`,
         };
         return this._instance(request);
     }
@@ -514,16 +516,14 @@ class AuthHttpClient {
      * @param {string} accountId - id of the account
      * @param {string} offset - where to start
      * @param {Number} limit - how many to get
+     * @param {string} keyLevel - key level
      * @return {Object} response - response to the API call
      */
-    async getTransactions(accountId, offset, limit) {
+    async getTransactions(accountId, offset, limit, keyLevel) {
+        this._context.keyLevel = keyLevel;
         const request = {
-            method: 'post',
-            url: `/account/transactions`,
-            data: {
-                accountId,
-                page: {offset: offset || '', limit}
-            },
+            method: 'get',
+            url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`,
         };
         return this._instance(request);
     }
