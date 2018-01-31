@@ -1,3 +1,5 @@
+import config from "../config.json";
+
 /**
  * Handles the auth context when using access tokens.
  */
@@ -7,6 +9,7 @@ class AuthContext {
      */
     constructor() {
         this._onBehalfOf = undefined;
+        this._keyLevel = config.KeyLevel.LOW;
     }
 
     /**
@@ -19,12 +22,30 @@ class AuthContext {
     }
 
     /**
+    * Sets the key level to be used to sign the auth header
+    *
+    * @param {string} keyLevel - key Level to use
+    */
+    set keyLevel(keyLevel) {
+        this._keyLevel = keyLevel === undefined ? config.KeyLevel.LOW : keyLevel;
+    }
+
+    /**
      * Gets the currently active memberId
      *
      * @return {string} onBehalfOf - accessTokenId being used
      */
     get onBehalfOf() {
         return this._onBehalfOf;
+    }
+
+    /**
+     * Gets the key level
+     *
+     * @return {string} keyLevel - key level being used
+     */
+    get keyLevel() {
+        return this._keyLevel;
     }
 }
 
