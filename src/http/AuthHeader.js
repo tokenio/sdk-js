@@ -87,6 +87,8 @@ class AuthHeader {
     }
 
     static _keyLevel(context) {
+        // if we specified that this request should use a keyLevel > LOW, we notice that here
+        // (and re-set the keyLevel for the next request)
         if (context !== undefined) {
             const level = context.keyLevel;
             context.keyLevel = config.KeyLevel.LOW;
