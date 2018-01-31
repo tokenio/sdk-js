@@ -59,7 +59,7 @@ class AuthHeader {
         }
 
         // Creates the signer object
-        const signer = await this._client.getSigner(config.KeyLevel.LOW);
+        const signer = await this._client.getSigner(AuthHeader._keyLevel(context));
 
         // Signs the Json string
         const signature = signer.signJson(payload);
@@ -84,6 +84,17 @@ class AuthHeader {
             return ',on-behalf-of=' + context.onBehalfOf;
         }
         return '';
+    }
+
+    static _keyLevel(context) {
+        // if we specified that this request should use a keyLevel > LOW, we notice that here
+        // (and re-set the keyLevel for the next request)
+        if (context !== undefined) {
+            const level = context.keyLevel;
+            context.keyLevel = config.KeyLevel.LOW;
+            return level;
+        }
+        return config.KeyLevel.LOW;
     }
 }
 

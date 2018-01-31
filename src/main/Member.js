@@ -769,11 +769,12 @@ export default class Member {
      * Looks up the balance of an account
      *
      * @param {string} accountId - id of the account
+     * @param {string} keyLevel - key level
      * @return {Promise} balance - Promise of balance object
      */
-    getBalance(accountId) {
+    getBalance(accountId, keyLevel) {
         return Util.callAsync(this.getBalance, async () => {
-            const res = await this._client.getBalance(accountId);
+            const res = await this._client.getBalance(accountId, keyLevel);
             return res.data;
         });
     }
@@ -783,11 +784,12 @@ export default class Member {
      *
      * @param {string} accountId - id of the account
      * @param {string} transactionId - which transaction to look up
+     * @param {string} keyLevel - key level
      * @return {Promise} transaction - the Transaction
      */
-    getTransaction(accountId, transactionId) {
+    getTransaction(accountId, transactionId, keyLevel) {
         return Util.callAsync(this.getTransaction, async () => {
-            const res = await this._client.getTransaction(accountId, transactionId);
+            const res = await this._client.getTransaction(accountId, transactionId, keyLevel);
             return res.data.transaction;
         });
     }
@@ -798,11 +800,12 @@ export default class Member {
      * @param {string} accountId - id of the account
      * @param {string} offset - where to start looking
      * @param {int} limit - how many to retrieve
+     * @param {string} keyLevel - key level
      * @return {Promise} transactions - Transactions
      */
-    getTransactions(accountId, offset, limit) {
+    getTransactions(accountId, offset, limit, keyLevel) {
         return Util.callAsync(this.getTransactions, async () => {
-            const res = await this._client.getTransactions(accountId, offset, limit);
+            const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
             const data = res.data.transactions === undefined ?
                     [] :
                     res.data.transactions;
