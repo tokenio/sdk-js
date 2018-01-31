@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.4.108",
+  "version": "1.4.109",
   "description": "",
   "main": "dist/token-io.min.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "babel-plugin-transform-regenerator": "^6.16.1",
     "babel-preset-es2015": "^6.14.0",
     "chai": "^3.5.0",
+    "chai-as-promised": "^7.1.1",
     "esdoc": "^1.0.3",
     "esdoc-inject-script-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",

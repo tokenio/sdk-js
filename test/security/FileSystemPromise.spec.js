@@ -77,7 +77,7 @@ describe('Filesystem', () => {
 
         after('Should clean up the test directory', async () => {
             await fs.remove(testDir);
-            const dirExists = await fs.exists(testDir);
+            const dirExists = await fs.pathExists(testDir);
             assert(!dirExists);
         });
     }
