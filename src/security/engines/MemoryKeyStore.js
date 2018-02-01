@@ -97,7 +97,7 @@ class MemoryKeyStore {
         globalStorage.ACTIVE = memberId;
     }
 
-   /**
+    /**
      * Get the ID of the most recently active member.
      *
      * @return {string} ID of member
