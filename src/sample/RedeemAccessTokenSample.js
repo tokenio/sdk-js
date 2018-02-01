@@ -19,7 +19,7 @@ class RedeemAccessTokenSample {
         const accounts = await grantee.getAccounts();
 
         // Get informtion we want:
-        const balance0 = await grantee.getBalance(accounts[0].id, config.KeyLevel.STANDARD);
+        const balance0 = await grantee.getBalance(accounts[0].id, config.KeyLevel.LOW);
 
         // When done using access, clear the access token:
         grantee.clearAccessToken();
@@ -72,9 +72,11 @@ class RedeemAccessTokenSample {
         for (i = 0; i < Object.keys(accountIds).length; i++) {
             try {
                 const accountId = Object.keys(accountIds)[i];
-                const response = await grantee.getBalance(accountId, config.KeyLevel.STANDARD);
+                const balanceResponse = await grantee.getBalance(
+                    accountId,
+                    config.KeyLevel.LOW);
                 grantee.clearAccessToken();
-                return response.balance.current;
+                return balanceResponse.balance.current;
             } catch (ex) {
                 // If grantor previously un-linked an account, then grantee can't get its balance.
                 if (ex.response && ex.response.data && ex.response.data.startsWith &&

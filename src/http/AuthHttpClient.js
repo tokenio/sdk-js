@@ -108,6 +108,16 @@ class AuthHttpClient {
     }
 
     /**
+     * Use the given key level to sign the request.
+     *
+     * @param {string} keyLevel - key level
+     */
+    useKeyLevel(keyLevel) {
+        this._context.keyLevel = keyLevel;
+        this._resetRequestInterceptor();
+    }
+
+    /**
      * Clears the AuthContext, so this client no longer acts on behalf of another member.
      */
     clearAccessToken() {
@@ -485,7 +495,8 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getBalance(accountId, keyLevel) {
-        this._context.keyLevel = keyLevel;
+        this.useKeyLevel(keyLevel);
+
         const request = {
             method: 'get',
             url: `/accounts/${accountId}/balance`,
@@ -502,7 +513,7 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTransaction(accountId, transactionId, keyLevel) {
-        this._context.keyLevel = keyLevel;
+        this.useKeyLevel(keyLevel);
         const request = {
             method: 'get',
             url: `/accounts/${accountId}/transaction/${transactionId}`,
@@ -520,7 +531,7 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async getTransactions(accountId, offset, limit, keyLevel) {
-        this._context.keyLevel = keyLevel;
+        this.useKeyLevel(keyLevel);
         const request = {
             method: 'get',
             url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`,
