@@ -1,12 +1,96 @@
-CryptoEngines
-=============
+Crypto Engines
+==============
 
-This directory contains implementations of the "CryptoEngine interface."
-That is, they are classes that implement methods inspired by the Java interface
+This directory contains implementations of the "CryptoEngine interface,"
+code that manages crypto keys.
+
++ `MemoryCryptoEngine` keeps keys in memory. It doesn't persist anything, and
+  "forgets" keys on restart. It's handy for tests.
++ `UnsecuredFileCryptoEngine` keeps keys in files in a designated directory.
++ `BrowserCryptoEngine` keeps keys in a browser's `localStorage`.
+
+They are described at
+https://developer-beta.token.io/sdk/?javascript#local-key-storage
+
+These classes implement methods inspired by the Java interface
 https://github.com/tokenio/sdk-java/blob/master/lib/src/main/java/io/token/security/CryptoEngine.java .
-If you want to store members' crypto keys in a way that's not already implemented
+If you want to manage crypto keys in a way that's not already implemented
 here, you want to create your own ____CryptoEngine class.
-As described below, to generate and use those keys, the class can use Token.Crypto functions.
+
+If you want to create a CryptoEngine class similar to others but that
+*stores* keys differently, then it's easiest to define a thin wrapper
+around a `KeyStore` class. You can see examples of this here:
+`MemoryCryptoEngine` wraps `MemoryKeyStore`;
+`UnsecuredFileCryptoEngine` wraps `UnsecuredFileKeyStore`;
+`BrowserCryptoEngine` wraps `BrowserKeyStore`.
+
+KeyStore methods
+================
+
+A `KeyStore` handles saving and loading keys. A `KeyStoreCryptoEngine`
+subclass can wrap a `KeyStore`. A KeyStore implements the methods
+
+``` javascript
+
+   /**
+     * Store a member's keypair.
+     *
+     * @param {string} memberId - ID of member
+     * @param {Object} keypair - keypair to store
+     * @return {Object} keypair - same keypair
+     */
+    async put(memberId, keypair) { }
+
+    /**
+     * Look up a key by memberId and level.
+     *
+     * @param {string} memberId - ID of member
+     * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
+     * @return {Object} keypair
+     */
+    async getByLevel(memberId, level) { }
+
+    /**
+     * Look up a key by memberId and keyId.
+     *
+     * @param {string} memberId - ID of member
+     * @param {string} keyId - key ID
+     * @return {Object} keypair
+     */
+    async getById(memberId, keyId) { }
+
+    /**
+     * Return list of member's keys.
+     *
+     * @param {string} memberId - ID of member
+     * @return {Object} list of keys
+     */
+    async listKeys(memberId) { }
+
+    /**
+     * OPTIONAL:
+     * Keep track of the ID of the most recently active member.
+     *
+     * @param {string} memberId - ID of member
+     */
+    static setActiveMemberId(memberId) { }
+
+    /**
+     * OPTIONAL:
+     * Get the ID of the most recently active member.
+     *
+     * @return {string} ID of member
+     */
+    static getActiveMemberId() { }
+```
+
+
+CryptoEngine methods
+====================
+
+A CryptoEngine implements the methods
+
+``` javascript
 
    /**
     * Constructs the engine, using an existing member/keys if it is in localStorage
@@ -76,12 +160,18 @@ As described below, to generate and use those keys, the class can use Token.Cryp
      * @return {string} memberId - active memberId
      */
     getActiveMemberId() {}
+```
 
-Signer: createSigner returns an object that implements the "Signer interface".
+Signer
+======
+
+`createSigner` returns an object that implements the "Signer interface".
 That is, they implement methods inspired by the Java interface
 https://github.com/tokenio/lib-security/blob/master/lib/src/main/java/io/token/security/Signer.java
 The easiest way to create one is to call Token.Crypto.createSignerFromKeypair(keypair),
 but if you want to make your own, implement the functions:
+
+``` javascript
 
     /**
      * Return signature of the string
@@ -109,14 +199,19 @@ but if you want to make your own, implement the functions:
     getKeyId() {
         return this._keypair.id;
     }
+```
 
-Verifier: createVerifier returns an object that implements the "Verifier interface".
+Verifier
+========
+
+`createVerifier` returns an object that implements the "Verifier interface".
 That is, they implement methods inspired by the Java interface
 https://github.com/tokenio/lib-security/blob/master/lib/src/main/java/io/token/security/Verifier.java
 The easiest way to create one is to call Token.Crypto.createVerifierFromKeypair(keypair),
 but if you want to make your own, implement the functions:
 
-    /**
+``` javascript
+   /**
      * Verify the signature goes with the passed message string.
      * @param {string} message - message that was signed
      * @param {string} signature - crypto signature
@@ -134,4 +229,5 @@ but if you want to make your own, implement the functions:
     verifyJson: (json, signature) => {
         return Token.Crypto.verifyJson(json, signature, this._keypair.publicKey);
     }
+```
     
