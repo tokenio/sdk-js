@@ -505,6 +505,25 @@ class AuthHttpClient {
     }
 
     /**
+     * Gets the balances of an array of accounts.
+     *
+     * @param {Array} accountIds - array of accountIds
+     * @param {string} keyLevel - key level
+     * @return {Object} response - response to the API call
+     */
+    async getBalances(accountIds, keyLevel) {
+        this.useKeyLevel(keyLevel);
+        var url = '/accounts/balance?' +
+            accountIds.map((accountId) => 'account_id=' + accountId).join('&');
+
+        const request = {
+            method: 'get',
+            url: url,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets a transaction for an account, by its id.
      *
      * @param {string} accountId - account that initiated the transaction

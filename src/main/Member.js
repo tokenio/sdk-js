@@ -770,11 +770,25 @@ export default class Member {
      *
      * @param {string} accountId - id of the account
      * @param {string} keyLevel - key level
-     * @return {Promise} balance - Promise of balance object
+     * @return {Promise} balance - Promise of get balance response object
      */
     getBalance(accountId, keyLevel) {
         return Util.callAsync(this.getBalance, async () => {
             const res = await this._client.getBalance(accountId, keyLevel);
+            return res.data;
+        });
+    }
+
+    /**
+     * Looks up the balances of an array of accounts
+     *
+     * @param {Array} accountIds - array of account ids
+     * @param {string} keyLevel - key level
+     * @return {Promise} balance - Promise of get balances response object
+     */
+    getBalances(accountIds, keyLevel) {
+        return Util.callAsync(this.getBalances, async () => {
+            const res = await this._client.getBalances(accountIds, keyLevel);
             return res.data;
         });
     }
