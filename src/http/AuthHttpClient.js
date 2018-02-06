@@ -513,11 +513,8 @@ class AuthHttpClient {
      */
     async getBalances(accountIds, keyLevel) {
         this.useKeyLevel(keyLevel);
-        var url = '/accounts/balance?';
-
-        for (var i = 0; i < accountIds.length; ++i) {
-            url += 'account_id=' + accountIds[i] + '&';
-        }
+        var url = '/accounts/balance?' +
+            accountIds.map((accountId) => 'account_id=' + accountId).join('&');
 
         const request = {
             method: 'get',

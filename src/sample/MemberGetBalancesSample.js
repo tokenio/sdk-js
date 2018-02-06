@@ -1,7 +1,7 @@
 import config from "../config.json";
 
 /**
- * Gets a logged-in member's account balances two ways.
+ * Gets a logged-in member's account balances another way.
  *
  * @param {Member} member - logged-in member.
  * @return {Object} balances by currency like {"EUR": 1000.0, "USD": 2000.0 }
