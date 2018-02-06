@@ -10,7 +10,7 @@ import MemberGetBalancesSample from '../../src/sample/MemberGetBalancesSample';
 describe('MemberGetBalancesSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
-	    await LinkMemberAndBankSample(member);
+        await LinkMemberAndBankSample(member);
         const sums = await MemberGetBalancesSample(member);
 
         assert.equal(sums.EUR, 200);
