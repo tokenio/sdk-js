@@ -430,7 +430,7 @@ export default class Member {
      */
     triggerTokenStepUpNotification(tokenId) {
         return Util.callAsync(this.triggerTokenStepUpNotification, async () => {
-            const res = await this._client.triggerStepUpNotification(tokenId);
+            const res = await this._client.triggerTokenStepUpNotification(tokenId);
             return res.data.status;
         });
     }
@@ -453,9 +453,11 @@ export default class Member {
      * @param {String} transactionId - transaction id
      * @return {Promise} - notification status
      */
-    triggerStepUpNotification(accountId, transactionId) {
-        return Util.callAsync(this.triggerStepUpNotification, async () => {
-            const res = await this._client.triggerStepUpNotification(accountId, transactionId);
+    triggerTransactionStepUpNotification(accountId, transactionId) {
+        return Util.callAsync(this.triggerTransactionStepUpNotification, async () => {
+            const res = await this._client.triggerTransactionStepUpNotification(
+                accountId,
+                transactionId);
             return res.data.status;
         });
     }
