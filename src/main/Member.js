@@ -425,12 +425,12 @@ export default class Member {
     /**
      * Triggers a token step up notification on the user's app
      *
-     * @param {String} tokenId - token id
+     * @param {Object} stepUp - token step up notification payload
      * @return {Promise} - notification status
      */
-    triggerTokenStepUpNotification(tokenId) {
-        return Util.callAsync(this.triggerTokenStepUpNotification, async () => {
-            const res = await this._client.triggerTokenStepUpNotification(tokenId);
+    triggerStepUpNotification(stepUp) {
+        return Util.callAsync(this.triggerStepUpNotification, async () => {
+            const res = await this._client.triggerStepUpNotification(stepUp);
             return res.data.status;
         });
     }

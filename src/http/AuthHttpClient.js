@@ -219,14 +219,12 @@ class AuthHttpClient {
     /**
      * Trigger a token step up notification.
      *
-     * @param {String} tokenId - token id
+     * @param {Object} stepUp - token step up notification payload
      * @return {Object} response - response to the Api call
      */
-    async triggerTokenStepUpNotification(tokenId) {
+    async triggerStepUpNotification(stepUp) {
         const req = {
-            tokenStepUp: {
-                tokenId
-            }
+            tokenStepUp: stepUp
         };
         const request = {
             method: 'post',
