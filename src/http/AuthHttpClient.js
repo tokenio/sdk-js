@@ -266,8 +266,8 @@ class AuthHttpClient {
     async triggerTransactionStepUpNotification(accountId, transactionId) {
         const req = {
             transactionStepUp: {
-                accountId: accountId,
-                transactionId: transactionId
+                accountId,
+                transactionId
             }
         };
         const request = {
