@@ -423,14 +423,39 @@ export default class Member {
     }
 
     /**
-     * Triggers a step up notification on the user's app
+     * Triggers a token step up notification on the user's app
      *
-     * @param {object} stepUp - can be tokenStepUp or requestStepUp
+     * @param {String} tokenId - token id
      * @return {Promise} - notification status
      */
-    triggerStepUpNotification(stepUp) {
+    triggerTokenStepUpNotification(tokenId) {
+        return Util.callAsync(this.triggerTokenStepUpNotification, async () => {
+            const res = await this._client.triggerStepUpNotification(tokenId);
+            return res.data.status;
+        });
+    }
+
+    /**
+     * Triggers a balance step up notification on the user's app
+     * @param {Array} accountIds - array of account ids
+     * @return {Promise} - notification status
+     */
+    triggerBalanceStepUpNotification(accountIds) {
+        return Util.callAsync(this.triggerBalanceStepUpNotification, async () => {
+            const res = await this._client.triggerBalanceStepUpNotification(accountIds);
+            return res.data.status;
+        });
+    }
+
+    /**
+     * Triggers a transaction step up notification on the user's app
+     * @param {String} accountId - account id
+     * @param {String} transactionId - transaction id
+     * @return {Promise} - notification status
+     */
+    triggerStepUpNotification(accountId, transactionId) {
         return Util.callAsync(this.triggerStepUpNotification, async () => {
-            const res = await this._client.triggerStepUpNotification(stepUp);
+            const res = await this._client.triggerStepUpNotification(accountId, transactionId);
             return res.data.status;
         });
     }
