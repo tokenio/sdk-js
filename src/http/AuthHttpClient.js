@@ -243,7 +243,7 @@ class AuthHttpClient {
     async triggerBalanceStepUpNotification(accountIds) {
         const req = {
             balanceStepUp: {
-                accountIds
+                accountId: accountIds
             }
         };
         const request = {
