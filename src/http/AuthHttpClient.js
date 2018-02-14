@@ -216,10 +216,57 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Trigger a token step up notification.
+     *
+     * @param {Object} stepUp - token step up notification payload
+     * @return {Object} response - response to the Api call
+     */
     async triggerStepUpNotification(stepUp) {
-        const type = stepUp.tokenId ? 'tokenStepUp' : 'requestStepUp';
         const req = {
-            [type]: stepUp
+            tokenStepUp: stepUp
+        };
+        const request = {
+            method: 'post',
+            url: `/notify/stepup`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Trigger a balance step up notification.
+     *
+     * @param {Array} accountIds - array of account ids
+     * @return {Object} response - response to the Api call
+     */
+    async triggerBalanceStepUpNotification(accountIds) {
+        const req = {
+            balanceStepUp: {
+                accountId: accountIds
+            }
+        };
+        const request = {
+            method: 'post',
+            url: `/notify/stepup`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Trigger a transaction step up notification.
+     *
+     * @param {string} accountId - account id
+     * @param {string} transactionId - transaction id
+     * @return {Object} response - response to the Api call
+     */
+    async triggerTransactionStepUpNotification(accountId, transactionId) {
+        const req = {
+            transactionStepUp: {
+                accountId,
+                transactionId
+            }
         };
         const request = {
             method: 'post',
