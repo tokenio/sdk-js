@@ -199,6 +199,19 @@ class HttpClient {
         };
         return this._instance(request);
     }
+
+    /**
+     * Gets all banks.
+     *
+     * @return {Object} response - response to the API call
+     */
+    async getBanks() {
+        const request = {
+            method: 'get',
+            url: `/banks`
+        };
+        return this._instance(request);
+    }
 }
 
 export default HttpClient;

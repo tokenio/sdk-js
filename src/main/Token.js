@@ -306,6 +306,18 @@ class Token {
             return res.data.status;
         });
     }
+
+    /**
+     * Gets a list of available banks for linking
+     *
+     * @return {Promise} banks - list of banks
+     */
+    getBanks() {
+        return Util.callAsync(this.getBanks, async () => {
+            const res = await this._unauthenticatedClient.getBanks();
+            return res.data.banks;
+        });
+    }
 }
 
 export default Token;

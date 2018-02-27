@@ -661,19 +661,6 @@ class AuthHttpClient {
     }
 
     /**
-     * Gets all banks.
-     *
-     * @return {Object} response - response to the API call
-     */
-    async getBanks() {
-        const request = {
-            method: 'get',
-            url: `/banks`
-        };
-        return this._instance(request);
-    }
-
-    /**
      * Gets info about a bank.
      *
      * @param {string} bankId - id of the bank to lookup
