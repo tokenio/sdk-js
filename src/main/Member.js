@@ -309,18 +309,6 @@ export default class Member {
     }
 
     /**
-     * Gets a list of all available banks for linking
-     *
-     * @return {Promise} banks - list of banks
-     */
-    getBanks() {
-        return Util.callAsync(this.getBanks, async () => {
-            const res = await this._client.getBanks();
-            return res.data.banks;
-        });
-    }
-
-    /**
      * Gets the info of a bank, including a link for pairing accounts at this bank
      *
      * @param {string} bankId - id of the bank
