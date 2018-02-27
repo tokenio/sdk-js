@@ -201,7 +201,7 @@ class HttpClient {
     }
 
     /**
-     * Gets all banks.
+     * Gets banks.
      *
      * @return {Object} response - response to the API call
      */
