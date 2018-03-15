@@ -26,13 +26,13 @@ export default class TokenRequest {
         const options = {};
 
         if (alias) {
-            options.ALIAS = alias;
+            options.alias = alias;
         }
         if (bankId) {
-            options.BANK_ID = bankId;
+            options.bankId = bankId;
         }
         if (redirectUrl) {
-            options.REDIRECT_URL = redirectUrl;
+            options.redirectUrl = redirectUrl;
         }
         return new TokenRequest(payload, options);
     }
