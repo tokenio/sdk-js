@@ -679,6 +679,21 @@ class AuthHttpClient {
     //
 
     /**
+     * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
+     *
+     * @param {Object} tokenRequest - token request to store
+     * @return {Promise} response - response to the API call
+     */
+    async storeTokenRequest(tokenRequest) {
+        const request = {
+            method: 'post',
+            url: `/token-requests`,
+            data: tokenRequest,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Creates a transfer token.
      *
      * @param {Object} payload - payload of the token
@@ -698,25 +713,10 @@ class AuthHttpClient {
     /**
      * Creates an access token.
      *
-     * @param {Object} alias - alias of the grantee
-     * @param {Array} resources - resources to give access to
+     * @param {Object} payload - access token payload
      * @return {Object} response - response to the API call
      */
-    async createAccessToken(alias, resources) {
-        const payload = {
-            from: {
-                id: this._memberId,
-            },
-            to: {
-                alias,
-            },
-            access: {
-                resources,
-            },
-            version: config.accessTokenVersion,
-            refId: Util.generateNonce(),
-        };
-
+    async createAccessToken(payload) {
         const request = {
             method: 'post',
             url: `/tokens?type=access`,

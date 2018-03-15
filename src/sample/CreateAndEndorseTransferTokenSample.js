@@ -17,7 +17,8 @@ export default async (payer, payeeAlias) => {
     const accounts = await payer.getAccounts();
 
     // Payer creates the token with the desired terms
-    const token = await payer.createTransferToken(100.00, 'EUR')
+    const token = await payer.createTransferTokenBuilder(100.00, 'EUR')
+          .setFromId(payer.memberId())
           .setAccountId(accounts[0].id)
           .setRedeemerAlias(payeeAlias)
           // if not explicitly set, will get random refId:

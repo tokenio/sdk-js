@@ -40,7 +40,6 @@ class PollNotificationsSample {
             }
             // getNotifications doc extract end
             if (retries >= 0) {
-                console.log("Don't see notifications yet. Sleeping...");
                 retries -= 1;
                 setTimeout(helper, 1000);
             }

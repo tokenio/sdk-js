@@ -25,14 +25,10 @@ export default class TransferTokenBuilder {
         this._payload = {
             version: config.transferTokenVersion,
             refId: Util.generateNonce(),
-            from: {
-                id: member.memberId(),
-            },
             transfer: {
                 currency,
                 lifetimeAmount: lifetimeAmount.toString(),
                 instructions: {
-                    source: null,
                     destinations: [],
                     metadata: {},
                 },
@@ -40,6 +36,20 @@ export default class TransferTokenBuilder {
                 attachments: [],
             },
         };
+    }
+
+    /**
+     * Sets the fromId of the token
+     *
+     * @param {string} memberId - from memberId
+     * @return {TransferTokenBuilder} builder - returns back the builder object
+     */
+    setFromId(memberId) {
+        if (!this._payload.from) {
+            this._payload.from = {};
+        }
+        this._payload.from.id = memberId;
+        return this;
     }
 
     /**
@@ -258,6 +268,15 @@ export default class TransferTokenBuilder {
     setRefId(refId) {
         this._payload.refId = refId;
         return this;
+    }
+
+    /**
+     * Builds the token payload.
+     *
+     * @return {Object} tokenPayload - token payload
+     */
+    build() {
+        return this._payload;
     }
 
     /**
