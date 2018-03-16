@@ -6,6 +6,7 @@ import Util from "../Util";
 import Member from "../main/Member";
 import config from "../config.json";
 import HttpClient from "../http/HttpClient";
+import TokenRequest from "./TokenRequest";
 
 // Promise polyfill for IE and older browsers
 require('es6-promise').polyfill();
@@ -56,6 +57,9 @@ class Token {
 
         /** Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
+
+        /* Class for constructing TokenRequest objects */
+        this.TokenRequest = TokenRequest;
     }
 
     /**
@@ -316,6 +320,19 @@ class Token {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanks();
             return res.data.banks;
+        });
+    }
+
+    /**
+     * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
+     *
+     * @param {string} requestId - token request id
+     * @return {Promise} TokenRequest - token request
+     */
+    retrieveTokenRequest(requestId) {
+        return Util.callAsync(this.retrieveTokenRequest, async () => {
+            const res = await this._unauthenticatedClient.retrieveTokenRequest(requestId);
+            return res.data.tokenRequest;
         });
     }
 }

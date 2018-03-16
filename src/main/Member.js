@@ -3,6 +3,7 @@ import HttpClient from "../http/HttpClient";
 import TransferTokenBuilder from "./TransferTokenBuilder";
 import Util from "../Util";
 import config from "../config.json";
+import AccessTokenBuilder from "./AccessTokenBuilder";
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -557,6 +558,19 @@ export default class Member {
     }
 
     /**
+     * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
+     *
+     * @param {Object} tokenRequest - token request to store
+     * @return {Promise} requestId - requestId
+     */
+    storeTokenRequest(tokenRequest) {
+        return Util.callAsync(this.storeTokenRequest, async () => {
+            const res = await this._client.storeTokenRequest(tokenRequest);
+            return res.data.tokenRequest;
+        });
+    }
+
+    /**
      * Creates a new unendorsed access token.
      *
      * @param {Object} alias - the alias of the grantee of the Access Token
@@ -565,8 +579,21 @@ export default class Member {
      */
     createAccessToken(alias, resources) {
         return Util.callAsync(this.createAccessToken, async () => {
-            const res = await this._client.createAccessToken(alias, resources);
-            return res.data.token;
+            return await (new AccessTokenBuilder(this._client, this, resources)
+                .setFromId(this.memberId())
+                .setToAlias(alias)
+                .execute());
+        });
+    }
+
+    /**
+     * Creates a new access token builder, that must be executed.
+     *
+     * @return {Promise} token - promise of a created Access Token
+     */
+    createAccessTokenBuilder() {
+        return Util.callSync(this.createAccessTokenBuilder, () => {
+            return new AccessTokenBuilder(this._client, this, []);
         });
     }
 
@@ -605,6 +632,7 @@ export default class Member {
     }
 
     /**
+     * @deprecated - use createTransferTokenBuilder instead
      * Creates a transfer token builder, that when executed, will create a transfer token by
      * performing an API call.
      *
@@ -614,6 +642,21 @@ export default class Member {
      */
     createTransferToken(lifetimeAmount, currency) {
         return Util.callSync(this.createTransferToken, () => {
+            return new TransferTokenBuilder(this._client, this, lifetimeAmount, currency)
+                .setFromId(this.memberId());
+        });
+    }
+
+    /**
+     * Creates a transfer token builder, that when executed, will create a transfer token by
+     * performing an API call.
+     *
+     * @param {double} lifetimeAmount - amount limit on the token
+     * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
+     * @return {TransferTokenBuilder} builder - builder for the token
+     */
+    createTransferTokenBuilder(lifetimeAmount, currency) {
+        return Util.callSync(this.createTransferTokenBuilder, () => {
             return new TransferTokenBuilder(this._client, this, lifetimeAmount, currency);
         });
     }

@@ -212,6 +212,20 @@ class HttpClient {
         };
         return this._instance(request);
     }
+
+    /**
+     * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
+     *
+     * @param {string} requestId - token request id
+     * @return {Promise} response - response to the API call
+     */
+    async retrieveTokenRequest(requestId) {
+        const request = {
+            method: 'get',
+            url: `/token-requests/${requestId}`,
+        };
+        return this._instance(request);
+    }
 }
 
 export default HttpClient;
