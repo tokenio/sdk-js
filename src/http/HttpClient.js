@@ -206,7 +206,7 @@ class HttpClient {
      * @param {Object} options - optional parameters for getBanks
      * @return {Object} response - response to the API call
      */
-    async getBanks(options) {
+    async getBanks(options = {}) {
         const formattedOptions = Object.assign({}, {
             // Can be at most 1000
             ids: options.ids || [],
