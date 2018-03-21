@@ -218,15 +218,17 @@ class HttpClient {
             perPage: options.perPage,
         });
         const {ids, search, country, page, perPage} = formattedOptions;
-        let baseUrl = `/banks?`;
+        let url = `/banks?`;
         for (const id of ids) {
-            baseUrl += `ids=${id}&`;
+            url += `ids=${encodeURIComponent(id)}&`;
         }
-        if (page) baseUrl += `page=${page}&`;
-        if (perPage) baseUrl += `perPage=${perPage}&`;
+        if (search) url += `search=${encodeURIComponent(search)}&`;
+        if (country) url += `country=${encodeURIComponent(country)}&`;
+        if (page) url += `page=${encodeURIComponent(page)}&`;
+        if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
         const request = {
             method: 'get',
-            url: `${baseUrl}search=${search}&country=${country}`,
+            url: url,
         };
         return this._instance(request);
     }
