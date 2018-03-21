@@ -320,7 +320,7 @@ class Token {
     getBanks(options) {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanks(options);
-            return res.data.banks;
+            return res.data;
         });
     }
 
