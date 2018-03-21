@@ -314,11 +314,12 @@ class Token {
     /**
      * Gets a list of available banks for linking
      *
+     * @param {Object} options - optional parameters for getBanks
      * @return {Promise} banks - list of banks
      */
-    getBanks() {
+    getBanks(options) {
         return Util.callAsync(this.getBanks, async () => {
-            const res = await this._unauthenticatedClient.getBanks();
+            const res = await this._unauthenticatedClient.getBanks(options);
             return res.data.banks;
         });
     }

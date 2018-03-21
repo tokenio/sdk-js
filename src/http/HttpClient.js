@@ -203,12 +203,32 @@ class HttpClient {
     /**
      * Gets banks.
      *
+     * @param {Object} options - optional parameters for getBanks
      * @return {Object} response - response to the API call
      */
-    async getBanks() {
+    async getBanks(options = {}) {
+        const formattedOptions = Object.assign({}, {
+            // Can be at most 1000
+            ids: options.ids || [],
+            search: options.search || '',
+            country: options.country || '',
+            // Default to 1 if not specified
+            page: options.page,
+            // Can be at most 200, default to 200 if not specified
+            perPage: options.perPage,
+        });
+        const {ids, search, country, page, perPage} = formattedOptions;
+        let url = `/banks?`;
+        for (const id of ids) {
+            url += `ids=${encodeURIComponent(id)}&`;
+        }
+        if (search) url += `search=${encodeURIComponent(search)}&`;
+        if (country) url += `country=${encodeURIComponent(country)}&`;
+        if (page) url += `page=${encodeURIComponent(page)}&`;
+        if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
         const request = {
             method: 'get',
-            url: `/banks`
+            url: url,
         };
         return this._instance(request);
     }
