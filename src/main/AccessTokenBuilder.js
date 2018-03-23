@@ -13,6 +13,7 @@ export default class AccessTokenBuilder {
     constructor(client, member, resources) {
         this._client = client;
         this._member = member;
+        this._tokenRequestId = "";
 
         this._payload = {
             version: config.accessTokenVersion,
@@ -240,6 +241,17 @@ export default class AccessTokenBuilder {
     }
 
     /**
+     * Sets the token request ID.
+     *
+     * @param {string} tokenRequestId - token request id
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    setTokenRequestId(tokenRequestId) {
+        this._tokenRequestId = tokenRequestId;
+        return this;
+    }
+
+    /**
      * Builds the token payload.
      *
      * @return {Object} tokenPayload - token payload
@@ -264,7 +276,7 @@ export default class AccessTokenBuilder {
                 throw new Error('No recipient on token');
             }
 
-            const res = await this._client.createAccessToken(this._payload);
+            const res = await this._client.createAccessToken(this._payload, this._tokenRequestId);
 
             if (res.data.status === "FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED") {
                 let error = new Error("FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED");

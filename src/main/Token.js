@@ -336,6 +336,21 @@ class Token {
             return res.data.tokenRequest;
         });
     }
+
+    /**
+     * Get a token ID based on its token request ID.
+     *
+     * @param {string} fromId - member ID of the token grantor
+     * @param {string} tokenRequestId - token request id
+     * @param {string} type - token type
+     * @return {Promise} tokenId - token id
+     */
+    getTokenId(fromId, tokenRequestId, type) {
+        return Util.callAsync(this.getTokenId, async () => {
+            const res = await this._unauthenticatedClient.getTokenId(fromId, tokenRequestId, type);
+            return res.data.tokenId;
+        });
+    }
 }
 
 export default Token;
