@@ -336,6 +336,64 @@ class Token {
             return res.data.tokenRequest;
         });
     }
+
+    /**
+     * Generate a token request authorization URL.
+     *
+     * @param {string} requestId - request id
+     * @param {string} state - original state
+     * @param {string} csrfToken - CSRF token
+     * @return {Promise} tokenRequestUrl - token request URL
+     */
+    async generateTokenRequestUrl(requestId, state = "", csrfToken = "") {
+        const tokenRequestState = {
+            csrfTokenHash: Util.hashString(csrfToken),
+            innerState: state
+        };
+        const serializedState = JSON.stringify(tokenRequestState);
+
+        return config.webAppUrls[this._env] +
+            `/authorize?request_id=${requestId}&state=${serializedState}`;
+    }
+
+    /**
+     * Parse a token request callback URL, verify the state and signature, and return the inner state and token id.
+     *
+     * @param {string} callbackUrl - callback URL
+     * @param {string} csrfToken - CSRF token
+     * @return {Promise} result - inner state and token id
+     */
+    async parseTokenRequestCallbackUrl(callbackUrl, csrfToken = "") {
+        return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
+            const tokenMemberId = await this._unauthenticatedClient
+                .resolveAlias(Util.tokenAlias());
+            const tokenMember = await this._unauthenticatedClient
+                .getMember(tokenMemberId);
+            const url = new URL(callbackUrl);
+
+            const params = {
+                tokenId: url.searchParams.get("token-id"),
+                serializedState: url.searchParams.get("state"),
+                state: JSON.parse(url.searchParams.get("state")),
+                signature: JSON.parse(url.searchParams.get("signature"))
+            };
+
+            if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
+                throw new Error('Invalid state.');
+            }
+
+            const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
+            Crypto.verify(
+                params.serializedState,
+                params.signature.signature,
+                signingKey.public_key);
+
+            return {
+                tokenId: params.tokenId,
+                innerState: params.state.innerState
+            };
+        });
+    }
 }
 
 export default Token;
