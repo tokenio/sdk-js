@@ -32,7 +32,8 @@ class AuthContext {
     }
 
     /**
-     * Sets the auth context to indicate that the next api call would have been initiated by the customer.
+     * Sets the auth context to indicate that the next api call
+     * would have been initiated by the customer.
      *
      * @param {boolean} flag - true if request initiated by customer
      */
