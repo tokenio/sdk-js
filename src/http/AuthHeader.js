@@ -70,7 +70,8 @@ class AuthHeader {
             'key-id=' + signer.getKeyId() + ',' +
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
-            AuthHeader._onBehalfOfHeader(context);
+            AuthHeader._onBehalfOfHeader(context) +
+            AuthHeader._customerInitiated(context);
 
         request.headers = {
             Authorization: header
@@ -95,6 +96,17 @@ class AuthHeader {
             return level;
         }
         return config.KeyLevel.LOW;
+    }
+
+    static _customerInitiated(context) {
+        // if the customer initiated request flag is set to true, we add it to the header, and reset the flag.
+        if (context !== undefined &&
+                context.customerInitiated !== undefined &&
+                context.customerInitiated === true) {
+            context.customerInitiated = undefined;
+            return ',customer-initiated=true';
+        }
+        return '';
     }
 }
 
