@@ -10,7 +10,7 @@ class AuthContext {
     constructor() {
         this._onBehalfOf = undefined;
         this._keyLevel = config.KeyLevel.LOW;
-        this._customerInitiated = undefined;
+        this._customerInitiated = false;
     }
 
     /**
