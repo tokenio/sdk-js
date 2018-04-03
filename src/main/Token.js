@@ -341,12 +341,11 @@ class Token {
      * Get a token ID based on its token request ID.
      *
      * @param {string} tokenRequestId - token request id
-     * @param {string} type - token type
      * @return {Promise} tokenId - token id
      */
-    getTokenId(tokenRequestId, type) {
+    getTokenId(tokenRequestId) {
         return Util.callAsync(this.getTokenId, async () => {
-            const res = await this._unauthenticatedClient.getTokenId(tokenRequestId, type);
+            const res = await this._unauthenticatedClient.getTokenId(tokenRequestId);
             return res.data.tokenId;
         });
     }

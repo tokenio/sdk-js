@@ -251,13 +251,12 @@ class HttpClient {
      * Get a token ID based on its token request ID.
      *
      * @param {string} tokenRequestId - token request id
-     * @param {string} type - token type
      * @return {Object} response - response to the API call
      */
-    async getTokenId(tokenRequestId, type) {
+    async getTokenId(tokenRequestId) {
         const request = {
             method: 'get',
-            url: `/tokens/token_id?tokenRequestId=${tokenRequestId}&type=${type}`,
+            url: `/token-requests/${tokenRequestId}/token_id`;
         };
         return this.__instance(request);
     }
