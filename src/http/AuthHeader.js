@@ -101,8 +101,8 @@ class AuthHeader {
     static _customerInitiated(context) {
         // if the customer initiated request flag is set to true,
         // we add it to the header, and reset the flag.
-        if (context !== undefined && context.customerInitiated === true) {
-            context.customerInitiated = undefined;
+        if (context && context.customerInitiated) {
+            context.customerInitiated = false;
             return ',customer-initiated=true';
         }
         return '';
