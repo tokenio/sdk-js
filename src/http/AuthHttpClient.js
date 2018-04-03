@@ -126,6 +126,13 @@ class AuthHttpClient {
     }
 
     /**
+     * Sets the customer initiated request flag to true.
+     */
+    setCustomerInitiated() {
+        this._context.customerInitiated = true;
+    }
+
+    /**
      * Subcribes to push notifications.
      *
      * @param {string} handler - who is handling the notifications
