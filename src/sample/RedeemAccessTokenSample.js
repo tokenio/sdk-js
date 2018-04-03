@@ -19,7 +19,6 @@ class RedeemAccessTokenSample {
         const accounts = await grantee.getAccounts();
 
         // Get informtion we want:
-        grantee.setCustomerInitiated();
         const balance0 = await grantee.getBalance(accounts[0].id, config.KeyLevel.LOW);
 
         // When done using access, clear the access token:
@@ -73,7 +72,6 @@ class RedeemAccessTokenSample {
         for (i = 0; i < Object.keys(accountIds).length; i++) {
             try {
                 const accountId = Object.keys(accountIds)[i];
-                grantee.setCustomerInitiated();
                 const balanceResponse = await grantee.getBalance(
                     accountId,
                     config.KeyLevel.LOW);
