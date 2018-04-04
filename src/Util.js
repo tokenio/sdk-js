@@ -211,8 +211,8 @@ class Util {
      * @return {Object} key - the signing key
      */
     static getSigningKey(keys, signature) {
-        for (var key in keys) {
-            if (key.id === signature.key_id) {
+        for (let key of keys) {
+            if (key.id === signature.keyId) {
                 return key;
             }
         }

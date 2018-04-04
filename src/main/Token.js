@@ -343,38 +343,37 @@ class Token {
      * @param {string} requestId - request id
      * @param {string} state - original state
      * @param {string} csrfToken - CSRF token
-     * @return {Promise} tokenRequestUrl - token request URL
+     * @return {string} tokenRequestUrl - token request URL
      */
-    async generateTokenRequestUrl(requestId, state = "", csrfToken = "") {
-        const tokenRequestState = {
-            csrfTokenHash: Util.hashString(csrfToken),
-            innerState: state
-        };
-        const serializedState = JSON.stringify(tokenRequestState);
+    generateTokenRequestUrl(requestId, state = "", csrfToken = "") {
+        return Util.callSync(this.generateTokenRequestUrl, () => {
+            const tokenRequestState = {
+                csrfTokenHash: Util.hashString(csrfToken),
+                innerState: state
+            };
+            const serializedState = encodeURI(JSON.stringify(tokenRequestState));
 
-        return config.webAppUrls[this._env] +
-            `/authorize?request_id=${requestId}&state=${serializedState}`;
+            return config.webAppUrls[this._env] +
+                `/authorize?request_id=${requestId}&state=${serializedState}`;
+        });
     }
 
     /**
-     * Parse a token request callback URL, verify the state and signature, and return the inner state and token id.
+     * Parse a token request callback URL, verify the state and signature,
+     * and return the inner state and token id.
      *
      * @param {string} callbackUrl - callback URL
      * @param {string} csrfToken - CSRF token
      * @return {Promise} result - inner state and token id
      */
-    async parseTokenRequestCallbackUrl(callbackUrl, csrfToken = "") {
+    parseTokenRequestCallbackUrl(callbackUrl, csrfToken = "") {
         return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
-            const tokenMemberId = await this._unauthenticatedClient
-                .resolveAlias(Util.tokenAlias());
-            const tokenMember = await this._unauthenticatedClient
-                .getMember(tokenMemberId);
+            const tokenMember = await this._unauthenticatedClient.getTokenMember();
             const url = new URL(callbackUrl);
 
             const params = {
-                tokenId: url.searchParams.get("token-id"),
-                serializedState: url.searchParams.get("state"),
-                state: JSON.parse(url.searchParams.get("state")),
+                tokenId: url.searchParams.get("token_id"),
+                state: JSON.parse(decodeURI(url.searchParams.get("state"))),
                 signature: JSON.parse(url.searchParams.get("signature"))
             };
 
@@ -383,10 +382,15 @@ class Token {
             }
 
             const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
-            Crypto.verify(
-                params.serializedState,
+
+            Crypto.verifyJson(
+                {
+                    state: JSON.stringify(params.state),
+                    tokenId: params.tokenId
+                },
                 params.signature.signature,
-                signingKey.public_key);
+                Crypto.bufferKey(signingKey.publicKey)
+            );
 
             return {
                 tokenId: params.tokenId,

@@ -3,6 +3,7 @@ import Crypto from "../security/Crypto";
 import ErrorHandler from "./ErrorHandler";
 import DeveloperHeader from "./DeveloperHeader";
 import VersionHeader from "./VersionHeader";
+import Util from "../Util";
 
 const axios = require('axios');
 
@@ -245,6 +246,18 @@ class HttpClient {
             url: `/token-requests/${requestId}`,
         };
         return this._instance(request);
+    }
+
+    /**
+     * Returns the Token member.
+     *
+     * @return {Promise} response - response to the API call
+     */
+    async getTokenMember() {
+        const resolveAliasRes = await this.resolveAlias(Util.tokenAlias());
+        const tokenMemberId = resolveAliasRes.data.member.id;
+        const getMemberRes = await this.getMember(tokenMemberId);
+        return getMemberRes.data.member;
     }
 }
 
