@@ -8,8 +8,8 @@ import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import Crypto from "../../src/security/Crypto";
 import Util from "../../src/Util";
 
-describe('StoreAndRetrieveTransferTokenRequestSample test', () => {
-    it('Should run the sample', async () => {
+describe('TokenRequestUrl test', () => {
+    it('Should complete the whole token request URL flow', async () => {
         const grantor = await CreateMemberSample();
         const grantee = await CreateMemberSample();
 
