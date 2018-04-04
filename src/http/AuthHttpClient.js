@@ -101,8 +101,10 @@ class AuthHttpClient {
      * Use the given access token. (Act on behalf of this member).
      *
      * @param {string} accessTokenId - Id of the access token
+     * @param {boolean} customerInitiated - whether the user initiated this session / request
      */
-    useAccessToken(accessTokenId) {
+    useAccessToken(accessTokenId, customerInitiated) {
+        this._context.customerInitiated = customerInitiated;
         this._context.onBehalfOf = accessTokenId;
         this._resetRequestInterceptor();
     }
@@ -123,13 +125,7 @@ class AuthHttpClient {
     clearAccessToken() {
         this._context.onBehalfOf = undefined;
         this._resetRequestInterceptor();
-    }
-
-    /**
-     * Sets the customer initiated request flag to true.
-     */
-    setCustomerInitiated() {
-        this._context.customerInitiated = true;
+        this._context.customerInitiated = false;
     }
 
     /**

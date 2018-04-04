@@ -83,9 +83,10 @@ export default class Member {
      * Sets the access token id to be used with this client.
      *
      * @param {string} accessTokenId - the access token id
+     * @param {boolean} customerInitiated - whether the user initiated this session / request
      */
-    useAccessToken(accessTokenId) {
-        this._client.useAccessToken(accessTokenId);
+    useAccessToken(accessTokenId, customerInitiated = false) {
+        this._client.useAccessToken(accessTokenId, customerInitiated);
     }
 
     /**
@@ -93,13 +94,6 @@ export default class Member {
      */
     clearAccessToken() {
         this._client.clearAccessToken();
-    }
-
-    /**
-     * Sets the customer initiated request flag to true.
-     */
-    setCustomerInitiated() {
-        this._client.setCustomerInitiated();
     }
 
     /**
