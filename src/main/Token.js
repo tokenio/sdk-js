@@ -106,16 +106,17 @@ class Token {
     }
 
     /**
-     * Creates a member with a alias and a keypair, using the provided engine
+     * Creates a member with a alias and a keypair, using the provided engine and member type.
      *
      * @param  {Object} alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
      * @return {Promise} member - Promise of created Member
      */
-    createMember(alias, CryptoEngine) {
+    createMember(alias, CryptoEngine, memberType) {
         return Util.callAsync(this.createMember, async () => {
-            const response = await this._unauthenticatedClient.createMemberId();
+            const response = await this._unauthenticatedClient.createMemberId(memberType);
             const engine = new CryptoEngine(response.data.memberId);
             const pk1 = await engine.generateKey('PRIVILEGED');
             const pk2 = await engine.generateKey('STANDARD');
@@ -135,6 +136,18 @@ class Token {
             }
             return member;
         });
+    }
+
+    /**
+     * Creates a member with a alias and a keypair, using the provided engine
+     *
+     * @param  {Object} alias - alias to set for member,
+     *                  falsy value or empty object for a temporary member without an alias
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @return {Promise} member - Promise of created Member
+     */
+    createBusinessMember(alias, CryptoEngine) {
+        return this.createMember(alias, CryptoEngine, "BUSINESS");
     }
 
     /**

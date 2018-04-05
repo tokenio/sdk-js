@@ -44,12 +44,20 @@ class HttpClient {
     /**
      * Creates a memberId.
      *
+     * @param  {string} memberType - type of member to create. "PERSONAL" if undefined
      * @return {Object} response - response to the API call
      */
-    createMemberId() {
+    createMemberId(memberType) {
+        if (memberType === undefined) {
+            memberType = "PERSONAL";
+        }
+        const req = {
+            memberType
+        };
         const request = {
             method: 'post',
-            url: '/members'
+            url: '/members',
+            data: req
         };
         return this._instance(request);
     }
