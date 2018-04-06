@@ -228,12 +228,21 @@ export default class Member {
     /**
      * Links bank accounts to the member
      *
-     * @param {string} bankAuthorization - bankAuthorization obtained from bank
+     * @param {string} authorization - bankAuthorization obtained from bank, or
+     * oauthBankAuthorization
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
-    linkAccounts(bankAuthorization) {
+    linkAccounts(authorization) {
         return Util.callAsync(this.linkAccounts, async () => {
-            const res = await this._client.linkAccounts(bankAuthorization);
+            if (authorization.accessToken) {
+                const res = await this._client.linkAccountsOauth(authorization);
+                if (res.data.status === 'FAILURE_BANK_AUTHORIZATION_REQUIRED') {
+                    throw new Error('Cannot link accounts. Must send bankAuthorization retrieved' +
+                        ' through push notification');
+                }
+                return res.data.accounts;
+            }
+            const res = await this._client.linkAccounts(authorization);
             return res.data.accounts;
         });
     }
@@ -952,7 +961,7 @@ export default class Member {
     createTestBankAccount(balance, currency) {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
-            return res.data.bankAuthorization;
+            return res.data.authorization;
         });
     }
 

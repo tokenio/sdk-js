@@ -453,6 +453,25 @@ class AuthHttpClient {
     }
 
     /**
+     * Links accounts to the member.
+     *
+     * @param {string} authorization - oauthBankAuthorization continaing bank_id and
+     * access_token
+     * @return {Object} response - response to the API call
+     */
+    async linkAccountsOauth(authorization) {
+        const req = {
+            authorization,
+        };
+        const request = {
+            method: 'post',
+            url: `/bank-accounts`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
      * @param {Array} accountIds - account ids to unlink
