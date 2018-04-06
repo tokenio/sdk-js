@@ -239,6 +239,20 @@ export default class Member {
     }
 
     /**
+     * Links bank accounts to the member, using the new Oauth flow
+     *
+     * @param {string} oauthBankAuthorization - oauthBankAuthorization continaing bank_id and
+     * access_token
+     * @return {Promise} accounts - Promise resolving the the Accounts linked
+     */
+    linkAccountsOauth(oauthBankAuthorization) {
+        return Util.callAsync(this.linkAccountsOauth, async () => {
+            const res = await this._client.linkAccountsOauth(oauthBankAuthorization);
+            return res.data.accounts;
+        });
+    }
+
+    /**
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
      * @param {Array} accountIds - account ids to unlink
@@ -953,6 +967,20 @@ export default class Member {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
             return res.data.bankAuthorization;
+        });
+    }
+
+    /**
+     * Creates a test bank account in a fake bank, using new Oauth flow
+     *
+     * @param {double} balance - balance of the account
+     * @param {string} currency - currency of the account
+     * @return {Array} bank authorization to use with linkAccounts
+     */
+    createTestBankAccountOauth(balance, currency) {
+        return Util.callAsync(this.createTestBankAccountOauth, async () => {
+            const res = await this._client.createTestBankAccount(balance, currency);
+            return res.data.authorization;
         });
     }
 
