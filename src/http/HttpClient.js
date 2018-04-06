@@ -45,12 +45,20 @@ class HttpClient {
     /**
      * Creates a memberId.
      *
+     * @param  {string} memberType - type of member to create. "PERSONAL" if undefined
      * @return {Object} response - response to the API call
      */
-    createMemberId() {
+    createMemberId(memberType) {
+        if (memberType === undefined) {
+            memberType = "PERSONAL";
+        }
+        const req = {
+            memberType
+        };
         const request = {
             method: 'post',
-            url: '/members'
+            url: '/members',
+            data: req
         };
         return this._instance(request);
     }
@@ -258,6 +266,20 @@ class HttpClient {
         const tokenMemberId = resolveAliasRes.data.member.id;
         const getMemberRes = await this.getMember(tokenMemberId);
         return getMemberRes.data.member;
+    }
+
+    /**
+     * Get a token ID based on its token request ID.
+     *
+     * @param {string} tokenRequestId - token request id
+     * @return {Object} response - response to the API call
+     */
+    async getTokenId(tokenRequestId) {
+        const request = {
+            method: 'get',
+            url: `/token-requests/${tokenRequestId}/token_id`
+        };
+        return this._instance(request);
     }
 }
 

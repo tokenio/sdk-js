@@ -96,6 +96,13 @@ export default class Member {
     }
 
     /**
+     * Sets the customer initiated request flag to true.
+     */
+    setCustomerInitiated() {
+        this._client.setCustomerInitiated();
+    }
+
+    /**
      * Approves a new key for this member
      *
      * @param {Object} key - key to add

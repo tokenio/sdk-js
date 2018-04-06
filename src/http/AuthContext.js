@@ -10,6 +10,7 @@ class AuthContext {
     constructor() {
         this._onBehalfOf = undefined;
         this._keyLevel = config.KeyLevel.LOW;
+        this._customerInitiated = false;
     }
 
     /**
@@ -31,6 +32,16 @@ class AuthContext {
     }
 
     /**
+     * Sets the auth context to indicate that the next api call
+     * would have been initiated by the customer.
+     *
+     * @param {boolean} flag - true if request initiated by customer
+     */
+    set customerInitiated(flag) {
+        this._customerInitiated = flag;
+    }
+
+    /**
      * Gets the currently active memberId
      *
      * @return {string} onBehalfOf - accessTokenId being used
@@ -46,6 +57,15 @@ class AuthContext {
      */
     get keyLevel() {
         return this._keyLevel;
+    }
+
+    /**
+     * Gets the customer initiated request flag.
+     *
+     * @return {boolean} flag - true if request initiated by customer
+     */
+    get customerInitiated() {
+        return this._customerInitiated;
     }
 }
 

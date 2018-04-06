@@ -16,6 +16,7 @@ export default class TransferTokenBuilder {
         this._client = client;
         this._member = member;
         this._blobPayloads = [];
+        this._tokenRequestId = "";
 
         if (Util.countDecimals(lifetimeAmount) > config.decimalPrecision) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
@@ -271,6 +272,17 @@ export default class TransferTokenBuilder {
     }
 
     /**
+     * Sets the token request ID.
+     *
+     * @param {string} tokenRequestId - token request id
+     * @return {TransferTokenBuilder} builder - returns back the builder object
+     */
+    setTokenRequestId(tokenRequestId) {
+        this._tokenRequestId = tokenRequestId;
+        return this;
+    }
+
+    /**
      * Builds the token payload.
      *
      * @return {Object} tokenPayload - token payload
@@ -305,7 +317,7 @@ export default class TransferTokenBuilder {
                     payload.data);
                 this.addAttachment(attachment);
             }
-            const res = await this._client.createTransferToken(this._payload);
+            const res = await this._client.createTransferToken(this._payload, this._tokenRequestId);
             if (res.data.status === "FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED") {
                 let error = new Error("FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED");
                 error.authorizationDetails = res.data.authorizationDetails;
