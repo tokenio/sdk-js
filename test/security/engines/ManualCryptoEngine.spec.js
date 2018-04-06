@@ -6,7 +6,7 @@ import Util from '../../../src/Util';
 import Crypto from '../../../src/security/Crypto';
 
 describe('Manual crypto engines', () => {
-    it('should create the memory crypto engines', () => {
+    it('should create the manual crypto engines', () => {
         const memberId = Util.generateNonce();
 
         ManualCryptoEngine.setKeys([
