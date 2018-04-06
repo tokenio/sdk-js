@@ -28,6 +28,18 @@ class Util {
     }
 
     /**
+     * Returns the token alias.
+     *
+     * @return {Object} token alias protobuf
+     */
+    static tokenAlias() {
+        return {
+            type: 'DOMAIN',
+            value: 'token.io'
+        };
+    }
+
+    /**
      * Tests if a string ends with a suffix,
      *
      * @param {string} str - the string to test
@@ -131,6 +143,16 @@ class Util {
     }
 
     /**
+     * Hash a string value.
+     *
+     * @param {string} value - value to be hahsed
+     * @return {string} result - hashed value
+     */
+    static hashString(value) {
+        return bs58.encode(sha256(Buffer.from(value, 'utf8')));
+    }
+
+    /**
      * If we're on a token page, sets up an iframe to avoid CORS preflights. All requests in this
      * window will be routed through the iframe.
      *
@@ -179,6 +201,22 @@ class Util {
                 document.body.removeChild(iframe);
             }
         }
+    }
+
+    /**
+     * Gets the signing key from a list of keys corresponding to the signature.
+     *
+     * @param {Array} keys -  list of keys
+     * @param {Object} signature - signature
+     * @return {Object} key - the signing key
+     */
+    static getSigningKey(keys, signature) {
+        for (let key of keys) {
+            if (key.id === signature.keyId) {
+                return key;
+            }
+        }
+        throw new Error('Invalid signature');
     }
 }
 

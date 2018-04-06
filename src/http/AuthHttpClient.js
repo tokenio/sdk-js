@@ -1266,6 +1266,21 @@ class AuthHttpClient {
         };
         return this._instance(request);
     }
+
+    /**
+     * Requests a token signature for a (tokenId|state) payload.
+     *
+     * @param {string} tokenId - token id
+     * @param {string} state - url state
+     * @return {Object} response - response to the api call
+     */
+    async requestSignature(tokenId, state) {
+        const request = {
+            method: 'post',
+            url: `/request-signature?tokenId=${tokenId}&state=${state}`
+        };
+        return this._instance(request);
+    }
 }
 
 export default AuthHttpClient;
