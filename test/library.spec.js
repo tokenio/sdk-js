@@ -13,8 +13,8 @@ describe('Token library', () => {
 
         const member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
         await member1.subscribeToNotifications("iron");
-        const auth = await member1.createTestBankAccountOauth(100000, 'EUR');
-        const accounts = await member1.linkAccountsOauth(auth);
+        const auth = await member1.createTestBankAccount(100000, 'EUR');
+        const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];
 
         const member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);

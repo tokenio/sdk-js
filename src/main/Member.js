@@ -228,27 +228,23 @@ export default class Member {
     /**
      * Links bank accounts to the member
      *
-     * @param {string} bankAuthorization - bankAuthorization obtained from bank
+     * @param {string} authorization - bankAuthorization obtained from bank, or
+     * oauthBankAuthorization
      * @return {Promise} accounts - Promise resolving the the Accounts linked
      */
-    linkAccounts(bankAuthorization) {
+    linkAccounts(authorization) {
         return Util.callAsync(this.linkAccounts, async () => {
-            const res = await this._client.linkAccounts(bankAuthorization);
-            return res.data.accounts;
-        });
-    }
-
-    /**
-     * Links bank accounts to the member, using the new Oauth flow
-     *
-     * @param {string} oauthBankAuthorization - oauthBankAuthorization continaing bank_id and
-     * access_token
-     * @return {Promise} accounts - Promise resolving the the Accounts linked
-     */
-    linkAccountsOauth(oauthBankAuthorization) {
-        return Util.callAsync(this.linkAccountsOauth, async () => {
-            const res = await this._client.linkAccountsOauth(oauthBankAuthorization);
-            return res.data.accounts;
+            if (authorization.accessToken) {
+                const res = await this._client.linkAccountsOauth(authorization);
+                if (res.data.status === 'FAILURE_BANK_AUTHORIZATION_REQUIRED') {
+                    throw new Error('Cannot link accounts. Must send bankAuthorization retrieved' +
+                        ' through push notification');
+                }
+                return res.data.accounts;
+            } else {
+                const res = await this._client.linkAccounts(authorization);
+                return res.data.accounts;
+            }
         });
     }
 
@@ -967,20 +963,6 @@ export default class Member {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
             return res.data.bankAuthorization;
-        });
-    }
-
-    /**
-     * Creates a test bank account in a fake bank, using new Oauth flow
-     *
-     * @param {double} balance - balance of the account
-     * @param {string} currency - currency of the account
-     * @return {Array} bank authorization to use with linkAccounts
-     */
-    createTestBankAccountOauth(balance, currency) {
-        return Util.callAsync(this.createTestBankAccountOauth, async () => {
-            const res = await this._client.createTestBankAccount(balance, currency);
-            return res.data.authorization;
         });
     }
 
