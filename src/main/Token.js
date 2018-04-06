@@ -349,6 +349,81 @@ class Token {
             return res.data.tokenRequest;
         });
     }
+
+    /**
+     * Generate a token request authorization URL.
+     *
+     * @param {string} requestId - request id
+     * @param {string} state - original state
+     * @param {string} csrfToken - CSRF token
+     * @return {string} tokenRequestUrl - token request URL
+     */
+    generateTokenRequestUrl(requestId, state = "", csrfToken = "") {
+        return Util.callSync(this.generateTokenRequestUrl, () => {
+            const tokenRequestState = {
+                csrfTokenHash: Util.hashString(csrfToken),
+                innerState: state
+            };
+            const serializedState = encodeURI(JSON.stringify(tokenRequestState));
+
+            return config.webAppUrls[this._env] +
+                `/authorize?request_id=${requestId}&state=${serializedState}`;
+        });
+    }
+
+    /**
+     * Parse a token request callback URL, verify the state and signature,
+     * and return the inner state and token id.
+     *
+     * @param {string} callbackUrl - callback URL
+     * @param {string} csrfToken - CSRF token
+     * @return {Promise} result - inner state and token id
+     */
+    parseTokenRequestCallbackUrl(callbackUrl, csrfToken = "") {
+        return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
+            const tokenMember = await this._unauthenticatedClient.getTokenMember();
+            const url = new URL(callbackUrl);
+
+            const params = {
+                tokenId: url.searchParams.get("token_id"),
+                state: JSON.parse(decodeURI(url.searchParams.get("state"))),
+                signature: JSON.parse(url.searchParams.get("signature"))
+            };
+
+            if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
+                throw new Error('Invalid state.');
+            }
+
+            const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
+
+            Crypto.verifyJson(
+                {
+                    state: JSON.stringify(params.state),
+                    tokenId: params.tokenId
+                },
+                params.signature.signature,
+                Crypto.bufferKey(signingKey.publicKey)
+            );
+
+            return {
+                tokenId: params.tokenId,
+                innerState: params.state.innerState
+            };
+        });
+    }
+
+    /**
+     * Get a token ID based on its token request ID.
+     *
+     * @param {string} tokenRequestId - token request id
+     * @return {Promise} tokenId - token id
+     */
+    getTokenId(tokenRequestId) {
+        return Util.callAsync(this.getTokenId, async () => {
+            const res = await this._unauthenticatedClient.getTokenId(tokenRequestId);
+            return res.data.tokenId;
+        });
+    }
 }
 
 export default Token;

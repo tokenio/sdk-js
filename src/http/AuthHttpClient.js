@@ -723,14 +723,16 @@ class AuthHttpClient {
      * Creates a transfer token.
      *
      * @param {Object} payload - payload of the token
+     * @param {string} tokenRequestId - token request id
      * @return {Object} response - response to the API call
      */
-    async createTransferToken(payload) {
+    async createTransferToken(payload, tokenRequestId) {
         const request = {
             method: 'post',
             url: `/tokens?type=transfer`,
             data: {
                 payload,
+                tokenRequestId,
             }
         };
         return this._instance(request);
@@ -740,14 +742,16 @@ class AuthHttpClient {
      * Creates an access token.
      *
      * @param {Object} payload - access token payload
+     * @param {string} tokenRequestId - token request id
      * @return {Object} response - response to the API call
      */
-    async createAccessToken(payload) {
+    async createAccessToken(payload, tokenRequestId) {
         const request = {
             method: 'post',
             url: `/tokens?type=access`,
             data: {
                 payload,
+                tokenRequestId,
             }
         };
         return this._instance(request);
@@ -1278,6 +1282,21 @@ class AuthHttpClient {
         const request = {
             method: 'get',
             url: `/test/subscribers/${subscriberId}/notifications`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Requests a token signature for a (tokenId|state) payload.
+     *
+     * @param {string} tokenId - token id
+     * @param {string} state - url state
+     * @return {Object} response - response to the api call
+     */
+    async requestSignature(tokenId, state) {
+        const request = {
+            method: 'post',
+            url: `/request-signature?tokenId=${tokenId}&state=${state}`
         };
         return this._instance(request);
     }

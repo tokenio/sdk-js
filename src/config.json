@@ -8,6 +8,14 @@
         "int": "https://api.int.token.io",
         "prd": "https://api.token.io"
     },
+    "webAppUrls": {
+        "local": "http://localhost:8000",
+        "dev": "https://web-app.dev.token.io",
+        "stg": "https://web-app.stg.token.io",
+        "sandbox": "https://web-app.sandbox.token.io",
+        "int": "https://web-app.int.token.io",
+        "prd": "https://web-app.token.io"
+    },
     "transferTokenVersion": "1.0",
     "accessTokenVersion": "1.0",
     "defaultCurrency": "EUR",

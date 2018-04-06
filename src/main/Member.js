@@ -992,6 +992,20 @@ export default class Member {
         });
     }
 
+    /**
+     * Requests a token signature for a (tokenId|state) payload.
+     *
+     * @param {string} tokenId - token id
+     * @param {string} state - url state
+     * @return {Object} response - response to the api call
+     */
+    requestSignature(tokenId, state) {
+        return Util.callAsync(this.requestSignature, async () => {
+            const res = await this._client.requestSignature(tokenId, state);
+            return res.data.signature;
+        });
+    }
+
     _getPreviousHash() {
         return Util.callAsync(this._getPreviousHash, async () => {
             const member = await this._getMember();
