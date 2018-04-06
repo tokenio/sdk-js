@@ -264,9 +264,9 @@ class HttpClient {
     async getTokenId(tokenRequestId) {
         const request = {
             method: 'get',
-            url: `/token-requests/${tokenRequestId}/token_id`;
+            url: `/token-requests/${tokenRequestId}/token_id`
         };
-        return this.__instance(request);
+        return this._instance(request);
     }
 }
 
