@@ -254,6 +254,20 @@ class HttpClient {
         };
         return this._instance(request);
     }
+
+    /**
+     * Get a token ID based on its token request ID.
+     *
+     * @param {string} tokenRequestId - token request id
+     * @return {Object} response - response to the API call
+     */
+    async getTokenId(tokenRequestId) {
+        const request = {
+            method: 'get',
+            url: `/token-requests/${tokenRequestId}/token_id`
+        };
+        return this._instance(request);
+    }
 }
 
 export default HttpClient;
