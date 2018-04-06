@@ -24,6 +24,7 @@ import MemoryKeyStore from './MemoryKeyStore';
  * }
  *
  */
+
 const globalKeyStore = new MemoryKeyStore();
 
 class MemoryCryptoEngine extends KeyStoreCryptoEngine {

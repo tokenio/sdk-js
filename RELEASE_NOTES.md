@@ -1,3 +1,7 @@
+## Release 1.4.122
+
+Add ManualCryptoEngine which allows the client to pass in the private keys that she wants to use.
+
 ## Release 1.4.109
 
 MemoryCryptoEngine and BrowserCryptoEngine functions are now async.
