@@ -12,7 +12,8 @@ class BrowserKeyStore {
         }
 
         if (savedSchemaVersion < config.localStorageSchemaVersion) {
-            window.localStorage.clear();
+            window.localStorage.removeItem('members');
+            window.localStorage.removeItem('activeMemberId');
             window.localStorage.schemaVersion = JSON.stringify(config.localStorageSchemaVersion);
         }
     }
