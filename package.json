@@ -13,7 +13,7 @@
     "testBrowserStg": "TEST_ENV=stg ./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserSandbox": "TEST_ENV=sandbox ./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserPrd": "TEST_ENV=prd ./node_modules/karma/bin/karma start test/karma.config.js",
-    "testNode": "npm run lint && node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors \"test/**/*.spec.js\"",
+    "testNode": "npm run lint && node_modules/mocha-webpack/bin/mocha-webpack -r jsdom-global/register --webpack-config config/webpack.config.node.js --timeout 60000 --colors \"test/**/*.spec.js\"",
     "testNodeDev": "npm run lint && TEST_ENV=dev node_modules/mocha-webpack/bin/mocha-webpack -r jsdom-global/register --webpack-config config/webpack.config.node.js --timeout 60000 --colors \"test/**/*.spec.js\"",
     "testNodeStg": "npm run lint && TEST_ENV=stg node_modules/mocha-webpack/bin/mocha-webpack -r jsdom-global/register --webpack-config config/webpack.config.node.js --timeout 60000 --colors \"test/**/*.spec.js\"",
     "testNodeSandbox": "npm run lint && TEST_ENV=sandbox node_modules/mocha-webpack/bin/mocha-webpack -r jsdom-global/register --webpack-config config/webpack.config.node.js --timeout 60000 --colors \"test/**/*.spec.js\"",
