@@ -1,6 +1,7 @@
 import Crypto from "../security/Crypto";
 import BrowserCryptoEngine from "../security/engines/BrowserCryptoEngine";
 import MemoryCryptoEngine from "../security/engines/MemoryCryptoEngine";
+import ManualCryptoEngine from "../security/engines/ManualCryptoEngine";
 import UnsecuredFileCryptoEngine from "../security/engines/UnsecuredFileCryptoEngine";
 import Util from "../Util";
 import Member from "../main/Member";
@@ -47,6 +48,9 @@ class Token {
 
         /** Class for using the memory crypto engine */
         this.MemoryCryptoEngine = MemoryCryptoEngine;
+
+        /** Class for using the hardcoded crypto engine */
+        this.ManualCryptoEngine = ManualCryptoEngine;
 
         if (keyDir) {
             UnsecuredFileCryptoEngine.setDirRoot(keyDir);
