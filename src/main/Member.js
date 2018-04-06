@@ -961,7 +961,7 @@ export default class Member {
     createTestBankAccount(balance, currency) {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
-            return res.data.bankAuthorization;
+            return res.data.authorization;
         });
     }
 
