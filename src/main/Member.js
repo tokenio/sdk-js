@@ -241,10 +241,9 @@ export default class Member {
                         ' through push notification');
                 }
                 return res.data.accounts;
-            } else {
-                const res = await this._client.linkAccounts(authorization);
-                return res.data.accounts;
             }
+            const res = await this._client.linkAccounts(authorization);
+            return res.data.accounts;
         });
     }
 
