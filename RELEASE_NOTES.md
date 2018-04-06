@@ -1,3 +1,7 @@
+## Release 1.4.123
+
+Don't clear entire localstorage, as there may be other important information stored there.
+
 ## Release 1.4.122
 
 Add ManualCryptoEngine which allows the client to pass in the private keys that she wants to use.
