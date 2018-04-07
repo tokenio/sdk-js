@@ -1,7 +1,7 @@
 const devKey = require("../../src/config.json").devKey[TEST_ENV];
 const TokenLib = require('../../src');
 const Token = new TokenLib(TEST_ENV, devKey, './keys');
-
+import Util from "../Util";
 /**
  * Sample code illustrating how to generate and parse a token
  * request URL.
@@ -40,8 +40,8 @@ class TokenRequestUrlSample {
      * @return {Promise} promise - promise of callback URL
      */
     static async getCallbackUrlFromTokenRequestUrl(grantor, grantee, tokenRequestUrl) {
-        const url = new URL(tokenRequestUrl);
-        const state = encodeURI(url.searchParams.get("state"));
+        const urlParams = Util.parseParamsFromUrl(tokenRequestUrl);
+        const state = encodeURI(urlParams.state);
 
         const token = await this.generateValidAccessToken(grantor, grantee);
 

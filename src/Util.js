@@ -218,6 +218,16 @@ class Util {
         }
         throw new Error('Invalid signature');
     }
+
+    static parseParamsFromUrl(url) {
+        let query = url.split('?')[1];
+        let result = {};
+        query.split("&").forEach(function(part) {
+            var item = part.split("=");
+            result[item[0]] = decodeURI(item[1]);
+        });
+        return result;
+    }
 }
 
 export default Util;
