@@ -386,12 +386,12 @@ class Token {
     parseTokenRequestCallbackUrl(callbackUrl, csrfToken = "") {
         return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
             const tokenMember = await this._unauthenticatedClient.getTokenMember();
-            const url = new URL(callbackUrl);
+            const urlParams = Util.parseParamsFromUrl(callbackUrl);
 
             const params = {
-                tokenId: url.searchParams.get("token_id"),
-                state: JSON.parse(decodeURI(url.searchParams.get("state"))),
-                signature: JSON.parse(url.searchParams.get("signature"))
+                tokenId: urlParams.token_id,
+                state: JSON.parse(decodeURI(urlParams.state)),
+                signature: JSON.parse(urlParams.signature)
             };
 
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
