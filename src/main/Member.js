@@ -961,10 +961,23 @@ export default class Member {
     createTestBankAccount(balance, currency) {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
-            return res.data.authorization;
+            return res.data.bankAuthorization;
         });
     }
 
+    /**
+     * Creates a test bank account in a fake bank
+     *
+     * @param {double} balance - balance of the account
+     * @param {string} currency - currency of the account
+     * @return {Array} bank authorization to use with linkAccounts
+     */
+    createTestBankAccountOauth(balance, currency) {
+        return Util.callAsync(this.createTestBankAccountOauth, async () => {
+            const res = await this._client.createTestBankAccount(balance, currency);
+            return res.data.authorization;
+        });
+    }
     /**
      * Gets test bank notification.
      *
