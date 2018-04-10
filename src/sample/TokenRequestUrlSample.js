@@ -41,13 +41,13 @@ class TokenRequestUrlSample {
      */
     static async getCallbackUrlFromTokenRequestUrl(grantor, grantee, tokenRequestUrl) {
         const urlParams = Util.parseParamsFromUrl(tokenRequestUrl);
-        const state = encodeURI(urlParams.state);
+        const state = encodeURIComponent(urlParams.state);
 
         const token = await this.generateValidAccessToken(grantor, grantee);
 
         const signature = await grantor.requestSignature(token.id, state);
         const callbackUrl = `http://localhost/path?tokenId=${token.id}` +
-            `&state=${state}&signature=${JSON.stringify(signature)}`;
+            `&state=${state}&signature=${encodeURIComponent(JSON.stringify(signature))}`;
 
         return callbackUrl;
     }

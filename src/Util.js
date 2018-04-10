@@ -224,7 +224,7 @@ class Util {
         let result = {};
         query.split("&").forEach(function(part) {
             var item = part.split("=");
-            result[item[0]] = decodeURI(item[1]);
+            result[item[0]] = decodeURIComponent(item[1]);
         });
         return result;
     }
