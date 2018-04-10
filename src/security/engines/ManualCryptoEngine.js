@@ -11,8 +11,35 @@ let keys = [];
 const globalKeyStore = new MemoryKeyStore();
 
 class ManualCryptoEngine extends KeyStoreCryptoEngine {
+    /**
+     * Set the hardcoded keys used by ManualCryptoEngine
+     *
+     * @param {array} memberKeys - keys to set
+     *
+     * Must be an array with objects of the format:
+     * {
+     *     publicKey: "123456",
+     *     secretKey: "123456",
+     *     level: "LOW" || "STANDARD" || "PRIVILEGED",
+     * }
+     */
     static setKeys(memberKeys) {
         keys = memberKeys;
+        for (let keyPair of keys) {
+            if (!keyPair.publicKey || !keyPair.secretKey || !keyPair.level) {
+                throw new Error("Invalid keyPair format");
+            }
+            if (typeof keyPair.publicKey === 'string') {
+                keyPair.publicKey = Crypto.bufferKey(keyPair.publicKey);
+            }
+            if (typeof keyPair.secretKey === 'string') {
+                keyPair.secretKey = Crypto.bufferKey(keyPair.secretKey);
+            }
+            if (!keyPair.id) {
+                keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
+            }
+            keyPair.algorithm = 'ED25519';
+        }
     }
 
     constructor(memberId) {
@@ -23,22 +50,19 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
     }
 
     /**
-     * Generate a keypair and store it.
+     * Generate a keyPair and store it.
      *
      * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
      * @return {Object} key
      */
     async generateKey(level) {
-        for (let keypair of keys) {
-            if (keypair.level === level) {
-                keypair.publicKey = Crypto.bufferKey(keypair.publicKey);
-                keypair.id = base64url(sha256(keypair.publicKey)).substring(0, 16);
-                keypair.secretKey = Crypto.bufferKey(keypair.secretKey);
-                const stored = await this._keystore.put(this._memberId, keypair);
-                if (stored && stored.secretKey) {
-                    delete stored.secretKey;
+        for (let keyPair of keys) {
+            if (keyPair.level === level) {
+                const cloned = clone(keyPair);
+                if (cloned.secretKey) {
+                    delete cloned.secretKey;
                 }
-                return stored;
+                return cloned;
             }
         }
     }
@@ -50,15 +74,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements sign, signJson
      */
     async createSigner(level) {
-        const key = keys.filter((k) => (k.level === level))[0];
-        key.publicKey = Crypto.bufferKey(key.publicKey);
-        key.id = base64url(sha256(key.publicKey)).substring(0, 16);
-        key.secretKey = Crypto.bufferKey(key.secretKey);
-        await this._keystore.put(
-            this._memberId,
-            key);
-        const keypair = await this._keystore.getByLevel(this._memberId, level);
-        return Crypto.createSignerFromKeypair(keypair);
+        return Crypto.createSignerFromKeypair(clone(keys.filter((k) => (k.level === level))[0]));
     }
 
     /**
@@ -68,16 +84,22 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements verify, verifyJson
      */
     async createVerifier(keyId) {
-        const key = keys.filter((k) => (k.id === keyId))[0];
-        key.publicKey = Crypto.bufferKey(key.publicKey);
-        key.id = base64url(sha256(key.publicKey)).substring(0, 16);
-        key.secretKey = Crypto.bufferKey(key.secretKey);
-        await this._keystore.put(
-            this._memberId,
-            key);
-        const keypair = await this._keystore.getById(this._memberId, keyId);
-        return Crypto.createVerifierFromKeypair(keypair);
+        return Crypto.createVerifierFromKeypair(clone(keys.filter((k) => (k.id === keyId))[0]));
     }
+}
+
+/**
+ * Return a (shallow) copy of an object.
+ *
+ * If the "user" of a keypair object edits it (e.g., deleting secretKey),
+ * that shouldn't affect the "stored" keypair. Thus, we can't pass around
+ * references to stored objects. Instead, we do some object-copying.
+ *
+ * @param {Object} obj - object to copy
+ * @return {Object} copy of obj
+ */
+function clone(obj) {
+    return Object.assign({}, obj);
 }
 
 export default ManualCryptoEngine;
