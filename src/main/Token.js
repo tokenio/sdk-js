@@ -371,7 +371,7 @@ class Token {
             const serializedState = encodeURI(JSON.stringify(tokenRequestState));
 
             return config.webAppUrls[this._env] +
-                `/authorize?request_id=${requestId}&state=${serializedState}`;
+                `/request-token/${requestId}?state=${serializedState}`;
         });
     }
 
@@ -390,8 +390,8 @@ class Token {
 
             const params = {
                 tokenId: urlParams.token_id,
-                state: JSON.parse(decodeURI(urlParams.state)),
-                signature: JSON.parse(urlParams.signature)
+                state: JSON.parse(decodeURIComponent(urlParams.state)),
+                signature: JSON.parse(decodeURIComponent(urlParams.signature)),
             };
 
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
