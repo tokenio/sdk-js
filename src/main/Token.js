@@ -368,10 +368,10 @@ class Token {
                 csrfTokenHash: Util.hashString(csrfToken),
                 innerState: state
             };
-            const serializedState = encodeURI(JSON.stringify(tokenRequestState));
+            const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
 
             return config.webAppUrls[this._env] +
-                `/authorize?request_id=${requestId}&state=${serializedState}`;
+                `/request-token/${requestId}?state=${serializedState}`;
         });
     }
 
@@ -389,25 +389,29 @@ class Token {
             const urlParams = Util.parseParamsFromUrl(callbackUrl);
 
             const params = {
-                tokenId: urlParams.token_id,
-                state: JSON.parse(decodeURI(urlParams.state)),
-                signature: JSON.parse(urlParams.signature)
+                tokenId: decodeURIComponent(urlParams.tokenId),
+                state: JSON.parse(decodeURIComponent(urlParams.state)),
+                signature: (urlParams.signature ?
+                    JSON.parse(decodeURIComponent(urlParams.signature)) :
+                    undefined),
             };
 
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
                 throw new Error('Invalid state.');
             }
 
-            const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
-
-            Crypto.verifyJson(
-                {
-                    state: JSON.stringify(params.state),
-                    tokenId: params.tokenId
-                },
-                params.signature.signature,
-                Crypto.bufferKey(signingKey.publicKey)
-            );
+            // TODO: Remove this check, and always verify signature. Requires backend fix
+            if (params.signature) {
+                const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
+                Crypto.verifyJson(
+                    {
+                        state: JSON.stringify(params.state),
+                        tokenId: params.tokenId
+                    },
+                    params.signature.signature,
+                    Crypto.bufferKey(signingKey.publicKey)
+                );
+            }
 
             return {
                 tokenId: params.tokenId,
