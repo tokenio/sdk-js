@@ -24,6 +24,9 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * }
      */
     static setKeys(memberKeys) {
+        if (!memberKeys || !Array.isArray(memberKeys) || memberKeys.length < 1) {
+            throw new Error('invalid keys format');
+        }
         keys = memberKeys;
         for (let keyPair of keys) {
             if (!keyPair.publicKey || !keyPair.secretKey || !keyPair.level) {
@@ -74,7 +77,11 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements sign, signJson
      */
     async createSigner(level) {
-        return Crypto.createSignerFromKeypair(clone(keys.filter((k) => (k.level === level))[0]));
+        const keyPairs = keys.filter((k) => (k.level === level));
+        if (!keyPairs || !keyPairs.length) {
+            throw new Error(`No key with level ${level} found`);
+        }
+        return Crypto.createSignerFromKeypair(clone(keyPairs[0]));
     }
 
     /**
@@ -84,7 +91,11 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements verify, verifyJson
      */
     async createVerifier(keyId) {
-        return Crypto.createVerifierFromKeypair(clone(keys.filter((k) => (k.id === keyId))[0]));
+        const keyPairs = keys.filter((k) => (k.id === keyId));
+        if (!keyPairs || !keyPairs.length) {
+            throw new Error(`No key with id ${keyId} found`);
+        }
+        return Crypto.createVerifierFromKeypair(clone(keyPairs[0]));
     }
 }
 
