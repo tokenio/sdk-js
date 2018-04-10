@@ -50,13 +50,14 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements sign, signJson
      */
     async createSigner(level) {
+        const key = keys.filter((k) => (k.level === level))[0];
+        key.publicKey = Crypto.bufferKey(key.publicKey);
+        key.id = base64url(sha256(key.publicKey)).substring(0, 16);
+        key.secretKey = Crypto.bufferKey(key.secretKey);
         await this._keystore.put(
             this._memberId,
-            keys.filter((key) => (key.level === level))[0]);
+            key);
         const keypair = await this._keystore.getByLevel(this._memberId, level);
-        keypair.publicKey = Crypto.bufferKey(keypair.publicKey);
-        keypair.id = base64url(sha256(keypair.publicKey)).substring(0, 16);
-        keypair.secretKey = Crypto.bufferKey(keypair.secretKey);
         return Crypto.createSignerFromKeypair(keypair);
     }
 
@@ -67,13 +68,14 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements verify, verifyJson
      */
     async createVerifier(keyId) {
+        const key = keys.filter((k) => (k.id === keyId))[0];
+        key.publicKey = Crypto.bufferKey(key.publicKey);
+        key.id = base64url(sha256(key.publicKey)).substring(0, 16);
+        key.secretKey = Crypto.bufferKey(key.secretKey);
         await this._keystore.put(
             this._memberId,
-            keys.filter((key) => (key.id === keyId))[0]);
+            key);
         const keypair = await this._keystore.getById(this._memberId, keyId);
-        keypair.publicKey = Crypto.bufferKey(keypair.publicKey);
-        keypair.id = base64url(sha256(keypair.publicKey)).substring(0, 16);
-        keypair.secretKey = Crypto.bufferKey(keypair.secretKey);
         return Crypto.createVerifierFromKeypair(keypair);
     }
 }
