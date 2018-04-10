@@ -36,23 +36,6 @@ describe('Manual crypto engines', () => {
         assert.isOk(pk4);
     });
 
-    it('should not create a bad signer', async () => {
-        const memberId = Util.generateNonce();
-        ManualCryptoEngine.setKeys([
-            Crypto.generateKeys('LOW'),
-            Crypto.generateKeys('STANDARD'),
-            Crypto.generateKeys('PRIVILEGED'),
-        ]);
-        const engine = new ManualCryptoEngine(memberId);
-        await engine.generateKey('LOW');
-        try {
-            await engine.createSigner('STANDARD');
-            return Promise.reject(new Error("should fail"));
-        } catch (err) {
-            assert.include(err.message, "No key");
-        }
-    });
-
     it('should have a signer with a key id', async () => {
         const memberId = Util.generateNonce();
         ManualCryptoEngine.setKeys([
