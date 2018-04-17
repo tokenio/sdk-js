@@ -229,13 +229,7 @@ class Util {
         return result;
     }
 
-    static setUpLogging(instance, logRequestUrls) {
-        if (logRequestUrls) {
-            instance.interceptors.request.use(request => {
-                console.log('Request: ', request.url);
-                return request;
-            });
-        }
+    static setUpHttpErrorLogging(instance) {
         instance.interceptors.response.use(response => {
             if (response.status !== 200) {
                 console.log('Response: ', response);

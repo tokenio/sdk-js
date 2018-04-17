@@ -24,42 +24,42 @@ class Token {
      * @param {string} developerKey - the developer key
      * @param {string} keyDir - absolute directory name of key storage directory
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback) {
+    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback, loggingEnabled) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
+        this._developerKey = developerKey;
+        this._loggingEnabled = loggingEnabled;
         this._unauthenticatedClient = new HttpClient(
             env,
             developerKey,
-            this._globalRpcErrorCallback);
+            this._globalRpcErrorCallback,
+            loggingEnabled);
 
-        /** Available security levels for keys */
+        /* Available security levels for keys */
         this.KeyLevel = config.KeyLevel;
 
-        /** Crypto utility functions */
+        /* Crypto utility functions */
         this.Crypto = Crypto;
 
-        /** Other utility functions */
+        /* Other utility functions */
         this.Util = Util;
 
-        /** Class for using the browser crypto engine */
+        /* Class for using the browser crypto engine */
         this.BrowserCryptoEngine = BrowserCryptoEngine;
 
-        /** Class for using the memory crypto engine */
+        /* Class for using the memory crypto engine */
         this.MemoryCryptoEngine = MemoryCryptoEngine;
 
-        /** Class for using the hardcoded crypto engine */
+        /* Class for using the hardcoded crypto engine */
         this.ManualCryptoEngine = ManualCryptoEngine;
 
         if (keyDir) {
             UnsecuredFileCryptoEngine.setDirRoot(keyDir);
         }
-
-        /** Developer key*/
-        this._developerKey = developerKey;
-
-        /** Class for the Unsecured filestore key root */
+        /* Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
 
         /* Class for constructing TokenRequest objects */
@@ -130,11 +130,12 @@ class Token {
                 [pk1, pk2, pk3],
                 engine);
             const member = new Member(
-                    this._env,
-                    response.data.memberId,
-                    engine,
-                    this._developerKey,
-                    this._globalRpcErrorCallback);
+                this._env,
+                response.data.memberId,
+                engine,
+                this._developerKey,
+                this._globalRpcErrorCallback,
+                this._loggingEnabled);
             if (alias && Object.keys(alias).length !== 0) {
                 await member.addAlias(alias);
             }
@@ -224,7 +225,8 @@ class Token {
                 memberId,
                 engine,
                 this._developerKey,
-                this._globalRpcErrorCallback);
+                this._globalRpcErrorCallback,
+                this._loggingEnabled);
         });
     }
 

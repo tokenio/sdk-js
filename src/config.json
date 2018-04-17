@@ -16,14 +16,6 @@
         "int": "https://web-app.int.token.io",
         "prd": "https://web-app.token.io"
     },
-	"loggingEnabled": {
-		"local": true,
-		"dev": true,
-		"stg": true,
-		"sandbox": false,
-		"int": false,
-		"prd": false
-	},
     "transferTokenVersion": "1.0",
     "accessTokenVersion": "1.0",
     "defaultCurrency": "EUR",

@@ -17,9 +17,10 @@ class HttpClient {
      * @param {string} env - environment to point to, like 'prd'
      * @param {string} developerKey - the developer key
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
      */
-    constructor(env, developerKey, globalRpcErrorCallback) {
+    constructor(env, developerKey, globalRpcErrorCallback, loggingEnabled) {
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -27,8 +28,8 @@ class HttpClient {
         this._instance = axios.create({
             baseURL: config.urls[env]
         });
-        if (config.loggingEnabled[env]) {
-            Util.setUpLogging(this._instance, false);
+        if (loggingEnabled) {
+            Util.setUpHttpErrorLogging(this._instance);
         }
 
         const versionHeader = new VersionHeader();
