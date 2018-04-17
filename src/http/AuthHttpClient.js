@@ -35,8 +35,11 @@ class AuthHttpClient {
                 JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: config.urls[env]
+            baseURL: config.urls[env],
         });
+        if (config.loggingEnabled[env]) {
+            Util.setUpLogging(this._instance, false);
+        }
         this._memberId = memberId;
         this._cryptoEngine = cryptoEngine;
 

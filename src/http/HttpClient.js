@@ -27,6 +27,9 @@ class HttpClient {
         this._instance = axios.create({
             baseURL: config.urls[env]
         });
+        if (config.loggingEnabled[env]) {
+            Util.setUpLogging(this._instance, false);
+        }
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
