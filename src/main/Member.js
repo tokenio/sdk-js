@@ -21,16 +21,18 @@ export default class Member {
      * @param {Object} cryptoEngine - the cryptoEngine to use for signing and key storage
      * @param {string} developerKey - the developer key
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
+     * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
      */
-    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback) {
+    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled) {
         this._id = memberId;
         this._client = new AuthHttpClient(
             env,
             memberId,
             cryptoEngine,
             developerKey,
-            globalRpcErrorCallback);
+            globalRpcErrorCallback,
+            loggingEnabled);
         this._unauthenticatedClient = new HttpClient(env, developerKey, globalRpcErrorCallback);
     }
 

@@ -228,6 +228,15 @@ class Util {
         });
         return result;
     }
+
+    static setUpHttpErrorLogging(instance) {
+        instance.interceptors.response.use(response => {
+            if (response.status !== 200) {
+                console.log('Response: ', response);
+            }
+            return response;
+        });
+    }
 }
 
 export default Util;
