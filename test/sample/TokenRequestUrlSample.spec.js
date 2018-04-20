@@ -37,7 +37,7 @@ describe('TokenRequestUrl test', () => {
         const grantee = await CreateMemberSample();
         const token = await TokenRequestUrlSample.generateValidAccessToken(grantor, grantee);
 
-        const signature = await grantor.requestSignature(token.id, state);
+        const signature = await grantor.signTokenRequestState(token.id, state);
 
         const tokenMember = await TokenRequestUrlSample.getTokenMember();
         const signingKey = Util.getSigningKey(tokenMember.keys, signature);

@@ -45,7 +45,7 @@ class TokenRequestUrlSample {
 
         const token = await this.generateValidAccessToken(grantor, grantee);
 
-        const signature = await grantor.requestSignature(token.id, state);
+        const signature = await grantor.signTokenRequestState(token.id, state);
         const callbackUrl = `http://localhost/path?tokenId=${token.id}` +
             `&state=${state}&signature=${encodeURIComponent(JSON.stringify(signature))}`;
 

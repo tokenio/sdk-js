@@ -1007,16 +1007,16 @@ export default class Member {
         });
     }
 
-    /**
-     * Requests a token signature for a (tokenId|state) payload.
+     /**
+     * Sign with a Token signature a token request state payload.
      *
      * @param {string} tokenId - token id
      * @param {string} state - url state
      * @return {Object} response - response to the api call
      */
-    requestSignature(tokenId, state) {
-        return Util.callAsync(this.requestSignature, async () => {
-            const res = await this._client.requestSignature(tokenId, state);
+    signTokenRequestState(tokenId, state) {
+        return Util.callAsync(this.signTokenRequestState, async () => {
+            const res = await this._client.signTokenRequestState(tokenId, state);
             return res.data.signature;
         });
     }
