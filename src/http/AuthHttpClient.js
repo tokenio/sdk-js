@@ -1298,14 +1298,19 @@ class AuthHttpClient {
      * @return {Object} response - response to the api call
      */
     async signTokenRequestState(tokenId, state) {
+        const req = {
+            payload: {
+                tokenId,
+                state,
+            },
+        };
+
         const request = {
             method: 'put',
             url: `/sign-token-request-state`,
-            data: {
-                tokenId,
-                state
-            }
+            data: req,
         };
+
         return this._instance(request);
     }
 }

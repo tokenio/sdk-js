@@ -407,7 +407,7 @@ class Token {
                 const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
                 Crypto.verifyJson(
                     {
-                        state: JSON.stringify(params.state),
+                        state: encodeURIComponent(JSON.stringify(params.state)),
                         tokenId: params.tokenId
                     },
                     params.signature.signature,
