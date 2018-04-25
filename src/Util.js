@@ -232,7 +232,10 @@ class Util {
     static setUpHttpErrorLogging(instance) {
         instance.interceptors.response.use(
             (res) => res,
-            (err) => console.log(err.response));
+            (err) => {
+                console.log(err.response);
+                return Promise.reject(err);
+            });
     }
 }
 

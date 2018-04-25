@@ -393,9 +393,7 @@ class Token {
             const params = {
                 tokenId: decodeURIComponent(urlParams.tokenId),
                 state: JSON.parse(decodeURIComponent(urlParams.state)),
-                signature: (urlParams.signature ?
-                    JSON.parse(decodeURIComponent(urlParams.signature)) :
-                    undefined),
+                signature: JSON.parse(decodeURIComponent(urlParams.signature))
             };
 
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
