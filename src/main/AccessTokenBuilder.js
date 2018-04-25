@@ -241,6 +241,17 @@ export default class AccessTokenBuilder {
     }
 
     /**
+     * Sets acting as on the token.
+     *
+     * @param {Object} actingAs - entity the redeemer is acting on behalf of
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    setActingAs(actingAs) {
+        this._payload.actingAs = actingAs;
+        return this;
+    }
+
+    /**
      * Sets the token request ID.
      *
      * @param {string} tokenRequestId - token request id
