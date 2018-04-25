@@ -230,12 +230,9 @@ class Util {
     }
 
     static setUpHttpErrorLogging(instance) {
-        instance.interceptors.response.use(response => {
-            if (response.status !== 200) {
-                console.log('Response: ', response);
-            }
-            return response;
-        });
+        instance.interceptors.response.use(
+            (res) => res,
+            (err) => console.log(err.response));
     }
 }
 

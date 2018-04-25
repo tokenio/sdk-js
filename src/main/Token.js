@@ -402,18 +402,15 @@ class Token {
                 throw new Error('Invalid state.');
             }
 
-            // TODO: Remove this check, and always verify signature. Requires backend fix
-            if (params.signature) {
-                const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
-                Crypto.verifyJson(
-                    {
-                        state: encodeURIComponent(JSON.stringify(params.state)),
-                        tokenId: params.tokenId
-                    },
-                    params.signature.signature,
-                    Crypto.bufferKey(signingKey.publicKey)
-                );
-            }
+            const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
+            Crypto.verifyJson(
+                {
+                    state: encodeURIComponent(JSON.stringify(params.state)),
+                    tokenId: params.tokenId
+                },
+                params.signature.signature,
+                Crypto.bufferKey(signingKey.publicKey)
+            );
 
             return {
                 tokenId: params.tokenId,
