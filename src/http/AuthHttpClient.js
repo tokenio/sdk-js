@@ -434,6 +434,37 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Replaces member's receipt contact.
+     *
+     * @param {Object} contact - receipt contact to set: value + type
+     * @return {Object} response - response to the API call
+     */
+    async setReceiptContact(contact) {
+        const req = {
+            contact: contact
+        };
+        const request = {
+            method: 'put',
+            url: `/receipt-contact`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Gets member's receipt contact.
+     *
+     * @return {Object} response - response to the API call
+     */
+    async getReceiptContact() {
+        const request = {
+            method: 'get',
+            url: `/receipt-contact`
+        };
+        return this._instance(request);
+    }
+
     //
     // ACCOUNTS
     //
