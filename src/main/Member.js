@@ -1021,6 +1021,17 @@ export default class Member {
         });
     }
 
+    /**
+     * Deletes the member.
+     *
+     * @return {Object} response - response to the api call
+     */
+    deleteMember() {
+        return Util.callAsync(this.deleteMember, async () => {
+            await this._client.deleteMember();
+        });
+    }
+
     _getPreviousHash() {
         return Util.callAsync(this._getPreviousHash, async () => {
             const member = await this._getMember();

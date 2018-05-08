@@ -1313,6 +1313,20 @@ class AuthHttpClient {
 
         return this._instance(request);
     }
+
+    /**
+     * Deletes the member.
+     *
+     * @return {Object} response - response to the api call
+     */
+    async deleteMember() {
+        const request = {
+            method: 'delete',
+            url: `/members`,
+        };
+
+        return this._instance(request);
+    }
 }
 
 export default AuthHttpClient;
