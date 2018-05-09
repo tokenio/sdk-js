@@ -74,11 +74,7 @@ class HttpClient {
      * @param {string} realm - realm of the alias
      * @return {Object} response - response to the API call
      */
-    resolveAlias(alias, realm) {
-        if (realm === undefined) {
-            realm = "";
-        }
-
+    resolveAlias(alias, realm = '') {
         const request = {
             method: 'get',
             url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${realm}`
