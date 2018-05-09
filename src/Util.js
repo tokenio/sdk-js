@@ -40,6 +40,15 @@ class Util {
     }
 
     /**
+     * Returns the token realm.
+     *
+     * @return {string} token realm
+     */
+    static tokenRealm() {
+        return 'token';
+    }
+
+    /**
      * Tests if a string ends with a suffix,
      *
      * @param {string} str - the string to test

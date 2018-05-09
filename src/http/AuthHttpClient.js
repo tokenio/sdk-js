@@ -1105,10 +1105,11 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} alias - alias to add
+     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
-    async addAlias(prevHash, alias) {
-        return this.addAliases(prevHash, [alias]);
+    async addAlias(prevHash, alias, realm) {
+        return this.addAliases(prevHash, [alias], realm);
     }
 
     /**
@@ -1157,21 +1158,25 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} aliases - aliases to add
+     * @param {string} realm - (optional) realm of the aliases
      * @return {Object} response - response to the API call
      */
-    async addAliases(prevHash, aliases) {
+    async addAliases(prevHash, aliases, realm) {
         const update = {
             memberId: this._memberId,
             operations: aliases.map((alias) => ({
                 addAlias: {
-                    aliasHash: Util.hashAndSerializeAlias(alias)
+                    aliasHash: Util.hashAndSerializeAlias(alias),
+                    realm: realm
                 }
             })),
         };
+
         const metadata = aliases.map((alias) => ({
             addAliasMetadata: {
                 aliasHash: Util.hashAndSerializeAlias(alias),
-                alias
+                alias: alias,
+                realm: realm
             }
         }));
 
@@ -1234,6 +1239,44 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Sign with a Token signature a token request state payload.
+     *
+     * @param {string} tokenId - token id
+     * @param {string} state - url state
+     * @return {Object} response - response to the api call
+     */
+    async signTokenRequestState(tokenId, state) {
+        const req = {
+            payload: {
+                tokenId,
+                state,
+            },
+        };
+
+        const request = {
+            method: 'put',
+            url: `/sign-token-request-state`,
+            data: req,
+        };
+
+        return this._instance(request);
+    }
+
+    /**
+     * Deletes the member.
+     *
+     * @return {Object} response - response to the api call
+     */
+    async deleteMember() {
+        const request = {
+            method: 'delete',
+            url: `/members`,
+        };
+
+        return this._instance(request);
+    }
+
     //
     // Test
     //
@@ -1287,44 +1330,6 @@ class AuthHttpClient {
             method: 'get',
             url: `/test/subscribers/${subscriberId}/notifications`,
         };
-        return this._instance(request);
-    }
-
-    /**
-     * Sign with a Token signature a token request state payload.
-     *
-     * @param {string} tokenId - token id
-     * @param {string} state - url state
-     * @return {Object} response - response to the api call
-     */
-    async signTokenRequestState(tokenId, state) {
-        const req = {
-            payload: {
-                tokenId,
-                state,
-            },
-        };
-
-        const request = {
-            method: 'put',
-            url: `/sign-token-request-state`,
-            data: req,
-        };
-
-        return this._instance(request);
-    }
-
-    /**
-     * Deletes the member.
-     *
-     * @return {Object} response - response to the api call
-     */
-    async deleteMember() {
-        const request = {
-            method: 'delete',
-            url: `/members`,
-        };
-
         return this._instance(request);
     }
 }
