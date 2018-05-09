@@ -580,7 +580,7 @@ export default class Member {
     /**
      * Replaces member's receipt contact.
      *
-     * @param {Object} contact - receipt contact to set
+     * @param {Object} contact - receipt contact to set: value + type
      * @return {Promise} empty - empty promise
      */
     setReceiptContact(contact) {
@@ -592,7 +592,7 @@ export default class Member {
     /**
      * Get member's receipt contact.
      *
-     * @return {Object} contact - receipt contact
+     * @return {Object} contact - receipt contact: value + type
      */
     getReceiptContact() {
         return Util.callAsync(this.getReceiptContact, async () => {
