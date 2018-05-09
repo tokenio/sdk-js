@@ -45,7 +45,7 @@ class Util {
      * @return {string} token realm
      */
     static tokenRealm() {
-        return "token";
+        return 'token';
     }
 
     /**
