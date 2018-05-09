@@ -160,7 +160,7 @@ export default class Member {
      * Adds an alias to this member
      *
      * @param {Object} alias - alias to add
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} empty - empty promise
      */
     addAlias(alias, realm) {
@@ -174,7 +174,7 @@ export default class Member {
      * Adds aliases to this member
      *
      * @param {Array} aliases - aliases to add
-     * @param {string} realm - realm of the aliases
+     * @param {string} realm - (optional) realm of the aliases
      * @return {Promise} empty - empty promise
      */
     addAliases(aliases, realm) {
@@ -595,7 +595,7 @@ export default class Member {
      *
      * @param {Object} alias - the alias of the grantee of the Access Token
      * @param {array} resources - a list of resources to give access to
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} token - promise of a created Access Token
      */
     createAccessToken(alias, resources, realm) {

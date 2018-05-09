@@ -1105,7 +1105,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} alias - alias to add
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
     async addAlias(prevHash, alias, realm) {
@@ -1158,7 +1158,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} aliases - aliases to add
-     * @param {string} realm - realm of the aliases
+     * @param {string} realm - (optional) realm of the aliases
      * @return {Object} response - response to the API call
      */
     async addAliases(prevHash, aliases, realm) {

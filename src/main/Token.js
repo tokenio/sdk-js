@@ -87,7 +87,7 @@ class Token {
      * Checks if a given alias already exists
      *
      * @param {Object} alias - alias to check
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} result - true if alias exists, false otherwise
      */
     aliasExists(alias, realm) {
@@ -101,7 +101,7 @@ class Token {
      * Resolve an alias to a member
      *
      * @param {Object} alias - alias to lookup
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} result - TokenMember protobuf object
      */
     resolveAlias(alias, realm) {
@@ -118,7 +118,7 @@ class Token {
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
-     * @param  {String} realm - realm of the alias
+     * @param  {String} realm - (optional) realm of the alias
      * @return {Promise} member - Promise of created Member
      */
     createMember(alias, CryptoEngine, memberType, realm) {
@@ -152,7 +152,7 @@ class Token {
      * @param  {Object} alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param  {string} realm - realm of the alias
+     * @param  {string} realm - (optional) realm of the alias
      * @return {Promise} member - Promise of created Member
      */
     createBusinessMember(alias, CryptoEngine, realm) {
@@ -166,7 +166,7 @@ class Token {
      *
      * @param {string} alias - user to provision the device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDevice(alias, CryptoEngine, realm) {
@@ -193,7 +193,7 @@ class Token {
      *
      * @param {string} alias - user to provision t he device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} deviceInfo - information about the device provisioned
      */
     provisionDeviceLow(alias, CryptoEngine, realm) {
@@ -242,7 +242,7 @@ class Token {
      *
      * @param {Object} alias - alias to notify
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccounts(alias, bankAuthorization, realm) {
@@ -266,7 +266,7 @@ class Token {
      * @param {Object} key - key
      * @param {string} level - key level
      * @param {string} expiresMs - when the UI will time out
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} NotifyStatus - status
      */
     notifyAddKey(alias, keyName, key, level, expiresMs, realm) {
@@ -297,7 +297,7 @@ class Token {
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
      * @param {string} level - key level
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccountsAndAddKey(alias, bankAuthorization, keyName, key, level, realm) {

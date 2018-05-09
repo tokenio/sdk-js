@@ -71,7 +71,7 @@ class HttpClient {
      * Gets a member given an alias and a realm.
      *
      * @param {Object} alias - alias to lookup
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
     resolveAlias(alias, realm = '') {
@@ -101,7 +101,7 @@ class HttpClient {
      *
      * @param {Object} alias - user to notify
      * @param {Object} body - body of the notification
-     * @param {string} realm - realm of the alias
+     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
     notify(alias, body, realm) {
