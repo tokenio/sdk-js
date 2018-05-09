@@ -170,6 +170,17 @@ export default class TransferTokenBuilder {
     }
 
     /**
+     * Sets the realm of the redeemer.
+     *
+     * @param {string} redeemerRealm - realm of the redeemer
+     * @return {TransferTokenBuilder} builder - returns back the builder object
+     */
+    setRedeemerRealm(redeemerRealm) {
+        this._payload.transfer.redeemer.realm = redeemerRealm;
+        return this;
+    }
+
+    /**
      * Sets the memberId of the redeemer.
      *
      * @param {Object} redeemerMemberId - memberId of the redeemer
@@ -191,6 +202,20 @@ export default class TransferTokenBuilder {
             this._payload.to = {};
         }
         this._payload.to.alias = toAlias;
+        return this;
+    }
+
+    /**
+     * Sets the realm of the payee.
+     *
+     * @param {string} toRealm - realm of the payee
+     * @return {TransferTokenBuilder} builder - returns back the builder object
+     */
+    setToRealm(toRealm) {
+        if (!this._payload.to) {
+            this._payload.to = {};
+        }
+        this._payload.to.realm = toRealm;
         return this;
     }
 

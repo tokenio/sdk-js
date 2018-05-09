@@ -87,11 +87,12 @@ class Token {
      * Checks if a given alias already exists
      *
      * @param {Object} alias - alias to check
+     * @param {string} realm - realm of the alias
      * @return {Promise} result - true if alias exists, false otherwise
      */
-    aliasExists(alias) {
+    aliasExists(alias, realm) {
         return Util.callAsync(this.aliasExists, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
             return (res.data.member && res.data.member.id ? res.data.member.id !== "" : false);
         });
     }
@@ -100,11 +101,12 @@ class Token {
      * Resolve an alias to a member
      *
      * @param {Object} alias - alias to lookup
+     * @param {string} realm - realm of the alias
      * @return {Promise} result - TokenMember protobuf object
      */
-    resolveAlias(alias) {
+    resolveAlias(alias, realm) {
         return Util.callAsync(this.resolveAlias, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
             return res.data.member;
         });
     }
@@ -116,9 +118,10 @@ class Token {
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
+     * @param  {String} realm - realm of the alias
      * @return {Promise} member - Promise of created Member
      */
-    createMember(alias, CryptoEngine, memberType) {
+    createMember(alias, CryptoEngine, memberType, realm) {
         return Util.callAsync(this.createMember, async () => {
             const response = await this._unauthenticatedClient.createMemberId(memberType);
             const engine = new CryptoEngine(response.data.memberId);
@@ -137,7 +140,7 @@ class Token {
                 this._globalRpcErrorCallback,
                 this._loggingEnabled);
             if (alias && Object.keys(alias).length !== 0) {
-                await member.addAlias(alias);
+                await member.addAlias(alias, realm);
             }
             return member;
         });
@@ -149,10 +152,11 @@ class Token {
      * @param  {Object} alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {string} realm - realm of the alias
      * @return {Promise} member - Promise of created Member
      */
-    createBusinessMember(alias, CryptoEngine) {
-        return this.createMember(alias, CryptoEngine, "BUSINESS");
+    createBusinessMember(alias, CryptoEngine, realm) {
+        return this.createMember(alias, CryptoEngine, "BUSINESS", realm);
     }
 
     /**
@@ -162,11 +166,12 @@ class Token {
      *
      * @param {string} alias - user to provision the device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param {string} realm - realm of the alias
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDevice(alias, CryptoEngine) {
+    provisionDevice(alias, CryptoEngine, realm) {
         return Util.callAsync(this.provisionDevice, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
             if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
@@ -188,11 +193,12 @@ class Token {
      *
      * @param {string} alias - user to provision t he device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param {string} realm - realm of the alias
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDeviceLow(alias, CryptoEngine) {
+    provisionDeviceLow(alias, CryptoEngine, realm) {
         return Util.callAsync(this.provisionDeviceLow, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
             if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
@@ -236,16 +242,17 @@ class Token {
      *
      * @param {Object} alias - alias to notify
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
+     * @param {string} realm - realm of the alias
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccounts(alias, bankAuthorization) {
+    notifyLinkAccounts(alias, bankAuthorization, realm) {
         const body = {
             linkAccounts: {
                 bankAuthorization,
             }
         };
         return Util.callAsync(this.notifyLinkAccounts, async () => {
-            const res = await this._unauthenticatedClient.notify(alias, body);
+            const res = await this._unauthenticatedClient.notify(alias, body, realm);
             return res.data.status;
         });
     }
@@ -259,9 +266,10 @@ class Token {
      * @param {Object} key - key
      * @param {string} level - key level
      * @param {string} expiresMs - when the UI will time out
+     * @param {string} realm - realm of the alias
      * @return {Promise} NotifyStatus - status
      */
-    notifyAddKey(alias, keyName, key, level, expiresMs) {
+    notifyAddKey(alias, keyName, key, level, expiresMs, realm) {
         const body = {
             addKey: {
                 name: keyName,
@@ -275,7 +283,7 @@ class Token {
             }
         };
         return Util.callAsync(this.notifyAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(alias, body);
+            const res = await this._unauthenticatedClient.notify(alias, body, realm);
             return res.data.status;
         });
     }
@@ -289,9 +297,10 @@ class Token {
      * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
      * @param {Object} key - key
      * @param {string} level - key level
+     * @param {string} realm - realm of the alias
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccountsAndAddKey(alias, bankAuthorization, keyName, key, level) {
+    notifyLinkAccountsAndAddKey(alias, bankAuthorization, keyName, key, level, realm) {
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
@@ -309,7 +318,7 @@ class Token {
             }
         };
         return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(alias, body);
+            const res = await this._unauthenticatedClient.notify(alias, body, realm);
             return res.data.status;
         });
     }

@@ -160,12 +160,13 @@ export default class Member {
      * Adds an alias to this member
      *
      * @param {Object} alias - alias to add
+     * @param {string} realm - realm of the alias
      * @return {Promise} empty - empty promise
      */
-    addAlias(alias) {
+    addAlias(alias, realm) {
         return Util.callAsync(this.addAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addAlias(prevHash, alias);
+            await this._client.addAlias(prevHash, alias, realm);
         });
     }
 
@@ -173,12 +174,13 @@ export default class Member {
      * Adds aliases to this member
      *
      * @param {Array} aliases - aliases to add
+     * @param {string} realm - realm of the aliases
      * @return {Promise} empty - empty promise
      */
-    addAliases(aliases) {
+    addAliases(aliases, realm) {
         return Util.callAsync(this.addAliases, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addAliases(prevHash, aliases);
+            await this._client.addAliases(prevHash, aliases, realm);
         });
     }
 
@@ -593,13 +595,15 @@ export default class Member {
      *
      * @param {Object} alias - the alias of the grantee of the Access Token
      * @param {array} resources - a list of resources to give access to
+     * @param {string} realm - realm of the alias
      * @return {Promise} token - promise of a created Access Token
      */
-    createAccessToken(alias, resources) {
+    createAccessToken(alias, resources, realm) {
         return Util.callAsync(this.createAccessToken, async () => {
             return await (new AccessTokenBuilder(this._client, this, resources)
                 .setFromId(this.memberId())
                 .setToAlias(alias)
+                .setToRealm(realm)
                 .execute());
         });
     }
@@ -954,6 +958,31 @@ export default class Member {
     }
 
     /**
+     * Sign with a Token signature a token request state payload.
+     *
+     * @param {string} tokenId - token id
+     * @param {string} state - url state
+     * @return {Object} response - response to the api call
+     */
+    signTokenRequestState(tokenId, state) {
+        return Util.callAsync(this.signTokenRequestState, async () => {
+            const res = await this._client.signTokenRequestState(tokenId, state);
+            return res.data.signature;
+        });
+    }
+
+    /**
+     * Deletes the member.
+     *
+     * @return {Object} response - response to the api call
+     */
+    deleteMember() {
+        return Util.callAsync(this.deleteMember, async () => {
+            await this._client.deleteMember();
+        });
+    }
+
+    /**
      * Creates a test bank account in a fake bank
      *
      * @param {double} balance - balance of the account
@@ -1004,31 +1033,6 @@ export default class Member {
         return Util.callAsync(this.getTestBankNotifications, async () => {
             const res = await this._client.getTestBankNotifications(subscriberId);
             return res.data.notifications;
-        });
-    }
-
-     /**
-     * Sign with a Token signature a token request state payload.
-     *
-     * @param {string} tokenId - token id
-     * @param {string} state - url state
-     * @return {Object} response - response to the api call
-     */
-    signTokenRequestState(tokenId, state) {
-        return Util.callAsync(this.signTokenRequestState, async () => {
-            const res = await this._client.signTokenRequestState(tokenId, state);
-            return res.data.signature;
-        });
-    }
-
-    /**
-     * Deletes the member.
-     *
-     * @return {Object} response - response to the api call
-     */
-    deleteMember() {
-        return Util.callAsync(this.deleteMember, async () => {
-            await this._client.deleteMember();
         });
     }
 
