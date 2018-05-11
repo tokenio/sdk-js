@@ -578,6 +578,30 @@ export default class Member {
     }
 
     /**
+     * Replaces member's receipt contact.
+     *
+     * @param {Object} contact - receipt contact to set: value + type
+     * @return {Promise} empty - empty promise
+     */
+    setReceiptContact(contact) {
+        return Util.callAsync(this.setReceiptContact, async () => {
+            await this._client.setReceiptContact(contact);
+        });
+    }
+
+    /**
+     * Get member's receipt contact.
+     *
+     * @return {Object} contact - receipt contact: value + type
+     */
+    getReceiptContact() {
+        return Util.callAsync(this.getReceiptContact, async () => {
+            const res = await this._client.getReceiptContact();
+            return res.data.contact;
+        });
+    }
+
+    /**
      * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
      *
      * @param {Object} tokenRequest - token request to store

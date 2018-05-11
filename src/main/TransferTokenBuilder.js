@@ -319,6 +319,17 @@ export default class TransferTokenBuilder {
     }
 
     /**
+     *  Sets the flag indicating whether a receipt is requested.
+     *
+     * @param {boolean} receiptRequested receipt requested flag
+     * @return {TransferTokenBuilder} builder
+     */
+    setReceiptRequested(receiptRequested) {
+        this._payload.receiptRequested = receiptRequested;
+        return this;
+    }
+
+    /**
      * Builds the token payload.
      *
      * @return {Object} tokenPayload - token payload
