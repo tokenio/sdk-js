@@ -1300,6 +1300,7 @@ class AuthHttpClient {
      * @return {Object} response - response to the api call
      */
     async deleteMember() {
+        this.useKeyLevel(config.KeyLevel.PRIVILEGED);
         const request = {
             method: 'delete',
             url: `/members`,
