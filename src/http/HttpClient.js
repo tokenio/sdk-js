@@ -232,8 +232,10 @@ class HttpClient {
             page: options.page,
             // Can be at most 200, default to 200 if not specified
             perPage: options.perPage,
+            // Optional provider
+            provider: options.provider || '',
         });
-        const {ids, search, country, page, perPage} = formattedOptions;
+        const {ids, search, country, page, perPage, provider} = formattedOptions;
         let url = `/banks?`;
         for (const id of ids) {
             url += `ids=${encodeURIComponent(id)}&`;
@@ -242,6 +244,7 @@ class HttpClient {
         if (country) url += `country=${encodeURIComponent(country)}&`;
         if (page) url += `page=${encodeURIComponent(page)}&`;
         if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
+        if (provider) url += `provider=${encodeURIComponent(provider)}&`;
         const request = {
             method: 'get',
             url: url,
