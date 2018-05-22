@@ -367,7 +367,8 @@ export default class TransferTokenBuilder {
             if (!this._payload.transfer.instructions.source || (
                 !this._payload.transfer.instructions.source.account.token &&
                 !this._payload.transfer.instructions.source.account.tokenAuthorization &&
-                !this._payload.transfer.instructions.source.account.bank)) {
+                !this._payload.transfer.instructions.source.account.bank &&
+                !this._payload.transfer.instructions.source.account.custom)) {
                 throw new Error('No source on token');
             }
             if (!this._payload.transfer.redeemer.alias &&
