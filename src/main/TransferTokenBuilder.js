@@ -72,6 +72,25 @@ export default class TransferTokenBuilder {
     }
 
     /**
+     * Sets the source custom authorization.
+     *
+     * @param {string} bankId - source bank id
+     * @param {string} authorization - source custom authorization
+     * @return {TransferTokenBuilder} builder - returns back the builder object
+     */
+    setCustomAuthorization(bankId, authorization) {
+        this._payload.transfer.instructions.source = {
+            account: {
+                custom: {
+                    bankId: bankId,
+                    payload: authorization,
+                }
+            }
+        };
+        return this;
+    }
+
+    /**
      * Sets the source bank authorization.
      *
      * @param {Object} authorization - bank authorization for source account
@@ -348,7 +367,8 @@ export default class TransferTokenBuilder {
             if (!this._payload.transfer.instructions.source || (
                 !this._payload.transfer.instructions.source.account.token &&
                 !this._payload.transfer.instructions.source.account.tokenAuthorization &&
-                !this._payload.transfer.instructions.source.account.bank)) {
+                !this._payload.transfer.instructions.source.account.bank &&
+                !this._payload.transfer.instructions.source.account.custom)) {
                 throw new Error('No source on token');
             }
             if (!this._payload.transfer.redeemer.alias &&
