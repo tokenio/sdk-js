@@ -3,37 +3,52 @@ export default class TokenRequest {
      * Constructs a TokenRequest.
      *
      * @param {Object} payload - token payload
-     * @param {Object} options - options
-     * @return {TokenRequest} TokenRequest
      */
-    constructor(payload, options) {
-        return {
-            payload,
-            options,
-        };
+    constructor(payload) {
+        this.payload = payload;
+        this.options = {};
     }
 
     /**
-     * Creates a TokenRequest object, with the correct options set.
+     * Creates a TokenRequest object
      *
      * @param {Object} payload - payload of the access or transfer token
-     * @param {string} alias - alias of the payer
-     * @param {string} bankId - bankId of the payer
-     * @param {string} redirectUrl - redirectUrl for OAuth
      * @return {TokenRequest} - TokenRequest object
      */
-    static create(payload, alias, bankId, redirectUrl) {
-        const options = {};
+    static create(payload) {
+        return new TokenRequest(payload);
+    }
 
-        if (alias) {
-            options.alias = alias;
-        }
-        if (bankId) {
-            options.bankId = bankId;
-        }
-        if (redirectUrl) {
-            options.redirectUrl = redirectUrl;
-        }
-        return new TokenRequest(payload, options);
+    /**
+     * Sets a default email for the TokenRequest
+     *
+     * @param {string} email - default email
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setEmail(email) {
+        this.options.email = email;
+        return this;
+    }
+
+    /**
+     * Sets a default bank ID for the TokenRequest
+     *
+     * @param {string} bankId - bank ID
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setBankId(bankId) {
+        this.options.bankId = bankId;
+        return this;
+    }
+
+    /**
+     * Sets a redirect URL for the TokenRequest
+     *
+     * @param {string} redirectUrl - redirect URL
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setRedirectUrl(redirectUrl) {
+        this.options.redirectUrl = redirectUrl;
+        return this;
     }
 }
