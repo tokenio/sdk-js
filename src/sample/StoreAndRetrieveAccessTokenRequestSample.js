@@ -14,11 +14,10 @@ export default async (grantee) => {
         .forAllBalances()
         .setToMemberId(grantee.memberId());
 
-    const tokenRequest = Token.TokenRequest.create(
-        builder.build(),
-        'grantorEmail@gmail.com',
-        'iron',
-        'https://token.io/callback');
+    const tokenRequest = Token.TokenRequest.create(builder.build())
+        .setEmail('grantorEmail@gmail.com')
+        .setBankId('iron')
+        .setRedirectUrl('https://token.io/callback');
 
     const request = await grantee.storeTokenRequest(tokenRequest);
     return await Token.retrieveTokenRequest(request.id);

@@ -13,11 +13,10 @@ export default async (payee) => {
         .setDescription('Book purchase')
         .setToMemberId(payee.memberId());
 
-    const tokenRequest = Token.TokenRequest.create(
-        builder.build(),
-        'payerEmail@gmail.com',
-        'iron',
-        'https://token.io/callback');
+    const tokenRequest = Token.TokenRequest.create(builder.build())
+        .setEmail('payerEmail@gmail.com')
+        .setBankId('iron')
+        .setRedirectUrl('https://token.io/callback');
 
     const request = await payee.storeTokenRequest(tokenRequest);
 
