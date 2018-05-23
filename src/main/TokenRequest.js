@@ -20,14 +20,35 @@ export default class TokenRequest {
     }
 
     /**
-     * Sets an option for the TokenRequest
+     * Sets a default email for the TokenRequest
      *
-     * @param {string} key - can be 'email' or 'bankId'
-     * @param {string} value - value of the corresponding key
+     * @param {string} email - default email
      * @return {TokenRequest} tokenRequest - token request
      */
-    setOption(key, value) {
-        this.options[key] = value;
+    setEmail(email) {
+        this.options.email = email;
+        return this;
+    }
+
+    /**
+     * Sets a default bank ID for the TokenRequest
+     *
+     * @param {string} bankId - bank ID
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setBankId(bankId) {
+        this.options.bankId = bankId;
+        return this;
+    }
+
+    /**
+     * Sets a redirect URL for the TokenRequest
+     *
+     * @param {string} redirectUrl - redirect URL
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setRedirectUrl(redirectUrl) {
+        this.options.redirectUrl = redirectUrl;
         return this;
     }
 }
