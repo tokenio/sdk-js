@@ -42,7 +42,7 @@ describe('TokenRequestUrl test', () => {
         const tokenMember = await TokenRequestUrlSample.getTokenMember();
         const signingKey = Util.getSigningKey(tokenMember.keys, signature);
 
-        Crypto.verifyJson(
+        await Crypto.verifyJson(
             {
                 state: state,
                 tokenId: token.id

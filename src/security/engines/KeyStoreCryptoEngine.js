@@ -19,14 +19,14 @@ class KeyStoreCryptoEngine {
     }
 
     /**
-     * Generate a keypair and store it.
+     * Generate a key pair and store it.
      *
      * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
      * @return {Object} key
      */
     async generateKey(level) {
-        const keypair = Crypto.generateKeys(level);
-        var stored = await this._keystore.put(this._memberId, keypair);
+        const keyPair = await Crypto.generateKeys(level);
+        const stored = await this._keystore.put(this._memberId, keyPair);
         if (stored && stored.secretKey) {
             delete stored.secretKey;
         }
@@ -40,8 +40,8 @@ class KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements sign, signJson
      */
     async createSigner(level) {
-        const keypair = await this._keystore.getByLevel(this._memberId, level);
-        return Crypto.createSignerFromKeypair(keypair);
+        const keyPair = await this._keystore.getByLevel(this._memberId, level);
+        return Crypto.createSignerFromKeypair(keyPair);
     }
 
     /**
@@ -51,8 +51,8 @@ class KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements verify, verifyJson
      */
     async createVerifier(keyId) {
-        const keypair = await this._keystore.getById(this._memberId, keyId);
-        return Crypto.createVerifierFromKeypair(keypair);
+        const keyPair = await this._keystore.getById(this._memberId, keyId);
+        return Crypto.createVerifierFromKeypair(keyPair);
     }
 }
 

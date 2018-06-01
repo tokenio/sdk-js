@@ -3,9 +3,9 @@ const assert = chai.assert;
 import Crypto from "../../src/security/Crypto";
 
 describe('Key management', () => {
-    it('should generate a key', () => {
+    it('should generate a key', async () => {
         for (var i = 0; i < 10; i++) {
-            const keys = Crypto.generateKeys('STANDARD');
+            const keys = await Crypto.generateKeys('STANDARD');
 
             assert.isOk(keys);
             assert.isString(keys.id);
@@ -17,22 +17,22 @@ describe('Key management', () => {
         }
     });
 
-    it('should sign a message', () => {
+    it('should sign a message', async () => {
         for (var i = 0; i < 10; i++) {
-            const keys = Crypto.generateKeys('LOW');
-            const sig = Crypto.sign('abc', keys);
+            const keys = await Crypto.generateKeys('LOW');
+            const sig = await Crypto.sign('abc', keys);
             assert.isAtLeast(sig.length, 50);
         }
     });
 
-    it('should verify a message', () => {
+    it('should verify a message', async () => {
         for (var i = 0; i < 10; i++) {
-            const keys = Crypto.generateKeys('LOW');
-            const sig = Crypto.sign('abc', keys);
-            Crypto.verify('abc', sig, keys.publicKey);
+            const keys = await Crypto.generateKeys('LOW');
+            const sig = await Crypto.sign('abc', keys);
+            await Crypto.verify('abc', sig, keys.publicKey);
 
             try {
-                Crypto.verify('abcd', sig, keys.publicKey);
+                await Crypto.verify('abcd', sig, keys.publicKey);
                 return Promise.reject('Should fail');
             } catch (e) {
                 return true;
@@ -40,9 +40,9 @@ describe('Key management', () => {
         }
     });
 
-    it('should sign and verify json', () => {
+    it('should sign and verify json', async () => {
         for (var i = 0; i < 10; i++) {
-            const keys = Crypto.generateKeys('LOW');
+            const keys = await Crypto.generateKeys('LOW');
             const json = {
                 abc: 123,
                 def: 'a string',
@@ -50,11 +50,11 @@ describe('Key management', () => {
                     an: 'object',
                 }
             };
-            const sig = Crypto.signJson(json, keys);
-            Crypto.verifyJson(json, sig, keys.publicKey);
+            const sig = await Crypto.signJson(json, keys);
+            await Crypto.verifyJson(json, sig, keys.publicKey);
 
             try {
-                Crypto.verifyJson({bad: 'json'}, sig, keys.publicKey);
+                await Crypto.verifyJson({bad: 'json'}, sig, keys.publicKey);
                 return Promise.reject('Should fail');
             } catch (e) {
                 return true;
@@ -62,8 +62,8 @@ describe('Key management', () => {
         }
     });
 
-    it('should convert to and from string', () => {
-        const keys = Crypto.generateKeys('LOW');
+    it('should convert to and from string', async () => {
+        const keys = await Crypto.generateKeys('LOW');
         const keyStr = Crypto.strKey(keys.publicKey);
         assert.isAtLeast(keyStr.length, 5);
         const keyBuffer = Crypto.bufferKey(keyStr);

@@ -50,8 +50,8 @@ describe('Memory crypto engines', () => {
         const pk1 = await await engine.generateKey('LOW');
         const signer = await engine.createSigner('LOW');
         const verifier = await engine.createVerifier(pk1.id);
-        const sig = signer.sign('abcdefg');
-        verifier.verify('abcdefg', sig);
+        const sig = await signer.sign('abcdefg');
+        await verifier.verify('abcdefg', sig);
     });
 
     it('should sign and verify json', async () => {
@@ -60,8 +60,8 @@ describe('Memory crypto engines', () => {
         const pk1 = await engine.generateKey('LOW');
         const signer = await engine.createSigner('LOW');
         const verifier = await engine.createVerifier(pk1.id);
-        const sig = signer.signJson({a: 5, c: 14, b: -512});
-        verifier.verifyJson({a: 5, c: 14, b: -512}, sig);
+        const sig = await signer.signJson({a: 5, c: 14, b: -512});
+        await verifier.verifyJson({a: 5, c: 14, b: -512}, sig);
     });
 
     it('should fail to verify an invalid signature', async () => {
@@ -70,9 +70,9 @@ describe('Memory crypto engines', () => {
         const pk1 = await engine.generateKey('LOW');
         const signer = await engine.createSigner('LOW');
         const verifier = await engine.createVerifier(pk1.id);
-        const sig = signer.sign('abcdefg');
+        const sig = await signer.sign('abcdefg');
         try {
-            verifier.verify('bcdefg', sig);
+            await verifier.verify('bcdefg', sig);
             return Promise.reject(new Error("should fail"));
         } catch (err) {
             assert.include(err.message, "Invalid signature");
@@ -87,8 +87,8 @@ describe('Memory crypto engines', () => {
         const pk2 = await engine2.generateKey('STANDARD');
         const signer = await engine.createSigner('STANDARD');
         const verifier = await engine2.createVerifier(pk2.id);
-        const sig = signer.sign('abcdefg');
-        verifier.verify('abcdefg', sig);
+        const sig = await signer.sign('abcdefg');
+        await verifier.verify('abcdefg', sig);
     });
 
     it('should be able to log in with the active memberId', async () => {
@@ -106,8 +106,8 @@ describe('Memory crypto engines', () => {
             MemoryCryptoEngine.getActiveMemberId());
         const signer = await engineNew.createSigner('LOW');
         const verifier = await engineNew.createVerifier(pk3.id);
-        const sig = signer.sign('abcdefg');
-        verifier.verify('abcdefg', sig);
+        const sig = await signer.sign('abcdefg');
+        await verifier.verify('abcdefg', sig);
     });
 
     it('should fail to log in to an empty browser', async () => {

@@ -1,5 +1,6 @@
 import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import UnsecuredFileKeyStore from './UnsecuredFileKeyStore';
+import Crypto from '../Crypto';
 
 /**
  * UnsecuredFileCryptoEngine: Implements the CryptoEngine interface.
@@ -53,6 +54,16 @@ class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
         }
 
         super(memberId, globalKeyStore);
+    }
+
+    /**
+     * Generate a key pair and store it.
+     *
+     * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
+     * @return {Object} key
+     */
+    async generateKey(level) {
+        return super.generateKey(level, true);
     }
 
     /**

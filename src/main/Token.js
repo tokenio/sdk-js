@@ -410,7 +410,7 @@ class Token {
             }
 
             const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
-            Crypto.verifyJson(
+            await Crypto.verifyJson(
                 {
                     state: encodeURIComponent(JSON.stringify(params.state)),
                     tokenId: params.tokenId

@@ -49,6 +49,10 @@ class BrowserCryptoEngine extends KeyStoreCryptoEngine {
     static setActiveMemberId(memberId) {
         BrowserKeyStore.setActiveMemberId(memberId);
     }
+
+    static async clearAllKeys() {
+        return await globalKeyStore.clearAllKeys();
+    }
 }
 
 export default BrowserCryptoEngine;

@@ -2,11 +2,11 @@ const globalStorage = {};
 class MemoryKeyStore {
 
     /**
-     * Store a member's keypair.
+     * Store a member's key pair.
      *
      * @param {string} memberId - ID of member
-     * @param {Object} keypair - keypair to store
-     * @return {Object} keypair - same keypair
+     * @param {Object} key pair - key pair to store
+     * @return {Object} key pair - same key pair
      */
     async put(memberId, keypair) {
         if (!memberId) {
@@ -31,7 +31,7 @@ class MemoryKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
-     * @return {Object} keypair
+     * @return {Object} key pair
      */
     async getByLevel(memberId, level) {
         if (!memberId) {
@@ -54,7 +54,7 @@ class MemoryKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {string} keyId - key ID
-     * @return {Object} keypair
+     * @return {Object} key pair
      */
     async getById(memberId, keyId) {
         if (!globalStorage[memberId]) {
@@ -114,8 +114,8 @@ class MemoryKeyStore {
 /**
  * Return a (shallow) copy of an object.
  *
- * If the "user" of a keypair object edits it (e.g., deleting secretKey),
- * that shouldn't affect the "stored" keypair. Thus, we can't pass around
+ * If the "user" of a key pair object edits it (e.g., deleting secretKey),
+ * that shouldn't affect the "stored" key pair. Thus, we can't pass around
  * references to stored objects. Instead, we do some object-copying.
  *
  * @param {Object} obj - object to copy

@@ -26,29 +26,46 @@ if (!BROWSER) {
  */
 class Crypto {
     /**
-     * Generates a keypair to use with the token System
+     * Generates a key pair to use with the token System
      *
      * @param {string} keyLevel - desired security level of key
      * @return {object} keyPair - keyPair
      */
-    static generateKeys(keyLevel) {
-        if (sjcl !== null) {
-            if (sjcl.random.isReady()) {
-                nacl.setPRNG(function(x, n) {
-                    const randomWords = sjcl.random.randomWords(n / 4);
-                    for (let i = 0; i < n; i++) {
-                        x[i] = Util.getByte(randomWords[Math.floor(i / 4)], i % 4);
-                    }
-                    return x;
-                });
-            } else {
-                throw new Error('Not enough entropy for random number generation');
-            }
+    static async generateKeys(keyLevel, extractable = false) {
+        // if (sjcl !== null) {
+        //     if (sjcl.random.isReady()) {
+        //         nacl.setPRNG(function(x, n) {
+        //             const randomWords = sjcl.random.randomWords(n / 4);
+        //             for (let i = 0; i < n; i++) {
+        //                 x[i] = Util.getByte(randomWords[Math.floor(i / 4)], i % 4);
+        //             }
+        //             return x;
+        //         });
+        //     } else {
+        //         throw new Error('Not enough entropy for random number generation');
+        //     }
+        // }
+        // const keyPair = nacl.sign.keyPair();
+        // keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
+        // keyPair.algorithm = 'ED25519';
+        // keyPair.level = keyLevel;
+        // return keyPair;
+        const keyPair = await crypto.subtle.generateKey(
+            {
+                name: 'ECDSA',
+                namedCurve: 'P-256',
+            },
+            extractable,
+            ['sign', 'verify'],
+        );
+        keyPair.publicKey = await crypto.subtle.exportKey('spki', keyPair.publicKey);
+        if (extractable) {
+            keyPair.privateKey = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
         }
-        const keyPair = nacl.sign.keyPair();
-        keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
-        keyPair.algorithm = 'ED25519';
+        keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
+        keyPair.algorithm = 'ECDSA';
         keyPair.level = keyLevel;
+        console.log(keyPair);
         return keyPair;
     }
 
@@ -59,8 +76,8 @@ class Crypto {
      * @param {object} keys - keys to sign with
      * @return {string} signature - signature
      */
-    static signJson(json, keys) {
-        return Crypto.sign(stringify(json), keys);
+    static async signJson(json, keys) {
+        return await Crypto.sign(stringify(json), keys);
     }
 
     /**
@@ -70,25 +87,25 @@ class Crypto {
      * @param {object} keys - keys to sign with
      * @return {string} signature - signature
      */
-    static sign(message, keys) {
+    static async sign(message, keys) {
         const msg = Crypto.wrapBuffer(message);
-        return base64Url(nacl.sign.detached(msg, keys.secretKey));
+        return await crypto.subtle.sign('ECDSA', keys.privateKey, msg);
     }
 
     /**
      * Helper function for crypto engine createSigner:
-     * returns a signer that uses a keypair.
+     * returns a signer that uses a key pair.
      *
-     * @param {Key} keypair - such as returned by Token.Crypto.generatekeys
+     * @param {Key} key pair - such as returned by Token.Crypto.generatekeys
      * @return {Object} signer, as expected from a crypto engine createSigner
      */
     static createSignerFromKeypair(keypair) {
         return {
-            sign: (message) => {
-                return Crypto.sign(message, keypair);
+            sign: async (message) => {
+                return await Crypto.sign(message, keypair);
             },
-            signJson: (json) => {
-                return Crypto.signJson(json, keypair);
+            signJson: async (json) => {
+                return await Crypto.signJson(json, keypair);
             },
             getKeyId: () => keypair.id,
         };
@@ -102,8 +119,8 @@ class Crypto {
      * @param {Buffer} publicKey - public key to use for verification
      * @return {empty} empty - returns nothing if successful
      */
-    static verifyJson(json, signature, publicKey) {
-        return Crypto.verify(stringify(json), signature, publicKey);
+    static async verifyJson(json, signature, publicKey) {
+        return await Crypto.verify(stringify(json), signature, publicKey);
     }
 
     /**
@@ -113,10 +130,10 @@ class Crypto {
      * @param {string} signature - signature to verify
      * @param {Buffer} publicKey - public key to use for verification
      */
-    static verify(message, signature, publicKey) {
+    static async verify(message, signature, publicKey) {
         const msg = Crypto.wrapBuffer(message);
         const sig = Crypto.wrapBuffer(base64Url.toBuffer(signature));
-        const result = nacl.sign.detached.verify(msg, sig, publicKey);
+        const result = await crypto.subtle.verify('ECDSA', publicKey, sig, msg);
         if (!result) {
             throw new Error(
                 `Invalid signature ${signature} on message ${message} with pk ${publicKey}`);
@@ -125,19 +142,19 @@ class Crypto {
 
     /**
      * Helper function for crypto engine createVerifier:
-     * returns a signer that uses a keypair.
+     * returns a signer that uses a key pair.
      *
-     * @param {Key} keypair - such as returned by Token.Crypto.generatekeys. (It's OK
-     *                       if this "keypair" has no secretKey.)
+     * @param {Key} key pair - such as returned by Token.Crypto.generatekeys. (It's OK
+     *                       if this "key pair" has no secretKey.)
      * @return {Object} verifier, as expected from a crypto engine createVerifier
      */
     static createVerifierFromKeypair(keypair) {
         return {
-            verify: (message, signature) => {
-                return Crypto.verify(message, signature, keypair.publicKey);
+            verify: async (message, signature) => {
+                return await Crypto.verify(message, signature, keypair.publicKey);
             },
-            verifyJson: (json, signature) => {
-                return Crypto.verifyJson(json, signature, keypair.publicKey);
+            verifyJson: async (json, signature) => {
+                return await Crypto.verifyJson(json, signature, keypair.publicKey);
             }
         };
     }

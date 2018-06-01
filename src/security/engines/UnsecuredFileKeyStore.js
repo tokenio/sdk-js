@@ -11,11 +11,11 @@ class UnsecuredFileKeyStore {
     }
 
     /**
-     * Store a keypair.
+     * Store a key pair.
      *
      * @param {string} memberId - ID of member
-     * @param {Object} keypair - keypair
-     * @return {Object} keypair - same keypair
+     * @param {Object} key pair - key pair
+     * @return {Object} key pair - same key pair
      */
     async put(memberId, keypair) {
         if (!memberId) {
@@ -45,7 +45,7 @@ class UnsecuredFileKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
-     * @return {Object} keypair
+     * @return {Object} key pair
      */
     async getByLevel(memberId, level) {
         if (!memberId) {
@@ -73,7 +73,7 @@ class UnsecuredFileKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {string} keyId - key ID
-     * @return {Object} keypair
+     * @return {Object} key pair
      */
     async getById(memberId, keyId) {
         if (!memberId) {

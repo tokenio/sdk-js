@@ -102,8 +102,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
 /**
  * Return a (shallow) copy of an object.
  *
- * If the "user" of a keypair object edits it (e.g., deleting secretKey),
- * that shouldn't affect the "stored" keypair. Thus, we can't pass around
+ * If the "user" of a key pair object edits it (e.g., deleting secretKey),
+ * that shouldn't affect the "stored" key pair. Thus, we can't pass around
  * references to stored objects. Instead, we do some object-copying.
  *
  * @param {Object} obj - object to copy
