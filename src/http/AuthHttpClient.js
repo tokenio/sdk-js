@@ -1056,7 +1056,8 @@ class AuthHttpClient {
                             id: key.id,
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
-                            algorithm: key.algorithm
+                            algorithm: key.algorithm,
+                            expiresAtMs: key.expiresAtMs || undefined
                         }
                     }
                 }
@@ -1082,7 +1083,8 @@ class AuthHttpClient {
                         id: key.id,
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
-                        algorithm: key.algorithm
+                        algorithm: key.algorithm,
+                        expiresAtMs: key.expiresAtMs || undefined
                     }
                 }
             }))

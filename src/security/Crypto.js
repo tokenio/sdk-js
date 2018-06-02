@@ -53,6 +53,19 @@ class Crypto {
     }
 
     /**
+     * Generates a temporary keypair to use with the token System
+     *
+     * @param {string} keyLevel - desired security level of key
+     * @param {string} expirationMs - expiration date of the key in milliseconds
+     * @return {object} keyPair - keyPair
+     */
+    static generateTemporaryKeys(keyLevel, expirationMs) {
+        const keyPair = this.generateKeys(keyLevel);
+        keyPair.expiresAtMs = expirationMs;
+        return keyPair;
+    }
+
+    /**
      * Signs a json object and returns the signature
      *
      * @param {object} json - object to sign
