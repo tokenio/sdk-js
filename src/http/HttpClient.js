@@ -190,6 +190,7 @@ class HttpClient {
                 signature: await signer.signJson(update)
             }
         };
+        console.log(req);
         const request = {
             method: 'post',
             url: `/members/${memberId}/updates`,

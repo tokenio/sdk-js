@@ -5,21 +5,21 @@ import stringify from "json-stable-stringify";
 import Util from "../Util";
 import {Buffer} from "buffer/.";
 
-let sjcl = null;
+// let sjcl = null;
 
 /**
  * Initializes sjcl and mouse input collection, for IE10
  */
-if (!BROWSER) {
-} else if (window.crypto && window.crypto.getRandomValues) {
-  // Do nothing, we have secure random crypto
-} else if (window.msCrypto && window.msCrypto.getRandomValues) {
-  // Do nothingm, we have secure random crypto
-} else {
-    // Only set it up when it is necessary
-    sjcl = require('sjcl');
-    sjcl.random.startCollectors();
-}
+// if (!BROWSER) {
+// } else if (window.crypto && window.crypto.getRandomValues) {
+//   // Do nothing, we have secure random crypto
+// } else if (window.msCrypto && window.msCrypto.getRandomValues) {
+//   // Do nothingm, we have secure random crypto
+// } else {
+//     // Only set it up when it is necessary
+//     sjcl = require('sjcl');
+//     sjcl.random.startCollectors();
+// }
 
 /**
  * Class providing static crypto primitives.
@@ -63,7 +63,7 @@ class Crypto {
             keyPair.privateKey = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
         }
         keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
-        keyPair.algorithm = 'ECDSA';
+        keyPair.algorithm = 'ECDSA_SHA256';
         keyPair.level = keyLevel;
         console.log(keyPair);
         return keyPair;
@@ -89,14 +89,21 @@ class Crypto {
      */
     static async sign(message, keys) {
         const msg = Crypto.wrapBuffer(message);
-        return await crypto.subtle.sign('ECDSA', keys.privateKey, msg);
+        return base64Url(await crypto.subtle.sign(
+            {
+                name: 'ECDSA',
+                hash: {name: 'SHA-256'},
+            },
+            keys.privateKey,
+            msg
+        ));
     }
 
     /**
      * Helper function for crypto engine createSigner:
      * returns a signer that uses a key pair.
      *
-     * @param {Key} key pair - such as returned by Token.Crypto.generatekeys
+     * @param {Key} keypair - such as returned by Token.Crypto.generatekeys
      * @return {Object} signer, as expected from a crypto engine createSigner
      */
     static createSignerFromKeypair(keypair) {
@@ -107,7 +114,7 @@ class Crypto {
             signJson: async (json) => {
                 return await Crypto.signJson(json, keypair);
             },
-            getKeyId: () => keypair.id,
+            getKeyId: () => keypair.id
         };
     }
 
@@ -133,7 +140,15 @@ class Crypto {
     static async verify(message, signature, publicKey) {
         const msg = Crypto.wrapBuffer(message);
         const sig = Crypto.wrapBuffer(base64Url.toBuffer(signature));
-        const result = await crypto.subtle.verify('ECDSA', publicKey, sig, msg);
+        const result = await crypto.subtle.verify(
+            {
+                name: 'ECDSA',
+                hash: {name: 'SHA-256'},
+            },
+            publicKey,
+            sig,
+            msg
+        );
         if (!result) {
             throw new Error(
                 `Invalid signature ${signature} on message ${message} with pk ${publicKey}`);
@@ -144,7 +159,7 @@ class Crypto {
      * Helper function for crypto engine createVerifier:
      * returns a signer that uses a key pair.
      *
-     * @param {Key} key pair - such as returned by Token.Crypto.generatekeys. (It's OK
+     * @param {Key} keypair - such as returned by Token.Crypto.generatekeys. (It's OK
      *                       if this "key pair" has no secretKey.)
      * @return {Object} verifier, as expected from a crypto engine createVerifier
      */
