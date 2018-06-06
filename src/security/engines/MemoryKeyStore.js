@@ -5,25 +5,25 @@ class MemoryKeyStore {
      * Store a member's key pair.
      *
      * @param {string} memberId - ID of member
-     * @param {Object} key pair - key pair to store
-     * @return {Object} key pair - same key pair
+     * @param {Object} keyPair - key pair to store
+     * @return {Object} the stored key pair
      */
-    async put(memberId, keypair) {
+    async put(memberId, keyPair) {
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
-        if (!keypair) {
+        if (!keyPair) {
             throw new Error("Don't know what key to put");
         }
-        if (!keypair.level) {
+        if (!keyPair.level) {
             throw new Error("Invalid key structure: has no privilege level");
         }
         if (!globalStorage[memberId]) {
             globalStorage[memberId] = {};
         }
-        globalStorage[memberId][keypair.level] = clone(keypair);
+        globalStorage[memberId][keyPair.level] = clone(keyPair);
         globalStorage.ACTIVE = memberId;
-        return clone(globalStorage[memberId][keypair.level]);
+        return clone(globalStorage[memberId][keyPair.level]);
     }
 
     /**

@@ -44,8 +44,8 @@ describe('Manual crypto engines', () => {
             await Crypto.generateKeys('PRIVILEGED'),
         ]);
         const engine = new ManualCryptoEngine(memberId);
-        const pk1 = await await engine.generateKey('LOW');
-        const signerLow = await await engine.createSigner('LOW');
+        const pk1 = await engine.generateKey('LOW');
+        const signerLow = await engine.createSigner('LOW');
         assert.equal(signerLow.getKeyId(), pk1.id);
     });
 
@@ -58,7 +58,7 @@ describe('Manual crypto engines', () => {
             await Crypto.generateKeys('PRIVILEGED'),
         ]);
         const engine = new ManualCryptoEngine(memberId);
-        const pk1 = await await engine.generateKey('LOW');
+        const pk1 = await engine.generateKey('LOW');
         const signer = await engine.createSigner('LOW');
         const verifier = await engine.createVerifier(pk1.id);
         const sig = await signer.sign('abcdefg');

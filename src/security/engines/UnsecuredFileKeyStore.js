@@ -1,7 +1,7 @@
 import Crypto from '../Crypto';
 import FileSystem from '../PromiseFileSystem';
 
-var globals = {
+const globals = {
     activeMemberId: ''
 };
 
@@ -14,30 +14,27 @@ class UnsecuredFileKeyStore {
      * Store a key pair.
      *
      * @param {string} memberId - ID of member
-     * @param {Object} key pair - key pair
-     * @return {Object} key pair - same key pair
+     * @param {Object} keyPair - key pair
+     * @return {Object} stored key pair
      */
-    async put(memberId, keypair) {
+    async put(memberId, keyPair) {
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
-        if (!keypair) {
+        if (!keyPair) {
             throw new Error("Don't know what key to put");
         }
-        if (!keypair.level) {
+        if (!keyPair.level) {
             throw new Error("Don't know what level to put key");
         }
         if (BROWSER) {
             throw new Error("Not available on browser");
         }
-        var member = await this._loadMember(memberId);
-        if (!member) {
-            member = {};
-        }
-        member[keypair.level] = keypair;
+        const member = await this._loadMember(memberId) || {};
+        member[keyPair.level] = keyPair;
         await this._saveMember(memberId, member);
         UnsecuredFileKeyStore.setActiveMemberId(memberId);
-        return keypair;
+        return keyPair;
     }
 
     /**
@@ -89,7 +86,7 @@ class UnsecuredFileKeyStore {
         if (!member) {
             throw new Error(`member ${memberId} not found`);
         }
-        for (let level in member) {
+        for (const level in member) {
             if (Object.prototype.hasOwnProperty.call(member, level)) {
                 if (member[level].id === keyId) {
                     UnsecuredFileKeyStore.setActiveMemberId(memberId);
@@ -120,8 +117,8 @@ class UnsecuredFileKeyStore {
             }
         }
         UnsecuredFileKeyStore.setActiveMemberId(memberId);
-        var list = [];
-        for (var level in member) {
+        const list = [];
+        for (const level in member) {
             if (member.hasOwnProperty(level)) {
                 list.push(member[level]);
             }
@@ -160,8 +157,8 @@ class UnsecuredFileKeyStore {
     async _saveMember(memberId, member) {
         // instead of { LOW: {...}, ... } we want [ {...}, ... ]
         // convert keys from buffer -> string
-        var strKeys = [];
-        for (var level in member) {
+        const strKeys = [];
+        for (const level in member) {
             if (member.hasOwnProperty(level)) {
                 const keyCopy = Object.assign({}, member[level]);
                 if (keyCopy.publicKey) {
@@ -185,15 +182,15 @@ class UnsecuredFileKeyStore {
      * @return {Object} object dict level : key {"LOW": {...}, "STANDARD": {...}, ...}
      */
     async _loadMember(memberId) {
-        var data;
+        let data;
         try {
             data = await FileSystem.readFile(memberId.split(':').join('_'));
         } catch (error) {
             data = '{"keys":[]}';
         }
         const keyList = JSON.parse(data).keys || [];
-        var member = {};
-        for (var i = 0; i < keyList.length; i++) {
+        const member = {};
+        for (let i = 0; i < keyList.length; i++) {
             const key = keyList[i];
             if (key.publicKey) {
                 key.publicKey = Crypto.bufferKey(key.publicKey);

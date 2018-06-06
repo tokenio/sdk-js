@@ -1,6 +1,5 @@
 import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import UnsecuredFileKeyStore from './UnsecuredFileKeyStore';
-import Crypto from '../Crypto';
 
 /**
  * UnsecuredFileCryptoEngine: Implements the CryptoEngine interface.
@@ -22,7 +21,7 @@ import Crypto from '../Crypto';
  */
 const globalKeyStore = new UnsecuredFileKeyStore();
 
-var dirRootSet = null;
+let dirRootSet = null;
 
 class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
     /**
@@ -63,7 +62,7 @@ class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} key
      */
     async generateKey(level) {
-        return super.generateKey(level, true);
+        return await super.generateKey(level, true);
     }
 
     /**

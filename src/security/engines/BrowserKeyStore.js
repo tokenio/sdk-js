@@ -9,46 +9,6 @@ let DB;
 
 class BrowserKeyStore {
     /**
-     * Opens an instance of IndexedDB
-     *
-     * @param {string} dbName - name of db
-     * @param {string} dbVersion - version of db
-     * @return {Promise<IDBDatabase>} promise that resolves into the database object
-     * @private
-     */
-    static async _openDb(dbName, dbVersion) {
-        if (DB) return DB;
-        return new Promise((resolve, reject) => {
-            if (!indexedDB) reject(new Error('Your browser does not support IndexedDB'));
-            const req = indexedDB.open(dbName, dbVersion);
-            req.onsuccess = () => {
-                DB = req.result;
-                resolve(req.result);
-            };
-            req.onerror = () => {
-                reject(new Error('Error opening database'));
-            };
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                db.createObjectStore(MEMBER_KEY_STORE);
-            };
-        });
-    }
-
-    /**
-     * Retrieves an object store from the db
-     *
-     * @param {string} storeName - name of object store
-     * @param {string} mode - readonly, readwrite, or readwriteflush, defaults to readonly
-     * @return {Promise<IDBObjectStore>} promise that resolves into the store object
-     * @private
-     */
-    static async _getObjectStore(storeName, mode = READ_ONLY) {
-        const db = await BrowserKeyStore._openDb(MEMBER_KEY_DB, MEMBER_KEY_DB_VERSION);
-        return db.transaction(storeName, mode).objectStore(storeName);
-    }
-
-    /**
      * Keep track of the ID of the most recently active member.
      *
      * @param {string} memberId - ID of member
@@ -74,17 +34,17 @@ class BrowserKeyStore {
      * Store a member's key pair.
      *
      * @param {string} memberId - ID of member
-     * @param {object} key pair - key pair to store
+     * @param {Object} keyPair - key pair to store
      * @return {Promise} promise that resolves into the key pair that was passed in
      */
-    async put(memberId, keypair) {
+    async put(memberId, keyPair) {
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
-        if (!keypair) {
+        if (!keyPair) {
             throw new Error("Don't know what key to put");
         }
-        if (!keypair.level) {
+        if (!keyPair.level) {
             throw new Error("Don't know what level to put key");
         }
         if (!BROWSER) {
@@ -95,8 +55,8 @@ class BrowserKeyStore {
             const getReq = store.get(memberId);
             getReq.onsuccess = () => {
                 const member = getReq.result || {};
-                const putReq = store.put(Object.assign(member, {[keypair.level]: keypair}), memberId);
-                putReq.onsuccess = () => resolve(keypair);
+                const putReq = store.put(Object.assign(member, {[keyPair.level]: keyPair}), memberId);
+                putReq.onsuccess = () => resolve(keyPair);
                 putReq.onerror = () => reject(new Error('Error saving member to database'));
             };
             getReq.onerror = () => reject(new Error('Error getting member from database'));
@@ -214,6 +174,46 @@ class BrowserKeyStore {
             clearReq.onsuccess = () => resolve();
             clearReq.onerror = () => reject(new Error('Error clearing the database'));
         });
+    }
+
+    /**
+     * Opens an instance of IndexedDB
+     *
+     * @param {string} dbName - name of db
+     * @param {string} dbVersion - version of db
+     * @return {Promise<IDBDatabase>} promise that resolves into the database object
+     * @private
+     */
+    static async _openDb(dbName, dbVersion) {
+        if (DB) return DB;
+        return new Promise((resolve, reject) => {
+            if (!indexedDB) reject(new Error('Your browser does not support IndexedDB'));
+            const req = indexedDB.open(dbName, dbVersion);
+            req.onsuccess = () => {
+                DB = req.result;
+                resolve(req.result);
+            };
+            req.onerror = () => {
+                reject(new Error('Error opening database'));
+            };
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                db.createObjectStore(MEMBER_KEY_STORE);
+            };
+        });
+    }
+
+    /**
+     * Retrieves an object store from the db
+     *
+     * @param {string} storeName - name of object store
+     * @param {string} mode - readonly, readwrite, or readwriteflush, defaults to readonly
+     * @return {Promise<IDBObjectStore>} promise that resolves into the store object
+     * @private
+     */
+    static async _getObjectStore(storeName, mode = READ_ONLY) {
+        const db = await BrowserKeyStore._openDb(MEMBER_KEY_DB, MEMBER_KEY_DB_VERSION);
+        return db.transaction(storeName, mode).objectStore(storeName);
     }
 }
 

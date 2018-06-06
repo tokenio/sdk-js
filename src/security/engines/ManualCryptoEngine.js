@@ -1,20 +1,19 @@
 import MemoryKeyStore from "./MemoryKeyStore";
 import KeyStoreCryptoEngine from "./KeyStoreCryptoEngine";
 import Crypto from '../Crypto';
-import base64url from 'base64url';
-import sha256 from 'fast-sha256';
+import base64Url from 'base64url/dist/base64url';
 
-/**
- * A crypto engine that's a thin wrapper around a keystore.
- */
 let keys = [];
 const globalKeyStore = new MemoryKeyStore();
 
+/**
+ * Crypto engine that handles hardcoded keys
+ */
 class ManualCryptoEngine extends KeyStoreCryptoEngine {
     /**
      * Set the hardcoded keys used by ManualCryptoEngine
      *
-     * @param {array} memberKeys - keys to set
+     * @param {Array} memberKeys - keys to set
      *
      * Must be an array with objects of the format:
      * {
@@ -23,7 +22,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      *     level: "LOW" || "STANDARD" || "PRIVILEGED",
      * }
      */
-    static setKeys(memberKeys) {
+    static async setKeys(memberKeys) {
         if (!memberKeys || !Array.isArray(memberKeys) || memberKeys.length < 1) {
             throw new Error('invalid keys format');
         }
@@ -39,7 +38,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
                 keyPair.secretKey = Crypto.bufferKey(keyPair.secretKey);
             }
             if (!keyPair.id) {
-                keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
+                keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
             }
             keyPair.algorithm = 'ED25519';
         }

@@ -37,7 +37,7 @@ class KeyStoreCryptoEngine {
      * Create a signer. Assumes we previously generated the relevant key.
      *
      * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
-     * @return {Object} signer - object that implements sign, signJson
+     * @return {Object} signer object that implements sign, signJson, and getKeyId
      */
     async createSigner(level) {
         const keyPair = await this._keystore.getByLevel(this._memberId, level);
@@ -48,7 +48,7 @@ class KeyStoreCryptoEngine {
      * Create a verifier. Assumes we have the key with the passed ID.
      *
      * @param {string} keyId - ID of key to use
-     * @return {Object} signer - object that implements verify, verifyJson
+     * @return {Object} verifier object that implements verify and verifyJson
      */
     async createVerifier(keyId) {
         const keyPair = await this._keystore.getById(this._memberId, keyId);
