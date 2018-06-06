@@ -35,11 +35,7 @@ class BrowserCryptoEngine extends KeyStoreCryptoEngine {
     }
 
     static getActiveMemberId() {
-        const memberId = BrowserKeyStore.getActiveMemberId();
-        if (!memberId) {
-            throw new Error('No active memberId on this browser');
-        }
-        return memberId;
+        return BrowserKeyStore.getActiveMemberId();
     }
 
     static setActiveMemberId(memberId) {

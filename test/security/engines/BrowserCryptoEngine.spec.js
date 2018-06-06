@@ -7,7 +7,8 @@ import Util from '../../../src/Util';
 describe('Browser crypto engines', () => {
     if (BROWSER) {
         beforeEach(() => {
-            window.localStorage.clear();
+            BrowserCryptoEngine.clearAllKeys();
+            localStorage.clear();
         });
 
         it('should create the localStorage crypto engines', () => {

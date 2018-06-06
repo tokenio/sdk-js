@@ -18,7 +18,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * Must be an array with objects of the format:
      * {
      *     publicKey: "123456",
-     *     secretKey: "123456",
+     *     privateKey: "123456",
      *     level: "LOW" || "STANDARD" || "PRIVILEGED",
      * }
      */
@@ -28,14 +28,14 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         }
         keys = memberKeys;
         for (let keyPair of keys) {
-            if (!keyPair.publicKey || !keyPair.secretKey || !keyPair.level) {
+            if (!keyPair.publicKey || !keyPair.privateKey || !keyPair.level) {
                 throw new Error("Invalid keyPair format");
             }
             if (typeof keyPair.publicKey === 'string') {
                 keyPair.publicKey = Crypto.bufferKey(keyPair.publicKey);
             }
-            if (typeof keyPair.secretKey === 'string') {
-                keyPair.secretKey = Crypto.bufferKey(keyPair.secretKey);
+            if (typeof keyPair.privateKey === 'string') {
+                keyPair.privateKey = Crypto.bufferKey(keyPair.privateKey);
             }
             if (!keyPair.id) {
                 keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
@@ -61,8 +61,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         for (let keyPair of keys) {
             if (keyPair.level === level) {
                 const cloned = clone(keyPair);
-                if (cloned.secretKey) {
-                    delete cloned.secretKey;
+                if (cloned.privateKey) {
+                    delete cloned.privateKey;
                 }
                 return cloned;
             }
@@ -101,7 +101,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
 /**
  * Return a (shallow) copy of an object.
  *
- * If the "user" of a key pair object edits it (e.g., deleting secretKey),
+ * If the "user" of a key pair object edits it (e.g., deleting privateKey),
  * that shouldn't affect the "stored" key pair. Thus, we can't pass around
  * references to stored objects. Instead, we do some object-copying.
  *

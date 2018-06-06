@@ -164,8 +164,8 @@ class UnsecuredFileKeyStore {
                 if (keyCopy.publicKey) {
                     keyCopy.publicKey = Crypto.strKey(keyCopy.publicKey);
                 }
-                if (keyCopy.secretKey) {
-                    keyCopy.secretKey = Crypto.strKey(keyCopy.secretKey);
+                if (keyCopy.privateKey) {
+                    keyCopy.privateKey = Crypto.strKey(keyCopy.privateKey);
                 }
                 strKeys.push(keyCopy);
             }
@@ -195,8 +195,8 @@ class UnsecuredFileKeyStore {
             if (key.publicKey) {
                 key.publicKey = Crypto.bufferKey(key.publicKey);
             }
-            if (key.secretKey) {
-                key.secretKey = Crypto.bufferKey(key.secretKey);
+            if (key.privateKey) {
+                key.privateKey = Crypto.bufferKey(key.privateKey);
             }
             member[key.level] = key;
         }

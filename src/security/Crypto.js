@@ -73,7 +73,7 @@ class Crypto {
             importedPrivateKey,
             msg
         );
-        const derSig = Crypto._convertSigFormat(sig);
+        const derSig = Crypto._convertSigToDER(sig);
         return base64Url(derSig);
     }
 
@@ -126,7 +126,7 @@ class Crypto {
             ['verify']
         );
         const msg = Crypto.wrapBuffer(message);
-        const sig = Crypto.wrapBuffer(base64Url.toBuffer(signature));
+        const sig = Crypto._convertSigToP1363(Crypto.bufferKey(signature));
         const result = await crypto.subtle.verify(
             {
                 name: 'ECDSA',
@@ -194,10 +194,10 @@ class Crypto {
      * Converts an ECDSA signature from P1363 to DER format
      *
      * @param {ArrayBuffer} sig - P1363 signature as an ArrayBuffer
-     * @return {string} DER signature as an ArrayBuffer
+     * @return {ArrayBuffer} DER signature as an ArrayBuffer
      * @private
      */
-    static _convertSigFormat(sig) {
+    static _convertSigToDER(sig) {
         const signature = Array.from(new Uint8Array(sig), (x) => ('00' + x.toString(16)).slice(-2)).join('');
         let r = signature.substr(0, signature.length / 2);
         let s = signature.substr(signature.length / 2);
@@ -209,6 +209,24 @@ class Crypto {
         const sString = `02${(s.length / 2).toString(16).padStart(2, '0')}${s}`;
         const derSig = `30${((rString.length + sString.length) / 2).toString(16).padStart(2, '0')}${rString}${sString}`;
         return (new Uint8Array(derSig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)))).buffer;
+    }
+
+    /**
+     * Converts an ECDSA signature from DER to P1363 format
+     *
+     * @param {ArrayBuffer} sig - DER signature as an ArrayBuffer
+     * @return {ArrayBuffer} P1363 signature as an ArrayBuffer
+     * @private
+     */
+    static _convertSigToP1363(sig) {
+        const signature = Array.from(new Uint8Array(sig), (x) => ('00' + x.toString(16)).slice(-2)).join('');
+        const rLength = parseInt(signature.substr(6, 2), 16) * 2;
+        let r = signature.substr(8, rLength);
+        let s = signature.substr(12 + rLength);
+        r = r.length > 64 ? r.substr(-64) : r.padStart(64, '0');
+        s = s.length > 64 ? s.substr(-64) : s.padStart(64, '0');
+        const p1363Sig = `${r}${s}`;
+        return (new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)))).buffer;
     }
 }
 

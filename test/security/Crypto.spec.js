@@ -11,7 +11,7 @@ describe('Key management', () => {
             assert.isString(keys.id);
             assert.equal(keys.id.length, 16);
             assert.equal(keys.publicKey.length, 32);
-            assert.equal(keys.secretKey.length, 64);
+            assert.equal(keys.privateKey.length, 64);
             assert.isOk(keys.algorithm);
             assert.isOk(keys.level);
         }

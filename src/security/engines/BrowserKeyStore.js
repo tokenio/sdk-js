@@ -123,10 +123,10 @@ class BrowserKeyStore {
                 if (!member) {
                     reject(new Error(`member ${memberId} not found`));
                 }
-                Object.keys(member).forEach((level) => {
+                Object.values(member).forEach((level) => {
                     if (level.id === keyId) {
                         BrowserKeyStore.setActiveMemberId(memberId);
-                        resolve(member[level]);
+                        resolve(level);
                     }
                 });
                 reject(new Error(`No key with id ${keyId} found`));

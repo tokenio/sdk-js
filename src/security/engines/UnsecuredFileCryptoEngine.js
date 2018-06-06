@@ -15,7 +15,7 @@ import UnsecuredFileKeyStore from './UnsecuredFileKeyStore';
  *        "level":"LOW",
  *        "algorithm":"ED25519",
  *        "publicKey":"wHhFB13fbFVwXGkHPToWASQCQ3hJegQQ", // Crypto.strKey( public key )
- *        "secretKey":"YgnDobEA0HoZvM7YXvJBR1Sd006apRbeEl6BBA" // Crypto.strKey( secret key )
+ *        "privateKey":"YgnDobEA0HoZvM7YXvJBR1Sd006apRbeEl6BBA" // Crypto.strKey( secret key )
  *    }],
  * }
  */

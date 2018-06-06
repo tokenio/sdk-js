@@ -113,7 +113,7 @@ A CryptoEngine implements the methods
 
       ...store keypair...
 
-      delete keypair.secretKey; // we're about to return keypair, but want to omit secretKey
+      delete keypair.privateKey; // we're about to return keypair, but want to omit privateKey
       return keypair;
     }
 
@@ -139,7 +139,7 @@ A CryptoEngine implements the methods
      * signatures created by a signer.
      *
      * @param {string} keyId - ID of the key to use. It's OK if this "keypair" has no
-     *                         secretKey field.
+     *                         privateKey field.
      * @return {Object} verifier - verifier object
      */
     async createVerifier(keyId) {

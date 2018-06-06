@@ -13,8 +13,8 @@ class KeyStoreCryptoEngine {
         }
         this._memberId = memberId;
         this._keystore = keystore;
-        if (memberId && keystore.setActiveMemberId) {
-            keystore.setActiveMemberId(memberId);
+        if (memberId && keystore.constructor.setActiveMemberId) {
+            keystore.constructor.setActiveMemberId(memberId);
         }
     }
 
@@ -27,8 +27,8 @@ class KeyStoreCryptoEngine {
     async generateKey(level) {
         const keyPair = await Crypto.generateKeys(level);
         const stored = await this._keystore.put(this._memberId, keyPair);
-        if (stored && stored.secretKey) {
-            delete stored.secretKey;
+        if (stored && stored.privateKey) {
+            delete stored.privateKey;
         }
         return stored;
     }
