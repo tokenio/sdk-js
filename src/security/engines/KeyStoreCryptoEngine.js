@@ -1,7 +1,7 @@
 import Crypto from '../Crypto';
 
 /**
- * A crypto engine that's a thin wrapper around a keystore.
+ * Base crypto engine that are extended by others, it handles signatures, verifications, and key storage.
  */
 class KeyStoreCryptoEngine {
     constructor(memberId, keystore) {

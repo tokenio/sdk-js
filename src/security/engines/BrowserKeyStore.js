@@ -56,7 +56,10 @@ class BrowserKeyStore {
             getReq.onsuccess = () => {
                 const member = getReq.result || {};
                 const putReq = store.put(Object.assign(member, {[keyPair.level]: keyPair}), memberId);
-                putReq.onsuccess = () => resolve(keyPair);
+                putReq.onsuccess = () => {
+                    BrowserKeyStore.setActiveMemberId(memberId);
+                    resolve(keyPair);
+                };
                 putReq.onerror = () => reject(new Error('Error saving member to database'));
             };
             getReq.onerror = () => reject(new Error('Error getting member from database'));

@@ -10,30 +10,25 @@ import Util from "../../src/Util";
 
 describe('TokenRequestUrl test', () => {
     it('Should complete the whole token request URL flow', async () => {
-        console.log('here');
+        if (BROWSER) return;
         const grantor = await CreateMemberSample();
-        console.log('here');
         const grantee = await CreateMemberSample();
-        console.log('here');
         const requestId = Util.generateNonce();
         const originalState = Util.generateNonce();
         const csrfToken = Util.generateNonce();
 
-        console.log('here');
         const requestUrl = TokenRequestUrlSample
             .generateTokenRequestUrl(requestId, originalState, csrfToken);
-        console.log('here');
         const callbackUrl = await TokenRequestUrlSample
             .getCallbackUrlFromTokenRequestUrl(grantor, grantee, requestUrl);
-        console.log('here');
         const callback = await TokenRequestUrlSample
             .parseTokenRequestCallbackUrl(callbackUrl, csrfToken);
-        console.log('here');
         assert.equal(originalState, callback.innerState);
         assert.notEqual('', callback.tokenId);
     });
 
     it('Should request a signature', async () => {
+        if (BROWSER) return;
         const state = Util.generateNonce();
 
         const grantor = await CreateMemberSample();

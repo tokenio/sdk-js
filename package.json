@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall-script": "./config/patch.sh",
     "postinstall": "npm run postinstall-script",
-    "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc.js ./test",
+    "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc.js ./src ./test",
     "test": "npm run testNode",
     "testBrowser": "npm run lint && ./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserDev": "TEST_ENV=dev ./node_modules/karma/bin/karma start test/karma.config.js",
@@ -71,6 +71,7 @@
     "es6-promise": "^3.3.1",
     "fast-sha256": "^1.0.0",
     "json-loader": "^0.5.4",
-    "json-stable-stringify": "^1.0.1"
+    "json-stable-stringify": "^1.0.1",
+    "tweetnacl": "^1.0.0"
   }
 }

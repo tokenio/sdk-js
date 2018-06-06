@@ -2,23 +2,25 @@ const chai = require('chai');
 const assert = chai.assert;
 import Crypto from "../../src/security/Crypto";
 
+import 'babel-regenerator-runtime';
+
 describe('Key management', () => {
     it('should generate a key', async () => {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             const keys = await Crypto.generateKeys('STANDARD');
 
             assert.isOk(keys);
             assert.isString(keys.id);
             assert.equal(keys.id.length, 16);
-            assert.equal(keys.publicKey.length, 32);
-            assert.equal(keys.privateKey.length, 64);
+            assert.equal(keys.publicKey.length, BROWSER ? 91 : 32);
+            assert.isTrue(BROWSER ? keys.privateKey instanceof CryptoKey : keys.privateKey.length === 64);
             assert.isOk(keys.algorithm);
             assert.isOk(keys.level);
         }
     });
 
     it('should sign a message', async () => {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             const keys = await Crypto.generateKeys('LOW');
             const sig = await Crypto.sign('abc', keys);
             assert.isAtLeast(sig.length, 50);
@@ -26,7 +28,7 @@ describe('Key management', () => {
     });
 
     it('should verify a message', async () => {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             const keys = await Crypto.generateKeys('LOW');
             const sig = await Crypto.sign('abc', keys);
             await Crypto.verify('abc', sig, keys.publicKey);
@@ -41,7 +43,7 @@ describe('Key management', () => {
     });
 
     it('should sign and verify json', async () => {
-        for (var i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             const keys = await Crypto.generateKeys('LOW');
             const json = {
                 abc: 123,

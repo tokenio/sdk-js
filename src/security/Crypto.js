@@ -1,6 +1,12 @@
 import base64Url from "base64url";
 import stringify from "json-stable-stringify";
 import {Buffer} from "buffer/.";
+import nacl from "tweetnacl";
+import sha256 from "fast-sha256";
+
+if (BROWSER && !crypto) {
+    throw new Error('Your browser does not support Web Cryptography API');
+}
 
 /**
  * Class providing static crypto primitives.
@@ -14,6 +20,15 @@ class Crypto {
      * @return {Object} generated key pair
      */
     static async generateKeys(keyLevel, extractable = false) {
+        if (!BROWSER) {
+            const keyPair = nacl.sign.keyPair();
+            keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
+            keyPair.algorithm = 'ED25519';
+            keyPair.level = keyLevel;
+            keyPair.privateKey = keyPair.secretKey;
+            delete keyPair.secretKey;
+            return keyPair;
+        }
         const keyPair = await crypto.subtle.generateKey(
             {
                 name: 'ECDSA',
@@ -22,9 +37,9 @@ class Crypto {
             extractable,
             ['sign', 'verify'],
         );
-        keyPair.publicKey = await crypto.subtle.exportKey('spki', keyPair.publicKey);
+        keyPair.publicKey = new Uint8Array(await crypto.subtle.exportKey('spki', keyPair.publicKey));
         if (extractable) {
-            keyPair.privateKey = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+            keyPair.privateKey = new Uint8Array(await crypto.subtle.exportKey('pkcs8', keyPair.privateKey));
         }
         keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ECDSA_SHA256';
@@ -51,6 +66,10 @@ class Crypto {
      * @return {string} signature
      */
     static async sign(message, keys) {
+        if (!BROWSER) {
+            const msg = Crypto.wrapBuffer(message);
+            return base64Url(nacl.sign.detached(msg, keys.privateKey));
+        }
         const msg = Crypto.wrapBuffer(message);
         let importedPrivateKey = keys.privateKey;
         if (!importedPrivateKey instanceof CryptoKey) {
@@ -81,7 +100,7 @@ class Crypto {
      * Helper function for crypto engine createSigner:
      * returns a signer that uses a key pair.
      *
-     * @param {Object} keyPair - such as returned by Token.Crypto.generatekeys
+     * @param {Object} keyPair - such as returned by Token.Crypto.generateKeys
      * @return {Object} signer object
      */
     static createSignerFromKeypair(keyPair) {
@@ -101,7 +120,7 @@ class Crypto {
      *
      * @param {Object} json - JSON object to verify
      * @param {string} signature - signature to verify
-     * @param {ArrayBuffer} publicKey - public key to use for verification
+     * @param {Uint8Array} publicKey - public key to use for verification
      */
     static async verifyJson(json, signature, publicKey) {
         await Crypto.verify(stringify(json), signature, publicKey);
@@ -112,9 +131,19 @@ class Crypto {
      *
      * @param {string} message - string to verify
      * @param {string} signature - signature to verify
-     * @param {ArrayBuffer} publicKey - public key to use for verification
+     * @param {Uint8Array} publicKey - public key to use for verification
      */
     static async verify(message, signature, publicKey) {
+        if (!BROWSER) {
+            const msg = Crypto.wrapBuffer(message);
+            const sig = Crypto.wrapBuffer(base64Url.toBuffer(signature));
+            const result = nacl.sign.detached.verify(msg, sig, publicKey);
+            if (!result) {
+                throw new Error(
+                    `Invalid signature ${signature} on message ${message} with pk ${publicKey}`);
+            }
+            return;
+        }
         const importedPublicKey = await crypto.subtle.importKey(
             'spki',
             publicKey,
@@ -146,7 +175,7 @@ class Crypto {
      * Helper function for crypto engine createVerifier:
      * returns a signer that uses a key pair.
      *
-     * @param {Object} keyPair - such as returned by Token.Crypto.generatekeys, private key optional
+     * @param {Object} keyPair - such as returned by Token.Crypto.generateKeys, private key optional
      * @return {Object} verifier object
      */
     static createVerifierFromKeypair(keyPair) {
@@ -163,7 +192,7 @@ class Crypto {
     /**
      * Converts a key to string.
      *
-     * @param {ArrayBuffer} key - key to encode
+     * @param {Uint8Array} key - key to encode
      * @return {string} encoded key
      */
     static strKey(key) {
@@ -174,7 +203,7 @@ class Crypto {
      * Wraps buffer as an Uint8Array object.
      *
      * @param {string|Buffer} buffer - data
-     * @return {Uint8Array} data in Uint8Array form
+     * @return {Uint8Array} data
      */
     static wrapBuffer(buffer) {
         return new Uint8Array(new Buffer(buffer));
@@ -184,7 +213,7 @@ class Crypto {
      * Converts a key from a string to buffer.
      *
      * @param {string} key - base64Url encoded key
-     * @return {Uint8Array} key in Uint8Array form
+     * @return {Uint8Array} buffered key
      */
     static bufferKey(key) {
         return Crypto.wrapBuffer(base64Url.toBuffer(key));
@@ -193,8 +222,8 @@ class Crypto {
     /**
      * Converts an ECDSA signature from P1363 to DER format
      *
-     * @param {ArrayBuffer} sig - P1363 signature as an ArrayBuffer
-     * @return {ArrayBuffer} DER signature as an ArrayBuffer
+     * @param {ArrayBuffer} sig - P1363 signature
+     * @return {Uint8Array} DER signature
      * @private
      */
     static _convertSigToDER(sig) {
@@ -208,14 +237,14 @@ class Crypto {
         const rString = `02${(r.length / 2).toString(16).padStart(2, '0')}${r}`;
         const sString = `02${(s.length / 2).toString(16).padStart(2, '0')}${s}`;
         const derSig = `30${((rString.length + sString.length) / 2).toString(16).padStart(2, '0')}${rString}${sString}`;
-        return (new Uint8Array(derSig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)))).buffer;
+        return new Uint8Array(derSig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
     }
 
     /**
      * Converts an ECDSA signature from DER to P1363 format
      *
-     * @param {ArrayBuffer} sig - DER signature as an ArrayBuffer
-     * @return {ArrayBuffer} P1363 signature as an ArrayBuffer
+     * @param {ArrayBuffer} sig - DER signature
+     * @return {Uint8Array} P1363 signature
      * @private
      */
     static _convertSigToP1363(sig) {
@@ -226,7 +255,7 @@ class Crypto {
         r = r.length > 64 ? r.substr(-64) : r.padStart(64, '0');
         s = s.length > 64 ? s.substr(-64) : s.padStart(64, '0');
         const p1363Sig = `${r}${s}`;
-        return (new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)))).buffer;
+        return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
     }
 }
 
