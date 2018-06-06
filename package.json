@@ -4,8 +4,6 @@
   "description": "",
   "main": "dist/token-io.min.js",
   "scripts": {
-    "postinstall-script": "./config/patch.sh",
-    "postinstall": "npm run postinstall-script",
     "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc.js ./src ./test",
     "test": "npm run testNode",
     "testBrowser": "npm run lint && ./node_modules/karma/bin/karma start test/karma.config.js",

@@ -48,7 +48,20 @@ class Crypto {
     }
 
     /**
-     * Signs a JSON object and returns the signature.
+     * Generates a temporary key pair to use with the Token system
+     *
+     * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} expirationMs - expiration date of the key in milliseconds
+     * @return {Object} generated key pair
+     */
+    static async generateTemporaryKeys(keyLevel, expirationMs) {
+        const keyPair = await this.generateKeys(keyLevel);
+        keyPair.expiresAtMs = expirationMs;
+        return keyPair;
+    }
+
+    /**
+     * Signs a json object and returns the signature
      *
      * @param {Object} json - object to sign
      * @param {Object} keys - keys to sign with
