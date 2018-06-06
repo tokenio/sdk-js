@@ -41,10 +41,10 @@ class KeyStoreCryptoEngine {
      * @return {Object} key
      */
     async generateTemporaryKey(level, expirationMs) {
-        const keyPair = Crypto.generateTemporaryKeys(level, expirationMs);
+        const keyPair = await Crypto.generateTemporaryKeys(level, expirationMs);
         const stored = await this._keystore.put(this._memberId, keyPair);
-        if (stored && stored.secretKey) {
-            delete stored.secretKey;
+        if (stored && stored.privateKey) {
+            delete stored.privateKey;
         }
         return stored;
     }
