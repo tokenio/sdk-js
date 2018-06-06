@@ -47,7 +47,6 @@ describe('Unauthenticated', () => {
             await unauthenticatedClient.createMemberId();
             Promise.reject(new Error("should fail"));
         } catch (err) {
-            console.log(err.message);
             assert.include(err.message, 'SDK');
         }
         assert.isTrue(handlerCalled);
