@@ -29,9 +29,10 @@ class Crypto {
      * Generates a keypair to use with the token System
      *
      * @param {string} keyLevel - desired security level of key
+     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
      * @return {object} keyPair - keyPair
      */
-    static generateKeys(keyLevel) {
+    static generateKeys(keyLevel, expirationMs) {
         if (sjcl !== null) {
             if (sjcl.random.isReady()) {
                 nacl.setPRNG(function(x, n) {
@@ -49,19 +50,10 @@ class Crypto {
         keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
-        return keyPair;
-    }
+        if (expirationMs) {
+            keyPair.expiresAtMs = expirationMs;
+        }
 
-    /**
-     * Generates a temporary keypair to use with the token System
-     *
-     * @param {string} keyLevel - desired security level of key
-     * @param {string} expirationMs - expiration date of the key in milliseconds
-     * @return {object} keyPair - keyPair
-     */
-    static generateTemporaryKeys(keyLevel, expirationMs) {
-        const keyPair = this.generateKeys(keyLevel);
-        keyPair.expiresAtMs = expirationMs;
         return keyPair;
     }
 
