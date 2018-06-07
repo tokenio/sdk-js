@@ -4,6 +4,10 @@ import {Buffer} from "buffer/.";
 import nacl from "tweetnacl";
 import sha256 from "fast-sha256";
 
+let crypto;
+if (BROWSER) {
+    crypto = window.crypto || window.msCrypto;
+}
 if (BROWSER && !crypto) {
     throw new Error('Your browser does not support Web Cryptography API');
 }
