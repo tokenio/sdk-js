@@ -50,7 +50,7 @@ class Crypto {
         keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
-        if (expirationMs) {
+        if (typeof expirationMs !== 'undefined') {
             keyPair.expiresAtMs = expirationMs;
         }
 
