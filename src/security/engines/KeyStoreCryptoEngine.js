@@ -22,26 +22,11 @@ class KeyStoreCryptoEngine {
      * Generate a keypair and store it.
      *
      * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
+     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
      * @return {Object} key
      */
-    async generateKey(level) {
-        const keypair = Crypto.generateKeys(level);
-        var stored = await this._keystore.put(this._memberId, keypair);
-        if (stored && stored.secretKey) {
-            delete stored.secretKey;
-        }
-        return stored;
-    }
-
-    /**
-     * Generate a keypair with expiration date and store it.
-     *
-     * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
-     * @param {string} expirationMs - expiration date of the key in milliseconds
-     * @return {Object} key
-     */
-    async generateTemporaryKey(level, expirationMs) {
-        const keypair = Crypto.generateTemporaryKeys(level, expirationMs);
+    async generateKey(level, expirationMs) {
+        const keypair = Crypto.generateKeys(level, expirationMs);
         var stored = await this._keystore.put(this._memberId, keypair);
         if (stored && stored.secretKey) {
             delete stored.secretKey;
