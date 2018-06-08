@@ -205,7 +205,7 @@ class Token {
             }
 
             const engine = new CryptoEngine(res.data.member.id);
-            const pk1 = await engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('LOW', expirationMs);
             return {
                 memberId: res.data.member.id,
                 keys: [pk1],
