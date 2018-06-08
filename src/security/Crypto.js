@@ -28,7 +28,7 @@ class Crypto {
             keyPair.algorithm = 'ED25519';
             keyPair.level = keyLevel;
             keyPair.privateKey = keyPair.secretKey;
-            if (expirationMs === undefined) keyPair.expiresAtMs = expirationMs;
+            if (expirationMs !== undefined) keyPair.expiresAtMs = expirationMs;
             delete keyPair.secretKey;
             return keyPair;
         }
@@ -47,7 +47,7 @@ class Crypto {
         keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ECDSA_SHA256';
         keyPair.level = keyLevel;
-        if (expirationMs === undefined) keyPair.expiresAtMs = expirationMs;
+        if (expirationMs !== undefined) keyPair.expiresAtMs = expirationMs;
         return keyPair;
     }
 
