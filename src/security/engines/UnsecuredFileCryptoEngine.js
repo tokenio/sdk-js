@@ -56,17 +56,6 @@ class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
     }
 
     /**
-     * Generate a key pair and store it.
-     *
-     * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
-     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
-     * @return {Object} key
-     */
-    async generateKey(level, expirationMs) {
-        return await super.generateKey(level, expirationMs, true);
-    }
-
-    /**
      * Get ID of "active" member. (This would make more sense in browser,
      * where we'd use it to keep track of browser-linked member.)
      *
