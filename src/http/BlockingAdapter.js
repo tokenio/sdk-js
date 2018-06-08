@@ -1,27 +1,15 @@
 var utils = require('axios/lib/utils');
-var settle = require('axios/lib/core/settle');
 var buildURL = require('axios/lib/helpers/buildURL');
-var parseHeaders = require('axios/lib/helpers/parseHeaders');
 var isURLSameOrigin = require('axios/lib/helpers/isURLSameOrigin');
 var btoa = (typeof window !== 'undefined' && window.btoa) || require('axios/lib/helpers/btoa');
 
 /**
- * Axios adapter to create a non-blocking XMLHttpRequest
+ * Axios adapter to create a blocking XMLHttpRequest
  * @param  {Object} config  configuration for the request
  * @return {Promise}        response - response object with a 'dispatchRequest' function
- *                          to trigger the non-blocking request
+ *                          to trigger the blocking request
  */
-module.exports = function NonBlockingAdapter(config) {
-  var res;
-
-  var resolve = function(r) {
-    res = r;
-  };
-
-  var reject = function(e) {
-    res = e;
-  };
-
+module.exports = function BlockingAdapter(config) {
   var requestData = config.data;
   var requestHeaders = config.headers;
 
@@ -30,8 +18,6 @@ module.exports = function NonBlockingAdapter(config) {
   }
 
   var request = new XMLHttpRequest();
-  var loadEvent = 'onreadystatechange';
-  var xDomain = false;
 
   // For IE 8/9 CORS support
   // Only supports POST and GET calls and doesn't returns the response headers.
@@ -41,10 +27,6 @@ module.exports = function NonBlockingAdapter(config) {
       window.XDomainRequest && !('withCredentials' in request) &&
       !isURLSameOrigin(config.url)) {
     request = new window.XDomainRequest();
-    loadEvent = 'onload';
-    xDomain = true;
-    request.onprogress = function handleProgress() {};
-    request.ontimeout = function handleTimeout() {};
   }
 
   // HTTP basic authentication
@@ -56,39 +38,6 @@ module.exports = function NonBlockingAdapter(config) {
 
   request.open(config.method.toUpperCase(),
     buildURL(config.url, config.params, config.paramsSerializer), false);
-
-  // Listen for ready state
-  request[loadEvent] = function handleLoad() {
-    if (!request || (request.readyState !== 4 && !xDomain)) {
-      return;
-    }
-
-    // The request errored out and we didn't get a response, this will be
-    // handled by onerror instead
-    if (request.status === 0) {
-      return;
-    }
-
-    // Prepare the response
-    var responseHeaders = 'getAllResponseHeaders' in request ?
-        parseHeaders(request.getAllResponseHeaders()) : null;
-    var responseData = !config.responseType || config.responseType === 'text' ?
-        request.responseText : request.response;
-    var response = {
-      data: responseData,
-      // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
-      status: request.status === 1223 ? 204 : request.status,
-      statusText: request.status === 1223 ? 'No Content' : request.statusText,
-      headers: responseHeaders,
-      config: config,
-      request: request
-    };
-
-    settle(resolve, reject, response);
-
-    // Clean up request
-    request = null;
-  };
 
   // Add xsrf header
   // This is only done if running in a standard browser environment.
@@ -136,16 +85,6 @@ module.exports = function NonBlockingAdapter(config) {
     }
   }
 
-  // Handle progress if needed
-  if (typeof config.onDownloadProgress === 'function') {
-    request.addEventListener('progress', config.onDownloadProgress);
-  }
-
-  // Not all browsers support upload events
-  if (typeof config.onUploadProgress === 'function' && request.upload) {
-    request.upload.addEventListener('progress', config.onUploadProgress);
-  }
-
   if (requestData === undefined) {
     requestData = null;
   }
@@ -156,11 +95,7 @@ module.exports = function NonBlockingAdapter(config) {
       data: {
         dispatchRequest: function dispatchRequest() {
           // Send the request
-          request.send(requestData);
-          request[loadEvent].call(null);
-          if (res instanceof Error) {
-            throw res;
-          }
+          const res = request.send(requestData);
           return res;
         }
       }

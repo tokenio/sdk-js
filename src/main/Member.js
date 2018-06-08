@@ -784,14 +784,14 @@ export default class Member {
      * Cancels a token. (Called by the payer or the redeemer)
      *
      * @param {Token} token - token to cancel. Can also be a {string} tokenId
-     * @param {bool} nonBlocking - creates a non-blocking request
+     * @param {bool} blocking - creates a non-blocking request
      * @return {Promise} TokenOperationResult - cancelled token
      */
-    cancelToken(token, nonBlocking) {
+    cancelToken(token, blocking) {
         return Util.callAsync(this.cancelToken, async () => {
             const finalToken = await this._resolveToken(token);
-            const cancelled = await this._client.cancelToken(finalToken, nonBlocking);
-            if (nonBlocking && cancelled && cancelled.data &&
+            const cancelled = await this._client.cancelToken(finalToken, blocking);
+            if (blocking && cancelled && cancelled.data &&
               typeof cancelled.data.dispatchRequest === 'function') {
               return cancelled.data.dispatchRequest;
             }
