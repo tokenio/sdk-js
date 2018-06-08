@@ -8,9 +8,6 @@ let crypto;
 if (BROWSER) {
     crypto = window.crypto || window.msCrypto;
 }
-if (BROWSER && !crypto) {
-    throw new Error('Your browser does not support Web Cryptography API');
-}
 
 /**
  * Class providing static crypto primitives.
@@ -20,7 +17,7 @@ class Crypto {
      * Generates a key pair to use with the Token system.
      *
      * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
-     * @param {boolean} extractable - whether the private key can be extracted from the CryptoKey object
+     * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
     static async generateKeys(keyLevel, extractable = false) {
@@ -109,7 +106,7 @@ class Crypto {
             importedPrivateKey,
             msg
         );
-        const derSig = Crypto._convertSigToDER(sig);
+        const derSig = Crypto._P1363ToDer(sig);
         return base64Url(derSig);
     }
 
@@ -172,7 +169,7 @@ class Crypto {
             ['verify']
         );
         const msg = Crypto.wrapBuffer(message);
-        const sig = Crypto._convertSigToP1363(Crypto.bufferKey(signature));
+        const sig = Crypto._DerToP1363(Crypto.bufferKey(signature));
         const result = await crypto.subtle.verify(
             {
                 name: 'ECDSA',
@@ -243,7 +240,7 @@ class Crypto {
      * @return {Uint8Array} DER signature
      * @private
      */
-    static _convertSigToDER(sig) {
+    static _P1363ToDer(sig) {
         const signature = Array.from(new Uint8Array(sig), (x) => ('00' + x.toString(16)).slice(-2)).join('');
         let r = signature.substr(0, signature.length / 2);
         let s = signature.substr(signature.length / 2);
@@ -264,7 +261,7 @@ class Crypto {
      * @return {Uint8Array} P1363 signature
      * @private
      */
-    static _convertSigToP1363(sig) {
+    static _DerToP1363(sig) {
         const signature = Array.from(new Uint8Array(sig), (x) => ('00' + x.toString(16)).slice(-2)).join('');
         const rLength = parseInt(signature.substr(6, 2), 16) * 2;
         let r = signature.substr(8, rLength);

@@ -12,8 +12,8 @@ import BrowserKeyStore from './BrowserKeyStore';
  *          id: 456, // key ID
  *          algorithm: ECDSA,
  *          level: LOW,
- *          publicKey: "jlfgjlrsjfglgfja", // Crypto.strKey(publicKey)
- *          privateKey: "ljkfsfjkfgjlfjjf", // Crypto.strKey(privateKey)
+ *          publicKey: key data in Uint8Array format
+ *          privateKey: non-extractable object
  *      },
  *      STANDARD: {...},
  *      PRIVILEGED: {...},
