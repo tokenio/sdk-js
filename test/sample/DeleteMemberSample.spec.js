@@ -5,10 +5,14 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import DeleteMemberSample from '../../src/sample/DeleteMemberSample';
+import TestUtil from '../TestUtil';
 
 describe('DeleteMemberSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await member.firstAlias());
+        });
         await member.aliases();
         await DeleteMemberSample(member);
         try {

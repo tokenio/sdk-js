@@ -6,6 +6,7 @@ import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import NotifyPaymentRequestSample from '../../src/sample/NotifyPaymentRequestSample';
+import TestUtil from '../TestUtil';
 
 describe('NotifyPaymentRequestSample test', () => {
     it('Should run the sample', async () => {
@@ -15,6 +16,10 @@ describe('NotifyPaymentRequestSample test', () => {
 
         const payee = await CreateMemberSample();
         const payer = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await payee.firstAlias());
+            assert.isOk(await payer.firstAlias());
+        });
         await LinkMemberAndBankSample(payee);
         await LinkMemberAndBankSample(payer);
 

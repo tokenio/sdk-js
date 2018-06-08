@@ -7,11 +7,16 @@ import TokenRequestUrlSample from '../../src/sample/TokenRequestUrlSample';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import Crypto from "../../src/security/Crypto";
 import Util from "../../src/Util";
+import TestUtil from '../TestUtil';
 
 describe('TokenRequestUrl test', () => {
     it('Should complete the whole token request URL flow', async () => {
         const grantor = await CreateMemberSample();
         const grantee = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await grantor.firstAlias());
+            assert.isOk(await grantee.firstAlias());
+        });
 
         const requestId = Util.generateNonce();
         const originalState = Util.generateNonce();
@@ -35,6 +40,10 @@ describe('TokenRequestUrl test', () => {
 
         const grantor = await CreateMemberSample();
         const grantee = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await grantor.firstAlias());
+            assert.isOk(await grantee.firstAlias());
+        });
         const token = await TokenRequestUrlSample.generateValidAccessToken(grantor, grantee);
 
         const signature = await grantor.signTokenRequestState(token.id, state);
