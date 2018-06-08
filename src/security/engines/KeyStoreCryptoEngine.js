@@ -22,7 +22,7 @@ class KeyStoreCryptoEngine {
      * Generate a key pair and store it.
      *
      * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
-     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
+     * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
      * @return {Object} key
      */
     async generateKey(level, expirationMs) {

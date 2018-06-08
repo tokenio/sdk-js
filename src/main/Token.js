@@ -191,12 +191,13 @@ class Token {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys. This only generates one (LOW) key.
      *
-     * @param {string} alias - user to provision t he device for
+     * @param {string} alias - user to provision the device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param {string} realm - (optional) realm of the alias
+     * @param {number} expirationMs - (optional) expiration duration of key in milliseconds
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDeviceLow(alias, CryptoEngine, realm) {
+    provisionDeviceLow(alias, CryptoEngine, realm, expirationMs = config.lowKeyExpiration) {
         return Util.callAsync(this.provisionDeviceLow, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
             if (!res.data.member || !res.data.member.id) {
