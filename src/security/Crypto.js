@@ -14,7 +14,7 @@ class Crypto {
      * Generates a key pair to use with the Token system.
      *
      * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
-     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
+     * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
