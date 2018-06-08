@@ -278,7 +278,8 @@ class Token {
                     id: key.id,
                     level: level,
                     algorithm: key.algorithm,
-                    publicKey: Crypto.strKey(key.publicKey)
+                    publicKey: Crypto.strKey(key.publicKey),
+                    ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                 }
             }
         };
@@ -312,7 +313,8 @@ class Token {
                         id: key.id,
                         level: level,
                         algorithm: key.algorithm,
-                        publicKey: Crypto.strKey(key.publicKey)
+                        publicKey: Crypto.strKey(key.publicKey),
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                     }
                 }
             }

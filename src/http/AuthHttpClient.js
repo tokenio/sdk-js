@@ -1057,7 +1057,7 @@ class AuthHttpClient {
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
                             algorithm: key.algorithm,
-                            expiresAtMs: key.expiresAtMs || undefined
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                         }
                     }
                 }
@@ -1084,7 +1084,7 @@ class AuthHttpClient {
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
                         algorithm: key.algorithm,
-                        expiresAtMs: key.expiresAtMs || undefined
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                     }
                 }
             }))
