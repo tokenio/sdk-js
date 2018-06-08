@@ -17,16 +17,18 @@ class Crypto {
      * Generates a key pair to use with the Token system.
      *
      * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
-    static async generateKeys(keyLevel, extractable = false) {
+    static async generateKeys(keyLevel, expirationMs, extractable = false) {
         if (!BROWSER) {
             const keyPair = nacl.sign.keyPair();
             keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
             keyPair.algorithm = 'ED25519';
             keyPair.level = keyLevel;
             keyPair.privateKey = keyPair.secretKey;
+            if (expirationMs === undefined) keyPair.expiresAtMs = expirationMs;
             delete keyPair.secretKey;
             return keyPair;
         }
@@ -45,19 +47,7 @@ class Crypto {
         keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ECDSA_SHA256';
         keyPair.level = keyLevel;
-        return keyPair;
-    }
-
-    /**
-     * Generates a temporary key pair to use with the Token system
-     *
-     * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
-     * @param {string} expirationMs - expiration date of the key in milliseconds
-     * @return {Object} generated key pair
-     */
-    static async generateTemporaryKeys(keyLevel, expirationMs) {
-        const keyPair = await this.generateKeys(keyLevel);
-        keyPair.expiresAtMs = expirationMs;
+        if (expirationMs === undefined) keyPair.expiresAtMs = expirationMs;
         return keyPair;
     }
 
@@ -80,11 +70,10 @@ class Crypto {
      * @return {string} signature
      */
     static async sign(message, keys) {
+        const msg = Crypto.wrapBuffer(message);
         if (!BROWSER) {
-            const msg = Crypto.wrapBuffer(message);
             return base64Url(nacl.sign.detached(msg, keys.privateKey));
         }
-        const msg = Crypto.wrapBuffer(message);
         let importedPrivateKey = keys.privateKey;
         if (!importedPrivateKey instanceof CryptoKey) {
             importedPrivateKey = await crypto.subtle.importKey(
@@ -148,8 +137,8 @@ class Crypto {
      * @param {Uint8Array} publicKey - public key to use for verification
      */
     static async verify(message, signature, publicKey) {
+        const msg = Crypto.wrapBuffer(message);
         if (!BROWSER) {
-            const msg = Crypto.wrapBuffer(message);
             const sig = Crypto.wrapBuffer(base64Url.toBuffer(signature));
             const result = nacl.sign.detached.verify(msg, sig, publicKey);
             if (!result) {
@@ -168,7 +157,6 @@ class Crypto {
             false,
             ['verify']
         );
-        const msg = Crypto.wrapBuffer(message);
         const sig = Crypto._DerToP1363(Crypto.bufferKey(signature));
         const result = await crypto.subtle.verify(
             {
