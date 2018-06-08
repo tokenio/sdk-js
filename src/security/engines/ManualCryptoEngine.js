@@ -1,45 +1,45 @@
 import MemoryKeyStore from "./MemoryKeyStore";
 import KeyStoreCryptoEngine from "./KeyStoreCryptoEngine";
 import Crypto from '../Crypto';
-import base64url from 'base64url';
+import base64Url from 'base64url';
 import sha256 from 'fast-sha256';
 
-/**
- * A crypto engine that's a thin wrapper around a keystore.
- */
 let keys = [];
 const globalKeyStore = new MemoryKeyStore();
 
+/**
+ * Crypto engine that handles hardcoded keys
+ */
 class ManualCryptoEngine extends KeyStoreCryptoEngine {
     /**
      * Set the hardcoded keys used by ManualCryptoEngine
      *
-     * @param {array} memberKeys - keys to set
+     * @param {Array} memberKeys - keys to set
      *
      * Must be an array with objects of the format:
      * {
      *     publicKey: "123456",
-     *     secretKey: "123456",
+     *     privateKey: "123456",
      *     level: "LOW" || "STANDARD" || "PRIVILEGED",
      * }
      */
-    static setKeys(memberKeys) {
+    static async setKeys(memberKeys) {
         if (!memberKeys || !Array.isArray(memberKeys) || memberKeys.length < 1) {
             throw new Error('invalid keys format');
         }
         keys = memberKeys;
         for (let keyPair of keys) {
-            if (!keyPair.publicKey || !keyPair.secretKey || !keyPair.level) {
+            if (!keyPair.publicKey || !keyPair.privateKey || !keyPair.level) {
                 throw new Error("Invalid keyPair format");
             }
             if (typeof keyPair.publicKey === 'string') {
                 keyPair.publicKey = Crypto.bufferKey(keyPair.publicKey);
             }
-            if (typeof keyPair.secretKey === 'string') {
-                keyPair.secretKey = Crypto.bufferKey(keyPair.secretKey);
+            if (typeof keyPair.privateKey === 'string') {
+                keyPair.privateKey = Crypto.bufferKey(keyPair.privateKey);
             }
             if (!keyPair.id) {
-                keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
+                keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
             }
             keyPair.algorithm = 'ED25519';
         }
@@ -62,8 +62,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         for (let keyPair of keys) {
             if (keyPair.level === level) {
                 const cloned = clone(keyPair);
-                if (cloned.secretKey) {
-                    delete cloned.secretKey;
+                if (cloned.privateKey) {
+                    delete cloned.privateKey;
                 }
                 return cloned;
             }
@@ -102,8 +102,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
 /**
  * Return a (shallow) copy of an object.
  *
- * If the "user" of a keypair object edits it (e.g., deleting secretKey),
- * that shouldn't affect the "stored" keypair. Thus, we can't pass around
+ * If the "user" of a key pair object edits it (e.g., deleting privateKey),
+ * that shouldn't affect the "stored" key pair. Thus, we can't pass around
  * references to stored objects. Instead, we do some object-copying.
  *
  * @param {Object} obj - object to copy

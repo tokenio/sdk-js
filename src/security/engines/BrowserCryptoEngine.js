@@ -2,28 +2,24 @@ import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import BrowserKeyStore from './BrowserKeyStore';
 
 /**
- * BrowserCryptoEngine: Implements the CryptoEngine interface.
+ * Crypto engine for the browser, it handles signatures, verifications,
+ * and keys are stored in IndexedDB using the following schema
  *
- * Crypto engine to handle signatures, verifications, and key storage, on browsers. Uses
- * LocalStorage as the storage location, and handles storage for multiple members at once.
- * Uses the following schema:
- *
- * schemaVersion: 0.2,
- *
- * activeMemberId: "m:12345:678", // member ID
- * members: {
- *  "m:12345:678": { // member ID
- *    LOW: {
+ * KEY: memberId (e.g. 'm:12345:678')
+ * VALUE (JS object):
+ * {
+ *      LOW: {
  *          id: 456, // key ID
- *          algorithm: ED25519,
+ *          algorithm: ECDSA,
  *          level: LOW,
- *          publicKey: "jlfgjlrsjfglgfja", // Crypto.strKey(public key)
- *          secretKey: "ljkfsfjkfgjlfjjf", // Crypto.strKey(secret key)
+ *          publicKey: key data in Uint8Array format
+ *          privateKey: non-extractable object
  *      },
- *    STANDARD: {...},
- *    PRIVILEGED: {...},
- *  }
+ *      STANDARD: {...},
+ *      PRIVILEGED: {...},
  * }
+ *
+ * Furthermore, activeMemberId is stored in localStorage
  *
  */
 const globalKeyStore = new BrowserKeyStore();
@@ -39,15 +35,15 @@ class BrowserCryptoEngine extends KeyStoreCryptoEngine {
     }
 
     static getActiveMemberId() {
-        const memberId = BrowserKeyStore.getActiveMemberId();
-        if (!memberId) {
-            throw new Error('No active memberId on this browser');
-        }
-        return memberId;
+        return BrowserKeyStore.getActiveMemberId();
     }
 
     static setActiveMemberId(memberId) {
         BrowserKeyStore.setActiveMemberId(memberId);
+    }
+
+    static async clearAllKeys() {
+        return await globalKeyStore.clearAllKeys();
     }
 }
 

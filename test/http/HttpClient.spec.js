@@ -33,7 +33,7 @@ describe('Unauthenticated', () => {
     it('should call global handler on version mismatch error', async () => {
         let handlerCalled = false;
         const unauthenticatedClient = new HttpClient(TEST_ENV, devKey, (error) => {
-            assert.equal(error.name, 'unsupported-client-version');
+            assert.equal(error.name, BROWSER ? 'UNKNOWN' : 'unsupported-client-version');
             handlerCalled = true;
         });
         // Override sdk version to force version mismatch error.

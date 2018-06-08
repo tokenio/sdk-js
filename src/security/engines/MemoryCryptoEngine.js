@@ -15,7 +15,7 @@ import MemoryKeyStore from './MemoryKeyStore';
  *          algorithm: ED25519,
  *          level: PRIVILEGED,
  *          publicKey: Buffer(...), // public key data
- *          secretKey: Buffer(...), // secret key data
+ *          privateKey: Buffer(...), // secret key data
  *      },
  *     "LOW": {...},
  *     "STANDARD": {...},

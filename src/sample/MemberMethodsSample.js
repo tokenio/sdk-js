@@ -57,12 +57,12 @@ class MemberMethodsSample {
     }
 
     static async keys(Token, member) {
-        const keypair4 = Token.Crypto.generateKeys('LOW');
-        delete keypair4.secretKey;
+        const keypair4 = await Token.Crypto.generateKeys('LOW');
+        delete keypair4.privateKey;
         await member.approveKey(keypair4);
-        const keypair5 = Token.Crypto.generateKeys('STANDARD');
-        const keypair6 = Token.Crypto.generateKeys('PRIVILEGED');
-        delete keypair6.secretKey;
+        const keypair5 = await Token.Crypto.generateKeys('STANDARD');
+        const keypair6 = await Token.Crypto.generateKeys('PRIVILEGED');
+        delete keypair6.privateKey;
         await member.approveKeys([keypair5, keypair6]);
 
         await member.removeKey(keypair4.id);
