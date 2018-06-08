@@ -49,9 +49,9 @@ describe('Key store', () => {
     keyStores.forEach((KeyStore) => {
         it('should create the keyStore and generate keys', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
-            const keyPairStandard = Crypto.generateKeys("STANDARD");
-            const keyPairPrivileged = Crypto.generateKeys("PRIVILEGED");
+            const keyPairLow = await Crypto.generateKeys("LOW");
+            const keyPairStandard = await Crypto.generateKeys("STANDARD");
+            const keyPairPrivileged = await Crypto.generateKeys("PRIVILEGED");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
             await keyStore.put(memberId, keyPairStandard);
@@ -60,9 +60,9 @@ describe('Key store', () => {
 
         it('should get keys by level, idempotent', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
-            const keyPairStandard = Crypto.generateKeys("STANDARD");
-            const keyPairPrivileged = Crypto.generateKeys("PRIVILEGED");
+            const keyPairLow = await Crypto.generateKeys("LOW");
+            const keyPairStandard = await Crypto.generateKeys("STANDARD");
+            const keyPairPrivileged = await Crypto.generateKeys("PRIVILEGED");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
             await keyStore.put(memberId, keyPairStandard);
@@ -76,9 +76,9 @@ describe('Key store', () => {
 
         it('should get keys by id, idempotent', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
-            const keyPairStandard = Crypto.generateKeys("STANDARD");
-            const keyPairPrivileged = Crypto.generateKeys("PRIVILEGED");
+            const keyPairLow = await Crypto.generateKeys("LOW");
+            const keyPairStandard = await Crypto.generateKeys("STANDARD");
+            const keyPairPrivileged = await Crypto.generateKeys("PRIVILEGED");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
             await keyStore.put(memberId, keyPairLow);
@@ -92,11 +92,11 @@ describe('Key store', () => {
 
         it('should replace keys', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
+            const keyPairLow = await Crypto.generateKeys("LOW");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
 
-            const keyPairLow2 = Crypto.generateKeys("LOW");
+            const keyPairLow2 = await Crypto.generateKeys("LOW");
             await keyStore.put(memberId, keyPairLow2);
 
             const lowKey = await keyStore.getByLevel(memberId, "LOW");
@@ -106,9 +106,9 @@ describe('Key store', () => {
 
         it('should list keys', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
-            const keyPairStandard = Crypto.generateKeys("STANDARD");
-            const keyPairPrivileged = Crypto.generateKeys("PRIVILEGED");
+            const keyPairLow = await Crypto.generateKeys("LOW");
+            const keyPairStandard = await Crypto.generateKeys("STANDARD");
+            const keyPairPrivileged = await Crypto.generateKeys("PRIVILEGED");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
             await keyStore.put(memberId, keyPairLow);
@@ -123,17 +123,17 @@ describe('Key store', () => {
 
         it('should store multiple members', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
-            const keyPairStandard = Crypto.generateKeys("STANDARD");
-            const keyPairPrivileged = Crypto.generateKeys("PRIVILEGED");
+            const keyPairLow = await Crypto.generateKeys("LOW");
+            const keyPairStandard = await Crypto.generateKeys("STANDARD");
+            const keyPairPrivileged = await Crypto.generateKeys("PRIVILEGED");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
             await keyStore.put(memberId, keyPairStandard);
             await keyStore.put(memberId, keyPairPrivileged);
 
-            const keyPairLow2 = Crypto.generateKeys("LOW");
-            const keyPairStandard2 = Crypto.generateKeys("STANDARD");
-            const keyPairPrivileged2 = Crypto.generateKeys("PRIVILEGED");
+            const keyPairLow2 = await Crypto.generateKeys("LOW");
+            const keyPairStandard2 = await Crypto.generateKeys("STANDARD");
+            const keyPairPrivileged2 = await Crypto.generateKeys("PRIVILEGED");
             const memberId2 = Util.generateNonce();
             await keyStore.put(memberId2, keyPairLow2);
             await keyStore.put(memberId2, keyPairStandard2);
@@ -165,12 +165,12 @@ describe('Key store', () => {
                 return;
             }
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
+            const keyPairLow = await Crypto.generateKeys("LOW");
             const memberId = Util.generateNonce();
             await keyStore.put(memberId, keyPairLow);
 
             assert.equal(KeyStore.getActiveMemberId(), memberId);
-            const keyPairLow2 = Crypto.generateKeys("LOW");
+            const keyPairLow2 = await Crypto.generateKeys("LOW");
             const memberId2 = Util.generateNonce();
             await keyStore.put(memberId2, keyPairLow2);
 
@@ -183,7 +183,7 @@ describe('Key store', () => {
 
         it('should fail to put, if no memberId or key', async () => {
             const keyStore = new KeyStore();
-            const keyPairLow = Crypto.generateKeys("LOW");
+            const keyPairLow = await Crypto.generateKeys("LOW");
             const memberId = Util.generateNonce();
 
             try {

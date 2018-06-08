@@ -1,51 +1,69 @@
-import Crypto from '../Crypto';
-import config from "../../config.json";
+const MEMBER_KEY_DB = 'member_key';
+const MEMBER_KEY_DB_VERSION = 1;
+const MEMBER_KEY_STORE = 'member_keys';
+
+const READ_ONLY = 'readonly';
+const READ_WRITE = 'readwrite';
+
+let DB;
 
 class BrowserKeyStore {
-    _checkSchemaVersion() {
-        // Clears the storage if we are using an old schema
-        let savedSchemaVersion = 0;
-        try {
-            savedSchemaVersion = JSON.parse(window.localStorage.schemaVersion);
-        } catch (syntaxError) {
-            // If nothing yet in localStorage, continue
-        }
-
-        if (savedSchemaVersion < config.localStorageSchemaVersion) {
-            window.localStorage.removeItem('members');
-            window.localStorage.removeItem('activeMemberId');
-            window.localStorage.schemaVersion = JSON.stringify(config.localStorageSchemaVersion);
-        }
+    /**
+     * Keep track of the ID of the most recently active member.
+     *
+     * @param {string} memberId - ID of member
+     */
+    static setActiveMemberId(memberId) {
+        localStorage.activeMemberId = memberId;
     }
 
     /**
-     * Store a member's keypair.
+     * Get the ID of the most recently active member.
+     *
+     * @return {string} ID of member
+     */
+    static getActiveMemberId() {
+        const memberId = localStorage.activeMemberId;
+        if (!memberId) {
+            throw new Error('No active memberId on this browser');
+        }
+        return memberId;
+    }
+
+    /**
+     * Store a member's key pair.
      *
      * @param {string} memberId - ID of member
-     * @param {Object} keypair - keypair to store
-     * @return {Object} keypair - same keypair
+     * @param {Object} keyPair - key pair to store
+     * @return {Promise} promise that resolves into the key pair that was passed in
      */
-    async put(memberId, keypair) {
+    async put(memberId, keyPair) {
         if (!memberId) {
             throw new Error("Invalid memberId");
         }
-        if (!keypair) {
+        if (!keyPair) {
             throw new Error("Don't know what key to put");
         }
-        if (!keypair.level) {
+        if (!keyPair.level) {
             throw new Error("Don't know what level to put key");
         }
         if (!BROWSER) {
             throw new Error("Browser Only");
         }
-        var member = this._loadMember(memberId);
-        if (!member) {
-            member = {};
-        }
-        member[keypair.level] = keypair;
-        this._saveMember(memberId, member);
-        BrowserKeyStore.setActiveMemberId(memberId);
-        return keypair;
+        const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE, READ_WRITE);
+        return new Promise((resolve, reject) => {
+            const getReq = store.get(memberId);
+            getReq.onsuccess = () => {
+                const member = getReq.result || {};
+                const putReq = store.put(Object.assign(member, {[keyPair.level]: keyPair}), memberId);
+                putReq.onsuccess = () => {
+                    BrowserKeyStore.setActiveMemberId(memberId);
+                    resolve(keyPair);
+                };
+                putReq.onerror = () => reject(new Error('Error saving member to database'));
+            };
+            getReq.onerror = () => reject(new Error('Error getting member from database'));
+        });
     }
 
     /**
@@ -53,7 +71,7 @@ class BrowserKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
-     * @return {Object} keypair
+     * @return {Promise} promise that resolves into the retrieved key pair
      */
     async getByLevel(memberId, level) {
         if (!memberId) {
@@ -65,15 +83,22 @@ class BrowserKeyStore {
         if (!BROWSER) {
             throw new Error("Browser Only");
         }
-        const member = await this._loadMember(memberId);
-        if (!member) {
-            throw new Error(`Member with id ${memberId} not found`);
-        }
-        if (!member[level]) {
-            throw new Error(`No key with level ${level} found`);
-        }
-        BrowserKeyStore.setActiveMemberId(memberId);
-        return member[level];
+        const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE);
+        return new Promise((resolve, reject) => {
+            const getReq = store.get(memberId);
+            getReq.onsuccess = () => {
+                const member = getReq.result;
+                if (!member) {
+                    reject(new Error(`Member with id ${memberId} not found`));
+                }
+                if (!member[level]) {
+                    reject(new Error(`No key with level ${level} found`));
+                }
+                BrowserKeyStore.setActiveMemberId(memberId);
+                resolve(getReq.result[level]);
+            };
+            getReq.onerror = () => reject(new Error('Error getting member from database'));
+        });
     }
 
     /**
@@ -81,7 +106,7 @@ class BrowserKeyStore {
      *
      * @param {string} memberId - ID of member
      * @param {string} keyId - key ID
-     * @return {Object} keypair
+     * @return {Promise} promise that resolves into the retrieved key pair
      */
     async getById(memberId, keyId) {
         if (!memberId) {
@@ -93,26 +118,30 @@ class BrowserKeyStore {
         if (!BROWSER) {
             throw new Error("Browser Only");
         }
-        const member = this._loadMember(memberId);
-        if (!member) {
-            throw new Error(`member ${memberId} not found`);
-        }
-        for (let level in member) {
-            if (Object.prototype.hasOwnProperty.call(member, level)) {
-                if (member[level].id === keyId) {
-                    BrowserKeyStore.setActiveMemberId(memberId);
-                    return member[level];
+        const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE);
+        return new Promise((resolve, reject) => {
+            const getReq = store.get(memberId);
+            getReq.onsuccess = () => {
+                const member = getReq.result;
+                if (!member) {
+                    reject(new Error(`member ${memberId} not found`));
                 }
-            }
-        }
-        throw new Error(`No key with id ${keyId} found`);
+                Object.values(member).forEach((level) => {
+                    if (level.id === keyId) {
+                        BrowserKeyStore.setActiveMemberId(memberId);
+                        resolve(level);
+                    }
+                });
+                reject(new Error(`No key with id ${keyId} found`));
+            };
+            getReq.onerror = () => reject(new Error('Error getting member from database'));
+        });
     }
-
     /**
      * Return list of member's keys.
      *
      * @param {string} memberId - ID of member
-     * @return {Object} list of keys
+     * @return {Promise} promise that resolves into the retrieved list of key pairs
      */
     async listKeys(memberId) {
         if (!memberId) {
@@ -121,101 +150,73 @@ class BrowserKeyStore {
         if (!BROWSER) {
             throw new Error("Browser Only");
         }
-        const member = this._loadMember(memberId);
-        if (!member) {
-            if (!member) {
-                throw new Error(`member ${memberId} not found`);
-            }
-        }
-        BrowserKeyStore.setActiveMemberId(memberId);
-        var list = [];
-        for (var level in member) {
-            if (member.hasOwnProperty(level)) {
-                list.push(member[level]);
-            }
-        }
-        return list;
+        const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE);
+        return new Promise((resolve, reject) => {
+            const getReq = store.get(memberId);
+            getReq.onsuccess = () => {
+                const member = getReq.result;
+                if (!member) {
+                    reject(new Error(`member ${memberId} not found`));
+                }
+                BrowserKeyStore.setActiveMemberId(memberId);
+                resolve(Object.values(member));
+            };
+            getReq.onerror = () => reject(new Error('Error getting member from database'));
+        });
     }
 
     /**
-     * Keep track of the ID of the most recently active member.
+     * Clears all keys in object store
      *
-     * @param {string} memberId - ID of member
+     * @return {Promise<any>} promise that resolves when all keys have been cleared
      */
-    static setActiveMemberId(memberId) {
-        window.localStorage.activeMemberId = memberId;
-    }
-
-   /**
-     * Get the ID of the most recently active member.
-     *
-     * @return {string} ID of member
-     */
-    static getActiveMemberId() {
-        const memberId = window.localStorage.activeMemberId;
-        if (!memberId) {
-            throw new Error('No active memberId on this browser');
-        }
-        return memberId;
+    async clearAllKeys() {
+        const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE, READ_WRITE);
+        return new Promise((resolve, reject) => {
+            const clearReq = store.clear();
+            clearReq.onsuccess = () => resolve();
+            clearReq.onerror = () => reject(new Error('Error clearing the database'));
+        });
     }
 
     /**
-     * Save a member's keys.
-     * @param {string} memberId - member Id
-     * @param {Object} member - obj dict of keys { "LOW": {...}, "STANDARD": {...}, ... }
+     * Opens an instance of IndexedDB
+     *
+     * @param {string} dbName - name of db
+     * @param {string} dbVersion - version of db
+     * @return {Promise<IDBDatabase>} promise that resolves into the database object
+     * @private
      */
-    _saveMember(memberId, member) {
-        this._checkSchemaVersion();
-        var members;
-        try {
-            members = JSON.parse(window.localStorage.members);
-        } catch (ex) {
-            // oh well
-        }
-        if (!members) {
-            members = {};
-        }
-        const memberCopy = {}; // like member, but Crypto.strKey( keys )
-        for (const [level, key] of Object.entries(member)) {
-            memberCopy[level] = Object.assign({}, key);
-            if (key.publicKey) {
-                memberCopy[level].publicKey = Crypto.strKey(key.publicKey);
-            }
-            if (key.secretKey) {
-                memberCopy[level].secretKey = Crypto.strKey(key.secretKey);
-            }
-        }
-        members[memberId] = memberCopy;
-        window.localStorage.members = JSON.stringify(members);
+    static async _openDb(dbName, dbVersion) {
+        if (DB) return DB;
+        return new Promise((resolve, reject) => {
+            if (!indexedDB) reject(new Error('Your browser does not support IndexedDB'));
+            const req = indexedDB.open(dbName, dbVersion);
+            req.onsuccess = () => {
+                DB = req.result;
+                resolve(req.result);
+            };
+            req.onerror = () => {
+                reject(new Error('Error opening database'));
+            };
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                db.createObjectStore(MEMBER_KEY_STORE);
+            };
+        });
     }
 
     /**
-     * Load a member's keys.
+     * Retrieves an object store from the db
      *
-     * @param {string} memberId - ID of member
-     * @return {Object} object dict level : key {"LOW": {...}, "STANDARD": {...}, ...}
+     * @param {string} storeName - name of object store
+     * @param {string} mode - readonly, readwrite, or readwriteflush, defaults to readonly
+     * @return {Promise<IDBObjectStore>} promise that resolves into the store object
+     * @private
      */
-    _loadMember(memberId) {
-        this._checkSchemaVersion();
-        var members;
-        try {
-            members = JSON.parse(window.localStorage.members);
-        } catch (ex) {
-            return null;
-        }
-        if (!Object.prototype.hasOwnProperty.call(members, memberId)) {
-            return null;
-        }
-        const member = members[memberId];
-        for (const [level, key] of Object.entries(member)) {
-            if (key.publicKey) {
-                member[level].publicKey = Crypto.bufferKey(key.publicKey);
-            }
-            if (key.secretKey) {
-                member[level].secretKey = Crypto.bufferKey(key.secretKey);
-            }
-        }
-        return member;
+    static async _getObjectStore(storeName, mode = READ_ONLY) {
+        const db = await BrowserKeyStore._openDb(MEMBER_KEY_DB, MEMBER_KEY_DB_VERSION);
+        return db.transaction(storeName, mode).objectStore(storeName);
     }
 }
 

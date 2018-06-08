@@ -278,7 +278,8 @@ class Token {
                     id: key.id,
                     level: level,
                     algorithm: key.algorithm,
-                    publicKey: Crypto.strKey(key.publicKey)
+                    publicKey: Crypto.strKey(key.publicKey),
+                    ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                 }
             }
         };
@@ -312,7 +313,8 @@ class Token {
                         id: key.id,
                         level: level,
                         algorithm: key.algorithm,
-                        publicKey: Crypto.strKey(key.publicKey)
+                        publicKey: Crypto.strKey(key.publicKey),
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                     }
                 }
             }
@@ -408,9 +410,8 @@ class Token {
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
                 throw new Error('Invalid state.');
             }
-
             const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
-            Crypto.verifyJson(
+            await Crypto.verifyJson(
                 {
                     state: encodeURIComponent(JSON.stringify(params.state)),
                     tokenId: params.tokenId
@@ -418,7 +419,6 @@ class Token {
                 params.signature.signature,
                 Crypto.bufferKey(signingKey.publicKey)
             );
-
             return {
                 tokenId: params.tokenId,
                 innerState: params.state.innerState

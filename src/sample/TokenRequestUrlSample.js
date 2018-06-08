@@ -28,7 +28,7 @@ class TokenRequestUrlSample {
      * @return {Object} result - inner state and token id
      */
     static async parseTokenRequestCallbackUrl(callbackUrl, csrfToken) {
-        return Token.parseTokenRequestCallbackUrl(callbackUrl, csrfToken);
+        return await Token.parseTokenRequestCallbackUrl(callbackUrl, csrfToken);
     }
 
     /**

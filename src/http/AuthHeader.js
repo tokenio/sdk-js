@@ -62,7 +62,7 @@ class AuthHeader {
         const signer = await this._client.getSigner(AuthHeader._keyLevel(context));
 
         // Signs the Json string
-        const signature = signer.signJson(payload);
+        const signature = await signer.signJson(payload);
 
         // Creates the authorization header, ands adds it to the request
         const header = config.signatureScheme + ' ' +

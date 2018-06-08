@@ -306,7 +306,7 @@ class AuthHttpClient {
             addressSignature: {
                 memberId: this._memberId,
                 keyId: signer.getKeyId(),
-                signature: signer.signJson(address),
+                signature: await signer.signJson(address),
             }
         };
         const request = {
@@ -933,7 +933,7 @@ class AuthHttpClient {
             payloadSignature: {
                 memberId: this._memberId,
                 keyId: signer.getKeyId(),
-                signature: signer.signJson(payload),
+                signature: await signer.signJson(payload),
             }
         };
         const request = {
@@ -997,7 +997,7 @@ class AuthHttpClient {
         return {
             memberId: this._memberId,
             keyId: signer.getKeyId(),
-            signature: signer.sign(payload),
+            signature: await signer.sign(payload),
         };
     }
 
@@ -1057,7 +1057,7 @@ class AuthHttpClient {
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
                             algorithm: key.algorithm,
-                            expiresAtMs: key.expiresAtMs || undefined
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                         }
                     }
                 }
@@ -1084,7 +1084,7 @@ class AuthHttpClient {
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
                         algorithm: key.algorithm,
-                        expiresAtMs: key.expiresAtMs || undefined
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                     }
                 }
             }))
@@ -1260,7 +1260,7 @@ class AuthHttpClient {
             updateSignature: {
                 memberId: this._memberId,
                 keyId: signer.getKeyId(),
-                signature: signer.signJson(update),
+                signature: await signer.signJson(update),
             },
             metadata
         };

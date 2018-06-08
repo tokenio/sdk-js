@@ -133,7 +133,7 @@ describe('Unsecured File crypto engine', () => {
                     level: 'LOW',
                     algorithm: 'ED25519',
                     publicKey: 'b8uKAhTT_55wL1QCBaDLtclfeXOEf5Gm8qYY7KbghCo',
-                    secretKey: 'YLYhbPCsfJtKt5wvT69ocAwjTCaX8goEFgDIzS-zRD1vy4oCFNP_' +
+                    privateKey: 'YLYhbPCsfJtKt5wvT69ocAwjTCaX8goEFgDIzS-zRD1vy4oCFNP_' +
                     'nnAvVAIFoMu1yV95c4R_kabyphjspuCEKg'
                 }]
             });
