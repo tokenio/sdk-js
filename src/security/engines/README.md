@@ -7,7 +7,7 @@ code that manages crypto keys.
 + `MemoryCryptoEngine` keeps keys in memory. It doesn't persist anything, and
   "forgets" keys on restart. It's handy for tests.
 + `UnsecuredFileCryptoEngine` keeps keys in files in a designated directory.
-+ `BrowserCryptoEngine` keeps keys in a browser's `localStorage`.
++ `BrowserCryptoEngine` keeps keys in a browser's `IndexedDB`.
 
 They are described at
 https://developer-beta.token.io/sdk/?javascript#local-key-storage
@@ -107,13 +107,13 @@ A CryptoEngine implements the methods
      *                 "LOW" "STANDARD" "PRIVILEGED"
      * @return {Key} key - generated key
      */
-   generateKey(securityLevel) {
+   async generateKey(securityLevel) {
       // generate a keypair
-      const keypair = Token.Crypto.generateKeys(securityLevel);
+      const keypair = await Token.Crypto.generateKeys(securityLevel);
 
       ...store keypair...
 
-      delete keypair.secretKey; // we're about to return keypair, but want to omit secretKey
+      delete keypair.privateKey; // we're about to return keypair, but want to omit privateKey
       return keypair;
     }
 
@@ -139,7 +139,7 @@ A CryptoEngine implements the methods
      * signatures created by a signer.
      *
      * @param {string} keyId - ID of the key to use. It's OK if this "keypair" has no
-     *                         secretKey field.
+     *                         privateKey field.
      * @return {Object} verifier - verifier object
      */
     async createVerifier(keyId) {
@@ -178,8 +178,8 @@ but if you want to make your own, implement the functions:
      * @param {string} message - string to sign
      * @return {string} signature - crypto signature of message
      */
-    sign(message) {
-        return Token.Crypto.sign(message, this._keypair);
+    async sign(message) {
+        return await Token.Crypto.sign(message, this._keypair);
     }
 
     /**
@@ -187,9 +187,9 @@ but if you want to make your own, implement the functions:
      * @param {object} json - object to sign
      * @return {string} signature - crypto signature of the JSONified structure
      */
-    signJson(json) {
+    async signJson(json) {
         // stringify = require('json-stable-stringify')
-        return Token.Crypto.sign(stringify(message), this._keypair);
+        return await Token.Crypto.sign(stringify(message), this._keypair);
     }
 
     /**
@@ -217,8 +217,8 @@ but if you want to make your own, implement the functions:
      * @param {string} signature - crypto signature
      * @return {boolean} is signature OK
      */
-    verify(message, signature) {
-        return Token.Crypto.verify(message, signature, this._keypair.publicKey);
+    async verify(message, signature) {
+        return await Token.Crypto.verify(message, signature, this._keypair.publicKey);
     }
     /**
      * Verify the signature goes with the passed structure
@@ -226,8 +226,8 @@ but if you want to make your own, implement the functions:
      * @param {string} signature - crypto signature
      * @return {boolean} is signature OK
      */
-    verifyJson: (json, signature) => {
-        return Token.Crypto.verifyJson(json, signature, this._keypair.publicKey);
+    async verifyJson: (json, signature) => {
+        return await Token.Crypto.verifyJson(json, signature, this._keypair.publicKey);
     }
 ```
     

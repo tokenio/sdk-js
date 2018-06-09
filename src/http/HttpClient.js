@@ -137,7 +137,8 @@ class HttpClient {
                             id: key.id,
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
-                            algorithm: key.algorithm
+                            algorithm: key.algorithm,
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                         }
                     }
                 }
@@ -148,7 +149,7 @@ class HttpClient {
             updateSignature: {
                 memberId: memberId,
                 keyId: signer.getKeyId(),
-                signature: signer.signJson(update)
+                signature: await signer.signJson(update)
             }
         };
         const request = {
@@ -177,7 +178,8 @@ class HttpClient {
                         id: key.id,
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
-                        algorithm: key.algorithm
+                        algorithm: key.algorithm,
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                     }
                 }
             })),
@@ -187,7 +189,7 @@ class HttpClient {
             updateSignature: {
                 memberId: memberId,
                 keyId: signer.getKeyId(),
-                signature: signer.signJson(update)
+                signature: await signer.signJson(update)
             }
         };
         const request = {

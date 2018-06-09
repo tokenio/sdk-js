@@ -191,12 +191,13 @@ class Token {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys. This only generates one (LOW) key.
      *
-     * @param {string} alias - user to provision t he device for
+     * @param {string} alias - user to provision the device for
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param {string} realm - (optional) realm of the alias
+     * @param {number} expirationMs - (optional) expiration duration of key in milliseconds
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDeviceLow(alias, CryptoEngine, realm) {
+    provisionDeviceLow(alias, CryptoEngine, realm, expirationMs = config.lowKeyExpiration) {
         return Util.callAsync(this.provisionDeviceLow, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
             if (!res.data.member || !res.data.member.id) {
@@ -204,7 +205,7 @@ class Token {
             }
 
             const engine = new CryptoEngine(res.data.member.id);
-            const pk1 = await engine.generateKey('LOW');
+            const pk1 = await engine.generateKey('LOW', expirationMs);
             return {
                 memberId: res.data.member.id,
                 keys: [pk1],
@@ -278,7 +279,8 @@ class Token {
                     id: key.id,
                     level: level,
                     algorithm: key.algorithm,
-                    publicKey: Crypto.strKey(key.publicKey)
+                    publicKey: Crypto.strKey(key.publicKey),
+                    ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                 }
             }
         };
@@ -312,7 +314,8 @@ class Token {
                         id: key.id,
                         level: level,
                         algorithm: key.algorithm,
-                        publicKey: Crypto.strKey(key.publicKey)
+                        publicKey: Crypto.strKey(key.publicKey),
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
                     }
                 }
             }
@@ -408,9 +411,8 @@ class Token {
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
                 throw new Error('Invalid state.');
             }
-
             const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
-            Crypto.verifyJson(
+            await Crypto.verifyJson(
                 {
                     state: encodeURIComponent(JSON.stringify(params.state)),
                     tokenId: params.tokenId
@@ -418,7 +420,6 @@ class Token {
                 params.signature.signature,
                 Crypto.bufferKey(signingKey.publicKey)
             );
-
             return {
                 tokenId: params.tokenId,
                 innerState: params.state.innerState
