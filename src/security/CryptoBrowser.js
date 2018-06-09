@@ -11,7 +11,7 @@ class CryptoBrowser {
      * Generates a key pair to use with the Token system.
      *
      * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
-     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
+     * @param {string} expirationMs - (optional) expiration duration of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
@@ -31,7 +31,7 @@ class CryptoBrowser {
         keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ECDSA_SHA256';
         keyPair.level = keyLevel;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = expirationMs;
+        if (expirationMs !== undefined) keyPair.expiresAtMs = (new Date()).getTime() + expirationMs;
         return keyPair;
     }
 

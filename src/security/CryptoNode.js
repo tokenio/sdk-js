@@ -11,7 +11,7 @@ class CryptoNode {
      * Generates a key pair to use with the Token system.
      *
      * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
-     * @param {string} expirationMs - (optional) expiration date of the key in milliseconds
+     * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
@@ -21,7 +21,7 @@ class CryptoNode {
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
         keyPair.privateKey = keyPair.secretKey;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = expirationMs;
+        if (expirationMs !== undefined) keyPair.expiresAtMs = (new Date()).getTime() + expirationMs;
         delete keyPair.secretKey;
         return keyPair;
     }
