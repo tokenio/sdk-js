@@ -1057,13 +1057,12 @@ class AuthHttpClient {
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
                             algorithm: key.algorithm,
-                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs.toString()}
                         }
                     }
                 }
             ]
         };
-
         return this._memberUpdate(update, prevHash);
     }
 
@@ -1084,12 +1083,11 @@ class AuthHttpClient {
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
                         algorithm: key.algorithm,
-                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs.toString()}
                     }
                 }
             }))
         };
-
         return this._memberUpdate(update, prevHash);
     }
 
