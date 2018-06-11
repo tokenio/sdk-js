@@ -5,8 +5,6 @@ const MEMBER_KEY_STORE = 'member_keys';
 const READ_ONLY = 'readonly';
 const READ_WRITE = 'readwrite';
 
-let DB;
-
 class BrowserKeyStore {
     /**
      * Keep track of the ID of the most recently active member.
@@ -188,17 +186,13 @@ class BrowserKeyStore {
      * @private
      */
     static async _openDb(dbName, dbVersion) {
-        if (DB) return DB;
         return new Promise((resolve, reject) => {
             if (!indexedDB) reject(new Error('Your browser does not support IndexedDB'));
             const req = indexedDB.open(dbName, dbVersion);
             req.onsuccess = () => {
-                DB = req.result;
                 resolve(req.result);
             };
-            req.onerror = () => {
-                reject(new Error('Error opening database'));
-            };
+            req.onerror = () => reject(new Error('Error opening database'));
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 db.createObjectStore(MEMBER_KEY_STORE);
@@ -216,7 +210,9 @@ class BrowserKeyStore {
      */
     static async _getObjectStore(storeName, mode = READ_ONLY) {
         const db = await BrowserKeyStore._openDb(MEMBER_KEY_DB, MEMBER_KEY_DB_VERSION);
-        return db.transaction(storeName, mode).objectStore(storeName);
+        const txn = db.transaction(storeName, mode);
+        txn.oncomplete = () => db.close();
+        return txn.objectStore(storeName);
     }
 }
 
