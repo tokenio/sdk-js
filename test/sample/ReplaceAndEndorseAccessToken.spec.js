@@ -15,6 +15,10 @@ describe('ReplaceAndEndorseAccessTokenSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await member.firstAlias());
+            assert.isOk(await member2.firstAlias());
+        });
         await LinkMemberAndBankSample(member);
 
         const member2Alias = await member2.firstAlias();
