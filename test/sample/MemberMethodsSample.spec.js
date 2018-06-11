@@ -31,6 +31,9 @@ describe('MemberMethods test', () => {
         const Token = new TokenLib(TEST_ENV, devKey);
 
         const member = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await member.firstAlias());
+        });
         await MemberMethodsSample.keys(Token, member);
     });
 

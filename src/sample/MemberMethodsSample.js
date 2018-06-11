@@ -1,3 +1,7 @@
+import TestUtil from '../../test/TestUtil';
+const chai = require('chai');
+const assert = chai.assert;
+
 /**
  * Sample code for some misc Member methods.
  */
@@ -39,6 +43,12 @@ class MemberMethodsSample {
             value: 'alias2-' + Token.Util.generateNonce() + '+noverify@token.io'
         };
         await member.addAlias(alias2);
+
+        /* only needed when adding +noverify aliases */
+        await TestUtil.waitUntil(async () => {
+            assert.isOk((await member.aliases())[1]);
+        });
+
         const alias3 = {
             type: 'EMAIL',
             value: 'alias3-' + Token.Util.generateNonce() + '+noverify@token.io'
@@ -48,6 +58,12 @@ class MemberMethodsSample {
             value: 'alias4-' + Token.Util.generateNonce() + '+noverify@token.io'
         };
         await member.addAliases([alias3, alias4]);
+
+        /* only needed when adding +noverify aliases */
+        await TestUtil.waitUntil(async () => {
+            assert.isOk((await member.aliases())[2]);
+            assert.isOk((await member.aliases())[3]);
+        });
 
         await member.removeAlias(alias1);
         await member.removeAliases([alias2, alias3]);
