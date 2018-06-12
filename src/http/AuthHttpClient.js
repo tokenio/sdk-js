@@ -888,7 +888,7 @@ class AuthHttpClient {
      * Cancels a token.
      *
      * @param {Object} token - token to cancel
-     * @param {Object} blocking - creates a non-blocking request
+     * @param {bool} blocking - creates a blocking request
      * @return {Object} response - response to the API call
      */
     async cancelToken(token, blocking) {

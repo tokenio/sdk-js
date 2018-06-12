@@ -14,6 +14,7 @@ module.exports = function(config) {
 
             // all files ending in ".spec"
             {pattern: 'src/**/*.js', watched: true},
+            {pattern: '**/*.browserspec.js', watched: false},
             {pattern: '**/*.spec.js', watched: false}
 
             // each file acts as entry point for the webpack configuration
@@ -25,6 +26,7 @@ module.exports = function(config) {
         preprocessors: {
             // add webpack as preprocessor
             'src/**/*.js': ['webpack'],
+            '**/*.browserspec.js': ['webpack'],
             '**/*.spec.js': ['webpack']
         },
         reporters: ['mocha'],

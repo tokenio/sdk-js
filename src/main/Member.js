@@ -784,21 +784,33 @@ export default class Member {
      * Cancels a token. (Called by the payer or the redeemer)
      *
      * @param {Token} token - token to cancel. Can also be a {string} tokenId
-     * @param {bool} blocking - creates a non-blocking request
      * @return {Promise} TokenOperationResult - cancelled token
      */
-    cancelToken(token, blocking) {
+    cancelToken(token) {
         return Util.callAsync(this.cancelToken, async () => {
             const finalToken = await this._resolveToken(token);
-            const cancelled = await this._client.cancelToken(finalToken, blocking);
-            if (blocking && cancelled && cancelled.data &&
-              typeof cancelled.data.dispatchRequest === 'function') {
-              return cancelled.data.dispatchRequest;
-            }
+            const cancelled = await this._client.cancelToken(finalToken);
             if (typeof token !== 'string' && !(token instanceof String)) {
                 token.payloadSignatures = cancelled.data.result.token.payloadSignatures;
             }
             return cancelled.data.result;
+        });
+    }
+
+    /**
+     * Generates a blocking function to cancel a token. (Called by the payer or the redeemer)
+     *
+     * @param {Token} token - token to cancel. Can also be a {string} tokenId
+     * @return {Function} blocking function to cancel the token
+     */
+    getBlockingCancelTokenFunction(token) {
+        return Util.callAsync(this.getBlockingCancelTokenFunction, async () => {
+            const finalToken = await this._resolveToken(token);
+            const cancelled = await this._client.cancelToken(finalToken, true);
+            if (cancelled && cancelled.data &&
+              typeof cancelled.data.dispatchRequest === 'function') {
+              return cancelled.data.dispatchRequest;
+            }
         });
     }
 

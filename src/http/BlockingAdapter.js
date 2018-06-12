@@ -10,6 +10,19 @@ var btoa = (typeof window !== 'undefined' && window.btoa) || require('axios/lib/
  *                          to trigger the blocking request
  */
 module.exports = function BlockingAdapter(config) {
+  if (typeof XMLHttpRequest === 'undefined' && typeof process !== 'undefined') {
+      // for node ignore request
+      return new Promise(function ignoreRequest(resolve) {
+        resolve({
+          data: {
+            dispatchRequest: function dispatchRequest() {
+              // Send the request
+              throw new Error('BlockingAdapter does not support node.js');
+            }
+          }
+        });
+      });
+  }
   var requestData = config.data;
   var requestHeaders = config.headers;
 

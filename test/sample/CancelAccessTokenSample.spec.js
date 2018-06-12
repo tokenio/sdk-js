@@ -20,17 +20,3 @@ describe('CancelAccessTokenSample test', () => {
         assert.equal(res2.status, 'SUCCESS');
     });
 });
-
-describe('CancelAccessTokenSample blocking test', () => {
-    it('Should run the sample', async () => {
-        const member = await CreateMemberSample();
-        const member2 = await CreateMemberSample();
-        await LinkMemberAndBankSample(member);
-        await LinkMemberAndBankSample(member2);
-
-        const member2Alias = await member2.firstAlias();
-        const res = await CreateAndEndorseAccessTokenSample(member, member2Alias);
-        const nonBlockingCancelToken = await CancelAccessTokenSample(member, res.id, true);
-        assert.doesNotThrow(nonBlockingCancelToken, Error);
-    });
-});
