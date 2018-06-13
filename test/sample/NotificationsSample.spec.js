@@ -1,13 +1,21 @@
 /* eslint-disable new-cap */
+const chai = require('chai');
+const assert = chai.assert;
+
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import PollNotificationsSample from '../../src/sample/PollNotificationsSample';
+import TestUtil from '../TestUtil';
 
 describe('NotificationsSample test', () => {
     it('PollNotificationsSample should run', async () => {
         const payer = await CreateMemberSample();
         const payee = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await payer.firstAlias());
+            assert.isOk(await payee.firstAlias());
+        });
         await PollNotificationsSample.subscribeMember(payee);
         const auth = await payer.createTestBankAccount(200, 'EUR');
         const accounts = await payer.linkAccounts(auth);

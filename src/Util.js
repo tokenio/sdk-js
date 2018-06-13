@@ -4,6 +4,8 @@
 import bs58 from 'bs58';
 import sha256 from "fast-sha256";
 import stringify from "json-stable-stringify";
+import base64Url from 'base64url/dist/base64url';
+import {Buffer as NodeBuffer} from "buffer";
 
 class Util {
     /**
@@ -226,6 +228,36 @@ class Util {
             }
         }
         throw new Error('Invalid signature');
+    }
+
+    /**
+     * Converts a key to string.
+     *
+     * @param {Uint8Array} key - key to encode
+     * @return {string} encoded key
+     */
+    static strKey(key) {
+        return base64Url(key);
+    }
+
+    /**
+     * Wraps buffer as an Uint8Array object.
+     *
+     * @param {string|Buffer} buffer - data
+     * @return {Uint8Array} data
+     */
+    static wrapBuffer(buffer) {
+        return new Uint8Array(new NodeBuffer(buffer));
+    }
+
+    /**
+     * Converts a key from a string to buffer.
+     *
+     * @param {string} key - base64Url encoded key
+     * @return {Uint8Array} buffered key
+     */
+    static bufferKey(key) {
+        return Util.wrapBuffer(base64Url.toBuffer(key));
     }
 
     static parseParamsFromUrl(url) {

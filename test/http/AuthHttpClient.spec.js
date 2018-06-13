@@ -6,6 +6,7 @@ import HttpClient from "../../src/http/HttpClient";
 import AuthHttpClient from "../../src/http/AuthHttpClient";
 import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
 import Util from '../../src/Util';
+import TestUtil from '../TestUtil';
 
 const devKey = require("../../src/config.json").devKey[TEST_ENV];
 
@@ -57,15 +58,20 @@ describe('AuthHttpClient', () => {
             [pk1, pk2, pk3],
             engine);
         await client.addAlias(
-            res2.data.member.lastHash,
-            Util.randomAlias());
-        const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
-        assert.equal(res3.data.member.aliasHashes.length, 1);
+                res2.data.member.lastHash,
+                Util.randomAlias());
+        let res3;
+        await TestUtil.waitUntil(async () => {
+            res3 = await unauthenticatedClient.getMember(res2.data.member.id);
+            assert.equal(res3.data.member.aliasHashes.length, 1);
+        });
         await client.addAlias(
-            res3.data.member.lastHash,
-            Util.randomAlias());
-        const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
-        assert.equal(res4.data.member.aliasHashes.length, 2);
+                res3.data.member.lastHash,
+                Util.randomAlias());
+        await TestUtil.waitUntil(async () => {
+            const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
+            assert.equal(res4.data.member.aliasHashes.length, 2);
+        });
     });
 
     it('should remove aliases', async () => {
@@ -84,12 +90,18 @@ describe('AuthHttpClient', () => {
         await client.addAlias(
             res2.data.member.lastHash,
             Util.randomAlias());
-        const res3 = await unauthenticatedClient.getMember(res2.data.member.id);
-        assert.equal(res3.data.member.aliasHashes.length, 1);
+        let res3;
+        await TestUtil.waitUntil(async () => {
+            res3 = await unauthenticatedClient.getMember(res2.data.member.id);
+            assert.equal(res3.data.member.aliasHashes.length, 1);
+        });
         const secondAlias = Util.randomAlias();
         await client.addAlias(res3.data.member.lastHash, secondAlias);
-        const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
-        assert.equal(res4.data.member.aliasHashes.length, 2);
+        let res4;
+        await TestUtil.waitUntil(async () => {
+            res4 = await unauthenticatedClient.getMember(res2.data.member.id);
+            assert.equal(res4.data.member.aliasHashes.length, 2);
+        });
         const res5 = await client.removeAlias(res4.data.member.lastHash, secondAlias);
         assert.equal(res5.data.member.aliasHashes.length, 1);
     });

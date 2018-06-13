@@ -5,6 +5,7 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import MemberMethodsSample from '../../src/sample/MemberMethodsSample';
+import TestUtil from '../TestUtil';
 
 describe('MemberMethods test', () => {
     it('Should run the aliases sample', async () => {
@@ -13,10 +14,15 @@ describe('MemberMethods test', () => {
         const Token = new TokenLib(TEST_ENV, devKey);
 
         const member = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await member.firstAlias());
+        });
         await MemberMethodsSample.aliases(Token, member);
-        const aliases = await member.aliases();
-        assert.equal(aliases.length, 1);
-        assert.isTrue(aliases[0].value.includes('alias4'));
+        await TestUtil.waitUntil(async () => {
+            const aliases = await member.aliases();
+            assert.equal(aliases.length, 1);
+            assert.isTrue(aliases[0].value.includes('alias4'));
+        });
     });
 
     it('Should run the keys sample', async () => {
@@ -25,6 +31,9 @@ describe('MemberMethods test', () => {
         const Token = new TokenLib(TEST_ENV, devKey);
 
         const member = await CreateMemberSample();
+        await TestUtil.waitUntil(async () => {
+            assert.isOk(await member.firstAlias());
+        });
         await MemberMethodsSample.keys(Token, member);
     });
 
