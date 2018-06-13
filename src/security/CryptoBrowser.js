@@ -23,8 +23,8 @@ class CryptoBrowser {
                 namedCurve: 'P-256',
             },
             extractable,
-        ['sign', 'verify'],
-    );
+            ['sign', 'verify'],
+        );
         keyPair.publicKey = new Uint8Array(await crypto.subtle.exportKey('spki', keyPair.publicKey));
         if (keyPair.publicKey.length === 88) { // Pad public key for Firefox
             keyPair.publicKey = CryptoBrowser._formatPublicKey(keyPair.publicKey);
@@ -36,7 +36,6 @@ class CryptoBrowser {
         keyPair.algorithm = 'ECDSA_SHA256';
         keyPair.level = keyLevel;
         if (expirationMs !== undefined) keyPair.expiresAtMs = (new Date()).getTime() + expirationMs;
-        console.log(keyPair);
         return keyPair;
     }
 
