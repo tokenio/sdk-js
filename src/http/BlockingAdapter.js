@@ -35,8 +35,7 @@ module.exports = function BlockingAdapter(config) {
   // For IE 8/9 CORS support
   // Only supports POST and GET calls and doesn't returns the response headers.
   // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-  if (process.env.NODE_ENV !== 'test' &&
-      typeof window !== 'undefined' &&
+  if (typeof window !== 'undefined' &&
       window.XDomainRequest && !('withCredentials' in request) &&
       !isURLSameOrigin(config.url)) {
     request = new window.XDomainRequest();
