@@ -13,6 +13,8 @@ const base64js = require('base64-js');
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
 
+const BlockingAdapter = require('./BlockingAdapter');
+
 /**
  * Client for making authenticated requests to the Token gateway.
  */
@@ -886,13 +888,15 @@ class AuthHttpClient {
      * Cancels a token.
      *
      * @param {Object} token - token to cancel
+     * @param {bool} blocking - creates a blocking request
      * @return {Object} response - response to the API call
      */
-    async cancelToken(token) {
+    async cancelToken(token, blocking) {
         return this._tokenOperation(
             token,
             'cancel',
-            'cancelled');
+            'cancelled',
+            blocking);
     }
 
     /**
@@ -974,13 +978,14 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
-    async _tokenOperation(token, operation, suffix) {
+    async _tokenOperation(token, operation, suffix, blocking) {
         const tokenId = token.id;
         const request = {
             method: 'put',
             url: `/tokens/${tokenId}/${operation}`,
             data: await this._tokenOperationRequest(token, suffix)
         };
+        if (blocking) request.adapter = BlockingAdapter;
         return this._instance(request);
     }
 

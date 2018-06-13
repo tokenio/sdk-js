@@ -798,6 +798,23 @@ export default class Member {
     }
 
     /**
+     * Generates a blocking function to cancel a token. (Called by the payer or the redeemer)
+     *
+     * @param {Token} token - token to cancel. Can also be a {string} tokenId
+     * @return {Function} blocking function to cancel the token
+     */
+    getBlockingCancelTokenFunction(token) {
+        return Util.callAsync(this.getBlockingCancelTokenFunction, async () => {
+            const finalToken = await this._resolveToken(token);
+            const cancelled = await this._client.cancelToken(finalToken, true);
+            if (cancelled && cancelled.data &&
+              typeof cancelled.data.dispatchRequest === 'function') {
+              return cancelled.data.dispatchRequest;
+            }
+        });
+    }
+
+    /**
      * Redeems a token. (Called by the payee or redeemer)
      *
      * @param {object} token - token to redeem. Can also be a {string} tokenId
