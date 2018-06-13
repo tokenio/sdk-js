@@ -1,7 +1,7 @@
+import Util from '../Util';
 import base64Url from "base64url";
 import nacl from "tweetnacl";
 import sha256 from "fast-sha256";
-import {Buffer} from 'buffer';
 
 /**
  * Class providing static crypto primitives for Node environments using libsodium.
@@ -34,7 +34,7 @@ class CryptoNode {
      * @return {string} signature
      */
     static async sign(message, keys) {
-        const msg = CryptoNode.wrapBuffer(message);
+        const msg = Util.wrapBuffer(message);
         return base64Url(nacl.sign.detached(msg, keys.privateKey));
     }
 
@@ -46,23 +46,13 @@ class CryptoNode {
      * @param {Uint8Array} publicKey - public key to use for verification
      */
     static async verify(message, signature, publicKey) {
-        const msg = CryptoNode.wrapBuffer(message);
-        const sig = CryptoNode.wrapBuffer(base64Url.toBuffer(signature));
+        const msg = Util.wrapBuffer(message);
+        const sig = Util.wrapBuffer(base64Url.toBuffer(signature));
         const result = nacl.sign.detached.verify(msg, sig, publicKey);
         if (!result) {
             throw new Error(
                 `Invalid signature ${signature} on message ${message} with pk ${publicKey}`);
         }
-    }
-
-    /**
-     * Wraps buffer as an Uint8Array object.
-     *
-     * @param {string|Buffer} buffer - data
-     * @return {Uint8Array} data
-     */
-    static wrapBuffer(buffer) {
-        return new Uint8Array(new Buffer(buffer));
     }
 }
 
