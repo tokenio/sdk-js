@@ -5,7 +5,7 @@ import bs58 from 'bs58';
 import sha256 from "fast-sha256";
 import stringify from "json-stable-stringify";
 import base64Url from 'base64url/dist/base64url';
-import {Buffer} from "buffer";
+import {Buffer as NodeBuffer} from "buffer";
 
 class Util {
     /**
@@ -247,7 +247,7 @@ class Util {
      * @return {Uint8Array} data
      */
     static wrapBuffer(buffer) {
-        return new Uint8Array(new Buffer(buffer));
+        return new Uint8Array(new NodeBuffer(buffer));
     }
 
     /**
