@@ -22,9 +22,9 @@
     "bambooSandbox": "npm run lint && TEST_ENV=sandbox node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "bambooPrd": "npm run lint && TEST_ENV=prd node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "build": "npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser",
-    "buildBrowser": "TEST_ENV=prd webpack --config config/webpack.config.js",
+    "buildBrowser": "npm run lint && TEST_ENV=prd webpack --config config/webpack.config.js",
     "buildBrowserw": "npm run lint && TEST_ENV=prd webpack --config config/webpack.config.js --progress --colors -w",
-    "buildNode": "TEST_ENV=prd webpack --config config/webpack.config.node.js",
+    "buildNode": "npm run lint && TEST_ENV=prd webpack --config config/webpack.config.node.js",
     "buildNodew": "npm run lint && TEST_ENV=prd webpack --config config/webpack.config.node.js --progress --colors -w",
     "doc": "./node_modules/esdoc/out/src/ESDocCLI.js"
   },
