@@ -1,4 +1,6 @@
 /* eslint-disable new-cap */
+import TestUtil from '../TestUtil';
+
 const chai = require('chai');
 const assert = chai.assert;
 
@@ -12,6 +14,11 @@ describe('CancelAccessTokenBlockingSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
+        TestUtil.waitUntil(async () => {
+            assert.isOk(await member.firstAlias());
+            assert.isOk(await member2.firstAlias());
+        });
+
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
