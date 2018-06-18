@@ -18,7 +18,7 @@ class Crypto {
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
-    static async generateKeys(keyLevel, expirationMs, extractable = false) {
+    static async generateKeys(keyLevel, expirationMs, extractable) {
         return await CryptoLib.generateKeys(keyLevel, expirationMs, extractable);
     }
 
