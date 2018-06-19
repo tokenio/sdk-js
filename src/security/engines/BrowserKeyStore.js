@@ -58,9 +58,9 @@ class BrowserKeyStore {
                     BrowserKeyStore.setActiveMemberId(memberId);
                     resolve(keyPair);
                 };
-                putReq.onerror = () => reject(new Error('Error saving member to database'));
+                putReq.onerror = () => reject(new Error(`Error saving member to database: ${putReq.error}`));
             };
-            getReq.onerror = () => reject(new Error('Error getting member from database'));
+            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -95,7 +95,7 @@ class BrowserKeyStore {
                 BrowserKeyStore.setActiveMemberId(memberId);
                 resolve(getReq.result[level]);
             };
-            getReq.onerror = () => reject(new Error('Error getting member from database'));
+            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -132,7 +132,7 @@ class BrowserKeyStore {
                 });
                 reject(new Error(`No key with id ${keyId} found`));
             };
-            getReq.onerror = () => reject(new Error('Error getting member from database'));
+            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
     /**
@@ -159,7 +159,7 @@ class BrowserKeyStore {
                 BrowserKeyStore.setActiveMemberId(memberId);
                 resolve(Object.values(member));
             };
-            getReq.onerror = () => reject(new Error('Error getting member from database'));
+            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -173,7 +173,7 @@ class BrowserKeyStore {
         return new Promise((resolve, reject) => {
             const clearReq = store.clear();
             clearReq.onsuccess = () => resolve();
-            clearReq.onerror = () => reject(new Error('Error clearing the database'));
+            clearReq.onerror = () => reject(new Error(`Error clearing the database: ${clearReq.error}`));
         });
     }
 
@@ -188,12 +188,12 @@ class BrowserKeyStore {
     static async _openDb(dbName, dbVersion) {
         return new Promise((resolve, reject) => {
             if (!indexedDB) reject(new Error('Your browser does not support IndexedDB'));
-            const req = indexedDB.open(dbName, dbVersion);
-            req.onsuccess = () => {
-                resolve(req.result);
+            const openReq = indexedDB.open(dbName, dbVersion);
+            openReq.onsuccess = () => {
+                resolve(openReq.result);
             };
-            req.onerror = () => reject(new Error('Error opening database'));
-            req.onupgradeneeded = (e) => {
+            openReq.onerror = () => reject(new Error(`Error opening database: ${openReq.error}`));
+            openReq.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 db.createObjectStore(MEMBER_KEY_STORE);
             };
@@ -212,6 +212,9 @@ class BrowserKeyStore {
         const db = await BrowserKeyStore._openDb(MEMBER_KEY_DB, MEMBER_KEY_DB_VERSION);
         const txn = db.transaction(storeName, mode);
         txn.oncomplete = () => db.close();
+        txn.onerror = () => {
+            throw new Error(`Error opening transaction: ${txn.error}`);
+        };
         return txn.objectStore(storeName);
     }
 }
