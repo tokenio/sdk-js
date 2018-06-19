@@ -9,7 +9,7 @@ import BrowserKeyStore from './BrowserKeyStore';
  * VALUE (JS object):
  * {
  *      LOW: {
- *          id: 456, // key ID
+ *          id: 456,
  *          algorithm: ECDSA,
  *          level: LOW,
  *          publicKey: key data in Uint8Array format
@@ -20,7 +20,6 @@ import BrowserKeyStore from './BrowserKeyStore';
  * }
  *
  * Furthermore, activeMemberId is stored in localStorage
- *
  */
 const globalKeyStore = new BrowserKeyStore();
 
