@@ -130,13 +130,13 @@ class BrowserKeyStore {
                 if (!member) {
                     return reject(new Error(`member ${memberId} not found`));
                 }
-                Object.values(member).forEach((keypair) => {
-                    if (keypair.id === keyId) {
-                        if (keypair.expiresAtMs < Date.now()) {
-                            reject(new Error(`Key with id ${keypair.id} has expired`));
+                Object.values(member).forEach((keyPair) => {
+                    if (keyPair.id === keyId) {
+                        if (keyPair.expiresAtMs < Date.now()) {
+                            reject(new Error(`Key with id ${keyPair.id} has expired`));
                         }
                         BrowserKeyStore.setActiveMemberId(memberId);
-                        resolve(keypair);
+                        resolve(keyPair);
                     }
                 });
                 reject(new Error(`No key with id ${keyId} found`));
@@ -168,7 +168,7 @@ class BrowserKeyStore {
                 }
                 BrowserKeyStore.setActiveMemberId(memberId);
                 resolve(Object.values(member)
-                        .filter(keypair => !(keypair.expiresAtMs < Date.now()))
+                        .filter(keyPair => !(keyPair.expiresAtMs < Date.now()))
                 );
             };
             getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
