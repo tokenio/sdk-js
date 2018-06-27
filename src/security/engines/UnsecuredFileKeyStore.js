@@ -27,6 +27,9 @@ class UnsecuredFileKeyStore {
         if (!keyPair.level) {
             throw new Error("Don't know what level to put key");
         }
+        if (keyPair.expiresAtMs < Date.now()) {
+            throw new Error(`Key ${keyPair.id} has expired`);
+        }
         if (BROWSER) {
             throw new Error("Not available on browser");
         }
@@ -61,6 +64,9 @@ class UnsecuredFileKeyStore {
         if (!member[level]) {
             throw new Error(`No key with level ${level} found`);
         }
+        if (member[level].expiresAtMs < Date.now()) {
+            throw new Error(`Key with level ${level} has expired`);
+        }
         UnsecuredFileKeyStore.setActiveMemberId(memberId);
         return member[level];
     }
@@ -89,6 +95,9 @@ class UnsecuredFileKeyStore {
         for (const level in member) {
             if (Object.prototype.hasOwnProperty.call(member, level)) {
                 if (member[level].id === keyId) {
+                    if (member[level].expiresAtMs < Date.now()) {
+                        throw new Error(`Key with id ${member[level].id} has expired`);
+                    }
                     UnsecuredFileKeyStore.setActiveMemberId(memberId);
                     return member[level];
                 }
@@ -119,7 +128,8 @@ class UnsecuredFileKeyStore {
         UnsecuredFileKeyStore.setActiveMemberId(memberId);
         const list = [];
         for (const level in member) {
-            if (member.hasOwnProperty(level)) {
+            if (member.hasOwnProperty(level) &&
+                    !(member[level].expiresAtMs < Date.now())) {
                 list.push(member[level]);
             }
         }

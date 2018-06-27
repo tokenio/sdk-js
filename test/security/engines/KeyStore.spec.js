@@ -1,3 +1,5 @@
+import TestUtil from "../../TestUtil";
+
 const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
@@ -88,6 +90,32 @@ describe('Key store', () => {
 
             const lowKey = await keyStore.getById(memberId, keyPairLow.id);
             assert.deepEqual(lowKey, keyPairLow);
+        });
+
+        it('should not return expired keys', async() => {
+            const keyStore = new KeyStore();
+            const keyPairExpired = await Crypto.generateKeys("STANDARD", 2000);
+            const memberId = Util.generateNonce();
+            await keyStore.put(memberId, keyPairExpired);
+
+            await TestUtil.waitUntil(async() => {
+                try {
+                    await keyStore.getById(memberId, keyPairExpired.id);
+                    return Promise.reject("Should throw");
+                } catch (error) {}
+                try {
+                    await keyStore.getByLevel(memberId, "STANDARD");
+                    return Promise.reject("Should throw");
+                } catch (error) {}
+
+                const keyPairValid = await Crypto.generateKeys("LOW", 86400000);
+                await keyStore.put(memberId, keyPairValid);
+
+                const returnedKey = await keyStore.getByLevel(memberId, "LOW");
+                assert.deepEqual(returnedKey, keyPairValid);
+                const returnedKeys = await keyStore.listKeys(memberId);
+                assert.sameDeepMembers(returnedKeys, [keyPairValid]);
+            });
         });
 
         it('should replace keys', async () => {
