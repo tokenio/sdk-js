@@ -48,6 +48,9 @@ class BrowserKeyStore {
         if (!BROWSER) {
             throw new Error("Browser Only");
         }
+        if (keyPair.expiresAtMs < Date.now()) {
+            throw new Error(`Key ${keyPair.id} has expired`);
+        }
         const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE, READ_WRITE);
         return new Promise((resolve, reject) => {
             const getReq = store.get(memberId);
@@ -87,10 +90,13 @@ class BrowserKeyStore {
             getReq.onsuccess = () => {
                 const member = getReq.result;
                 if (!member) {
-                    reject(new Error(`Member with id ${memberId} not found`));
+                    return reject(new Error(`Member with id ${memberId} not found`));
                 }
                 if (!member[level]) {
-                    reject(new Error(`No key with level ${level} found`));
+                    return reject(new Error(`No key with level ${level} found`));
+                }
+                if (member[level].expiresAtMs < Date.now()) {
+                    return reject(new Error(`Key with level ${level} has expired`));
                 }
                 BrowserKeyStore.setActiveMemberId(memberId);
                 resolve(getReq.result[level]);
@@ -122,12 +128,15 @@ class BrowserKeyStore {
             getReq.onsuccess = () => {
                 const member = getReq.result;
                 if (!member) {
-                    reject(new Error(`member ${memberId} not found`));
+                    return reject(new Error(`member ${memberId} not found`));
                 }
-                Object.values(member).forEach((level) => {
-                    if (level.id === keyId) {
+                Object.values(member).forEach((keyPair) => {
+                    if (keyPair.id === keyId) {
+                        if (keyPair.expiresAtMs < Date.now()) {
+                            reject(new Error(`Key with id ${keyPair.id} has expired`));
+                        }
                         BrowserKeyStore.setActiveMemberId(memberId);
-                        resolve(level);
+                        resolve(keyPair);
                     }
                 });
                 reject(new Error(`No key with id ${keyId} found`));
@@ -135,6 +144,7 @@ class BrowserKeyStore {
             getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
+
     /**
      * Return list of member's keys.
      *
@@ -154,10 +164,12 @@ class BrowserKeyStore {
             getReq.onsuccess = () => {
                 const member = getReq.result;
                 if (!member) {
-                    reject(new Error(`member ${memberId} not found`));
+                    return reject(new Error(`member ${memberId} not found`));
                 }
                 BrowserKeyStore.setActiveMemberId(memberId);
-                resolve(Object.values(member));
+                resolve(Object.values(member)
+                        .filter(keyPair => !(keyPair.expiresAtMs < Date.now()))
+                );
             };
             getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });

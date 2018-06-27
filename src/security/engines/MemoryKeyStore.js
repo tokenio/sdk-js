@@ -1,4 +1,5 @@
 const globalStorage = {};
+
 class MemoryKeyStore {
 
     /**
@@ -17,6 +18,9 @@ class MemoryKeyStore {
         }
         if (!keyPair.level) {
             throw new Error("Invalid key structure: has no privilege level");
+        }
+        if (keyPair.expiresAtMs < Date.now()) {
+            throw new Error(`Key ${keyPair.id} has expired`);
         }
         if (!globalStorage[memberId]) {
             globalStorage[memberId] = {};
@@ -46,6 +50,9 @@ class MemoryKeyStore {
         if (!globalStorage[memberId][level]) {
             throw new Error(`No key with level ${level} found`);
         }
+        if (globalStorage[memberId][level].expiresAtMs < Date.now()) {
+            throw new Error(`Key with level ${level} has expired`);
+        }
         return clone(globalStorage[memberId][level]);
     }
 
@@ -66,6 +73,10 @@ class MemoryKeyStore {
         for (let level in globalStorage[memberId]) {
             if (Object.prototype.hasOwnProperty.call(globalStorage[memberId], level)) {
                 if (globalStorage[memberId][level].id === keyId) {
+                    if (globalStorage[memberId][level].expiresAtMs < Date.now()) {
+                        throw new Error(
+                                `Key with id ${globalStorage[memberId][level].id} has expired`);
+                    }
                     return clone(globalStorage[memberId][level]);
                 }
             }
@@ -83,9 +94,9 @@ class MemoryKeyStore {
         if (!globalStorage[memberId]) {
             throw new Error(`member ${memberId} not found`);
         }
-        return Object.keys(globalStorage[memberId]).map((level) => {
-            return clone(globalStorage[memberId][level]);
-        });
+        return Object.keys(globalStorage[memberId])
+            .map(level => clone(globalStorage[memberId][level]))
+            .filter(keyPair => !(keyPair.expiresAtMs < Date.now()));
     }
 
     /**
