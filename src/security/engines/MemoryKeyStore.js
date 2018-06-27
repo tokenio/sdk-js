@@ -94,9 +94,9 @@ class MemoryKeyStore {
         if (!globalStorage[memberId]) {
             throw new Error(`member ${memberId} not found`);
         }
-        return Object.keys(globalStorage[memberId]).map((level) => {
-            return clone(globalStorage[memberId][level]);
-        }).filter((keypair) => !(keypair.expiresAtMs < Date.now()));
+        return Object.keys(globalStorage[memberId])
+            .map(level => clone(globalStorage[memberId][level]))
+            .filter(keyPair => !(keyPair.expiresAtMs < Date.now()));
     }
 
     /**
