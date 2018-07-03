@@ -22,10 +22,8 @@ describe('ReplaceAccessTokenSample test', () => {
 
         const member2Alias = await member2.firstAlias();
         await CreateAndEndorseAccessTokenSample(member, member2Alias);
-        TestUtil.waitUntil(async () => {
-            const foundToken = await GetAccessTokensSample(member, member2Alias);
-            const something = await ReplaceAccessTokenSample(member, foundToken);
-            assert.deepEqual(something.payload.to.alias, member2Alias);
-        });
+        const foundToken = await GetAccessTokensSample(member, member2.memberId());
+        const newToken = await ReplaceAccessTokenSample(member, foundToken);
+        assert.deepEqual(newToken.payload.to.alias, member2Alias);
     });
 });

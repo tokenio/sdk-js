@@ -2,12 +2,9 @@
  * Get access tokens.
  *
  * @param {Member} grantor - grantor member
- * @param {Object} granteeAlias - alias of token to find
+ * @param {Object} granteeMemberId - member ID of the grantee
  * @return {Object} result - access token
  */
-export default async (grantor, granteeAlias) => {
-    const tokens = await grantor.getAccessTokens(0, 100);
-    return tokens.data.find(function(t) {
-        return t.payload.to.alias.value === granteeAlias.value;
-    });
+export default async (grantor, granteeMemberId) => {
+    return await grantor.getActiveAccessToken(granteeMemberId);
 };
