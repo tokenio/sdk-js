@@ -21,9 +21,7 @@ describe('GetAccessTokensSample test', () => {
 
         const member2Alias = await member2.firstAlias();
         const createdToken = await CreateAndEndorseAccessTokenSample(member, member2Alias);
-        TestUtil.waitUntil(async () => {
-            const foundToken = await GetAccessTokensSample(member, member2Alias);
-            assert.equal(createdToken.id, foundToken.id);
-        });
+        const foundToken = await GetAccessTokensSample(member, member2.memberId());
+        assert.equal(createdToken.id, foundToken.id);
     });
 });

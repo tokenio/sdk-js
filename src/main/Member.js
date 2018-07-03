@@ -721,6 +721,20 @@ export default class Member {
     }
 
     /**
+     * Looks up a existing access token where the calling member is the grantor and given member is
+     * the grantee.
+     *
+     * @param {string} toMemberId - beneficiary of the active access token
+     * @return {Promise} token - access token returned by the server
+     */
+    getActiveAccessToken(toMemberId) {
+        return Util.callAsync(this.getActiveAccessToken, async () => {
+            const res = await this._client.getActiveAccessToken(toMemberId);
+            return res.data.token;
+        });
+    }
+
+    /**
      * Looks up all transfer tokens
      *
      * @param {string} offset - where to start looking
