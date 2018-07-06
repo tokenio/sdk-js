@@ -846,10 +846,13 @@ export default class Member {
         return Util.callAsync(this.redeemToken, async () => {
             const finalToken = await this._resolveToken(token);
             if (amount === undefined) {
-                amount = finalToken.payload.transfer.amount;
+                amount = finalToken.payload.transfer.lifetimeAmount;
             }
             if (currency === undefined) {
                 currency = finalToken.payload.transfer.currency;
+            }
+            if (description === undefined) {
+                description = finalToken.payload.description;
             }
             if (Util.countDecimals(amount) > config.decimalPrecision) {
                 throw new Error(
