@@ -721,6 +721,20 @@ export default class Member {
     }
 
     /**
+     * Looks up a existing access token where the calling member is the grantor and given member is
+     * the grantee.
+     *
+     * @param {string} toMemberId - beneficiary of the active access token
+     * @return {Promise} token - access token returned by the server
+     */
+    getActiveAccessToken(toMemberId) {
+        return Util.callAsync(this.getActiveAccessToken, async () => {
+            const res = await this._client.getActiveAccessToken(toMemberId);
+            return res.data.token;
+        });
+    }
+
+    /**
      * Looks up all transfer tokens
      *
      * @param {string} offset - where to start looking
@@ -832,10 +846,13 @@ export default class Member {
         return Util.callAsync(this.redeemToken, async () => {
             const finalToken = await this._resolveToken(token);
             if (amount === undefined) {
-                amount = finalToken.payload.transfer.amount;
+                amount = finalToken.payload.transfer.lifetimeAmount;
             }
             if (currency === undefined) {
                 currency = finalToken.payload.transfer.currency;
+            }
+            if (description === undefined) {
+                description = finalToken.payload.description;
             }
             if (Util.countDecimals(amount) > config.decimalPrecision) {
                 throw new Error(

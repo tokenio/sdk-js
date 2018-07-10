@@ -115,7 +115,7 @@ class Util {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
                 err.response.data :
                 "UNKNOWN";
-            err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
+            err.info = method.name + ': ' + err.message + '. Reason: ' + reason;
             return Promise.reject(err);
         }
     }
@@ -134,7 +134,7 @@ class Util {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
                 err.response.data :
                 "UNKNOWN";
-            err.message = method.name + ': ' + err.message + '. Reason: ' + reason;
+            err.info = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }
     }
