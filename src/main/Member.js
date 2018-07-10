@@ -160,13 +160,12 @@ export default class Member {
      * Adds an alias to this member
      *
      * @param {Object} alias - alias to add
-     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} empty - empty promise
      */
-    addAlias(alias, realm) {
+    addAlias(alias) {
         return Util.callAsync(this.addAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addAlias(prevHash, alias, realm);
+            await this._client.addAlias(prevHash, alias);
         });
     }
 
@@ -174,13 +173,12 @@ export default class Member {
      * Adds aliases to this member
      *
      * @param {Array} aliases - aliases to add
-     * @param {string} realm - (optional) realm of the aliases
      * @return {Promise} empty - empty promise
      */
-    addAliases(aliases, realm) {
+    addAliases(aliases) {
         return Util.callAsync(this.addAliases, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addAliases(prevHash, aliases, realm);
+            await this._client.addAliases(prevHash, aliases);
         });
     }
 
@@ -619,15 +617,13 @@ export default class Member {
      *
      * @param {Object} alias - the alias of the grantee of the Access Token
      * @param {array} resources - a list of resources to give access to
-     * @param {string} realm - (optional) realm of the alias
      * @return {Promise} token - promise of a created Access Token
      */
-    createAccessToken(alias, resources, realm) {
+    createAccessToken(alias, resources) {
         return Util.callAsync(this.createAccessToken, async () => {
             return await (new AccessTokenBuilder(this._client, this, resources)
                 .setFromId(this.memberId())
                 .setToAlias(alias)
-                .setToRealm(realm)
                 .execute());
         });
     }

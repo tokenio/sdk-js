@@ -68,16 +68,15 @@ class HttpClient {
     }
 
     /**
-     * Gets a member given an alias and a realm.
+     * Gets a member given an alias.
      *
      * @param {Object} alias - alias to lookup
-     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
-    resolveAlias(alias, realm = '') {
+    resolveAlias(alias) {
         const request = {
             method: 'get',
-            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${realm}`
+            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${alias.realm || ''}`
         };
         return this._instance(request);
     }
@@ -101,14 +100,12 @@ class HttpClient {
      *
      * @param {Object} alias - user to notify
      * @param {Object} body - body of the notification
-     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
-    notify(alias, body, realm) {
+    notify(alias, body) {
         const req = {
             alias,
-            body,
-            realm
+            body
         };
         const request = {
             method: 'post',
@@ -274,7 +271,7 @@ class HttpClient {
      * @return {Promise} response - response to the API call
      */
     async getTokenMember() {
-        const resolveAliasRes = await this.resolveAlias(Util.tokenAlias(), Util.tokenRealm());
+        const resolveAliasRes = await this.resolveAlias(Util.tokenAlias());
         const tokenMemberId = resolveAliasRes.data.member.id;
         const getMemberRes = await this.getMember(tokenMemberId);
         return getMemberRes.data.member;
