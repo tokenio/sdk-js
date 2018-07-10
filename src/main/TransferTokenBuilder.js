@@ -25,7 +25,7 @@ export default class TransferTokenBuilder {
 
         this._payload = {
             version: config.transferTokenVersion,
-            refId: Util.generateNonce(),
+            refId: Util.generateNonce().substr(0, 18),
             transfer: {
                 currency,
                 lifetimeAmount: lifetimeAmount.toString(),
@@ -311,6 +311,10 @@ export default class TransferTokenBuilder {
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRefId(refId) {
+        if (refId.length > 18) {
+            throw new Error('The length of the refId is at most 18,' +
+                    'actual length is: ' + refId.length);
+        }
         this._payload.refId = refId;
         return this;
     }
