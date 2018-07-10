@@ -14,7 +14,7 @@ class Util {
      * @return {string} nonce - random string
      */
     static generateNonce() {
-        return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+        return Math.random().toString(36).slice(-9) + Math.random().toString(36).slice(-9);
     }
 
     /**

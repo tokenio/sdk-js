@@ -25,7 +25,7 @@ export default class TransferTokenBuilder {
 
         this._payload = {
             version: config.transferTokenVersion,
-            refId: Util.generateNonce().substr(0, 18),
+            refId: Util.generateNonce(),
             transfer: {
                 currency,
                 lifetimeAmount: lifetimeAmount.toString(),
