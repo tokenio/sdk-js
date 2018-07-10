@@ -42,7 +42,7 @@ class KeyStoreCryptoEngine {
      */
     async createSigner(level) {
         const keyPair = await this._keystore.getByLevel(this._memberId, level);
-        return Crypto.createSignerFromKeypair(keyPair);
+        return Crypto.createSignerFromKeyPair(keyPair);
     }
 
     /**
@@ -53,7 +53,7 @@ class KeyStoreCryptoEngine {
      */
     async createVerifier(keyId) {
         const keyPair = await this._keystore.getById(this._memberId, keyId);
-        return Crypto.createVerifierFromKeypair(keyPair);
+        return Crypto.createVerifierFromKeyPair(keyPair);
     }
 }
 
