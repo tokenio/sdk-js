@@ -168,7 +168,7 @@ Signer
 `createSigner` returns an object that implements the "Signer interface".
 That is, they implement methods inspired by the Java interface
 https://github.com/tokenio/lib-security/blob/master/lib/src/main/java/io/token/security/Signer.java
-The easiest way to create one is to call Token.Crypto.createSignerFromKeypair(keypair),
+The easiest way to create one is to call Token.Crypto.createSignerFromKeyPair(keyPair),
 but if you want to make your own, implement the functions:
 
 ``` javascript
@@ -207,7 +207,7 @@ Verifier
 `createVerifier` returns an object that implements the "Verifier interface".
 That is, they implement methods inspired by the Java interface
 https://github.com/tokenio/lib-security/blob/master/lib/src/main/java/io/token/security/Verifier.java
-The easiest way to create one is to call Token.Crypto.createVerifierFromKeypair(keypair),
+The easiest way to create one is to call Token.Crypto.createVerifierFromKeyPair(keyPair),
 but if you want to make your own, implement the functions:
 
 ``` javascript
