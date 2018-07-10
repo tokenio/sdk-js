@@ -17,7 +17,7 @@ export default class AccessTokenBuilder {
 
         this._payload = {
             version: config.accessTokenVersion,
-            refId: Util.generateNonce(),
+            refId: Util.generateNonce().substr(0, 18),
             access: {
                 resources
             },
