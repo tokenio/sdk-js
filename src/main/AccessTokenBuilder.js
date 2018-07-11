@@ -230,20 +230,6 @@ export default class AccessTokenBuilder {
     }
 
     /**
-     * Sets the realm of the grantee.
-     *
-     * @param {string} realm - realm of the grantee
-     * @return {AccessTokenBuilder} builder - returns back the builder object
-     */
-    setToRealm(realm) {
-        if (!this._payload.to) {
-            this._payload.to = {};
-        }
-        this._payload.to.realm = realm;
-        return this;
-    }
-
-    /**
      * Sets the refId on the token.
      *
      * @param {string} refId - client generated reference id

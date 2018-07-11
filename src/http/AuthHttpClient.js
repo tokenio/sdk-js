@@ -1156,11 +1156,10 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} alias - alias to add
-     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
-    async addAlias(prevHash, alias, realm) {
-        return this.addAliases(prevHash, [alias], realm);
+    async addAlias(prevHash, alias) {
+        return this.addAliases(prevHash, [alias]);
     }
 
     /**
@@ -1209,16 +1208,15 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} aliases - aliases to add
-     * @param {string} realm - (optional) realm of the aliases
      * @return {Object} response - response to the API call
      */
-    async addAliases(prevHash, aliases, realm) {
+    async addAliases(prevHash, aliases) {
         const update = {
             memberId: this._memberId,
             operations: aliases.map((alias) => ({
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
-                    realm: realm
+                    realm: alias.realm || ''
                 }
             })),
         };
@@ -1226,8 +1224,7 @@ class AuthHttpClient {
         const metadata = aliases.map((alias) => ({
             addAliasMetadata: {
                 aliasHash: Util.hashAndSerializeAlias(alias),
-                alias: alias,
-                realm: realm
+                alias: alias
             }
         }));
 
