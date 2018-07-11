@@ -51,7 +51,7 @@ class Crypto {
      * @param {Object} keyPair - such as returned by Token.Crypto.generateKeys
      * @return {Object} signer object
      */
-    static createSignerFromKeyPair(keyPair) {
+    static createSignerFromKeypair(keyPair) {
         return {
             sign: async (message) => {
                 return await Crypto.sign(message, keyPair);
@@ -92,7 +92,7 @@ class Crypto {
      * @param {Object} keyPair - such as returned by Token.Crypto.generateKeys, private key optional
      * @return {Object} verifier object
      */
-    static createVerifierFromKeyPair(keyPair) {
+    static createVerifierFromKeypair(keyPair) {
         return {
             verify: async (message, signature) => {
                 return await Crypto.verify(message, signature, keyPair.publicKey);
