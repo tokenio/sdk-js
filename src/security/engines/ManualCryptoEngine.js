@@ -81,7 +81,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         if (!keyPairs || !keyPairs.length) {
             throw new Error(`No key with level ${level} found`);
         }
-        return Crypto.createSignerFromKeyPair(clone(keyPairs[0]));
+        return Crypto.createSignerFromKeypair(clone(keyPairs[0]));
     }
 
     /**
@@ -95,7 +95,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         if (!keyPairs || !keyPairs.length) {
             throw new Error(`No key with id ${keyId} found`);
         }
-        return Crypto.createVerifierFromKeyPair(clone(keyPairs[0]));
+        return Crypto.createVerifierFromKeypair(clone(keyPairs[0]));
     }
 }
 
