@@ -128,7 +128,7 @@ A CryptoEngine implements the methods
     async createSigner(securityLevel) {
         ...load keypair...
         if (keypair) {
-          return Token.Crypto.createSignerFromKeypair(keypair);
+          return Token.Crypto.createSignerFromKeypair(keyPair);
         } else {
           throw new Error(`No key with level ${securityLevel} found`);
         }
@@ -145,7 +145,7 @@ A CryptoEngine implements the methods
     async createVerifier(keyId) {
        ...load keypair...
        if (keypair) {
-         return Token.Crypto.createVerifierFromKeypair(keypair);
+         return Token.Crypto.createVerifierFromKeypair(keyPair);
        } else {
          throw new Error(`No key with id ${keyId} found`);
        }
@@ -168,7 +168,7 @@ Signer
 `createSigner` returns an object that implements the "Signer interface".
 That is, they implement methods inspired by the Java interface
 https://github.com/tokenio/lib-security/blob/master/lib/src/main/java/io/token/security/Signer.java
-The easiest way to create one is to call Token.Crypto.createSignerFromKeypair(keypair),
+The easiest way to create one is to call Token.Crypto.createSignerFromKeypair(keyPair),
 but if you want to make your own, implement the functions:
 
 ``` javascript
@@ -207,7 +207,7 @@ Verifier
 `createVerifier` returns an object that implements the "Verifier interface".
 That is, they implement methods inspired by the Java interface
 https://github.com/tokenio/lib-security/blob/master/lib/src/main/java/io/token/security/Verifier.java
-The easiest way to create one is to call Token.Crypto.createVerifierFromKeypair(keypair),
+The easiest way to create one is to call Token.Crypto.createVerifierFromKeypair(keyPair),
 but if you want to make your own, implement the functions:
 
 ``` javascript
