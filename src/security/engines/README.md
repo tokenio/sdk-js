@@ -128,7 +128,7 @@ A CryptoEngine implements the methods
     async createSigner(securityLevel) {
         ...load keypair...
         if (keypair) {
-          return Token.Crypto.createSignerFromKeypair(keypair);
+          return Token.Crypto.createSignerFromKeypair(keyPair);
         } else {
           throw new Error(`No key with level ${securityLevel} found`);
         }
@@ -145,7 +145,7 @@ A CryptoEngine implements the methods
     async createVerifier(keyId) {
        ...load keypair...
        if (keypair) {
-         return Token.Crypto.createVerifierFromKeypair(keypair);
+         return Token.Crypto.createVerifierFromKeypair(keyPair);
        } else {
          throw new Error(`No key with id ${keyId} found`);
        }
