@@ -47,7 +47,7 @@ class CryptoNode {
      */
     static async verify(message, signature, publicKey) {
         const msg = Util.wrapBuffer(message);
-        const sig = Util.wrapBuffer(base64Url.toBuffer(signature));
+        const sig = Util.bufferKey(signature);
         const result = nacl.sign.detached.verify(msg, sig, publicKey);
         if (!result) {
             throw new Error(

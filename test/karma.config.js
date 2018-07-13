@@ -20,7 +20,7 @@ module.exports = function(config) {
             // each file acts as entry point for the webpack configuration
         ],
         frameworks: ['mocha'],
-        browsers: ['Chrome'],
+        browsers: ['Safari'],
         autoWatchBatchDelay: 2000,
 
         preprocessors: {

@@ -37,7 +37,7 @@ class CryptoBrowser {
      */
     static async sign(message, keys) {
         let importedPrivateKey = keys.privateKey;
-        if (!(keys.privateKey instanceof CryptoKey)) {
+        if (!(keys.privateKey.constructor.name === 'CryptoKey')) {
             importedPrivateKey = await crypto.subtle.importKey(
                 'jwk',
                 keys.privateKey,
@@ -63,7 +63,8 @@ class CryptoBrowser {
      * @param {Uint8Array} publicKey - public key to use for verification
      */
     static async verify(message, signature, publicKey) {
-        if (algorithm === ECDSA) signature = CryptoBrowser._DerToP1363(Util.bufferKey(signature));
+        signature = Util.bufferKey(signature);
+        if (algorithm === ECDSA) signature = CryptoBrowser._DerToP1363(signature);
         const importedPublicKey = await crypto.subtle.importKey(
             'spki',
             publicKey,

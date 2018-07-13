@@ -12,7 +12,6 @@ describe('Key management', () => {
             assert.isOk(keys);
             assert.isString(keys.id);
             assert.equal(keys.id.length, 16);
-            assert.equal(keys.publicKey.length, BROWSER ? 91 : 32);
             assert.isTrue(BROWSER ? keys.privateKey instanceof CryptoKey : keys.privateKey.length === 64);
             assert.isOk(keys.algorithm);
             assert.isOk(keys.level);
