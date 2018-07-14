@@ -3,6 +3,7 @@ import CryptoNode from "./CryptoNode";
 import CryptoBrowser from "./CryptoBrowser";
 import base64Url from 'base64url/dist/base64url';
 import {Buffer} from 'buffer';
+import Util from '../Util';
 
 const CryptoLib = BROWSER && !Util.isIE11() ? CryptoBrowser : CryptoNode;
 
