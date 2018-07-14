@@ -7,7 +7,7 @@ const crypto = BROWSER && window.crypto;
 const ECDSA = 'ECDSA_SHA256';
 const RSA = 'RS256';
 
-let algorithm = ECDSA; // default to ECDSA and fallback to RSA
+let algorithm = Util.isFirefox() ? RSA : ECDSA; // default to ECDSA and fallback to RSA
 
 /**
  * Class providing static crypto primitives for the browser using Web Cryptography API.
@@ -113,7 +113,6 @@ class CryptoBrowser {
     }
 
     static async _generateKeyPair(extractable) {
-        if (CryptoBrowser.isFirefox()) algorithm = RSA;
         let keyPair;
         try {
             keyPair = await crypto.subtle.generateKey(
@@ -176,14 +175,6 @@ class CryptoBrowser {
         s = s.length > 64 ? s.substr(-64) : s.padStart(64, '0');
         const p1363Sig = `${r}${s}`;
         return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
-    }
-
-    static isFirefox() {
-        return typeof window.InstallTrigger !== 'undefined';
-    }
-
-    static isIE11() {
-        return window.MSInputMethodContext && document.documentMode;
     }
 }
 
