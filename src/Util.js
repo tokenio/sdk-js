@@ -280,11 +280,11 @@ class Util {
     }
 
     static isFirefox() {
-        return typeof window.InstallTrigger !== 'undefined';
+        return BROWSER && typeof window.InstallTrigger !== 'undefined';
     }
 
     static isIE11() {
-        return window.MSInputMethodContext && document.documentMode;
+        return BROWSER && window.MSInputMethodContext && document.documentMode;
     }
 }
 
