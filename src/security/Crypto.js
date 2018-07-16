@@ -4,7 +4,7 @@ import CryptoBrowser from "./CryptoBrowser";
 import base64Url from 'base64url/dist/base64url';
 import {Buffer} from 'buffer';
 
-const CryptoLib = BROWSER ? CryptoBrowser : CryptoNode;
+const CryptoLib = BROWSER && !CryptoBrowser.isIE11() ? CryptoBrowser : CryptoNode;
 
 /**
  * Class providing static crypto primitives.

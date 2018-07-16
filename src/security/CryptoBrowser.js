@@ -1,7 +1,7 @@
 import base64Url from "base64url";
 import Util from '../Util';
 
-const crypto = BROWSER && (window.crypto || window.msCrypto);
+const crypto = BROWSER && window.crypto;
 
 // supported algorithms
 const ECDSA = 'ECDSA_SHA256';
@@ -112,7 +112,7 @@ class CryptoBrowser {
     }
 
     static async _generateKeyPair(extractable) {
-        if (CryptoBrowser._isFirefox()) algorithm = RSA;
+        if (CryptoBrowser.isFirefox()) algorithm = RSA;
         let keyPair;
         try {
             keyPair = await crypto.subtle.generateKey(
@@ -177,8 +177,12 @@ class CryptoBrowser {
         return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
     }
 
-    static _isFirefox() {
+    static isFirefox() {
         return typeof window.InstallTrigger !== 'undefined';
+    }
+
+    static isIE11() {
+        return window.MSInputMethodContext && document.documentMode;
     }
 }
 
