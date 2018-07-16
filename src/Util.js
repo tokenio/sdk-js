@@ -278,6 +278,14 @@ class Util {
                 return Promise.reject(err);
             });
     }
+
+    static isFirefox() {
+        return BROWSER && typeof window.InstallTrigger !== 'undefined';
+    }
+
+    static isIE11() {
+        return BROWSER && window.MSInputMethodContext && document.documentMode;
+    }
 }
 
 export default Util;

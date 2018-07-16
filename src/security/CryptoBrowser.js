@@ -7,7 +7,7 @@ const crypto = BROWSER && window.crypto;
 const ECDSA = 'ECDSA_SHA256';
 const RSA = 'RS256';
 
-let algorithm = ECDSA; // default to ECDSA and fallback to RSA
+let algorithm = Util.isFirefox() ? RSA : ECDSA; // default to ECDSA and fallback to RSA
 
 /**
  * Class providing static crypto primitives for the browser using Web Cryptography API.
@@ -37,7 +37,7 @@ class CryptoBrowser {
      */
     static async sign(message, keys) {
         let importedPrivateKey = keys.privateKey;
-        if (!(keys.privateKey instanceof CryptoKey)) {
+        if (!(keys.privateKey.constructor.name === 'CryptoKey')) {
             importedPrivateKey = await crypto.subtle.importKey(
                 'jwk',
                 keys.privateKey,
@@ -63,7 +63,8 @@ class CryptoBrowser {
      * @param {Uint8Array} publicKey - public key to use for verification
      */
     static async verify(message, signature, publicKey) {
-        if (algorithm === ECDSA) signature = CryptoBrowser._DerToP1363(Util.bufferKey(signature));
+        signature = Util.bufferKey(signature);
+        if (algorithm === ECDSA) signature = CryptoBrowser._DerToP1363(signature);
         const importedPublicKey = await crypto.subtle.importKey(
             'spki',
             publicKey,
@@ -112,7 +113,6 @@ class CryptoBrowser {
     }
 
     static async _generateKeyPair(extractable) {
-        if (CryptoBrowser.isFirefox()) algorithm = RSA;
         let keyPair;
         try {
             keyPair = await crypto.subtle.generateKey(
@@ -175,14 +175,6 @@ class CryptoBrowser {
         s = s.length > 64 ? s.substr(-64) : s.padStart(64, '0');
         const p1363Sig = `${r}${s}`;
         return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
-    }
-
-    static isFirefox() {
-        return typeof window.InstallTrigger !== 'undefined';
-    }
-
-    static isIE11() {
-        return window.MSInputMethodContext && document.documentMode;
     }
 }
 

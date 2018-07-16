@@ -27,7 +27,7 @@ describe('GetTransfersSample test', () => {
         const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
-        TestUtil.waitUntil(async () => {
+        await TestUtil.waitUntil(async () => {
             const transfers = await GetTransfersSample(member);
             assert.equal(transfers.length, 1);
         });
@@ -67,7 +67,7 @@ describe('GetTransferTokensSample test', () => {
         const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseTransferTokenSample(member, member2Alias);
         await RedeemTransferTokenSample(member2, res.id);
-        TestUtil.waitUntil(async () => {
+        await TestUtil.waitUntil(async () => {
             const transferTokens = await GetTransferTokensSample(member);
             assert.equal(transferTokens.length, 1);
         });
