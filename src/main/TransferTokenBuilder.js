@@ -307,13 +307,12 @@ export default class TransferTokenBuilder {
     /**
      * Sets the refId on the token.
      *
-     * @param {string} refId - client generated reference id
+     * @param {string} refId - client generated reference id, at most 18 characters long.
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRefId(refId) {
         if (refId.length > 18) {
-            throw new Error('The length of the refId is at most 18,' +
-                    'actual length is: ' + refId.length);
+            throw new Error('The length of the refId is at most 18, got: ' + refId.length);
         }
         this._payload.refId = refId;
         return this;
