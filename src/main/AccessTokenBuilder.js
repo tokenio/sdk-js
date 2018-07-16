@@ -77,6 +77,21 @@ export default class AccessTokenBuilder {
     }
 
     /**
+     * Adds a resource for metadata of all accounts at a given bank.
+     *
+     * @param {String} bankId - id of the bank
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    forAllAccountsAtBank(bankId) {
+        this._payload.access.resources.push({
+            allAccountsAtBank: {
+                bankId
+            },
+        });
+        return this;
+    }
+
+    /**
      * Adds a resource for metadata of one account.
      *
      * @param {String} accountId - id of the account
@@ -104,6 +119,21 @@ export default class AccessTokenBuilder {
     }
 
     /**
+     * Adds a resource for transactions of all accounts at a given bank.
+     *
+     * @param {String} bankId - id of the bank
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    forAllTransactionsAtbank(bankId) {
+        this._payload.access.resources.push({
+            allTransactionsAtBank: {
+                bankId
+            },
+        });
+        return this;
+    }
+
+    /**
      * Adds a resource for transactions of one account.
      *
      * @param {String} accountId - id of the account
@@ -126,6 +156,21 @@ export default class AccessTokenBuilder {
     forAllBalances() {
         this._payload.access.resources.push({
             allBalances: {},
+        });
+        return this;
+    }
+
+    /**
+     * Adds a resource for balances of all accounts at a given bank.
+     *
+     * @param {String} bankId - id of the bank
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    forAllBalancesAtBank(bankId) {
+        this._payload.access.resources.push({
+            allBalancesAtBank: {
+                bankId
+            },
         });
         return this;
     }
