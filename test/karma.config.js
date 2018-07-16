@@ -1,12 +1,14 @@
 var webpackConfig = require('../config/webpack.config.js');
 webpackConfig.entry = {};
+webpackConfig.module.loaders[0].query.plugins.push("babel-plugin-transform-object-assign");
 
 // Karma configuration
 module.exports = function(config) {
     config.set({
         client: {
             mocha: {
-                timeout: 30000 // 30 seconds - upped from 10 seconds
+                timeout: 30000, // 30 seconds - upped from 10 seconds
+                require: [require.resolve('babel-regenerator-runtime')]
             }
         },
         // ... normal karma configuration
@@ -22,6 +24,7 @@ module.exports = function(config) {
         frameworks: ['mocha'],
         browsers: ['Chrome'],
         autoWatchBatchDelay: 2000,
+        browserNoActivityTimeout: 30000,
 
         preprocessors: {
             // add webpack as preprocessor
