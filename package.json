@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/token-io.min.js",
   "scripts": {
-    "lint": "./node_modules/eslint/bin/eslint.js -c ./.eslintrc.js ./src ./test",
+    "lint": "node ./node_modules/eslint/bin/eslint.js -c ./.eslintrc.js ./src ./test",
     "test": "npm run testNode",
     "testBrowser": "npm run lint && ./node_modules/karma/bin/karma start test/karma.config.js",
     "testBrowserDev": "cross-env TEST_ENV=dev ./node_modules/karma/bin/karma start test/karma.config.js",
