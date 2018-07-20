@@ -286,6 +286,10 @@ class Util {
     static isIE11() {
         return BROWSER && window.MSInputMethodContext && document.documentMode;
     }
+
+    static isEdge() {
+        return BROWSER && /Edge/.test(window.navigator.userAgent);
+    }
 }
 
 export default Util;

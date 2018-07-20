@@ -1,6 +1,6 @@
 {
   "name": "token-io",
-  "version": "1.5.16",
+  "version": "1.5.17",
   "description": "",
   "main": "dist/token-io.min.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "bambooStg": "npm run lint && cross-env TEST_ENV=stg node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "bambooSandbox": "npm run lint && cross-env TEST_ENV=sandbox node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
     "bambooPrd": "npm run lint && cross-env TEST_ENV=prd node_modules/mocha-webpack/bin/mocha-webpack --webpack-config config/webpack.config.node.js --timeout 60000 --colors -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
-    "build": "npm run buildBrowser && npm run buildNode && WEBPACK_ENV=build npm run buildBrowser",
+    "build": "npm run buildBrowser && npm run buildNode && cross-env WEBPACK_ENV=build npm run buildBrowser",
     "buildBrowser": "npm run lint && cross-env TEST_ENV=prd webpack --config config/webpack.config.js",
     "buildBrowserw": "npm run lint && cross-env TEST_ENV=prd webpack --config config/webpack.config.js --progress --colors -w",
     "buildNode": "npm run lint && cross-env TEST_ENV=prd webpack --config config/webpack.config.node.js",
