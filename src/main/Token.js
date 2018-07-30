@@ -343,6 +343,51 @@ class Token {
     }
 
     /**
+     * Notifies subscribed devices that a token payload should be endorsed and keys should be
+     * added.
+     *
+     * @param {Object} tokenPayload - the endorseAndAddKey payload to be sent
+     * @param {Array} keys - token keys to be added
+     * @param {Object} deviceMetadata - device metadata of the keys
+     * @param {string} tokenRequestId - (optional) token request Id
+     * @param {string} bankId - (optional) bank Id
+     * @param {string} state - (optional) token request state for signing
+     * @return {Promise} result - notification Id and notify status
+     */
+     notifyEndorseAndAddKey(tokenPayload, keys, deviceMetadata, tokenRequestId, bankId, state) {
+         const endorseAndAddKey = {
+             payload: tokenPayload,
+             addKey: {
+                 keys: keys,
+                 deviceMetadata: deviceMetadata
+             },
+             tokenRequestId: tokenRequestId,
+             bankId: bankId,
+             state: state
+         };
+         return Util.callAsync(this.notifyEndorseAndAddKey, async () => {
+             const res = await this._unauthenticatedClient.notifyEndorseAndAddKey(endorseAndAddKey);
+             return {
+                 notificationId: res.data.notificationId,
+                 status: res.data.status
+             };
+         });
+     }
+
+    /**
+     * Invalidate a notification.
+     *
+     * @param {Object} notificationId - the notification id to invalidate
+     * @return {Promise} NotifyStatus - status
+     */
+    invalidateNotification(notificationId) {
+        return Util.callAsync(this.invalidateNotification, async () => {
+            const res = await this._unauthenticatedClient.invalidateNotification(notificationId);
+            return res.data.status;
+        });
+    }
+
+    /**
      * Gets a list of available banks for linking
      *
      * @param {Object} options - optional parameters for getBanks

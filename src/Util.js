@@ -1,6 +1,7 @@
 /**
  * Class to provide static utility functions.
  */
+import Crypto from "./security/Crypto";
 import bs58 from 'bs58';
 import sha256 from "fast-sha256";
 import stringify from "json-stable-stringify";
@@ -258,6 +259,23 @@ class Util {
      */
     static bufferKey(key) {
         return Util.wrapBuffer(base64Url.toBuffer(key));
+    }
+
+    /**
+     * Converts a key to a token key.
+     *
+     * @param {Object} key - key
+     * @param {string} level - key level
+     * @return {Object} token key
+     */
+    static tokenKey(key, level) {
+        return {
+            id: key.id,
+            level: level,
+            algorithm: key.algorithm,
+            publicKey: Crypto.strKey(key.publicKey),
+            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
+        };
     }
 
     static parseParamsFromUrl(url) {
