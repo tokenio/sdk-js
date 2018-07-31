@@ -7,7 +7,7 @@ const crypto = BROWSER && window.crypto;
 const ECDSA = 'ECDSA_SHA256';
 const RSA = 'RS256';
 
-let algorithm = Util.isFirefox() || Util.isEdge() ? RSA : ECDSA; // default to ECDSA and fallback to RSA
+let algorithm = Util.isFirefox || Util.isEdge() ? RSA : ECDSA; // default to ECDSA and fallback to RSA
 
 /**
  * Class providing static crypto primitives for the browser using Web Cryptography API.
