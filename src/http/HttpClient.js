@@ -219,6 +219,43 @@ class HttpClient {
     }
 
     /**
+     * Notifies subscribed devices that a token payload should be endorsed and keys should be
+     * added.
+     *
+     * @param {Object} endorseAndAddKey - the endorseAndAddKey payload to be sent
+     * @return {Object} response - response to the API call
+     */
+    notifyEndorseAndAddKey(endorseAndAddKey) {
+        const req = {
+            endorseAndAddKey
+        };
+        const request = {
+            method: 'post',
+            url: `/notify/endorse-and-add-key`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Invalidate a notification.
+     *
+     * @param {Object} notificationId - the notification id to invalidate
+     * @return {Object} response - response to the API call
+     */
+    invalidateNotification(notificationId) {
+        const req = {
+            notificationId
+        };
+        const request = {
+            method: 'post',
+            url: `/notify/invalidate-notification`,
+            data: req
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets banks.
      *
      * @param {Object} options - optional parameters for getBanks

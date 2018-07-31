@@ -260,6 +260,23 @@ class Util {
         return Util.wrapBuffer(base64Url.toBuffer(key));
     }
 
+    /**
+     * Converts a key to a token key.
+     *
+     * @param {Object} key - key
+     * @param {string} level - key level
+     * @return {Object} token key
+     */
+    static tokenKey(key, level) {
+        return {
+            id: key.id,
+            level: level,
+            algorithm: key.algorithm,
+            publicKey: Util.strKey(key.publicKey),
+            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
+        };
+    }
+
     static parseParamsFromUrl(url) {
         let query = url.split('?')[1];
         let result = {};
