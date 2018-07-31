@@ -1,7 +1,6 @@
 /**
  * Class to provide static utility functions.
  */
-import Crypto from "./security/Crypto";
 import bs58 from 'bs58';
 import sha256 from "fast-sha256";
 import stringify from "json-stable-stringify";
@@ -273,7 +272,7 @@ class Util {
             id: key.id,
             level: level,
             algorithm: key.algorithm,
-            publicKey: Crypto.strKey(key.publicKey),
+            publicKey: Util.strKey(key.publicKey),
             ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
         };
     }
