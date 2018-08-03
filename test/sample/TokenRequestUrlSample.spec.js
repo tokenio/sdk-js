@@ -5,8 +5,8 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import TokenRequestUrlSample from '../../src/sample/TokenRequestUrlSample';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
-import Crypto from "../../src/security/Crypto";
-import Util from "../../src/Util";
+import Crypto from '../../src/security/Crypto';
+import Util from '../../src/Util';
 import TestUtil from '../TestUtil';
 
 describe('TokenRequestUrl test', () => {

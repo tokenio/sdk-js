@@ -2,10 +2,10 @@ const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-import HttpClient from "../../src/http/HttpClient";
-import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
+import HttpClient from '../../src/http/HttpClient';
+import MemoryCryptoEngine from '../../src/security/engines/MemoryCryptoEngine';
 
-const devKey = require("../../src/config.json").devKey[TEST_ENV];
+const devKey = require('../../src/config.json').devKey[TEST_ENV];
 
 describe('Unauthenticated', () => {
     it('should generate a memberId', async () => {
@@ -40,12 +40,12 @@ describe('Unauthenticated', () => {
         unauthenticatedClient._instance.interceptors.request.eject(0);
         unauthenticatedClient._instance.interceptors.request.use((config) => {
             config.headers['token-sdk'] = 'js';
-            config.headers['token-sdk-version'] = "0.0.1";
+            config.headers['token-sdk-version'] = '0.0.1';
             return config;
         });
         try {
             await unauthenticatedClient.createMemberId();
-            Promise.reject(new Error("should fail"));
+            Promise.reject(new Error('should fail'));
         } catch (err) {
             assert.include(err.message, 'SDK');
         }

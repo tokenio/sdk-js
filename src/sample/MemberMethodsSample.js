@@ -11,10 +11,10 @@ const base64js = require('base64-js');
 /**
  * Returns byte array of a small black square JPEG.
  * Ignores its parameter. This lets our sample code call
- *    loadPicture("tycho.jpg")
+ *    loadPicture('tycho.jpg')
  * ...and get valid JPEG data back.
  *
- * @param {string} ignoredFileName - "tycho.jpg", but we don't use files.
+ * @param {string} ignoredFileName - 'tycho.jpg', but we don't use files.
  * @return {Object} ByteArray with JPEG data.
  */
 function loadPicture(ignoredFileName) {
@@ -96,7 +96,7 @@ class MemberMethodsSample {
             postCode: 'NW1 6XE',
             country: 'UK'
         };
-        const addressRecord1 = await member.addAddress("Home", address1);
+        const addressRecord1 = await member.addAddress('Home', address1);
         await member.deleteAddress(addressRecord1.id);
         const address2 = {
             houseNumber: '16/17',
@@ -105,7 +105,7 @@ class MemberMethodsSample {
             postCode: 'D-13359',
             country: 'Germany',
         };
-        await member.addAddress("Office", address2);
+        await member.addAddress('Office', address2);
         const addresses = await member.getAddresses();
         return addresses;
     }
@@ -116,8 +116,8 @@ class MemberMethodsSample {
             displayNameLast: 'Nestoris',
         };
         await member.setProfile(name);
-        const jpeg = loadPicture("tycho.jpg"); // file contents as byte array
-        await member.setProfilePicture("image/jpeg", jpeg);
+        const jpeg = loadPicture('tycho.jpg'); // file contents as byte array
+        await member.setProfilePicture('image/jpeg', jpeg);
 
         const profile = await member.getProfile(member.memberId());
         return profile;

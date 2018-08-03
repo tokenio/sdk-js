@@ -1,7 +1,7 @@
 import Util from '../Util';
-import base64Url from "base64url";
-import nacl from "tweetnacl";
-import sha256 from "fast-sha256";
+import base64Url from 'base64url';
+import nacl from 'tweetnacl';
+import sha256 from 'fast-sha256';
 
 /**
  * Class providing static crypto primitives for Node environments using libsodium.
@@ -10,7 +10,7 @@ class CryptoNode {
     /**
      * Generates a key pair to use with the Token system.
      *
-     * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair

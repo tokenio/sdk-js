@@ -37,16 +37,16 @@ class BrowserKeyStore {
      */
     async put(memberId, keyPair) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!keyPair) {
-            throw new Error("Don't know what key to put");
+            throw new Error('Don\'t know what key to put');
         }
         if (!keyPair.level) {
-            throw new Error("Don't know what level to put key");
+            throw new Error('Don\'t know what level to put key');
         }
         if (!BROWSER) {
-            throw new Error("Browser Only");
+            throw new Error('Browser Only');
         }
         if (keyPair.expiresAtMs < Date.now()) {
             throw new Error(`Key ${keyPair.id} has expired`);
@@ -71,18 +71,18 @@ class BrowserKeyStore {
      * Look up a key by memberId and level.
      *
      * @param {string} memberId - ID of member
-     * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} level - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @return {Promise} promise that resolves into the retrieved key pair
      */
     async getByLevel(memberId, level) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!level) {
-            throw new Error("Don't know what key level to get");
+            throw new Error('Don\'t know what key level to get');
         }
         if (!BROWSER) {
-            throw new Error("Browser Only");
+            throw new Error('Browser Only');
         }
         const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE);
         return new Promise((resolve, reject) => {
@@ -114,13 +114,13 @@ class BrowserKeyStore {
      */
     async getById(memberId, keyId) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!keyId) {
-            throw new Error(`Don't know id of key to get`);
+            throw new Error('Don\'t know id of key to get');
         }
         if (!BROWSER) {
-            throw new Error("Browser Only");
+            throw new Error('Browser Only');
         }
         const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE);
         return new Promise((resolve, reject) => {
@@ -153,10 +153,10 @@ class BrowserKeyStore {
      */
     async listKeys(memberId) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!BROWSER) {
-            throw new Error("Browser Only");
+            throw new Error('Browser Only');
         }
         const store = await BrowserKeyStore._getObjectStore(MEMBER_KEY_STORE);
         return new Promise((resolve, reject) => {
@@ -167,9 +167,7 @@ class BrowserKeyStore {
                     return reject(new Error(`member ${memberId} not found`));
                 }
                 BrowserKeyStore.setActiveMemberId(memberId);
-                resolve(Object.values(member)
-                        .filter(keyPair => !(keyPair.expiresAtMs < Date.now()))
-                );
+                resolve(Object.values(member).filter(keyPair => !(keyPair.expiresAtMs < Date.now())));
             };
             getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
         });

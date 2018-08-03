@@ -1,4 +1,4 @@
-import Util from "../Util";
+import Util from '../Util';
 
 /**
  * Creates a transfer token and endorses it to a payee.
@@ -10,7 +10,7 @@ import Util from "../Util";
 export default async (payer, payeeAlias) => {
     // We'll use this as a reference ID. Normally, a payer who
     // explicitly sets a reference ID would use an ID from a db.
-    // E.g., a bill-paying service might use ID of a "purchase".
+    // E.g., a bill-paying service might use ID of a 'purchase'.
     // We don't have a db, so we fake it with a random string:
     const purchaseId = Util.generateNonce();
 

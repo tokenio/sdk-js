@@ -31,7 +31,7 @@ export default async (payer, payee) => {
           .setRefId('a713c8a61994a749')
           .setPricing(pricing)
           .setChargeAmount(10.0)
-          .setDescription("Book purchase")
+          .setDescription('Book purchase')
           .setPurposeOfPayment('PERSONAL_EXPENSES')
           .execute();
 

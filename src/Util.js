@@ -2,10 +2,10 @@
  * Class to provide static utility functions.
  */
 import bs58 from 'bs58';
-import sha256 from "fast-sha256";
-import stringify from "json-stable-stringify";
-import base64Url from 'base64url/dist/base64url';
-import {Buffer as NodeBuffer} from "buffer";
+import sha256 from 'fast-sha256';
+import stringify from 'json-stable-stringify';
+import base64Url from 'base64url';
+import {Buffer as NodeBuffer} from 'buffer';
 
 class Util {
     /**
@@ -96,7 +96,7 @@ class Util {
         if (Math.floor(value) === value) {
             return 0;
         }
-        return value.toString().split(".")[1].length || 0;
+        return value.toString().split('.')[1].length || 0;
     }
 
     /**
@@ -114,7 +114,7 @@ class Util {
         } catch (err) {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
                 err.response.data :
-                "UNKNOWN";
+                'UNKNOWN';
             err.info = method.name + ': ' + err.message + '. Reason: ' + reason;
             return Promise.reject(err);
         }
@@ -133,7 +133,7 @@ class Util {
         } catch (err) {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
                 err.response.data :
-                "UNKNOWN";
+                'UNKNOWN';
             err.info = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }
@@ -247,7 +247,7 @@ class Util {
      * @return {Uint8Array} data
      */
     static wrapBuffer(buffer) {
-        return new Uint8Array(new NodeBuffer(buffer));
+        return new Uint8Array(NodeBuffer.from(buffer));
     }
 
     /**
@@ -263,8 +263,8 @@ class Util {
     static parseParamsFromUrl(url) {
         let query = url.split('?')[1];
         let result = {};
-        query.split("&").forEach(function(part) {
-            var item = part.split("=");
+        query.split('&').forEach(function(part) {
+            var item = part.split('=');
             result[item[0]] = decodeURIComponent(item[1]);
         });
         return result;
@@ -274,7 +274,7 @@ class Util {
         instance.interceptors.response.use(
             (res) => res,
             (err) => {
-                console.log(err.response);
+                console.log(err.response); // eslint-disable-line
                 return Promise.reject(err);
             });
     }

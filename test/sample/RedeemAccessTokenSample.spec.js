@@ -10,7 +10,7 @@ import RedeemAccessTokenSample from '../../src/sample/RedeemAccessTokenSample';
 import TestUtil from '../TestUtil';
 
 describe('RedeemAccessTokenSample test', () => {
-    it('Should run the "use" sample', async () => {
+    it('Should run the 'use' sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
@@ -26,7 +26,7 @@ describe('RedeemAccessTokenSample test', () => {
         assert.isAtLeast(parseFloat(balance.value), 1);
     });
 
-    it('Should run the "careful" sample', async () => {
+    it('Should run the 'careful' sample', async () => {
         const grantor = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
             assert.isOk(await grantor.firstAlias());

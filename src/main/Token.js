@@ -1,22 +1,20 @@
-import Crypto from "../security/Crypto";
-import BrowserCryptoEngine from "../security/engines/BrowserCryptoEngine";
-import MemoryCryptoEngine from "../security/engines/MemoryCryptoEngine";
-import ManualCryptoEngine from "../security/engines/ManualCryptoEngine";
-import UnsecuredFileCryptoEngine from "../security/engines/UnsecuredFileCryptoEngine";
-import Util from "../Util";
-import Member from "../main/Member";
-import config from "../config.json";
-import HttpClient from "../http/HttpClient";
-import TokenRequest from "./TokenRequest";
-
-// Promise polyfill for IE and older browsers
-require('es6-promise').polyfill();
+/* @flow */
+import Crypto from '../security/Crypto';
+import BrowserCryptoEngine from '../security/engines/BrowserCryptoEngine';
+import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
+import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
+import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
+import Util from '../Util';
+import Member from '../main/Member';
+import config from '../config.json';
+import HttpClient from '../http/HttpClient';
+import TokenRequest from './TokenRequest';
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,
  * sending notifications, etc, as well as access to other SDK classes.
  */
-class Token {
+export class Token {
     /**
      * Construct the Token SDK object, pointing to the given environment.
      *
@@ -27,7 +25,7 @@ class Token {
      * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
      */
-    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback, loggingEnabled) {
+    constructor(env, developerKey, keyDir, globalRpcErrorCallback, loggingEnabled) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._developerKey = developerKey;
@@ -93,7 +91,7 @@ class Token {
     aliasExists(alias, realm) {
         return Util.callAsync(this.aliasExists, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias, realm);
-            return (res.data.member && res.data.member.id ? res.data.member.id !== "" : false);
+            return (res.data.member && res.data.member.id ? res.data.member.id !== '' : false);
         });
     }
 
@@ -117,7 +115,7 @@ class Token {
      * @param  {Object} alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
+     * @param  {String} memberType - type of member to create. 'PERSONAL' if undefined
      * @param  {String} realm - (optional) realm of the alias
      * @return {Promise} member - Promise of created Member
      */
@@ -156,7 +154,7 @@ class Token {
      * @return {Promise} member - Promise of created Member
      */
     createBusinessMember(alias, CryptoEngine, realm) {
-        return this.createMember(alias, CryptoEngine, "BUSINESS", realm);
+        return this.createMember(alias, CryptoEngine, 'BUSINESS', realm);
     }
 
     /**
@@ -214,8 +212,8 @@ class Token {
     }
 
     /**
-     * Returns "logged-in" member that uses keys already in the CryptoEngine.
-     * If memberId is not provided, the last member to "log in" will be used.
+     * Returns 'logged-in' member that uses keys already in the CryptoEngine.
+     * If memberId is not provided, the last member to 'log in' will be used.
      *
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param {string} memberId - optional id of the member we want to log in
@@ -376,7 +374,7 @@ class Token {
      * @param {string} csrfToken - CSRF token
      * @return {string} tokenRequestUrl - token request URL
      */
-    generateTokenRequestUrl(requestId, state = "", csrfToken = "") {
+    generateTokenRequestUrl(requestId, state = '', csrfToken = '') {
         return Util.callSync(this.generateTokenRequestUrl, () => {
             const tokenRequestState = {
                 csrfTokenHash: Util.hashString(csrfToken),
@@ -397,7 +395,7 @@ class Token {
      * @param {string} csrfToken - CSRF token
      * @return {Promise} result - inner state and token id
      */
-    parseTokenRequestCallbackUrl(callbackUrl, csrfToken = "") {
+    parseTokenRequestCallbackUrl(callbackUrl, csrfToken = '') {
         return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
             const tokenMember = await this._unauthenticatedClient.getTokenMember();
             const urlParams = Util.parseParamsFromUrl(callbackUrl);
@@ -440,5 +438,3 @@ class Token {
         });
     }
 }
-
-export default Token;

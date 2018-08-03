@@ -1,5 +1,5 @@
 const stringify = require('json-stable-stringify');
-import config from "../config.json";
+import config from '../config.json';
 
 /**
  * Handles the addition of the http headers (with signature) to the request
@@ -37,8 +37,8 @@ class AuthHeader {
             uriPath.substring(0, uriPath.length - 1) : uriPath;
 
         // Path should not include query parameters
-        if (uriPath.indexOf("?") >= 0) {
-            uriPath = uriPath.substring(0, uriPath.indexOf("?"));
+        if (uriPath.indexOf('?') >= 0) {
+            uriPath = uriPath.substring(0, uriPath.indexOf('?'));
         }
 
         // Creates the payload from the request info
@@ -54,8 +54,8 @@ class AuthHeader {
         }
 
         // Signs the query string as well, if it exists
-        if (request.url.indexOf("?") !== -1) {
-            payload.queryString = request.url.substring(request.url.indexOf("?") + 1);
+        if (request.url.indexOf('?') !== -1) {
+            payload.queryString = request.url.substring(request.url.indexOf('?') + 1);
         }
 
         // Creates the signer object

@@ -18,7 +18,7 @@ describe('DeleteMemberSample test', () => {
         try {
             await member.aliases();
         } catch (err) {
-            assert.include(err.info, BROWSER ? "UNKNOWN" : "MEMBER_ID_NOT_FOUND");
+            assert.include(err.info, BROWSER ? 'UNKNOWN' : 'MEMBER_ID_NOT_FOUND');
         }
     });
 });

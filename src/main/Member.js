@@ -1,9 +1,9 @@
-import AuthHttpClient from "../http/AuthHttpClient";
-import HttpClient from "../http/HttpClient";
-import TransferTokenBuilder from "./TransferTokenBuilder";
-import Util from "../Util";
-import config from "../config.json";
-import AccessTokenBuilder from "./AccessTokenBuilder";
+import AuthHttpClient from '../http/AuthHttpClient';
+import HttpClient from '../http/HttpClient';
+import TransferTokenBuilder from './TransferTokenBuilder';
+import Util from '../Util';
+import config from '../config.json';
+import AccessTokenBuilder from './AccessTokenBuilder';
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -211,7 +211,7 @@ export default class Member {
     }
 
     /**
-     * Set the "normal consumer" rule as member's recovery rule.
+     * Set the 'normal consumer' rule as member's recovery rule.
      * (As of Nov 2017, this rule was: To recover, verify an alias.)
      * @return {Promise} promise containing RecoveryRule proto buffer.
      */
@@ -351,7 +351,7 @@ export default class Member {
      * @return {Promise} subscriber - Subscriber
      */
     subscribeToNotifications(
-        handler = "token",
+        handler = 'token',
         handlerInstructions = {}) {
         return Util.callAsync(this.subscribeToNotifications, async () => {
             const res = await this._client.subscribeToNotifications(handler, handlerInstructions);

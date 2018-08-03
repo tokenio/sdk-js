@@ -1,5 +1,5 @@
-import MemoryKeyStore from "./MemoryKeyStore";
-import KeyStoreCryptoEngine from "./KeyStoreCryptoEngine";
+import MemoryKeyStore from './MemoryKeyStore';
+import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import Crypto from '../Crypto';
 import base64Url from 'base64url';
 import sha256 from 'fast-sha256';
@@ -18,9 +18,9 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      *
      * Must be an array with objects of the format:
      * {
-     *     publicKey: "123456",
-     *     privateKey: "123456",
-     *     level: "LOW" || "STANDARD" || "PRIVILEGED",
+     *     publicKey: '123456',
+     *     privateKey: '123456',
+     *     level: 'LOW' || 'STANDARD' || 'PRIVILEGED',
      * }
      */
     static async setKeys(memberKeys) {
@@ -30,7 +30,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         keys = memberKeys;
         for (let keyPair of keys) {
             if (!keyPair.publicKey || !keyPair.privateKey || !keyPair.level) {
-                throw new Error("Invalid keyPair format");
+                throw new Error('Invalid keyPair format');
             }
             if (typeof keyPair.publicKey === 'string') {
                 keyPair.publicKey = Crypto.bufferKey(keyPair.publicKey);
@@ -55,7 +55,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
     /**
      * Generate a keyPair and store it.
      *
-     * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
+     * @param {string} level - privilege level 'LOW', 'STANDARD', 'PRIVILEGED'
      * @return {Object} key
      */
     async generateKey(level) {
@@ -73,7 +73,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
     /**
      * Create a signer. Assumes we previously generated the relevant key.
      *
-     * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
+     * @param {string} level - privilege level 'LOW', 'STANDARD', 'PRIVILEGED'
      * @return {Object} signer - object that implements sign, signJson
      */
     async createSigner(level) {
@@ -102,8 +102,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
 /**
  * Return a (shallow) copy of an object.
  *
- * If the "user" of a key pair object edits it (e.g., deleting privateKey),
- * that shouldn't affect the "stored" key pair. Thus, we can't pass around
+ * If the 'user' of a key pair object edits it (e.g., deleting privateKey),
+ * that shouldn't affect the 'stored' key pair. Thus, we can't pass around
  * references to stored objects. Instead, we do some object-copying.
  *
  * @param {Object} obj - object to copy

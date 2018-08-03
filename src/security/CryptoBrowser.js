@@ -1,4 +1,4 @@
-import base64Url from "base64url";
+import base64Url from 'base64url';
 import Util from '../Util';
 
 const crypto = BROWSER && window.crypto;
@@ -16,7 +16,7 @@ class CryptoBrowser {
     /**
      * Generates a key pair to use with the Token system.
      *
-     * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {string} expirationMs - (optional) expiration duration of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
@@ -87,12 +87,12 @@ class CryptoBrowser {
     static get [ECDSA]() {
         const ao = {}; // algorithm options
         ao.generate = ao.import = {
-            name: "ECDSA",
-            namedCurve: "P-256", // can be "P-256", "P-384", or "P-521"
+            name: 'ECDSA',
+            namedCurve: 'P-256', // can be 'P-256', 'P-384', or 'P-521'
         };
         ao.sign = ao.verify = {
-            name: "ECDSA",
-            hash: {name: "SHA-256"}, // can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+            name: 'ECDSA',
+            hash: {name: 'SHA-256'}, // can be 'SHA-1', 'SHA-256', 'SHA-384', or 'SHA-512'
         };
         return ao;
     }
@@ -100,14 +100,14 @@ class CryptoBrowser {
     static get [RSA]() {
         const ao = {};
         ao.generate = {
-            name: "RSASSA-PKCS1-v1_5",
+            name: 'RSASSA-PKCS1-v1_5',
             modulusLength: 2048, // can be 1024, 2048, or 4096
             publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-            hash: {name: "SHA-256"}, // can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+            hash: {name: 'SHA-256'}, // can be 'SHA-1', 'SHA-256', 'SHA-384', or 'SHA-512'
         };
         ao.import = ao.sign = ao.verify = {
-            name: "RSASSA-PKCS1-v1_5",
-            hash: {name: "SHA-256"}, // can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+            name: 'RSASSA-PKCS1-v1_5',
+            hash: {name: 'SHA-256'}, // can be 'SHA-1', 'SHA-256', 'SHA-384', or 'SHA-512'
         };
         return ao;
     }

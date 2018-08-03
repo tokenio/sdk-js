@@ -2,13 +2,13 @@ import chai from 'chai';
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
-import HttpClient from "../../src/http/HttpClient";
-import AuthHttpClient from "../../src/http/AuthHttpClient";
-import MemoryCryptoEngine from "../../src/security/engines/MemoryCryptoEngine";
+import HttpClient from '../../src/http/HttpClient';
+import AuthHttpClient from '../../src/http/AuthHttpClient';
+import MemoryCryptoEngine from '../../src/security/engines/MemoryCryptoEngine';
 import Util from '../../src/Util';
 import TestUtil from '../TestUtil';
 
-const devKey = require("../../src/config.json").devKey[TEST_ENV];
+const devKey = require('../../src/config.json').devKey[TEST_ENV];
 
 describe('AuthHttpClient', () => {
     it('should add a second key', async () => {

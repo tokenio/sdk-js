@@ -14,10 +14,10 @@ describe('ProvisionDeviceSample test', () => {
             await TestUtil.waitUntil(async () => {
                 assert.isOk(await member.firstAlias());
             });
-            await member.subscribeToNotifications("iron");
+            await member.subscribeToNotifications('iron');
             const alias = await member.firstAlias();
 
-            const devKey = require("../../src/config.json").devKey[TEST_ENV];
+            const devKey = require('../../src/config.json').devKey[TEST_ENV];
             const TokenLib = require('../../src');
             const Token = new TokenLib(TEST_ENV, devKey, './keys');
             const key = await ProvisionDeviceSample.provision(Token, alias);

@@ -1,4 +1,4 @@
-const devKey = require("../../src/config.json").devKey[TEST_ENV];
+const devKey = require('../../src/config.json').devKey[TEST_ENV];
 const TokenLib = require('../../src');
 const Token = new TokenLib(TEST_ENV, devKey, './keys');
 

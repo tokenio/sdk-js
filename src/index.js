@@ -1,3 +1,4 @@
-import Token from './main/Token';
+import 'es6-promise/auto';
+import {Token} from './main/Token';
 
-module.exports = Token;
+export {Token as TokenGateway};

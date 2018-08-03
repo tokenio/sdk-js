@@ -1,5 +1,5 @@
-import Util from "../Util";
-import config from "../config.json";
+import Util from '../Util';
+import config from '../config.json';
 
 export default class AccessTokenBuilder {
     /**
@@ -13,7 +13,7 @@ export default class AccessTokenBuilder {
     constructor(client, member, resources) {
         this._client = client;
         this._member = member;
-        this._tokenRequestId = "";
+        this._tokenRequestId = '';
 
         this._payload = {
             version: config.accessTokenVersion,
@@ -24,7 +24,7 @@ export default class AccessTokenBuilder {
         };
     }
 
-     /**
+    /**
      * Adds a from id.
      *
      * @param {String} memberId - fromId
@@ -348,8 +348,8 @@ export default class AccessTokenBuilder {
 
             const res = await this._client.createAccessToken(this._payload, this._tokenRequestId);
 
-            if (res.data.status === "FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED") {
-                let error = new Error("FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED");
+            if (res.data.status === 'FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED') {
+                let error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }

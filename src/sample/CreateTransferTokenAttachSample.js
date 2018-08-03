@@ -11,9 +11,9 @@ export default async (payer, payeeAlias) => {
     // Upload the data
     const attachment = await payer.createBlob(
         payer.memberId(),
-        "image/jpeg",
-        "invoice.jpg",
-        getImageData("invoice.jpg"));
+        'image/jpeg',
+        'invoice.jpg',
+        getImageData('invoice.jpg'));
 
     const token = await payer.createTransferToken(100.00, 'EUR')
           .setAccountId(accounts[0].id)

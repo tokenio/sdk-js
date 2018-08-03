@@ -1,7 +1,7 @@
-import stringify from "json-stable-stringify";
-import CryptoNode from "./CryptoNode";
-import CryptoBrowser from "./CryptoBrowser";
-import base64Url from 'base64url/dist/base64url';
+import stringify from 'json-stable-stringify';
+import CryptoNode from './CryptoNode';
+import CryptoBrowser from './CryptoBrowser';
+import base64Url from 'base64url';
 import {Buffer} from 'buffer';
 import Util from '../Util';
 
@@ -14,7 +14,7 @@ class Crypto {
     /**
      * Generates a key pair to use with the Token system.
      *
-     * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
      * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
@@ -121,7 +121,7 @@ class Crypto {
      * @return {Uint8Array} data
      */
     static wrapBuffer(buffer) {
-        return new Uint8Array(new Buffer(buffer));
+        return new Uint8Array(Buffer.from(buffer));
     }
 
     /**

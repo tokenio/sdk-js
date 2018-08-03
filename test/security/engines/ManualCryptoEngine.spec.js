@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
-import ManualCryptoEngine from "../../../src/security/engines/ManualCryptoEngine";
+import ManualCryptoEngine from '../../../src/security/engines/ManualCryptoEngine';
 import Util from '../../../src/Util';
 import Crypto from '../../../src/security/Crypto';
 
@@ -95,9 +95,9 @@ describe('Manual crypto engines', () => {
         const sig = await signer.sign('abcdefg');
         try {
             await verifier.verify('bcdefg', sig);
-            return Promise.reject(new Error("should fail"));
+            return Promise.reject(new Error('should fail'));
         } catch (err) {
-            assert.include(err.message, "Invalid signature");
+            assert.include(err.message, 'Invalid signature');
         }
     });
 
@@ -126,9 +126,9 @@ describe('Manual crypto engines', () => {
                 await Crypto.generateKeys('PRIVILEGED'),
             ]);
             const engine = new ManualCryptoEngine();
-            return Promise.reject(new Error("should fail to log in", engine));
+            return Promise.reject(new Error('should fail to log in', engine));
         } catch (err) {
-            assert.include(err.message, "Invalid memberId");
+            assert.include(err.message, 'Invalid memberId');
         }
     });
 });

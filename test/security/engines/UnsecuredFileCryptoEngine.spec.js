@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars*/
-import FileSystem from "../../../src/security/PromiseFileSystem";
+import FileSystem from '../../../src/security/PromiseFileSystem';
 
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
-import UnsecuredFileCryptoEngine from "../../../src/security/engines/UnsecuredFileCryptoEngine";
+import UnsecuredFileCryptoEngine from '../../../src/security/engines/UnsecuredFileCryptoEngine';
 const TokenIo = require('../../../src/index');
-const devKey = require("../../../src/config.json").devKey[TEST_ENV];
+const devKey = require('../../../src/config.json').devKey[TEST_ENV];
 
 let fs;
 let path;
@@ -64,9 +64,9 @@ describe('Unsecured File crypto engine', () => {
             await engine.generateKey('LOW');
             try {
                 await engine.createSigner('STANDARD');
-                return Promise.reject(new Error("should fail"));
+                return Promise.reject(new Error('should fail'));
             } catch (err) {
-                assert.include(err.message, "No key");
+                assert.include(err.message, 'No key');
             }
         });
 
@@ -107,9 +107,9 @@ describe('Unsecured File crypto engine', () => {
             const sig = await signer.sign('abcdefg');
             try {
                 await verifier.verify('bcdefg', sig);
-                return Promise.reject(new Error("should fail"));
+                return Promise.reject(new Error('should fail'));
             } catch (err) {
-                assert.include(err.message, "Invalid signature");
+                assert.include(err.message, 'Invalid signature');
             }
         });
 
@@ -165,13 +165,13 @@ describe('Unsecured File crypto engine', () => {
 
         it('should fail to load bad JSON', async () => {
             const newMemberId = Token.Util.generateNonce();
-            const fileContents = "{13-+23e. /:::}";
+            const fileContents = '{13-+23e. /:::}';
             await FileSystem.writeFile(newMemberId, fileContents);
 
             const engine = new UnsecuredFileCryptoEngine(newMemberId);
             try {
                 const signer = await engine.createSigner('LOW');
-                return Promise.reject(new Error("should fail"));
+                return Promise.reject(new Error('should fail'));
             } catch (err) {
                 // Fails as expeceted
             }

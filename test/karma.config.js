@@ -1,6 +1,6 @@
 var webpackConfig = require('../config/webpack.config.js');
 webpackConfig.entry = {};
-webpackConfig.module.loaders[0].query.plugins.push("babel-plugin-transform-object-assign");
+webpackConfig.module.loaders[0].query.plugins.push('babel-plugin-transform-object-assign');
 
 // Karma configuration
 module.exports = function(config) {
@@ -14,7 +14,7 @@ module.exports = function(config) {
         // ... normal karma configuration
         files: [
 
-            // all files ending in ".spec"
+            // all files ending in '.spec'
             {pattern: 'src/**/*.js', watched: true},
             {pattern: '**/*.browserspec.js', watched: false},
             {pattern: '**/*.spec.js', watched: false}

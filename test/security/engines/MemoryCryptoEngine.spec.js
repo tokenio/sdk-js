@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
-import MemoryCryptoEngine from "../../../src/security/engines/MemoryCryptoEngine";
+import MemoryCryptoEngine from '../../../src/security/engines/MemoryCryptoEngine';
 import Util from '../../../src/Util';
 
 describe('Memory crypto engines', () => {
@@ -30,9 +30,9 @@ describe('Memory crypto engines', () => {
         await engine.generateKey('LOW');
         try {
             await engine.createSigner('STANDARD');
-            return Promise.reject(new Error("should fail"));
+            return Promise.reject(new Error('should fail'));
         } catch (err) {
-            assert.include(err.message, "No key");
+            assert.include(err.message, 'No key');
         }
     });
 
@@ -73,9 +73,9 @@ describe('Memory crypto engines', () => {
         const sig = await signer.sign('abcdefg');
         try {
             await verifier.verify('bcdefg', sig);
-            return Promise.reject(new Error("should fail"));
+            return Promise.reject(new Error('should fail'));
         } catch (err) {
-            assert.include(err.message, "Invalid signature");
+            assert.include(err.message, 'Invalid signature');
         }
     });
 
@@ -113,9 +113,9 @@ describe('Memory crypto engines', () => {
     it('should fail to log in to an empty browser', async () => {
         try {
             const engine = new MemoryCryptoEngine();
-            return Promise.reject(new Error("should fail to log in", engine));
+            return Promise.reject(new Error('should fail to log in', engine));
         } catch (err) {
-            assert.include(err.message, "Invalid memberId");
+            assert.include(err.message, 'Invalid memberId');
         }
     });
 });

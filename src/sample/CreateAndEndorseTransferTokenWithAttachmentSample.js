@@ -15,9 +15,9 @@ export default async (payer, payeeAlias) => {
               .setRedeemerAlias(payeeAlias)
               .addAttachmentData(
                   payer.memberId(),
-                  "image/jpeg",
-                  "invoice.jpg",
-                  getImageData("invoice.jpg"))
+                  'image/jpeg',
+                  'invoice.jpg',
+                  getImageData('invoice.jpg'))
               .execute();
 
     // Payer endorses the token, creating a digital signature on it

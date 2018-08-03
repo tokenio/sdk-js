@@ -1,9 +1,9 @@
-import config from "../config.json";
-import Crypto from "../security/Crypto";
-import ErrorHandler from "./ErrorHandler";
-import DeveloperHeader from "./DeveloperHeader";
-import VersionHeader from "./VersionHeader";
-import Util from "../Util";
+import config from '../config.json';
+import Crypto from '../security/Crypto';
+import ErrorHandler from './ErrorHandler';
+import DeveloperHeader from './DeveloperHeader';
+import VersionHeader from './VersionHeader';
+import Util from '../Util';
 
 const axios = require('axios');
 
@@ -49,12 +49,12 @@ class HttpClient {
     /**
      * Creates a memberId.
      *
-     * @param  {string} memberType - type of member to create. "PERSONAL" if undefined
+     * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
      * @return {Object} response - response to the API call
      */
     createMemberId(memberType) {
         if (memberType === undefined) {
-            memberType = "PERSONAL";
+            memberType = 'PERSONAL';
         }
         const req = {
             memberType

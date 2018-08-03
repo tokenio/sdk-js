@@ -11,7 +11,7 @@ import TestUtil from '../TestUtil';
 describe('NotifyPaymentRequestSample test', () => {
     it('Should run the sample', async () => {
         const TokenLib = require('../../src');
-        const devKey = require("../../src/config.json").devKey[TEST_ENV];
+        const devKey = require('../../src/config.json').devKey[TEST_ENV];
         const Token = new TokenLib(TEST_ENV, devKey);
 
         const payee = await CreateMemberSample();
@@ -23,7 +23,7 @@ describe('NotifyPaymentRequestSample test', () => {
         await LinkMemberAndBankSample(payee);
         await LinkMemberAndBankSample(payer);
 
-        await payer.subscribeToNotifications("token", {
+        await payer.subscribeToNotifications('token', {
             PLATFORM: 'TEST',
             TARGET: Token.Util.generateNonce(),
         });

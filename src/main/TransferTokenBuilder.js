@@ -1,5 +1,5 @@
-import Util from "../Util";
-import config from "../config.json";
+import Util from '../Util';
+import config from '../config.json';
 
 export default class TransferTokenBuilder {
 
@@ -16,7 +16,7 @@ export default class TransferTokenBuilder {
         this._client = client;
         this._member = member;
         this._blobPayloads = [];
-        this._tokenRequestId = "";
+        this._tokenRequestId = '';
 
         if (Util.countDecimals(lifetimeAmount) > config.decimalPrecision) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
@@ -388,12 +388,12 @@ export default class TransferTokenBuilder {
                 this.addAttachment(attachment);
             }
             const res = await this._client.createTransferToken(this._payload, this._tokenRequestId);
-            if (res.data.status === "FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED") {
-                let error = new Error("FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED");
+            if (res.data.status === 'FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED') {
+                let error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
-            if (res.data.status !== "SUCCESS") {
+            if (res.data.status !== 'SUCCESS') {
                 throw new Error(res.data.status);
             }
             return res.data.token;

@@ -11,13 +11,13 @@ class MemoryKeyStore {
      */
     async put(memberId, keyPair) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!keyPair) {
-            throw new Error("Don't know what key to put");
+            throw new Error('Don\'t know what key to put');
         }
         if (!keyPair.level) {
-            throw new Error("Invalid key structure: has no privilege level");
+            throw new Error('Invalid key structure: has no privilege level');
         }
         if (keyPair.expiresAtMs < Date.now()) {
             throw new Error(`Key ${keyPair.id} has expired`);
@@ -34,15 +34,15 @@ class MemoryKeyStore {
      * Look up a key by memberId and level.
      *
      * @param {string} memberId - ID of member
-     * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} level - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @return {Object} key pair
      */
     async getByLevel(memberId, level) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!level) {
-            throw new Error("Don't know what key level to get");
+            throw new Error('Don\'t know what key level to get');
         }
         if (!globalStorage[memberId]) {
             throw new Error(`member ${memberId} not found`);
@@ -68,14 +68,13 @@ class MemoryKeyStore {
             throw new Error(`member ${memberId} not found`);
         }
         if (!keyId) {
-            throw new Error(`Don't know id of key to get`);
+            throw new Error('Don\'t know id of key to get');
         }
         for (let level in globalStorage[memberId]) {
             if (Object.prototype.hasOwnProperty.call(globalStorage[memberId], level)) {
                 if (globalStorage[memberId][level].id === keyId) {
                     if (globalStorage[memberId][level].expiresAtMs < Date.now()) {
-                        throw new Error(
-                                `Key with id ${globalStorage[memberId][level].id} has expired`);
+                        throw new Error('Key with id ${globalStorage[memberId][level].id} has expired');
                     }
                     return clone(globalStorage[memberId][level]);
                 }
@@ -125,8 +124,8 @@ class MemoryKeyStore {
 /**
  * Return a (shallow) copy of an object.
  *
- * If the "user" of a key pair object edits it (e.g., deleting privateKey),
- * that shouldn't affect the "stored" key pair. Thus, we can't pass around
+ * If the 'user' of a key pair object edits it (e.g., deleting privateKey),
+ * that shouldn't affect the 'stored' key pair. Thus, we can't pass around
  * references to stored objects. Instead, we do some object-copying.
  *
  * @param {Object} obj - object to copy

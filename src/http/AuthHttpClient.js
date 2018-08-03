@@ -1,19 +1,19 @@
 /* eslint-disable camelcase */
 
-import Crypto from "../security/Crypto";
-import Util from "../Util";
-import AuthHeader from "./AuthHeader";
-import AuthContext from "./AuthContext";
-import config from "../config.json";
-import ErrorHandler from "./ErrorHandler";
-import DeveloperHeader from "./DeveloperHeader";
-import VersionHeader from "./VersionHeader";
+import Crypto from '../security/Crypto';
+import Util from '../Util';
+import AuthHeader from './AuthHeader';
+import AuthContext from './AuthContext';
+import config from '../config.json';
+import ErrorHandler from './ErrorHandler';
+import DeveloperHeader from './DeveloperHeader';
+import VersionHeader from './VersionHeader';
 
 const base64js = require('base64-js');
 const stringify = require('json-stable-stringify');
 const axios = require('axios');
 
-const BlockingAdapter = require('./BlockingAdapter');
+import BlockingAdapter from './BlockingAdapter';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -408,9 +408,9 @@ class AuthHttpClient {
             payload: {
                 ownerId: this._memberId,
                 type: type,
-                name: "profile",
+                name: 'profile',
                 data: base64js.fromByteArray(data),
-                accessMode: "PUBLIC",
+                accessMode: 'PUBLIC',
             },
         };
         const request = {
@@ -1268,7 +1268,7 @@ class AuthHttpClient {
         if (prevHash !== '') {
             update.prevHash = prevHash;
         }
-        if (typeof metadata === "undefined") {
+        if (typeof metadata === 'undefined') {
             metadata = [];
         }
 

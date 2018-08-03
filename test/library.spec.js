@@ -1,13 +1,13 @@
 import TestUtil from './TestUtil';
-import TokenIo from "../src";
-const devKey = require("../src/config.json").devKey[TEST_ENV];
+import TokenIo from '../src';
+const devKey = require('../src/config.json').devKey[TEST_ENV];
 const Token = new TokenIo(TEST_ENV, devKey);
 const chai = require('chai');
 const assert = chai.assert;
 import 'babel-regenerator-runtime';
 
 describe('Token library', () => {
-    it("should perform a transfer flow", async () => {
+    it('should perform a transfer flow', async () => {
         const alias1 = Token.Util.randomAlias();
         const alias2 = Token.Util.randomAlias();
 
@@ -15,7 +15,7 @@ describe('Token library', () => {
         await TestUtil.waitUntil(async () => {
             assert.isOk(await member1.firstAlias());
         });
-        await member1.subscribeToNotifications("iron");
+        await member1.subscribeToNotifications('iron');
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];

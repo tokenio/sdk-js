@@ -15,12 +15,12 @@ export default async (developerKey) => {
         './keys');
 
     // Generate a random-nonsense-string alias.
-    // ("name@token.io" would be more typical than a random string.
+    // ('name@token.io' would be more typical than a random string.
     // But if we run this code with the same alias twice,
     // the 2nd time it will fail because the name is taken.)
     const alias = {
         type: 'EMAIL',
-        value: "alias-" + Token.Util.generateNonce() + "+noverify@example.com"
+        value: 'alias-' + Token.Util.generateNonce() + '+noverify@example.com'
     };
 
     // Create a member with keys stored in memory:

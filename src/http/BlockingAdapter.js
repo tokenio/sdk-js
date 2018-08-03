@@ -9,7 +9,7 @@ var btoa = (typeof window !== 'undefined' && window.btoa) || require('axios/lib/
  * @return {Promise}        response - response object with a 'dispatchRequest' function
  *                          to trigger the blocking request
  */
-module.exports = function BlockingAdapter(config) {
+export default function BlockingAdapter(config) {
   if (typeof XMLHttpRequest === 'undefined' && typeof process !== 'undefined') {
       // for node ignore request
       return new Promise(function ignoreRequest(resolve) {

@@ -1,4 +1,4 @@
-import config from "../config.json";
+import config from '../config.json';
 
 /**
  * Sample code illustrating how a grantee might use an access token.
@@ -6,7 +6,7 @@ import config from "../config.json";
 class RedeemAccessTokenSample {
     /**
      * Redeems an information access token token to fetch an account balance.
-     * Assumes the token grants "allAccounts" access.
+     * Assumes the token grants 'allAccounts' access.
      *
      * @param {Member} grantee - grantee member
      * @param {string} tokenId - id of the token to redeem
@@ -28,7 +28,7 @@ class RedeemAccessTokenSample {
 
     /**
      * Redeems an information access token token to fetch an account balance.
-     * Does not assume the token grants "allAccounts" access.
+     * Does not assume the token grants 'allAccounts' access.
      *
      * @param {Member} grantee - grantee member
      * @param {string} tokenId - id of the token to redeem
@@ -80,7 +80,7 @@ class RedeemAccessTokenSample {
             } catch (ex) {
                 // If grantor previously un-linked an account, then grantee can't get its balance.
                 if (ex.response && ex.response.data && ex.response.data.startsWith &&
-                    ex.response.data.startsWith("FAILED_PRECONDITION")) {
+                    ex.response.data.startsWith('FAILED_PRECONDITION')) {
                     continue;
                 }
             }

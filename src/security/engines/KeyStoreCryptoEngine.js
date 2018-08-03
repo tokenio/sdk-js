@@ -21,7 +21,7 @@ class KeyStoreCryptoEngine {
     /**
      * Generate a key pair and store it.
      *
-     * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} level - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
      * @return {Object} key
      */
@@ -37,7 +37,7 @@ class KeyStoreCryptoEngine {
     /**
      * Create a signer. Assumes we previously generated the relevant key.
      *
-     * @param {string} level - privilege level "LOW", "STANDARD", "PRIVILEGED"
+     * @param {string} level - privilege level 'LOW', 'STANDARD', 'PRIVILEGED'
      * @return {Object} signer object that implements sign, signJson, and getKeyId
      */
     async createSigner(level) {

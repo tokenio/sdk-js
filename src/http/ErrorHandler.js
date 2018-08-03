@@ -30,7 +30,7 @@ class ErrorHandler {
             if (tokenErrorDetails) {
                 // Log optional error details to ease up troubleshooting.
                 // Available only in non-prod deployments.
-                console.log("Error details: ", tokenErrorDetails);
+                console.log('Error details: ', tokenErrorDetails); // eslint-disable-line
             }
 
             if (this._globalRpcErrorCallback) {
