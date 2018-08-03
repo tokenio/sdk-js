@@ -31,14 +31,15 @@ class AuthHttpClient {
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
+     * @param {string} customSdkUrl - set to override the default sdk url
      */
-    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled) {
-        if (!config.urls[env]) {
+    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled, customSdkUrl) {
+        if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: config.urls[env]
+            baseURL: customSdkUrl || config.urls[env]
         });
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
@@ -47,7 +48,7 @@ class AuthHttpClient {
         this._cryptoEngine = cryptoEngine;
 
         this._context = new AuthContext();
-        this._authHeader = new AuthHeader(config.urls[env], this);
+        this._authHeader = new AuthHeader(customSdkUrl || config.urls[env], this);
 
         this._developerKey = developerKey;
 

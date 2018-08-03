@@ -23,8 +23,9 @@ export default class Member {
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
+     * @param {string} customSdkUrl - set to override the default sdk url
      */
-    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled) {
+    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled, customSdkUrl) {
         this._id = memberId;
         this._client = new AuthHttpClient(
             env,
@@ -32,8 +33,14 @@ export default class Member {
             cryptoEngine,
             developerKey,
             globalRpcErrorCallback,
-            loggingEnabled);
-        this._unauthenticatedClient = new HttpClient(env, developerKey, globalRpcErrorCallback);
+            loggingEnabled,
+            customSdkUrl);
+        this._unauthenticatedClient = new HttpClient(
+            env,
+            developerKey,
+            globalRpcErrorCallback,
+            loggingEnabled,
+            customSdkUrl);
     }
 
     /**
