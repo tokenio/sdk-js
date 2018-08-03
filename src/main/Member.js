@@ -219,8 +219,8 @@ export default class Member {
             const prevHash = await this._getPreviousHash();
             const rule = {
                 recoveryRule: {
-                    primaryAgent: agentResponse.data.memberId
-                }
+                    primaryAgent: agentResponse.data.memberId,
+                },
             };
             const res = await this._client.addRecoveryRule(prevHash, rule);
             return res.data.member.recoveryRule;
@@ -395,8 +395,8 @@ export default class Member {
         return Util.callAsync(this.getNotifications, async () => {
             const res = await this._client.getNotifications(offset, limit);
             const data = res.data.notifications === undefined ?
-                    [] :
-                    res.data.notifications;
+                [] :
+                res.data.notifications;
             return {
                 data,
                 offset: res.data.offset,
@@ -741,8 +741,8 @@ export default class Member {
         return Util.callAsync(this.getTransferTokens, async () => {
             const res = await this._client.getTokens('TRANSFER', offset, limit);
             const data = res.data.tokens === undefined ?
-                    [] :
-                    res.data.tokens;
+                [] :
+                res.data.tokens;
             return {
                 data,
                 offset: res.data.offset,
@@ -761,8 +761,8 @@ export default class Member {
         return Util.callAsync(this.getAccessTokens, async () => {
             const res = await this._client.getTokens('ACCESS', offset, limit);
             const data = res.data.tokens === undefined ?
-                    [] :
-                    res.data.tokens;
+                [] :
+                res.data.tokens;
             return {
                 data,
                 offset: res.data.offset,
@@ -819,7 +819,7 @@ export default class Member {
             const cancelled = await this._client.cancelToken(finalToken, true);
             if (cancelled && cancelled.data &&
               typeof cancelled.data.dispatchRequest === 'function') {
-              return cancelled.data.dispatchRequest;
+                return cancelled.data.dispatchRequest;
             }
         });
     }
@@ -890,8 +890,8 @@ export default class Member {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             const data = res.data.transfers === undefined ?
-                    [] :
-                    res.data.transfers;
+                [] :
+                res.data.transfers;
             return {
                 data,
                 offset: res.data.offset,
@@ -955,8 +955,8 @@ export default class Member {
         return Util.callAsync(this.getTransactions, async () => {
             const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
             const data = res.data.transactions === undefined ?
-                    [] :
-                    res.data.transactions;
+                [] :
+                res.data.transactions;
             return {
                 data,
                 offset: res.data.offset,

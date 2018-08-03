@@ -7,9 +7,9 @@ class DeveloperHeader {
      *
      * @param {string} developerKey - the developer key, by default empty
      */
-     constructor(developerKey = '') {
-         this._developerKey = developerKey;
-     }
+    constructor(developerKey = '') {
+        this._developerKey = developerKey;
+    }
 
     /**
      * Adds the developer key to the request config if not empty.

@@ -48,7 +48,7 @@ describe('Key management', () => {
                 def: 'a string',
                 obj: {
                     an: 'object',
-                }
+                },
             };
             const sig = await Crypto.signJson(json, keys);
             await Crypto.verifyJson(json, sig, keys.publicKey);

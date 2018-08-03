@@ -35,14 +35,14 @@ class RedeemAccessTokenSample {
      * @return {Object} balance of one account (or {} if no access to any accounts)
      */
     static async carefullyUse(grantee, tokenId) {
-        var accessToken = await grantee.getToken(tokenId);
+        let accessToken = await grantee.getToken(tokenId);
         while (accessToken.replacedByTokenId) {
             accessToken = await grantee.getToken(accessToken.replacedByTokenId);
         }
-        var accountIds = {};
-        var haveAllBalancesAccess = false;
-        var haveAllAccountsAccess = false;
-        var i;
+        const accountIds = {};
+        let haveAllBalancesAccess = false;
+        let haveAllAccountsAccess = false;
+        let i;
         for (i = 0; i < accessToken.payload.access.resources.length; i++) {
             const resource = accessToken.payload.access.resources[i];
             if (resource.balance && resource.balance.accountId) {

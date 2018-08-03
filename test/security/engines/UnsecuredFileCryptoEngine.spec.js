@@ -134,8 +134,8 @@ describe('Unsecured File crypto engine', () => {
                     algorithm: 'ED25519',
                     publicKey: 'b8uKAhTT_55wL1QCBaDLtclfeXOEf5Gm8qYY7KbghCo',
                     privateKey: 'YLYhbPCsfJtKt5wvT69ocAwjTCaX8goEFgDIzS-zRD1vy4oCFNP_' +
-                    'nnAvVAIFoMu1yV95c4R_kabyphjspuCEKg'
-                }]
+                    'nnAvVAIFoMu1yV95c4R_kabyphjspuCEKg',
+                }],
             });
 
             await FileSystem.writeFile(newMemberId, fileContents);

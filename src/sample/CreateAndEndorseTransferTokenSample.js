@@ -18,12 +18,12 @@ export default async (payer, payeeAlias) => {
 
     // Payer creates the token with the desired terms
     const token = await payer.createTransferTokenBuilder(100.00, 'EUR')
-          .setFromId(payer.memberId())
-          .setAccountId(accounts[0].id)
-          .setRedeemerAlias(payeeAlias)
-          // if not explicitly set, will get random refId:
-          .setRefId(purchaseId)
-          .execute();
+        .setFromId(payer.memberId())
+        .setAccountId(accounts[0].id)
+        .setRedeemerAlias(payeeAlias)
+    // if not explicitly set, will get random refId:
+        .setRefId(purchaseId)
+        .execute();
 
     // Payer endorses the token, creating a digital signature on it
     const result = await payer.endorseToken(token);

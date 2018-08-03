@@ -10,7 +10,7 @@ import RedeemAccessTokenSample from '../../src/sample/RedeemAccessTokenSample';
 import TestUtil from '../TestUtil';
 
 describe('RedeemAccessTokenSample test', () => {
-    it('Should run the 'use' sample', async () => {
+    it('Should run the \'use\' sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
@@ -26,7 +26,7 @@ describe('RedeemAccessTokenSample test', () => {
         assert.isAtLeast(parseFloat(balance.value), 1);
     });
 
-    it('Should run the 'careful' sample', async () => {
+    it('Should run the \'careful\' sample', async () => {
         const grantor = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
             assert.isOk(await grantor.firstAlias());
@@ -49,9 +49,9 @@ describe('RedeemAccessTokenSample test', () => {
         await grantor.replaceAndEndorseAccessToken(
             token1,
             [{account: {accountId: account1.id}},
-             {account: {accountId: account2.id}},
-             {balance: {accountId: account1.id}},
-             {balance: {accountId: account2.id}}]);
+                {account: {accountId: account2.id}},
+                {balance: {accountId: account1.id}},
+                {balance: {accountId: account2.id}}]);
 
         const balance2 = await RedeemAccessTokenSample.carefullyUse(grantee, token1.id);
         assert.isAtLeast(parseFloat(balance2.value), 1);

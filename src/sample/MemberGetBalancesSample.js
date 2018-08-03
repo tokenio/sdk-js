@@ -8,13 +8,13 @@ import config from '../config.json';
  */
 
 export default async (member) => {
-    var sums = {};
+    const sums = {};
     const accounts = await member.getAccounts();
     const accountIds = accounts.map((account) => (account.id));
 
     const balancesResponse = await member.getBalances(accountIds, config.KeyLevel.STANDARD);
 
-    for (var i = 0; i < balancesResponse.response.length; i++) {
+    for (let i = 0; i < balancesResponse.response.length; i++) {
         const balance = balancesResponse.response[i].balance;
         const currency = balance.available.currency;
         sums[currency] = (sums[currency] || 0) +

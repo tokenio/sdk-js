@@ -53,7 +53,7 @@ describe('TokenRequestUrl test', () => {
         await Crypto.verifyJson(
             {
                 state: state,
-                tokenId: token.id
+                tokenId: token.id,
             },
             signature.signature,
             Crypto.bufferKey(signingKey.publicKey)

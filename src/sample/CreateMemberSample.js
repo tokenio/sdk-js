@@ -20,7 +20,7 @@ export default async () => {
     // without verifying it; but in production, we couldn't.
     const alias = {
         type: 'EMAIL',
-        value: 'alias-' + Token.Util.generateNonce() + '+noverify@token.io'
+        value: 'alias-' + Token.Util.generateNonce() + '+noverify@token.io',
     };
 
     // Create a member with keys stored in memory:

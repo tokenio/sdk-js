@@ -8,7 +8,7 @@ import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import GetAccessTokensSample from '../../src/sample/GetAccessTokensSample';
 import ReplaceAndEndorseAccessTokenSample
-  from '../../src/sample/ReplaceAndEndorseAccessTokenSample';
+    from '../../src/sample/ReplaceAndEndorseAccessTokenSample';
 import TestUtil from '../TestUtil';
 
 describe('ReplaceAndEndorseAccessTokenSample test', () => {

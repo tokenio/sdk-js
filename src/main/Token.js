@@ -90,7 +90,7 @@ export class Token {
     aliasExists(alias) {
         return Util.callAsync(this.aliasExists, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
-            return (res.data.member && res.data.member.id ? res.data.member.id !== "" : false);
+            return (res.data.member && res.data.member.id ? res.data.member.id !== '' : false);
         });
     }
 
@@ -155,7 +155,7 @@ export class Token {
      * @return {Promise} member - Promise of created Member
      */
     createBusinessMember(alias, CryptoEngine) {
-        return this.createMember(alias, CryptoEngine, "BUSINESS");
+        return this.createMember(alias, CryptoEngine, 'BUSINESS');
     }
 
     /**
@@ -246,7 +246,7 @@ export class Token {
         const body = {
             linkAccounts: {
                 bankAuthorization,
-            }
+            },
         };
         return Util.callAsync(this.notifyLinkAccounts, async () => {
             const res = await this._unauthenticatedClient.notify(alias, body);
@@ -275,9 +275,9 @@ export class Token {
                     level: level,
                     algorithm: key.algorithm,
                     publicKey: Crypto.strKey(key.publicKey),
-                    ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
-                }
-            }
+                    ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                },
+            },
         };
         return Util.callAsync(this.notifyAddKey, async () => {
             const res = await this._unauthenticatedClient.notify(alias, body);
@@ -309,10 +309,10 @@ export class Token {
                         level: level,
                         algorithm: key.algorithm,
                         publicKey: Crypto.strKey(key.publicKey),
-                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
-                    }
-                }
-            }
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                    },
+                },
+            },
         };
         return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
             const res = await this._unauthenticatedClient.notify(alias, body);
@@ -374,7 +374,7 @@ export class Token {
         return Util.callSync(this.generateTokenRequestUrl, () => {
             const tokenRequestState = {
                 csrfTokenHash: Util.hashString(csrfToken),
-                innerState: state
+                innerState: state,
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
 
@@ -399,7 +399,7 @@ export class Token {
             const params = {
                 tokenId: decodeURIComponent(urlParams.tokenId),
                 state: JSON.parse(decodeURIComponent(urlParams.state)),
-                signature: JSON.parse(decodeURIComponent(urlParams.signature))
+                signature: JSON.parse(decodeURIComponent(urlParams.signature)),
             };
 
             if (params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
@@ -409,14 +409,14 @@ export class Token {
             await Crypto.verifyJson(
                 {
                     state: encodeURIComponent(JSON.stringify(params.state)),
-                    tokenId: params.tokenId
+                    tokenId: params.tokenId,
                 },
                 params.signature.signature,
                 Crypto.bufferKey(signingKey.publicKey)
             );
             return {
                 tokenId: params.tokenId,
-                innerState: params.state.innerState
+                innerState: params.state.innerState,
             };
         });
     }

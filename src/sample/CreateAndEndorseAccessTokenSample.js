@@ -10,7 +10,7 @@ export default async (grantor, granteeAlias) => {
     const token = await grantor.createAccessToken(
         granteeAlias,
         [{allAccounts: {}},   // user can call getAccounts
-         {allBalances: {}}]); // for each account, can getBalance
+            {allBalances: {}}]); // for each account, can getBalance
 
     // Grantor endorses the token, creating and submitting a digital signature
     const result = await grantor.endorseToken(token);

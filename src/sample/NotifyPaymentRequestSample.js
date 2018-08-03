@@ -22,14 +22,14 @@ export default async (Token, payee, payerAlias) => {
     const paymentRequest = {
         description: 'Sample payment request',
         from: {
-            alias: payerAlias
+            alias: payerAlias,
         },
         to: {
-            alias: payeeAlias
+            alias: payeeAlias,
         },
         transfer: {
             amount: '100',
-            currency: 'EUR'
+            currency: 'EUR',
         },
         // if refID not set, the eventually-created
         // transfer token will have random refId:

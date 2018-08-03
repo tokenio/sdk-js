@@ -26,7 +26,7 @@ class AuthHeader {
      * @param {AuthContext} context - auth context for access token redemption
      */
     async addAuthorizationHeader(memberId, request, context) {
-        let now = new Date().getTime();
+        const now = new Date().getTime();
 
         // Parses out the base uri
         let uriPath = request.url.replace(this._baseUrl, '');
@@ -46,7 +46,7 @@ class AuthHeader {
             method: request.method.toUpperCase(),
             uriHost: this._baseUrl.replace('http://', '').replace('https://', ''),
             uriPath,
-            createdAtMs: now.toString()
+            createdAtMs: now.toString(),
         };
 
         if (request.data !== undefined && request.data !== '') {
@@ -74,7 +74,7 @@ class AuthHeader {
             AuthHeader._customerInitiated(context);
 
         request.headers = {
-            Authorization: header
+            Authorization: header,
         };
     }
 

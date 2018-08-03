@@ -6,9 +6,9 @@ import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseTransferTokenWithAttachmentSample
-from '../../src/sample/CreateAndEndorseTransferTokenWithAttachmentSample';
+    from '../../src/sample/CreateAndEndorseTransferTokenWithAttachmentSample';
 import CreateTransferTokenAttachSample
-from '../../src/sample/CreateTransferTokenAttachSample';
+    from '../../src/sample/CreateTransferTokenAttachSample';
 import TestUtil from '../TestUtil';
 
 describe('CreateAndEndorseTransferTokenWithAttachmentSample test', () => {

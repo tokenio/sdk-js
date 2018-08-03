@@ -13,13 +13,13 @@ class PollNotificationsSample {
         return subscription;
     }
 
-   /**
+    /**
      * Get member's notifications, perhaps trying a few times
      *
      * @param {Object} member - whose notifications to get
      */
     static async get(member) {
-        var retries = 5;
+        let retries = 5;
         /**
          * poll for notifications
          */

@@ -14,10 +14,10 @@ describe('Util', () => {
 
     it('should get the bytes from a word', () => {
         const word = -864391073;
-        var byte1 = Util.getByte(word, 0);
-        var byte2 = Util.getByte(word, 1);
-        var byte3 = Util.getByte(word, 2);
-        var byte4 = Util.getByte(word, 3);
+        const byte1 = Util.getByte(word, 0);
+        const byte2 = Util.getByte(word, 1);
+        const byte3 = Util.getByte(word, 2);
+        const byte4 = Util.getByte(word, 3);
         assert.equal(byte1, 95);
         assert.equal(byte2, 112);
         assert.equal(byte3, 122);
@@ -27,7 +27,7 @@ describe('Util', () => {
     it('should hash the alias', () => {
         const alias = {
             type: 'EMAIL',
-            value: 'alias@token.io'
+            value: 'alias@token.io',
         };
         assert.equal(Util.hashAndSerializeAlias(alias),
             '5cmRKhdQaKFrkso7E4UHyY6AB5yUN2UE6JLfAJCQDZo2');

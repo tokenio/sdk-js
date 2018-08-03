@@ -16,11 +16,11 @@ export default async (payer, payeeAlias) => {
         getImageData('invoice.jpg'));
 
     const token = await payer.createTransferToken(100.00, 'EUR')
-          .setAccountId(accounts[0].id)
-          .setRedeemerAlias(payeeAlias)
-          // attach reference to token:
-          .addAttachment(attachment)
-          .execute();
+        .setAccountId(accounts[0].id)
+        .setRedeemerAlias(payeeAlias)
+    // attach reference to token:
+        .addAttachment(attachment)
+        .execute();
 
     const result = await payer.endorseToken(token);
 

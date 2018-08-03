@@ -70,7 +70,7 @@ class MemoryKeyStore {
         if (!keyId) {
             throw new Error('Don\'t know id of key to get');
         }
-        for (let level in globalStorage[memberId]) {
+        for (const level in globalStorage[memberId]) {
             if (Object.prototype.hasOwnProperty.call(globalStorage[memberId], level)) {
                 if (globalStorage[memberId][level].id === keyId) {
                     if (globalStorage[memberId][level].expiresAtMs < Date.now()) {

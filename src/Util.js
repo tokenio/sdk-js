@@ -25,7 +25,7 @@ class Util {
     static randomAlias() {
         return {
             type: 'EMAIL',
-            value: 'test-' + Util.generateNonce() + '+noverify@example.com'
+            value: 'test-' + Util.generateNonce() + '+noverify@example.com',
         };
     }
 
@@ -38,7 +38,7 @@ class Util {
         return {
             type: 'DOMAIN',
             value: 'token.io',
-            realm: 'token'
+            realm: 'token',
         };
     }
 
@@ -199,7 +199,7 @@ class Util {
             if (window.oldFetch) {
                 window.fetch = window.oldFetch;
             }
-            let iframe = document.getElementById('tokenApiIframe');
+            const iframe = document.getElementById('tokenApiIframe');
             if (iframe !== null) {
                 document.body.removeChild(iframe);
             }
@@ -214,7 +214,7 @@ class Util {
      * @return {Object} key - the signing key
      */
     static getSigningKey(keys, signature) {
-        for (let key of keys) {
+        for (const key of keys) {
             if (key.id === signature.keyId) {
                 return key;
             }
@@ -253,10 +253,10 @@ class Util {
     }
 
     static parseParamsFromUrl(url) {
-        let query = url.split('?')[1];
-        let result = {};
+        const query = url.split('?')[1];
+        const result = {};
         query.split('&').forEach(function(part) {
-            var item = part.split('=');
+            const item = part.split('=');
             result[item[0]] = decodeURIComponent(item[1]);
         });
         return result;

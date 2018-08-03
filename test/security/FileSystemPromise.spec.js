@@ -15,8 +15,8 @@ if (!BROWSER) {
     // Goes back four dirs to find project base. Does this in order to create the testing dir
     // in the right place. Assumes process argv[1] is mocha binary
     testDir = path.join(path.join(
-            path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
-            'test'), 'testDir');
+        path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
+        'test'), 'testDir');
 }
 
 describe('Filesystem', () => {

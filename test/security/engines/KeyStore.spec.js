@@ -10,7 +10,7 @@ import UnsecuredFileKeyStore from '../../../src/security/engines/UnsecuredFileKe
 import Crypto from '../../../src/security/Crypto';
 import Util from '../../../src/Util';
 
-var keyStores = [MemoryKeyStore, BrowserKeyStore];
+let keyStores = [MemoryKeyStore, BrowserKeyStore];
 let testDir;
 let fs;
 
@@ -100,11 +100,15 @@ describe('Key store', () => {
                 try {
                     await keyStore.getById(memberId, keyPairExpired.id);
                     return Promise.reject('Should throw');
-                } catch (error) {}
+                } catch (error) {
+                    // ignore
+                }
                 try {
                     await keyStore.getByLevel(memberId, 'STANDARD');
                     return Promise.reject('Should throw');
-                } catch (error) {}
+                } catch (error) {
+                    // ignore
+                }
 
                 const keyPairValid = await Crypto.generateKeys('LOW', 86400000);
                 await keyStore.put(memberId, keyPairValid);
@@ -215,11 +219,15 @@ describe('Key store', () => {
             try {
                 await keyStore.put(undefined, keyPairLow);
                 return Promise.reject('Should throw');
-            } catch (error) {}
+            } catch (error) {
+                // ignore
+            }
             try {
                 await keyStore.put(memberId, undefined);
                 return Promise.reject('Should throw');
-            } catch (error) {}
+            } catch (error) {
+                // ignore
+            }
         });
     });
 });

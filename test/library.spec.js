@@ -37,8 +37,8 @@ describe('Token library', () => {
             account: {
                 sepa: {
                     iban: Token.Util.generateNonce(),
-                }
-            }
+                },
+            },
         }]);
 
         await TestUtil.waitUntil(async () => {

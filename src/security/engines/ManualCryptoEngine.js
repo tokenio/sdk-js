@@ -28,7 +28,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
             throw new Error('invalid keys format');
         }
         keys = memberKeys;
-        for (let keyPair of keys) {
+        for (const keyPair of keys) {
             if (!keyPair.publicKey || !keyPair.privateKey || !keyPair.level) {
                 throw new Error('Invalid keyPair format');
             }
@@ -59,7 +59,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} key
      */
     async generateKey(level) {
-        for (let keyPair of keys) {
+        for (const keyPair of keys) {
             if (keyPair.level === level) {
                 const cloned = clone(keyPair);
                 if (cloned.privateKey) {

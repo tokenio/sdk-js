@@ -6,7 +6,7 @@ import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseTransferTokenSample
-  from '../../src/sample/CreateAndEndorseTransferTokenSample';
+    from '../../src/sample/CreateAndEndorseTransferTokenSample';
 import CancelTransferTokenSample from '../../src/sample/CancelTransferTokenSample';
 import TestUtil from '../TestUtil';
 

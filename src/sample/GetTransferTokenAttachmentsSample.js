@@ -11,10 +11,10 @@ export default async (payee, tokenId) => {
     // Payee gets the token to see details
     const transferToken = await payee.getToken(tokenId);
 
-    var allContents = [];
+    const allContents = [];
 
     const transferBody = transferToken.payload.transfer;
-    for (var ix = 0; ix < transferBody.attachments.length; ix++) {
+    for (let ix = 0; ix < transferBody.attachments.length; ix++) {
         // attachments have metadata but not the 'file' content
         const att = transferBody.attachments[ix];
         // download the content of the attachment[s] we want

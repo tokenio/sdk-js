@@ -22,8 +22,8 @@ export default async (payee, tokenId) => {
         account: {
             sepa: {
                 iban: '123',
-            }
-        }
+            },
+        },
     };
 
     // Payer redeems the token, getting a transfer

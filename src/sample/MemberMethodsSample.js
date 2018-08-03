@@ -40,7 +40,7 @@ class MemberMethodsSample {
         const alias1 = (await member.aliases())[0]; // or member.firstAlias();
         const alias2 = {
             type: 'EMAIL',
-            value: 'alias2-' + Token.Util.generateNonce() + '+noverify@token.io'
+            value: 'alias2-' + Token.Util.generateNonce() + '+noverify@token.io',
         };
         await member.addAlias(alias2);
 
@@ -51,11 +51,11 @@ class MemberMethodsSample {
 
         const alias3 = {
             type: 'EMAIL',
-            value: 'alias3-' + Token.Util.generateNonce() + '+noverify@token.io'
+            value: 'alias3-' + Token.Util.generateNonce() + '+noverify@token.io',
         };
         const alias4 = {
             type: 'EMAIL',
-            value: 'alias4-' + Token.Util.generateNonce() + '+noverify@token.io'
+            value: 'alias4-' + Token.Util.generateNonce() + '+noverify@token.io',
         };
         await member.addAliases([alias3, alias4]);
 
@@ -94,7 +94,7 @@ class MemberMethodsSample {
             street: 'Baker St',
             city: 'London',
             postCode: 'NW1 6XE',
-            country: 'UK'
+            country: 'UK',
         };
         const addressRecord1 = await member.addAddress('Home', address1);
         await member.deleteAddress(addressRecord1.id);

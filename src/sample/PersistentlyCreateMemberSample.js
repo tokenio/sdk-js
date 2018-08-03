@@ -20,7 +20,7 @@ export default async (developerKey) => {
     // the 2nd time it will fail because the name is taken.)
     const alias = {
         type: 'EMAIL',
-        value: 'alias-' + Token.Util.generateNonce() + '+noverify@example.com'
+        value: 'alias-' + Token.Util.generateNonce() + '+noverify@example.com',
     };
 
     // Create a member with keys stored in memory:

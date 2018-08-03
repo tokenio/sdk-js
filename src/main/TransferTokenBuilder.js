@@ -66,7 +66,7 @@ export default class TransferTokenBuilder {
                     memberId: this._member.memberId(),
                     accountId,
                 },
-            }
+            },
         };
         return this;
     }
@@ -84,8 +84,8 @@ export default class TransferTokenBuilder {
                 custom: {
                     bankId: bankId,
                     payload: authorization,
-                }
-            }
+                },
+            },
         };
         return this;
     }
@@ -102,7 +102,7 @@ export default class TransferTokenBuilder {
                 tokenAuthorization: {
                     authorization,
                 },
-            }
+            },
         };
         return this;
     }
@@ -252,7 +252,7 @@ export default class TransferTokenBuilder {
             ownerId,
             type,
             name,
-            data
+            data,
         });
         return this;
     }
@@ -364,7 +364,7 @@ export default class TransferTokenBuilder {
             }
             const res = await this._client.createTransferToken(this._payload, this._tokenRequestId);
             if (res.data.status === 'FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED') {
-                let error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
+                const error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }

@@ -37,7 +37,7 @@ class ErrorHandler {
                 const name = tokenError ? tokenError : 'UNKNOWN';
                 const mappedError = {
                     name,
-                    message: error.response.data
+                    message: error.response.data,
                 };
                 this._globalRpcErrorCallback(mappedError);
                 return mappedError;

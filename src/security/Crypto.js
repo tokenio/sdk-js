@@ -60,7 +60,7 @@ class Crypto {
             signJson: async (json) => {
                 return await Crypto.signJson(json, keyPair);
             },
-            getKeyId: () => keyPair.id
+            getKeyId: () => keyPair.id,
         };
     }
 
@@ -100,7 +100,7 @@ class Crypto {
             },
             verifyJson: async (json, signature) => {
                 return await Crypto.verifyJson(json, signature, keyPair.publicKey);
-            }
+            },
         };
     }
 

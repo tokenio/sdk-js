@@ -19,7 +19,7 @@ export default class AccessTokenBuilder {
             version: config.accessTokenVersion,
             refId: Util.generateNonce(),
             access: {
-                resources
+                resources,
             },
         };
     }
@@ -58,7 +58,7 @@ export default class AccessTokenBuilder {
     forAddress(addressId) {
         this._payload.access.resources.push({
             address: {
-                addressId
+                addressId,
             },
         });
         return this;
@@ -85,7 +85,7 @@ export default class AccessTokenBuilder {
     forAllAccountsAtBank(bankId) {
         this._payload.access.resources.push({
             allAccountsAtBank: {
-                bankId
+                bankId,
             },
         });
         return this;
@@ -100,7 +100,7 @@ export default class AccessTokenBuilder {
     forAccount(accountId) {
         this._payload.access.resources.push({
             account: {
-                accountId
+                accountId,
             },
         });
         return this;
@@ -127,7 +127,7 @@ export default class AccessTokenBuilder {
     forAllTransactionsAtbank(bankId) {
         this._payload.access.resources.push({
             allTransactionsAtBank: {
-                bankId
+                bankId,
             },
         });
         return this;
@@ -142,7 +142,7 @@ export default class AccessTokenBuilder {
     forAccountTransactions(accountId) {
         this._payload.access.resources.push({
             transactions: {
-                accountId
+                accountId,
             },
         });
         return this;
@@ -169,7 +169,7 @@ export default class AccessTokenBuilder {
     forAllBalancesAtBank(bankId) {
         this._payload.access.resources.push({
             allBalancesAtBank: {
-                bankId
+                bankId,
             },
         });
         return this;
@@ -184,7 +184,7 @@ export default class AccessTokenBuilder {
     forAccountBalances(accountId) {
         this._payload.access.resources.push({
             balance: {
-                accountId
+                accountId,
             },
         });
         return this;
@@ -335,7 +335,7 @@ export default class AccessTokenBuilder {
             const res = await this._client.createAccessToken(this._payload, this._tokenRequestId);
 
             if (res.data.status === 'FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED') {
-                let error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
+                const error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }

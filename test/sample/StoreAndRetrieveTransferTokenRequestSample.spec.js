@@ -5,7 +5,7 @@ const assert = chai.assert;
 import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import StoreAndRetrieveTransferTokenRequestSample
-  from '../../src/sample/StoreAndRetrieveTransferTokenRequestSample';
+    from '../../src/sample/StoreAndRetrieveTransferTokenRequestSample';
 
 describe('StoreAndRetrieveTransferTokenRequestSample test', () => {
     it('Should run the sample', async () => {

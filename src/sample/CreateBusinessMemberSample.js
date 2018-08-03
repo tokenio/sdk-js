@@ -20,7 +20,7 @@ export default async () => {
     // without verifying it; but in production, we can't.
     const domain = {
         type: 'EMAIL',
-        value: 'domain-' + Token.Util.generateNonce() + '+nv@rst.com'
+        value: 'domain-' + Token.Util.generateNonce() + '+nv@rst.com',
     };
 
     // Create a member with keys stored in memory:

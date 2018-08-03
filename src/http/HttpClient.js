@@ -26,7 +26,7 @@ class HttpClient {
                 JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: config.urls[env]
+            baseURL: config.urls[env],
         });
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
@@ -57,12 +57,12 @@ class HttpClient {
             memberType = 'PERSONAL';
         }
         const req = {
-            memberType
+            memberType,
         };
         const request = {
             method: 'post',
             url: '/members',
-            data: req
+            data: req,
         };
         return this._instance(request);
     }
@@ -76,7 +76,7 @@ class HttpClient {
     resolveAlias(alias) {
         const request = {
             method: 'get',
-            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${alias.realm || ''}`
+            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${alias.realm || ''}`,
         };
         return this._instance(request);
     }
@@ -90,7 +90,7 @@ class HttpClient {
     getMember(memberId) {
         const request = {
             method: 'get',
-            url: `/members/${memberId}`
+            url: `/members/${memberId}`,
         };
         return this._instance(request);
     }
@@ -105,12 +105,12 @@ class HttpClient {
     notify(alias, body) {
         const req = {
             alias,
-            body
+            body,
         };
         const request = {
             method: 'post',
-            url: `/notify`,
-            data: req
+            url: '/notify',
+            data: req,
         };
         return this._instance(request);
     }
@@ -135,24 +135,24 @@ class HttpClient {
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
                             algorithm: key.algorithm,
-                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
-                        }
-                    }
-                }
-            ]
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                        },
+                    },
+                },
+            ],
         };
         const req = {
             update,
             updateSignature: {
                 memberId: memberId,
                 keyId: signer.getKeyId(),
-                signature: await signer.signJson(update)
-            }
+                signature: await signer.signJson(update),
+            },
         };
         const request = {
             method: 'post',
             url: `/members/${memberId}/updates`,
-            data: req
+            data: req,
         };
         return this._instance(request);
     }
@@ -176,9 +176,9 @@ class HttpClient {
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
                         algorithm: key.algorithm,
-                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
-                    }
-                }
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                    },
+                },
             })),
         };
         const req = {
@@ -186,13 +186,13 @@ class HttpClient {
             updateSignature: {
                 memberId: memberId,
                 keyId: signer.getKeyId(),
-                signature: await signer.signJson(update)
-            }
+                signature: await signer.signJson(update),
+            },
         };
         const request = {
             method: 'post',
             url: `/members/${memberId}/updates`,
-            data: req
+            data: req,
         };
         return this._instance(request);
     }
@@ -205,12 +205,12 @@ class HttpClient {
      */
     notifyPaymentRequest(tokenPayload) {
         const req = {
-            tokenPayload
+            tokenPayload,
         };
         const request = {
             method: 'post',
-            url: `/request-transfer`,
-            data: req
+            url: '/request-transfer',
+            data: req,
         };
         return this._instance(request);
     }
@@ -235,7 +235,7 @@ class HttpClient {
             provider: options.provider || '',
         });
         const {ids, search, country, page, perPage, provider} = formattedOptions;
-        let url = `/banks?`;
+        let url = '/banks?';
         for (const id of ids) {
             url += `ids=${encodeURIComponent(id)}&`;
         }
@@ -286,7 +286,7 @@ class HttpClient {
     async getTokenId(tokenRequestId) {
         const request = {
             method: 'get',
-            url: `/token-requests/${tokenRequestId}/token_id`
+            url: `/token-requests/${tokenRequestId}/token_id`,
         };
         return this._instance(request);
     }

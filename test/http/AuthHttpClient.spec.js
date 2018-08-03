@@ -58,16 +58,16 @@ describe('AuthHttpClient', () => {
             [pk1, pk2, pk3],
             engine);
         await client.addAlias(
-                res2.data.member.lastHash,
-                Util.randomAlias());
+            res2.data.member.lastHash,
+            Util.randomAlias());
         let res3;
         await TestUtil.waitUntil(async () => {
             res3 = await unauthenticatedClient.getMember(res2.data.member.id);
             assert.equal(res3.data.member.aliasHashes.length, 1);
         });
         await client.addAlias(
-                res3.data.member.lastHash,
-                Util.randomAlias());
+            res3.data.member.lastHash,
+            Util.randomAlias());
         await TestUtil.waitUntil(async () => {
             const res4 = await unauthenticatedClient.getMember(res2.data.member.id);
             assert.equal(res4.data.member.aliasHashes.length, 2);
