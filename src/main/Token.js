@@ -26,17 +26,20 @@ class Token {
      * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
      * @param {bool} loggingEnabled - enable HTTP error logging if true
      * call error. For example: SDK version mismatch
+     * @param {string} customSdkUrl - set to override the default sdk url
      */
-    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback, loggingEnabled) {
+    constructor(env = 'prd', developerKey, keyDir, globalRpcErrorCallback, loggingEnabled, customSdkUrl) {
         this._env = env;
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._developerKey = developerKey;
         this._loggingEnabled = loggingEnabled;
+        this._customSdkUrl = customSdkUrl;
         this._unauthenticatedClient = new HttpClient(
             env,
             developerKey,
             this._globalRpcErrorCallback,
-            loggingEnabled);
+            loggingEnabled,
+            customSdkUrl);
 
         /* Available security levels for keys */
         this.KeyLevel = config.KeyLevel;
@@ -138,7 +141,8 @@ class Token {
                 engine,
                 this._developerKey,
                 this._globalRpcErrorCallback,
-                this._loggingEnabled);
+                this._loggingEnabled,
+                this._customSdkUrl);
             if (alias && Object.keys(alias).length !== 0) {
                 await member.addAlias(alias, realm);
             }
@@ -233,7 +237,8 @@ class Token {
                 engine,
                 this._developerKey,
                 this._globalRpcErrorCallback,
-                this._loggingEnabled);
+                this._loggingEnabled,
+                this._customSdkUrl);
         });
     }
 
@@ -429,7 +434,7 @@ class Token {
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
 
-            return config.webAppUrls[this._env] +
+            return (this._customSdkUrl || config.webAppUrls[this._env]) +
                 `/request-token/${requestId}?state=${serializedState}`;
         });
     }
