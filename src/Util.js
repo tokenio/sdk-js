@@ -37,17 +37,9 @@ class Util {
     static tokenAlias() {
         return {
             type: 'DOMAIN',
-            value: 'token.io'
+            value: 'token.io',
+            realm: 'token'
         };
-    }
-
-    /**
-     * Returns the token realm.
-     *
-     * @return {string} token realm
-     */
-    static tokenRealm() {
-        return 'token';
     }
 
     /**

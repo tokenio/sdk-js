@@ -21,6 +21,8 @@ module.exports = {
         'flowtype',
     ],
     rules: {
+        'no-var': ['error'],
+        'prefer-const': ['error'],
         'max-len': ['warn', 150],
         'indent': ['error', 4],
         'quotes': ['error', 'single'],
@@ -29,6 +31,7 @@ module.exports = {
         'eol-last': ['error', 'always'],
         'semi': ['error', 'always'],
         'no-trailing-spaces': ['error'],
+        'no-unused-vars': ['warn'],
         'max-nested-callbacks': 'off',
     },
 };
