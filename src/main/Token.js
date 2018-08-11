@@ -478,15 +478,18 @@ class Token {
     }
 
     /**
-     * Get a token ID based on its token request ID.
+     * Get the token request result based on its token request ID.
      *
      * @param {string} tokenRequestId - token request id
-     * @return {Promise} tokenId - token id
+     * @return {Promise} tokenId - token id and signature
      */
-    getTokenId(tokenRequestId) {
-        return Util.callAsync(this.getTokenId, async () => {
-            const res = await this._unauthenticatedClient.getTokenId(tokenRequestId);
-            return res.data.tokenId;
+    getTokenRequestResult(tokenRequestId) {
+        return Util.callAsync(this.getTokenRequestResult, async () => {
+            const res = await this._unauthenticatedClient.getTokenRequestResult(tokenRequestId);
+            return {
+                tokenId: res.data.tokenId,
+                signature: res.data.signature
+            };
         });
     }
 }

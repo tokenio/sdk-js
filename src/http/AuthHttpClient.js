@@ -1294,16 +1294,18 @@ class AuthHttpClient {
     /**
      * Sign with a Token signature a token request state payload.
      *
+     * @param {string} tokenRequestId - token request id
      * @param {string} tokenId - token id
      * @param {string} state - url state
      * @return {Object} response - response to the api call
      */
-    async signTokenRequestState(tokenId, state) {
+    async signTokenRequestState(tokenRequestId, tokenId, state) {
         const req = {
             payload: {
                 tokenId,
                 state,
             },
+            tokenRequestId
         };
 
         const request = {
