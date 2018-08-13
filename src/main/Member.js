@@ -1025,13 +1025,14 @@ export default class Member {
     /**
      * Sign with a Token signature a token request state payload.
      *
+     * @param {string} tokenRequestId - token request id
      * @param {string} tokenId - token id
      * @param {string} state - url state
      * @return {Object} response - response to the api call
      */
-    signTokenRequestState(tokenId, state) {
+    signTokenRequestState(tokenRequestId, tokenId, state) {
         return Util.callAsync(this.signTokenRequestState, async () => {
-            const res = await this._client.signTokenRequestState(tokenId, state);
+            const res = await this._client.signTokenRequestState(tokenRequestId, tokenId, state);
             return res.data.signature;
         });
     }
