@@ -16,7 +16,7 @@ import {
     Alias,
     Paging,
     TokenMember,
-    TokenPayload,
+    TokenPayload, Signature, DeviceMetadata,
 } from '../proto/classes';
 
 /**
@@ -28,6 +28,7 @@ export class TokenIO {
     _globalRpcErrorCallback: ?({name: string, message: string}) => void;
     _developerKey: ?string;
     _loggingEnabled: ?boolean;
+    _customSdkUrl: ?string;
     _unauthenticatedClient: HttpClient;
     KeyLevel: {
         PRIVILEGED?: string,
@@ -53,6 +54,7 @@ export class TokenIO {
         keyDir?: string, // absolute path of the key storage directory (if using UnsecuredFileCryptoEngine)
         globalRpcErrorCallback?: ({name: string, message: string}) => void, // callback to invoke on any cross-cutting RPC
         loggingEnabled?: boolean, // enable HTTP error logging if true
+        customSdkUrl?: string, // override the default SDK URL
     }): void {
         const {
             env,
@@ -60,11 +62,13 @@ export class TokenIO {
             keyDir,
             globalRpcErrorCallback,
             loggingEnabled,
+            customSdkUrl,
         } = options;
         this._env = env || 'prd';
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._developerKey = developerKey;
         this._loggingEnabled = loggingEnabled;
+        this._customSdkUrl = customSdkUrl;
         this._unauthenticatedClient = new HttpClient(options);
 
         /* Available security levels for keys */
@@ -169,6 +173,7 @@ export class TokenIO {
                 developerKey: this._developerKey,
                 globalRpcErrorCallback: this._globalRpcErrorCallback,
                 loggingEnabled: this._loggingEnabled,
+                customSdkUrl: this._customSdkUrl,
             });
             alias && await member.addAlias(alias);
             return member;
@@ -273,6 +278,7 @@ export class TokenIO {
                 developerKey: this._developerKey,
                 globalRpcErrorCallback: this._globalRpcErrorCallback,
                 loggingEnabled: this._loggingEnabled,
+                customSdkUrl: this._customSdkUrl,
             });
         });
     }
@@ -395,6 +401,58 @@ export class TokenIO {
     }
 
     /**
+     * Notifies subscribed devices that a token payload should be endorsed and keys should be
+     * added.
+     *
+     * @param {Object} tokenPayload - the endorseAndAddKey payload to be sent
+     * @param {Array} keys - token keys to be added
+     * @param {Object} deviceMetadata - device metadata of the keys
+     * @param {string} tokenRequestId - (optional) token request Id
+     * @param {string} bankId - (optional) bank Id
+     * @param {string} state - (optional) token request state for signing
+     * @return {Promise} result - notification Id and notify status
+     */
+    notifyEndorseAndAddKey(
+        tokenPayload: TokenPayload,
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
+        tokenRequestId: string,
+        bankId: string,
+        state: string
+    ): Promise<{notificationId: ?string, status: ?string}> {
+        const endorseAndAddKey = {
+            payload: tokenPayload,
+            addKey: {
+                keys: keys,
+                deviceMetadata: deviceMetadata,
+            },
+            tokenRequestId: tokenRequestId,
+            bankId: bankId,
+            state: state,
+        };
+        return Util.callAsync(this.notifyEndorseAndAddKey, async () => {
+            const res = await this._unauthenticatedClient.notifyEndorseAndAddKey(endorseAndAddKey);
+            return {
+                notificationId: res.data.notificationId,
+                status: res.data.status,
+            };
+        });
+    }
+
+    /**
+     * Invalidate a notification.
+     *
+     * @param {Object} notificationId - the notification id to invalidate
+     * @return {Promise} NotifyStatus - status
+     */
+    invalidateNotification(notificationId: string): Promise<?string> {
+        return Util.callAsync(this.invalidateNotification, async () => {
+            const res = await this._unauthenticatedClient.invalidateNotification(notificationId);
+            return res.data.status;
+        });
+    }
+
+    /**
      * Gets a list of available banks for linking
      *
      * @param {Object} options - optional parameters for getBanks
@@ -451,8 +509,8 @@ export class TokenIO {
                 innerState: state,
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
-            return config.webAppUrls[this._env] +
-                `/request-token/${requestId}?state=${serializedState}`;
+
+            return `${this._customSdkUrl || config.webAppUrls[this._env]}/request-token/${requestId}?state=${serializedState}`;
         });
     }
 
@@ -498,15 +556,18 @@ export class TokenIO {
     }
 
     /**
-     * Get a token ID based on its token request ID.
+     * Get the token request result based on its token request ID.
      *
      * @param {string} tokenRequestId - token request id
-     * @return {Promise} tokenId - token id
+     * @return {Promise} tokenId - token id and signature
      */
-    getTokenId(tokenRequestId: string): Promise<?string> {
-        return Util.callAsync(this.getTokenId, async () => {
-            const res = await this._unauthenticatedClient.getTokenId(tokenRequestId);
-            return res.data.tokenId;
+    getTokenRequestResult(tokenRequestId: string): Promise<{tokenId: ?string, signature: ?Signature}> {
+        return Util.callAsync(this.getTokenRequestResult, async () => {
+            const res = await this._unauthenticatedClient.getTokenRequestResult(tokenRequestId);
+            return {
+                tokenId: res.data.tokenId,
+                signature: Signature.create(res.data.signature),
+            };
         });
     }
 }

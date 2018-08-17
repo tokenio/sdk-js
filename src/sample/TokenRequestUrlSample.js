@@ -36,18 +36,23 @@ class TokenRequestUrlSample {
     /**
      * Generates a callback URL from a token request URL.
      *
+     * @param {string} tokenRequestId - token request id
      * @param {object} grantor - grantor of the token
      * @param {object} grantee - grantee of the token
      * @param {string} tokenRequestUrl - token request URL
      * @return {Promise} promise - promise of callback URL
      */
-    static async getCallbackUrlFromTokenRequestUrl(grantor, grantee, tokenRequestUrl) {
+    static async getCallbackUrlFromTokenRequestUrl(
+        tokenRequestId,
+        grantor,
+        grantee,
+        tokenRequestUrl) {
         const urlParams = Util.parseParamsFromUrl(tokenRequestUrl);
         const state = encodeURIComponent(urlParams.state);
 
         const token = await this.generateValidAccessToken(grantor, grantee);
 
-        const signature = await grantor.signTokenRequestState(token.id, state);
+        const signature = await grantor.signTokenRequestState(tokenRequestId, token.id, state);
         const callbackUrl = `http://localhost/path?tokenId=${token.id}` +
             `&state=${state}&signature=${encodeURIComponent(JSON.stringify(signature))}`;
 

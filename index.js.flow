@@ -40,9 +40,20 @@ declare export class TokenIO {
 
     getMember(CryptoEngine: any, memberId?: string): Member;
 
-    getTokenId(tokenRequestId: string): Promise<?string>;
+    getTokenRequestResult(tokenRequestId: string): Promise<{tokenId: ?string, signature: ?Signature}>;
+
+    invalidateNotification(notificationId: string): Promise<?string>;
 
     notifyAddKey(alias: Alias, keyName: string, key: Key, level: string, expiresMs: string): Promise<?string>;
+
+    notifyEndorseAndAddKey(
+        tokenPayload: TokenPayload,
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
+        tokenRequestId: string,
+        bankId: string,
+        state: string
+    ): Promise<{notificationId: ?string, status: ?string}>;
 
     notifyLinkAccounts(alias: Alias, bankAuthorization: any): Promise<?string>;
 
@@ -204,7 +215,7 @@ declare class Member {
 
     setReceiptContact(type?: "EMAIL", value: string): Promise<void>;
 
-    signTokenRequestState(tokenId: string, state: string): Promise<?Signature>;
+    signTokenRequestState(tokenRequestId: string, tokenId: string, state: string): Promise<?Signature>;
 
     storeTokenRequest(tokenRequest: any): Promise<?any>;
 
@@ -387,7 +398,7 @@ declare export class Resource {
         allBalancesAtBank?: {bankId: string},
     }): Resource;
 }
-declare class Notification{
+declare class Notification {
     id: string;
     subscriberId: string;
     content: any;
@@ -398,6 +409,20 @@ declare class Notification{
         content: any,
         status: string,
     }): Notification;
+}
+declare class DeviceMetadata {
+    application: string;
+    applicationVersion: string;
+    device: string;
+    longitude: number;
+    latitude: number;
+    static create({
+        application: string;
+        applicationVersion: string;
+        device: string;
+        longitude: number;
+        latitude: number;
+    }): DeviceMetadata;
 }
 declare class Bank {
     id: string;

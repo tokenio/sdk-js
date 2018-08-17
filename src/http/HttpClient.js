@@ -22,13 +22,14 @@ class HttpClient {
             developerKey,
             globalRpcErrorCallback,
             loggingEnabled,
+            customSdkUrl,
         } = options;
-        if (!config.urls[env]) {
+        if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: config.urls[env],
+            baseURL: customSdkUrl || config.urls[env],
         });
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
@@ -218,6 +219,43 @@ class HttpClient {
     }
 
     /**
+     * Notifies subscribed devices that a token payload should be endorsed and keys should be
+     * added.
+     *
+     * @param {Object} endorseAndAddKey - the endorseAndAddKey payload to be sent
+     * @return {Object} response - response to the API call
+     */
+    notifyEndorseAndAddKey(endorseAndAddKey) {
+        const req = {
+            endorseAndAddKey,
+        };
+        const request = {
+            method: 'post',
+            url: '/notify/endorse-and-add-key',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Invalidate a notification.
+     *
+     * @param {Object} notificationId - the notification id to invalidate
+     * @return {Object} response - response to the API call
+     */
+    invalidateNotification(notificationId) {
+        const req = {
+            notificationId,
+        };
+        const request = {
+            method: 'post',
+            url: '/notify/invalidate-notification',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets banks.
      *
      * @param {Object} options - optional parameters for getBanks
@@ -280,15 +318,15 @@ class HttpClient {
     }
 
     /**
-     * Get a token ID based on its token request ID.
+     * Get the token request result based on its token request ID.
      *
      * @param {string} tokenRequestId - token request id
      * @return {Object} response - response to the API call
      */
-    async getTokenId(tokenRequestId) {
+    async getTokenRequestResult(tokenRequestId) {
         const request = {
             method: 'get',
-            url: `/token-requests/${tokenRequestId}/token_id`,
+            url: `/token-requests/${tokenRequestId}/token_request_result`,
         };
         return this._instance(request);
     }

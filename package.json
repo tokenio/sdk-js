@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"lint": "eslint src test",
-		"test": "eslint test && rimraf keys && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\"",
+		"test": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
 		"testBrowser": "eslint test && karma start test/karma.config.js",
 		"bambooDev": "npm run lint && cross-env node_modules/mocha-webpack/bin/mocha-webpack --webpack-config test/webpack.config.js -t 60000 -c -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
 		"build:cjs": "rollup -c",

@@ -15,6 +15,7 @@ export const Token = common.token.Token;
 export const TokenOperationResult = common.token.TokenOperationResult;
 export const Resource = common.token.AccessBody.Resource;
 export const Notification = common.notification.Notification;
+export const DeviceMetadata = common.notification.DeviceMetadata;
 export const Bank = common.bank.Bank;
 export const BankInfo = common.bank.BankInfo;
 export const Paging = common.bank.Paging;

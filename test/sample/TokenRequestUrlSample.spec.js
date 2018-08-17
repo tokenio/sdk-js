@@ -23,7 +23,7 @@ describe('TokenRequestUrl test', () => {
         const requestUrl = TokenRequestUrlSample
             .generateTokenRequestUrl(requestId, originalState, csrfToken);
         const callbackUrl = await TokenRequestUrlSample
-            .getCallbackUrlFromTokenRequestUrl(grantor, grantee, requestUrl);
+            .getCallbackUrlFromTokenRequestUrl(requestId, grantor, grantee, requestUrl);
         const callback = await TokenRequestUrlSample
             .parseTokenRequestCallbackUrl(callbackUrl, csrfToken);
         assert.equal(originalState, callback.innerState);
@@ -33,6 +33,7 @@ describe('TokenRequestUrl test', () => {
     it('Should request a signature', async () => {
         if (BROWSER) return;
         const state = Util.generateNonce();
+        const tokenRequestId = Util.generateNonce();
 
         const grantor = await CreateMemberSample();
         const grantee = await CreateMemberSample();
@@ -42,7 +43,7 @@ describe('TokenRequestUrl test', () => {
         });
         const token = await TokenRequestUrlSample.generateValidAccessToken(grantor, grantee);
 
-        const signature = await grantor.signTokenRequestState(token.id, state);
+        const signature = await grantor.signTokenRequestState(tokenRequestId, token.id, state);
 
         const tokenMember = await TokenRequestUrlSample.getTokenMember();
         const signingKey = Util.getSigningKey(tokenMember.keys, signature);

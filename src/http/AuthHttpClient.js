@@ -31,13 +31,14 @@ class AuthHttpClient {
             developerKey,
             globalRpcErrorCallback,
             loggingEnabled,
+            customSdkUrl,
         } = options;
-        if (!config.urls[env]) {
+        if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: config.urls[env],
+            baseURL: customSdkUrl || config.urls[env],
         });
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
@@ -46,7 +47,7 @@ class AuthHttpClient {
         this._cryptoEngine = cryptoEngine;
 
         this._context = new AuthContext();
-        this._authHeader = new AuthHeader(config.urls[env], this);
+        this._authHeader = new AuthHeader(customSdkUrl || config.urls[env], this);
 
         this._developerKey = developerKey;
 
@@ -1292,16 +1293,18 @@ class AuthHttpClient {
     /**
      * Sign with a Token signature a token request state payload.
      *
+     * @param {string} tokenRequestId - token request id
      * @param {string} tokenId - token id
      * @param {string} state - url state
      * @return {Object} response - response to the api call
      */
-    async signTokenRequestState(tokenId, state) {
+    async signTokenRequestState(tokenRequestId, tokenId, state) {
         const req = {
             payload: {
                 tokenId,
                 state,
             },
+            tokenRequestId,
         };
 
         const request = {
