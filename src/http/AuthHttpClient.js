@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import Crypto from '../security/Crypto';
 import Util from '../Util';
 import AuthHeader from './AuthHeader';
@@ -8,12 +6,11 @@ import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
-
-const base64js = require('base64-js');
-const stringify = require('json-stable-stringify');
-const axios = require('axios');
-
 import BlockingAdapter from './BlockingAdapter';
+
+const axios = require('axios');
+const base64js = require('base64-js');
+const stringify = require('fast-json-stable-stringify');
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -24,15 +21,17 @@ class AuthHttpClient {
      * the CryptoEngine, for Low, Standard, and Privileged keys, which will be used to sign
      * appropriate requests.
      *
-     * @param {string} env - desired env, such as 'prd'
-     * @param {string} memberId - member making the requests
-     * @param {Object} cryptoEngine - engines to use for signing
-     * @param {string} developerKey - the developer key
-     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
-     * @param {bool} loggingEnabled - enable HTTP error logging if true
-     * call error. For example: SDK version mismatch
+     * @param {Object} options
      */
-    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled) {
+    constructor(options) {
+        const {
+            env,
+            memberId,
+            cryptoEngine,
+            developerKey,
+            globalRpcErrorCallback,
+            loggingEnabled,
+        } = options;
         if (!config.urls[env]) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -139,7 +138,7 @@ class AuthHttpClient {
     }
 
     /**
-     * Subcribes to push notifications.
+     * Subscribes to push notifications.
      *
      * @param {string} handler - who is handling the notifications
      * @param {string} handlerInstructions - how to send the notification
@@ -232,12 +231,14 @@ class AuthHttpClient {
     /**
      * Trigger a token step up notification.
      *
-     * @param {Object} stepUp - token step up notification payload
+     * @param {string} tokenId - token ID
      * @return {Object} response - response to the Api call
      */
-    async triggerStepUpNotification(stepUp) {
+    async triggerStepUpNotification(tokenId) {
         const req = {
-            tokenStepUp: stepUp,
+            tokenStepUp: {
+                tokenId: tokenId,
+            },
         };
         const request = {
             method: 'post',
@@ -474,6 +475,7 @@ class AuthHttpClient {
     /**
      * Links accounts to the member.
      *
+     * @deprecated - use linkAccountsOauth
      * @param {Object} bankAuthorization - encrypted authorization to accounts
      * @return {Object} response - response to the API call
      */
@@ -704,7 +706,7 @@ class AuthHttpClient {
     async getTokenBlob(tokenId, blobId) {
         const request = {
             method: 'get',
-            url: `tokens/${tokenId}/blobs/${blobId}`,
+            url: `/tokens/${tokenId}/blobs/${blobId}`,
         };
         return this._instance(request);
     }
@@ -1077,7 +1079,7 @@ class AuthHttpClient {
                             publicKey: Crypto.strKey(key.publicKey),
                             level: key.level,
                             algorithm: key.algorithm,
-                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs.toString()},
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
                         },
                     },
                 },
@@ -1103,7 +1105,7 @@ class AuthHttpClient {
                         publicKey: Crypto.strKey(key.publicKey),
                         level: key.level,
                         algorithm: key.algorithm,
-                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs.toString()},
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
                     },
                 },
             })),
@@ -1177,7 +1179,7 @@ class AuthHttpClient {
 
     /**
      * Get default recovery agent.
-     * @return {Object} GetDefaultAgentResponse proto buffer
+     * @return {Object} GetDefaultAgentResponse gen buffer
      */
     async getDefaultRecoveryAgent() {
         const request = {
@@ -1190,8 +1192,8 @@ class AuthHttpClient {
     /**
      * Set member's recovery rule.
      * @param {string} prevHash - hash of the previous directory entry.
-     * @param {Object} rule - RecoveryRule proto buffer specifying behavior.
-     * @return {Object} UpdateMemberResponse proto buffer
+     * @param {Object} rule - RecoveryRule gen buffer specifying behavior.
+     * @return {Object} UpdateMemberResponse gen buffer
      */
     async addRecoveryRule(prevHash, rule) {
         const update = {
@@ -1216,7 +1218,7 @@ class AuthHttpClient {
             operations: aliases.map((alias) => ({
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
-                    realm: alias.realm || '',
+                    realm: alias.realm || 'token',
                 },
             })),
         };

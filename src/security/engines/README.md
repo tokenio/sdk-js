@@ -188,7 +188,7 @@ but if you want to make your own, implement the functions:
      * @return {string} signature - crypto signature of the JSONified structure
      */
     async signJson(json) {
-        // stringify = require('json-stable-stringify')
+        // stringify = require('fast-json-stable-stringify')
         return await Token.Crypto.sign(stringify(message), this._keypair);
     }
 

@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc*/
 
 // Empty fake for simple example.
-function getImageData(filename) {
+function getImageData() {
     return new Uint8Array(42);
 }
 
@@ -19,7 +19,6 @@ export default async (payer, payeeAlias) => {
             'invoice.jpg',
             getImageData('invoice.jpg'))
         .execute();
-
     // Payer endorses the token, creating a digital signature on it
     const result = await payer.endorseToken(token);
 

@@ -1,11 +1,8 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import StoreAndRetrieveAccessTokenRequestSample
     from '../../src/sample/StoreAndRetrieveAccessTokenRequestSample';
+
+const {assert} = require('chai');
 
 describe('StoreAndRetrieveAccessTokenRequestSample test', () => {
     it('Should run the sample', async () => {

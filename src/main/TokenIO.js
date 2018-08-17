@@ -1,40 +1,71 @@
-/* @flow */
+// @flow
+import Util from '../Util';
+import Member from './Member';
+import config from '../config.json';
 import Crypto from '../security/Crypto';
-import BrowserCryptoEngine from '../security/engines/BrowserCryptoEngine';
+import TokenRequest from './TokenRequest';
+import HttpClient from '../http/HttpClient';
 import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
 import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
+import BrowserCryptoEngine from '../security/engines/BrowserCryptoEngine';
+import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
-import Util from '../Util';
-import Member from '../main/Member';
-import config from '../config.json';
-import HttpClient from '../http/HttpClient';
-import TokenRequest from './TokenRequest';
+import {
+    Key,
+    Bank,
+    Alias,
+    Paging,
+    TokenMember,
+    TokenPayload,
+} from '../proto/classes';
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,
  * sending notifications, etc, as well as access to other SDK classes.
  */
-export class Token {
+export class TokenIO {
+    _env: string;
+    _globalRpcErrorCallback: ?({name: string, message: string}) => void;
+    _developerKey: ?string;
+    _loggingEnabled: ?boolean;
+    _unauthenticatedClient: HttpClient;
+    KeyLevel: {
+        PRIVILEGED?: string,
+        STANDARD?: string,
+        LOW?: string,
+    };
+    Crypto: Crypto;
+    Util: Util;
+    BrowserCryptoEngine: BrowserCryptoEngine;
+    MemoryCryptoEngine: MemoryCryptoEngine;
+    ManualCryptoEngine: ManualCryptoEngine;
+    UnsecuredFileCryptoEngine: UnsecuredFileCryptoEngine;
+    TokenRequest: TokenRequest;
+
     /**
      * Construct the Token SDK object, pointing to the given environment.
      *
-     * @param {string} env - which environment (gateway) to use, (e.g. prd)
-     * @param {string} developerKey - the developer key
-     * @param {string} keyDir - absolute directory name of key storage directory
-     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
-     * @param {bool} loggingEnabled - enable HTTP error logging if true
-     * call error. For example: SDK version mismatch
+     * @param {Object} options - see below
      */
-    constructor(env, developerKey, keyDir, globalRpcErrorCallback, loggingEnabled) {
-        this._env = env;
+    constructor(options: {
+        env?: string, // Token environment to target, defaults to production
+        developerKey?: string, // dev key
+        keyDir?: string, // absolute path of the key storage directory (if using UnsecuredFileCryptoEngine)
+        globalRpcErrorCallback?: ({name: string, message: string}) => void, // callback to invoke on any cross-cutting RPC
+        loggingEnabled?: boolean, // enable HTTP error logging if true
+    }): void {
+        const {
+            env,
+            developerKey,
+            keyDir,
+            globalRpcErrorCallback,
+            loggingEnabled,
+        } = options;
+        this._env = env || 'prd';
         this._globalRpcErrorCallback = globalRpcErrorCallback;
         this._developerKey = developerKey;
         this._loggingEnabled = loggingEnabled;
-        this._unauthenticatedClient = new HttpClient(
-            env,
-            developerKey,
-            this._globalRpcErrorCallback,
-            loggingEnabled);
+        this._unauthenticatedClient = new HttpClient(options);
 
         /* Available security levels for keys */
         this.KeyLevel = config.KeyLevel;
@@ -70,14 +101,14 @@ export class Token {
      *
      * @param {string} env - which environment (gateway) to use, (e.g. prd)
      */
-    static enableIframePassthrough(env) {
+    static enableIframePassthrough(env: string): void {
         Util.enableIframePassthrough(config.corsDomainSuffix, config.urls[env]);
     }
 
     /**
      * If we're on a token page, this disables passthrough
      */
-    static disableIframePassthrough() {
+    static disableIframePassthrough(): void {
         Util.disableIframePassthrough(config.corsDomainSuffix);
     }
 
@@ -87,10 +118,10 @@ export class Token {
      * @param {Object} alias - alias to check
      * @return {Promise} result - true if alias exists, false otherwise
      */
-    aliasExists(alias) {
+    aliasExists(alias: Alias): Promise<boolean> {
         return Util.callAsync(this.aliasExists, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
-            return (res.data.member && res.data.member.id ? res.data.member.id !== '' : false);
+            return !!res.data?.member?.id;
         });
     }
 
@@ -100,10 +131,10 @@ export class Token {
      * @param {Object} alias - alias to lookup
      * @return {Promise} result - TokenMember protobuf object
      */
-    resolveAlias(alias) {
+    resolveAlias(alias: Alias): Promise<?TokenMember> {
         return Util.callAsync(this.resolveAlias, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
-            return res.data.member;
+            return res.data.member && TokenMember.create(res.data.member);
         });
     }
 
@@ -113,15 +144,14 @@ export class Token {
      * @param  {Object} alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
-<<<<<<< HEAD
-     * @param  {String} memberType - type of member to create. 'PERSONAL' if undefined
-     * @param  {String} realm - (optional) realm of the alias
-=======
      * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
->>>>>>> 06c8190a314f06cd83131d091517b213b341cc46
      * @return {Promise} member - Promise of created Member
      */
-    createMember(alias, CryptoEngine, memberType) {
+    createMember(
+        alias: ?Alias,
+        CryptoEngine: KeyStoreCryptoEngine,
+        memberType?: string
+    ): Promise<Member> {
         return Util.callAsync(this.createMember, async () => {
             const response = await this._unauthenticatedClient.createMemberId(memberType);
             const engine = new CryptoEngine(response.data.memberId);
@@ -132,16 +162,15 @@ export class Token {
                 response.data.memberId,
                 [pk1, pk2, pk3],
                 engine);
-            const member = new Member(
-                this._env,
-                response.data.memberId,
-                engine,
-                this._developerKey,
-                this._globalRpcErrorCallback,
-                this._loggingEnabled);
-            if (alias && Object.keys(alias).length !== 0) {
-                await member.addAlias(alias);
-            }
+            const member = new Member({
+                env: this._env,
+                memberId: response.data.memberId,
+                cryptoEngine: engine,
+                developerKey: this._developerKey,
+                globalRpcErrorCallback: this._globalRpcErrorCallback,
+                loggingEnabled: this._loggingEnabled,
+            });
+            alias && await member.addAlias(alias);
             return member;
         });
     }
@@ -154,7 +183,10 @@ export class Token {
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} member - Promise of created Member
      */
-    createBusinessMember(alias, CryptoEngine) {
+    createBusinessMember(
+        alias: ?Alias,
+        CryptoEngine: KeyStoreCryptoEngine
+    ): Promise<Member> {
         return this.createMember(alias, CryptoEngine, 'BUSINESS');
     }
 
@@ -167,16 +199,19 @@ export class Token {
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDevice(alias, CryptoEngine) {
+    provisionDevice(
+        alias: Alias,
+        CryptoEngine: KeyStoreCryptoEngine
+    ): Promise<{memberId: string, keys: Array<Key>}> {
         return Util.callAsync(this.provisionDevice, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
             if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
             const engine = new CryptoEngine(res.data.member.id);
-            const pk1 = await engine.generateKey('PRIVILEGED');
-            const pk2 = await engine.generateKey('STANDARD');
-            const pk3 = await engine.generateKey('LOW');
+            const pk1 = Key.create(await engine.generateKey('PRIVILEGED'));
+            const pk2 = Key.create(await engine.generateKey('STANDARD'));
+            const pk3 = Key.create(await engine.generateKey('LOW'));
             return {
                 memberId: res.data.member.id,
                 keys: [pk1, pk2, pk3],
@@ -194,7 +229,11 @@ export class Token {
      * @param {number} expirationMs - (optional) expiration duration of key in milliseconds
      * @return {Promise} deviceInfo - information about the device provisioned
      */
-    provisionDeviceLow(alias, CryptoEngine, expirationMs = config.lowKeyExpiration) {
+    provisionDeviceLow(
+        alias: Alias,
+        CryptoEngine: KeyStoreCryptoEngine,
+        expirationMs?: number = config.lowKeyExpiration
+    ): Promise<{memberId: string, keys: Array<Key>}> {
         return Util.callAsync(this.provisionDeviceLow, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias);
             if (!res.data.member || !res.data.member.id) {
@@ -202,7 +241,7 @@ export class Token {
             }
 
             const engine = new CryptoEngine(res.data.member.id);
-            const pk1 = await engine.generateKey('LOW', expirationMs);
+            const pk1 = Key.create(await engine.generateKey('LOW', expirationMs));
             return {
                 memberId: res.data.member.id,
                 keys: [pk1],
@@ -218,19 +257,23 @@ export class Token {
      * @param {string} memberId - optional id of the member we want to log in
      * @return {Promise} member - instantiated member
      */
-    getMember(CryptoEngine, memberId) {
+    getMember(
+        CryptoEngine: KeyStoreCryptoEngine,
+        memberId?: string
+    ): Member {
         return Util.callSync(this.getMember, () => {
             if (!memberId && typeof CryptoEngine.getActiveMemberId === 'function') {
                 memberId = CryptoEngine.getActiveMemberId();
             }
             const engine = new CryptoEngine(memberId);
-            return new Member(
-                this._env,
+            return new Member({
+                env: this._env,
                 memberId,
-                engine,
-                this._developerKey,
-                this._globalRpcErrorCallback,
-                this._loggingEnabled);
+                cryptoEngine: engine,
+                developerKey: this._developerKey,
+                globalRpcErrorCallback: this._globalRpcErrorCallback,
+                loggingEnabled: this._loggingEnabled,
+            });
         });
     }
 
@@ -242,7 +285,10 @@ export class Token {
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccounts(alias, bankAuthorization) {
+    notifyLinkAccounts(
+        alias: Alias,
+        bankAuthorization: any
+    ): Promise<?string> {
         const body = {
             linkAccounts: {
                 bankAuthorization,
@@ -265,7 +311,13 @@ export class Token {
      * @param {string} expiresMs - when the UI will time out
      * @return {Promise} NotifyStatus - status
      */
-    notifyAddKey(alias, keyName, key, level, expiresMs) {
+    notifyAddKey(
+        alias: Alias,
+        keyName: string,
+        key: Key,
+        level: string,
+        expiresMs: string
+    ): Promise<?string> {
         const body = {
             addKey: {
                 name: keyName,
@@ -296,7 +348,13 @@ export class Token {
      * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
-    notifyLinkAccountsAndAddKey(alias, bankAuthorization, keyName, key, level) {
+    notifyLinkAccountsAndAddKey(
+        alias: Alias,
+        bankAuthorization: string,
+        keyName: string,
+        key: Key,
+        level: string
+    ): Promise<?string> {
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
@@ -326,7 +384,7 @@ export class Token {
      * @param {Object} tokenPayload - requested transfer token
      * @return {Promise} NotifyStatus - status
      */
-    notifyPaymentRequest(tokenPayload) {
+    notifyPaymentRequest(tokenPayload: TokenPayload): Promise<?string> {
         if (!tokenPayload.refId) {
             tokenPayload.refId = Util.generateNonce();
         }
@@ -342,10 +400,22 @@ export class Token {
      * @param {Object} options - optional parameters for getBanks
      * @return {Promise} banks - list of banks
      */
-    getBanks(options) {
+    getBanks(
+        options?: {
+            ids?: Array<string>,
+            search?: string,
+            country?: string,
+            page?: number,
+            perPage?: number,
+            provider?: string,
+        }
+    ): Promise<{banks: ?Array<Bank>, paging: Paging}> {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanks(options);
-            return res.data;
+            return {
+                banks: res.data.banks && res.data.banks.map(b => Bank.create(b)),
+                paging: Paging.create(res.data.paging),
+            };
         });
     }
 
@@ -355,7 +425,7 @@ export class Token {
      * @param {string} requestId - token request id
      * @return {Promise} TokenRequest - token request
      */
-    retrieveTokenRequest(requestId) {
+    retrieveTokenRequest(requestId: string): Promise<?TokenRequest> {
         return Util.callAsync(this.retrieveTokenRequest, async () => {
             const res = await this._unauthenticatedClient.retrieveTokenRequest(requestId);
             return res.data.tokenRequest;
@@ -370,14 +440,17 @@ export class Token {
      * @param {string} csrfToken - CSRF token
      * @return {string} tokenRequestUrl - token request URL
      */
-    generateTokenRequestUrl(requestId, state = '', csrfToken = '') {
+    generateTokenRequestUrl(
+        requestId: string,
+        state?: string = '',
+        csrfToken?: string = ''
+    ): string {
         return Util.callSync(this.generateTokenRequestUrl, () => {
             const tokenRequestState = {
                 csrfTokenHash: Util.hashString(csrfToken),
                 innerState: state,
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
-
             return config.webAppUrls[this._env] +
                 `/request-token/${requestId}?state=${serializedState}`;
         });
@@ -391,7 +464,10 @@ export class Token {
      * @param {string} csrfToken - CSRF token
      * @return {Promise} result - inner state and token id
      */
-    parseTokenRequestCallbackUrl(callbackUrl, csrfToken = '') {
+    parseTokenRequestCallbackUrl(
+        callbackUrl: string,
+        csrfToken?: string = ''
+    ): Promise<{tokenId: string, innerState: string}> {
         return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
             const tokenMember = await this._unauthenticatedClient.getTokenMember();
             const urlParams = Util.parseParamsFromUrl(callbackUrl);
@@ -427,7 +503,7 @@ export class Token {
      * @param {string} tokenRequestId - token request id
      * @return {Promise} tokenId - token id
      */
-    getTokenId(tokenRequestId) {
+    getTokenId(tokenRequestId: string): Promise<?string> {
         return Util.callAsync(this.getTokenId, async () => {
             const res = await this._unauthenticatedClient.getTokenId(tokenRequestId);
             return res.data.tokenId;

@@ -1,21 +1,18 @@
-const chai = require('chai');
-const assert = chai.assert;
-import 'babel-regenerator-runtime';
-
 import HttpClient from '../../src/http/HttpClient';
 import MemoryCryptoEngine from '../../src/security/engines/MemoryCryptoEngine';
 
+const {assert} = require('chai');
 const devKey = require('../../src/config.json').devKey[TEST_ENV];
 
 describe('Unauthenticated', () => {
     it('should generate a memberId', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
+        const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
     });
 
     it('should add a key', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
+        const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
         const engine = new MemoryCryptoEngine(res.data.memberId);
@@ -32,9 +29,13 @@ describe('Unauthenticated', () => {
 
     it('should call global handler on version mismatch error', async () => {
         let handlerCalled = false;
-        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey, (error) => {
-            assert.equal(error.name, BROWSER ? 'UNKNOWN' : 'unsupported-client-version');
-            handlerCalled = true;
+        const unauthenticatedClient = new HttpClient({
+            env: TEST_ENV,
+            developerKey: devKey,
+            globalRpcErrorCallback: (error) => {
+                assert.equal(error.name, BROWSER ? 'UNKNOWN' : 'unsupported-client-version');
+                handlerCalled = true;
+            },
         });
         // Override sdk version to force version mismatch error.
         unauthenticatedClient._instance.interceptors.request.eject(0);
@@ -53,7 +54,7 @@ describe('Unauthenticated', () => {
     });
 
     it('should get a member', async () => {
-        const unauthenticatedClient = new HttpClient(TEST_ENV, devKey);
+        const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
         const res = await unauthenticatedClient.createMemberId();
         const engine = new MemoryCryptoEngine(res.data.memberId);
         const pk1 = await engine.generateKey('PRIVILEGED');

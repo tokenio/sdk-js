@@ -1,6 +1,6 @@
 const chai = require('chai');
 const assert = chai.assert;
-import 'babel-regenerator-runtime';
+
 import ManualCryptoEngine from '../../../src/security/engines/ManualCryptoEngine';
 import Util from '../../../src/Util';
 import Crypto from '../../../src/security/Crypto';

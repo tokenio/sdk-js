@@ -1,14 +1,10 @@
-/* eslint-disable new-cap */
 import TestUtil from '../TestUtil';
-
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import CancelAccessTokenBlockingSample from '../../src/sample/CancelAccessTokenBlockingSample';
+
+const {assert} = require('chai');
 
 describe('CancelAccessTokenBlockingSample test', () => {
     it('Should run the sample', async () => {

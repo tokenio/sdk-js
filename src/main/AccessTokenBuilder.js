@@ -1,5 +1,6 @@
 import Util from '../Util';
 import config from '../config.json';
+import {Token} from '../proto/classes';
 
 export default class AccessTokenBuilder {
     /**
@@ -339,7 +340,7 @@ export default class AccessTokenBuilder {
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
-            return res.data.token;
+            return res.data.token && Token.create(res.data.token);
         });
     }
 }

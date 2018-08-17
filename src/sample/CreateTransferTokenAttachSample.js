@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc*/
 
 // Empty fake for simple example.
-function getImageData(filename) {
+function getImageData() {
     return new Uint8Array(42);
 }
 

@@ -1,10 +1,9 @@
-import TestUtil from './TestUtil';
-import TokenIo from '../src';
 const devKey = require('../src/config.json').devKey[TEST_ENV];
-const Token = new TokenIo(TEST_ENV, devKey);
-const chai = require('chai');
-const assert = chai.assert;
-import 'babel-regenerator-runtime';
+const {assert} = require('chai');
+import TestUtil from './TestUtil';
+import {TokenIO} from '../src';
+
+const Token = new TokenIO({env: TEST_ENV, developerKey: devKey});
 
 describe('Token library', () => {
     it('should perform a transfer flow', async () => {
@@ -49,12 +48,9 @@ describe('Token library', () => {
 });
 
 describe('Token library', () => {
-    it('should create two members with no aliases', async () => {
-        const guest = await Token.createMember({}, Token.MemoryCryptoEngine);
+    it('should create a member with no aliases', async () => {
+        const guest = await Token.createMember(null, Token.MemoryCryptoEngine);
         const aliases = await guest.aliases();
-        const guest2 = await Token.createMember(null, Token.MemoryCryptoEngine);
-        const aliases2 = await guest2.aliases();
         assert.isUndefined(aliases);
-        assert.isUndefined(aliases2);
     });
 });

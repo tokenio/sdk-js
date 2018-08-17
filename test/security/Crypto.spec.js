@@ -2,8 +2,6 @@ const chai = require('chai');
 const assert = chai.assert;
 import Crypto from '../../src/security/Crypto';
 
-import 'babel-regenerator-runtime';
-
 describe('Key management', () => {
     it('should generate a key', async () => {
         for (let i = 0; i < 10; i++) {

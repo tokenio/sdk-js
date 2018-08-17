@@ -1,13 +1,10 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import TokenRequestUrlSample from '../../src/sample/TokenRequestUrlSample';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import Crypto from '../../src/security/Crypto';
 import Util from '../../src/Util';
 import TestUtil from '../TestUtil';
+
+const {assert} = require('chai');
 
 describe('TokenRequestUrl test', () => {
     it('Should complete the whole token request URL flow', async () => {

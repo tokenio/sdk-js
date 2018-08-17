@@ -1,18 +1,15 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
+import {TokenIO} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import NotifyPaymentRequestSample from '../../src/sample/NotifyPaymentRequestSample';
 import TestUtil from '../TestUtil';
 
+const {assert} = require('chai');
+
 describe('NotifyPaymentRequestSample test', () => {
     it('Should run the sample', async () => {
-        const TokenLib = require('../../src');
         const devKey = require('../../src/config.json').devKey[TEST_ENV];
-        const Token = new TokenLib(TEST_ENV, devKey);
+        const Token = new TokenIO({env: TEST_ENV, developerKey: devKey});
 
         const payee = await CreateMemberSample();
         const payer = await CreateMemberSample();

@@ -1,6 +1,5 @@
 import TestUtil from '../../test/TestUtil';
-const chai = require('chai');
-const assert = chai.assert;
+const {assert} = require('chai');
 
 /**
  * Sample code for some misc Member methods.
@@ -14,10 +13,9 @@ const base64js = require('base64-js');
  *    loadPicture('tycho.jpg')
  * ...and get valid JPEG data back.
  *
- * @param {string} ignoredFileName - 'tycho.jpg', but we don't use files.
  * @return {Object} ByteArray with JPEG data.
  */
-function loadPicture(ignoredFileName) {
+function loadPicture() {
     return base64js.toByteArray(
         '/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDA' +
             'BALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRT' +

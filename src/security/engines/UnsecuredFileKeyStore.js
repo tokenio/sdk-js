@@ -194,7 +194,7 @@ class UnsecuredFileKeyStore {
         try {
             data = await FileSystem.readFile(memberId.split(':').join('_'));
         } catch (error) {
-            data = '{\'keys\':[]}';
+            data = '{"keys":[]}';
         }
         const keyList = JSON.parse(data).keys || [];
         const member = {};

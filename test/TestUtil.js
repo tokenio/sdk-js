@@ -1,4 +1,4 @@
-class TestUtil {
+export default class TestUtil {
     /**
      * Retries the supplied function until it either runs successfully or the timeout has passed.
      *
@@ -18,9 +18,8 @@ class TestUtil {
                 if (Date.now() - start > timeoutMs) {
                     throw e;
                 }
-                await new Promise((resolve, reject) => setTimeout(resolve, waitTimeMs));
+                await new Promise((resolve) => setTimeout(resolve, waitTimeMs));
             }
         }
     }
 }
-export default TestUtil;

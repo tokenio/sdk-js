@@ -3,9 +3,9 @@ import FileSystem from '../../../src/security/PromiseFileSystem';
 
 const chai = require('chai');
 const assert = chai.assert;
-import 'babel-regenerator-runtime';
+
 import UnsecuredFileCryptoEngine from '../../../src/security/engines/UnsecuredFileCryptoEngine';
-const TokenIo = require('../../../src/index');
+import {TokenIO} from '../../../src';
 const devKey = require('../../../src/config.json').devKey[TEST_ENV];
 
 let fs;
@@ -15,14 +15,9 @@ let testDir;
 if (!BROWSER) {
     fs = require('fs-extra');
     path = require('path');
-
-    // Goes back four dirs to find project base. Does this in order to create the testing dir
-    // in the right place. Assumes process argv[1] is mocha binary
-    testDir = path.join(path.join(
-        path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
-        'test'), 'testDir');
+    testDir = path.join(__dirname, 'testDir');
 }
-const Token = new TokenIo(TEST_ENV, devKey, testDir);
+const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: testDir});
 
 describe('Unsecured File crypto engine', () => {
     if (!BROWSER) {

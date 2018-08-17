@@ -1,5 +1,5 @@
 module.exports = (api) => {
-    api.cache(true);
+    api && api.cache(true);
     const presets = [
         [
             '@babel/env',
@@ -17,7 +17,12 @@ module.exports = (api) => {
         ],
         '@babel/flow',
     ];
-    const plugins = ['@babel/plugin-transform-runtime'];
+    const plugins = [
+        '@babel/plugin-transform-runtime',
+        '@babel/plugin-transform-object-assign',
+        '@babel/plugin-proposal-optional-chaining',
+        '@babel/plugin-proposal-object-rest-spread',
+    ];
 
     return {
         presets,

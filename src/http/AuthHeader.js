@@ -1,4 +1,4 @@
-const stringify = require('json-stable-stringify');
+const stringify = require('fast-json-stable-stringify');
 import config from '../config.json';
 
 /**
@@ -30,9 +30,8 @@ class AuthHeader {
 
         // Parses out the base uri
         let uriPath = request.url.replace(this._baseUrl, '');
-
         // Makes sure the uri is formatted correctly
-        uriPath = uriPath.substring(0, 1) === '/' ? uriPath : uriPath + '/';
+        uriPath = uriPath.substring(0, 1) === '/' ? uriPath : `/${uriPath}`;
         uriPath = uriPath.substring(uriPath.length - 1) === '/' ?
             uriPath.substring(0, uriPath.length - 1) : uriPath;
 

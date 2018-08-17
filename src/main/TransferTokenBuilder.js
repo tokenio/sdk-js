@@ -1,5 +1,6 @@
 import Util from '../Util';
 import config from '../config.json';
+import {Token} from '../proto/classes';
 
 export default class TransferTokenBuilder {
 
@@ -371,7 +372,7 @@ export default class TransferTokenBuilder {
             if (res.data.status !== 'SUCCESS') {
                 throw new Error(res.data.status);
             }
-            return res.data.token;
+            return res.data.token && Token.create(res.data.token);
         });
     }
 }

@@ -1,23 +1,41 @@
-import babel from 'rollup-plugin-babel';
 import json from 'rollup-plugin-json';
+import babel from 'rollup-plugin-babel';
 import replace from 'rollup-plugin-replace';
-import resolve from 'rollup-plugin-node-resolve';
+import {uglify} from 'rollup-plugin-uglify';
 import commonjs from 'rollup-plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
-import {uglify} from 'rollup-plugin-uglify';
+import resolve from 'rollup-plugin-node-resolve';
 
 import pkg from './package.json';
 
-const {TEST_ENV = 'dev', NODE_ENV: env = 'development'} = process.env;
+const {
+    ENV: env = 'node',
+    FORMAT: format = 'cjs',
+    TEST_ENV = 'dev',
+} = process.env;
 
-const isEsm = env === 'esm';
-const isCjs = env === 'cjs';
-const isDev = env === 'development';
-const isPrd = env === 'production';
+const isBrowser = env === 'browser';
+const isModule = format === 'cjs' || format === 'esm';
+
+const dest = {
+    node: {
+        cjs: pkg.main,
+        esm: pkg.module,
+    },
+    browser: {
+        cjs: 'dist/tokenio.browser.js',
+        esm: 'dist/tokenio.browser.esm.js',
+        iife: 'dist/tokenio.iife.min.js',
+    },
+};
 
 const config = {
     input: 'src/index.js',
-    external: [],
+    output: {
+        format,
+        file: dest[env][format],
+        indent: false,
+    },
     plugins: [
         json(),
         babel({
@@ -25,55 +43,41 @@ const config = {
             runtimeHelpers: true,
         }),
         replace({
-            BROWSER: isDev || isPrd,
+            BROWSER: isBrowser,
             TEST_ENV,
             TOKEN_VERSION: JSON.stringify(pkg.version),
         }),
         filesize(),
     ],
-    onwarn: warning => {
-        // Silence circular dependency warning for protobufjs
-        if (warning.code !== 'CIRCULAR_DEPENDENCY' || !warning.importer.indexOf('node_modules\\protobufjs\\')) {
-            console.warn(`(!) ${warning.message}`); // eslint-disable-line
-        }
-    },
 };
 
-if (isEsm || isCjs) {
-    config.output = {
-        format: env,
-        file: isEsm ? pkg.module : pkg.main,
-        indent: false,
-    };
-    config.external = id =>
-        [...Object.keys(pkg.dependencies), 'core-js', 'regenerator'].some(dep => id.includes(dep));
-}
-
-if (isDev || isPrd) {
-    config.output = {
-        format: 'umd',
-        file: isDev ? pkg.browser : `${pkg.browser.slice(0, -3)}.min.js`,
-        name: 'tokenio',
-        indent: false,
-    };
-    config.external.push('es6-promise');
-    const umdPlugins = [
+if (isModule) {
+    config.external = id => [...Object.keys(pkg.dependencies), 'core-js', 'regenerator']
+        .some(dep => id.includes(dep));
+} else {
+    config.output.name = 'TokenIO';
+    config.plugins.push(
         resolve({
             preferBuiltins: false,
             browser: true,
         }),
         commonjs({
             namedExports: {
-                'node_modules/protobufjs/minimal.js': ['util', 'roots'],
+                'protobufjs/minimal': ['roots', 'util'],
             },
         }),
-        isPrd && uglify({
+        uglify({
             compress: {
                 warnings: false,
             },
-        }),
-    ].filter(Boolean);
-    config.plugins.push(...umdPlugins);
+        }));
+    config.onwarn = (warning, next) => {
+        if (warning.code === 'EVAL' && /protobufjs/.test(warning.loc.file) ||
+            warning.code === 'CIRCULAR_DEPENDENCY' && /protobufjs/.test(warning.importer)) {
+            return;
+        }
+        next(warning);
+    };
 }
 
 export default config;

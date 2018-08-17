@@ -1,12 +1,9 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import PollNotificationsSample from '../../src/sample/PollNotificationsSample';
 import TestUtil from '../TestUtil';
+
+const {assert} = require('chai');
 
 describe('NotificationsSample test', () => {
     it('PollNotificationsSample should run', async () => {

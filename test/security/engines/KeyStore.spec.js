@@ -3,7 +3,7 @@ import TestUtil from '../../TestUtil';
 const chai = require('chai');
 
 const assert = chai.assert;
-import 'babel-regenerator-runtime';
+
 import BrowserKeyStore from '../../../src/security/engines/BrowserKeyStore';
 import MemoryKeyStore from '../../../src/security/engines/MemoryKeyStore';
 import UnsecuredFileKeyStore from '../../../src/security/engines/UnsecuredFileKeyStore';
@@ -17,12 +17,7 @@ let fs;
 if (!BROWSER) {
     const path = require('path');
     fs = require('fs-extra');
-
-    // Goes back four dirs to find project base. Does this in order to create the testing dir
-    // in the right place. Assumes process argv[1] is mocha binary
-    testDir = path.join(path.join(
-        path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
-        'test'), 'testDir');
+    testDir = path.join(__dirname, 'testDir');
 
     UnsecuredFileKeyStore.setDirRoot(testDir);
 

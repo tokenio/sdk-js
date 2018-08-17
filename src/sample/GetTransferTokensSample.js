@@ -8,4 +8,3 @@ export default async (payer) => {
     const pagedResult = await payer.getTransferTokens('', 10);
     return pagedResult.data;
 };
-

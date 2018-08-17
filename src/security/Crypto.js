@@ -1,4 +1,4 @@
-import stringify from 'json-stable-stringify';
+import stringify from 'fast-json-stable-stringify';
 import CryptoNode from './CryptoNode';
 import CryptoBrowser from './CryptoBrowser';
 import base64Url from 'base64url';
@@ -111,6 +111,7 @@ class Crypto {
      * @return {string} encoded key
      */
     static strKey(key) {
+        if (typeof key === 'string') return key;
         return base64Url(key);
     }
 

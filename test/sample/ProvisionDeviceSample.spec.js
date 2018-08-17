@@ -1,11 +1,9 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
+import {TokenIO} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import ProvisionDeviceSample from '../../src/sample/ProvisionDeviceSample';
 import TestUtil from '../TestUtil';
+
+const {assert} = require('chai');
 
 describe('ProvisionDeviceSample test', () => {
     if (!BROWSER) {
@@ -18,8 +16,7 @@ describe('ProvisionDeviceSample test', () => {
             const alias = await member.firstAlias();
 
             const devKey = require('../../src/config.json').devKey[TEST_ENV];
-            const TokenLib = require('../../src');
-            const Token = new TokenLib(TEST_ENV, devKey, './keys');
+            const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'});
             const key = await ProvisionDeviceSample.provision(Token, alias);
             await member.approveKey(key);
 

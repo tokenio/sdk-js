@@ -17,4 +17,3 @@ export default async (payer) => {
         config.KeyLevel.STANDARD);
     return pagedResult.data;
 };
-

@@ -1,6 +1,5 @@
-const chai = require('chai');
-const assert = chai.assert;
 import Util from '../src/Util';
+const {assert} = require('chai');
 
 describe('Util', () => {
     it('should check the length of decimal', () => {

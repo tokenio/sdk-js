@@ -1,3 +1,5 @@
+import {TokenIO} from '..';
+
 /**
  * Imports and sets up the SDK, and creates a Token member with the MemoryCryptoEngine
  * (which will store keys in memory).
@@ -6,13 +8,11 @@
  */
 export default async (developerKey) => {
     // Initialize SDK:
-    const TokenLib = require('../../src');
-    const Token = new TokenLib(
-        // sandbox test environment:
-        'sandbox',
+    const Token = new TokenIO({
+        env: 'sandbox',
         developerKey,
-        // persist member secret keys in dir:
-        './keys');
+        keyDir: './keys',
+    });
 
     // Generate a random-nonsense-string alias.
     // ('name@token.io' would be more typical than a random string.

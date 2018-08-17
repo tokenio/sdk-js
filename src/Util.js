@@ -3,7 +3,7 @@
  */
 import bs58 from 'bs58';
 import sha256 from 'fast-sha256';
-import stringify from 'json-stable-stringify';
+import stringify from 'fast-json-stable-stringify';
 import base64Url from 'base64url';
 import {Buffer as NodeBuffer} from 'buffer';
 
@@ -229,6 +229,7 @@ class Util {
      * @return {string} encoded key
      */
     static strKey(key) {
+        if (typeof key === 'string') return key;
         return base64Url(key);
     }
 

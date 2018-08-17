@@ -1,7 +1,9 @@
-const devKey = require('../../src/config.json').devKey[TEST_ENV];
-const TokenLib = require('../../src');
-const Token = new TokenLib(TEST_ENV, devKey, './keys');
+import {TokenIO} from '..';
 import Util from '../Util';
+
+const devKey = require('../../src/config.json').devKey[TEST_ENV];
+const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'});
+
 /**
  * Sample code illustrating how to generate and parse a token
  * request URL.

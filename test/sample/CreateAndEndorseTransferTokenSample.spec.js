@@ -1,8 +1,3 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseTransferTokenSample
@@ -12,6 +7,8 @@ import CreateTransferTokenWithUnusualOptionsSample
 import CreateTransferTokenToDestinationSample
     from '../../src/sample/CreateTransferTokenToDestinationSample';
 import TestUtil from '../TestUtil';
+
+const {assert} = require('chai');
 
 describe('CreateAndEndorseTransferTokenSample test', () => {
     it('Should run the sample', async () => {

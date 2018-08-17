@@ -1,4 +1,20 @@
 import 'es6-promise/auto';
-import {Token} from './main/Token';
+import {TokenIO} from './main/TokenIO';
+import {
+    Alias,
+    Address,
+    Profile,
+    Resource,
+    TransferEndpoint,
+    OauthBankAuthorization,
+} from './proto/classes';
 
-export {Token as TokenGateway};
+export {
+    TokenIO,
+    Alias,
+    Address,
+    Profile,
+    Resource,
+    TransferEndpoint,
+    OauthBankAuthorization,
+};

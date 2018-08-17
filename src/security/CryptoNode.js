@@ -12,16 +12,15 @@ class CryptoNode {
      *
      * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
-     * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
-    static async generateKeys(keyLevel, expirationMs, extractable = false) {
+    static async generateKeys(keyLevel, expirationMs) {
         const keyPair = nacl.sign.keyPair();
         keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
         keyPair.privateKey = keyPair.secretKey;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = (new Date()).getTime() + expirationMs;
+        if (expirationMs !== undefined) keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
         delete keyPair.secretKey;
         return keyPair;
     }
