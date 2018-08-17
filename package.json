@@ -18,6 +18,7 @@
 		"build:esm:browser": "cross-env FORMAT=esm ENV=browser rollup -c",
 		"build:iife": "cross-env FORMAT=iife ENV=browser rollup -c",
 		"build": "eslint src && rimraf dist && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife && ncp index.js.flow dist/tokenio.js.flow",
+		"proto": "node proto.js",
 		"doc": "./node_modules/esdoc/out/src/ESDocCLI.js"
 	},
 	"main": "dist/tokenio.js",

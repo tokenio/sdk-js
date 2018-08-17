@@ -268,23 +268,23 @@ declare export class Address {
     province: string;
     state: string;
     static create({
-                      houseNumber?: string,
-                      houseName?: string,
-                      flats?: string,
-                      conscriptionNumber?: string,
-                      street?: string,
-                      place?: string,
-                      postCode?: string,
-                      city?: string,
-                      country?: string,
-                      full?: string,
-                      hamlet?: string,
-                      suburb?: string,
-                      subdistrict?: string,
-                      district?: string,
-                      province?: string,
-                      state?: string,
-                  }): Address;
+        houseNumber?: string,
+        houseName?: string,
+        flats?: string,
+        conscriptionNumber?: string,
+        street?: string,
+        place?: string,
+        postCode?: string,
+        city?: string,
+        country?: string,
+        full?: string,
+        hamlet?: string,
+        suburb?: string,
+        subdistrict?: string,
+        district?: string,
+        province?: string,
+        state?: string,
+    }): Address;
 }
 declare class Account {
     id: string;
@@ -296,15 +296,15 @@ declare class Account {
     lastCacheUpdateMs: string;
     nextCacheUpdateMs: string;
     static create({
-                      id: string,
-                      name: string,
-                      bankId: string,
-                      tags: Array<any>,
-                      isLocked: boolean,
-                      accountFeatures: any,
-                      lastCacheUpdateMs: string,
-                      nextCacheUpdateMs: string,
-                  }): Account;
+        id: string,
+        name: string,
+        bankId: string,
+        tags: Array<any>,
+        isLocked: boolean,
+        accountFeatures: any,
+        lastCacheUpdateMs: string,
+        nextCacheUpdateMs: string,
+    }): Account;
 }
 declare class TokenPayload {
     version: string;
@@ -321,20 +321,20 @@ declare class TokenPayload {
     actingAs: any;
     receiptRequested: boolean;
     static create({
-                      version: string,
-                      refId: string,
-                      issuer: any,
-                      from: any,
-                      to: any,
-                      effectiveAtMs: string,
-                      expiresAtMs: string,
-                      endorseUntilMs: string,
-                      description: string,
-                      transfer?: any,
-                      access?: any,
-                      actingAs: any,
-                      receiptRequested: boolean,
-                  }): TokenPayload;
+        version: string,
+        refId: string,
+        issuer: any,
+        from: any,
+        to: any,
+        effectiveAtMs: string,
+        expiresAtMs: string,
+        endorseUntilMs: string,
+        description: string,
+        transfer?: any,
+        access?: any,
+        actingAs: any,
+        receiptRequested: boolean,
+    }): TokenPayload;
 }
 declare class TokenMember {
     id: string;
@@ -349,12 +349,12 @@ declare class Token {
     replaceByTokenId: string;
     tokenRequestId: string;
     static create({
-                      id: string,
-                      payload: TokenPayload,
-                      payloadSignatures: Array<any>,
-                      replaceByTokenId: string,
-                      tokenRequestId: string,
-                  }): Token;
+        id: string,
+        payload: TokenPayload,
+        payloadSignatures: Array<any>,
+        replaceByTokenId: string,
+        tokenRequestId: string,
+    }): Token;
 }
 declare class TokenOperationResult {
     token: Token;
@@ -374,18 +374,18 @@ declare export class Resource {
     allTransactionsAtBank: ?{bankId: string};
     allBalancesAtBank: ?{bankId: string};
     static create({
-                      allAddresses?: {},
-                      allAccounts?: {},
-                      allTransactions?: {},
-                      allBalances?: {},
-                      address?: Address,
-                      account?: Account,
-                      transactions?: {accountId: string},
-                      balance?: {accountId: string},
-                      allAccountsAtBank?: {bankId: string},
-                      allTransactionsAtBank?: {bankId: string},
-                      allBalancesAtBank?: {bankId: string},
-                  }): Resource;
+        allAddresses?: {},
+        allAccounts?: {},
+        allTransactions?: {},
+        allBalances?: {},
+        address?: Address,
+        account?: Account,
+        transactions?: {accountId: string},
+        balance?: {accountId: string},
+        allAccountsAtBank?: {bankId: string},
+        allTransactionsAtBank?: {bankId: string},
+        allBalancesAtBank?: {bankId: string},
+    }): Resource;
 }
 declare class Notification{
     id: string;
@@ -393,11 +393,11 @@ declare class Notification{
     content: any;
     status: string;
     static create({
-                      id: string,
-                      subscriberId: string,
-                      content: any,
-                      status: string,
-                  }): Notification;
+        id: string,
+        subscriberId: string,
+        content: any,
+        status: string,
+    }): Notification;
 }
 declare class Bank {
     id: string;
@@ -413,19 +413,19 @@ declare class Bank {
     country: string;
     identifier: string;
     static create({
-                      id: string,
-                      name: string,
-                      logoUri: string,
-                      fullLogoUri: string,
-                      supportsAppless: boolean,
-                      supportsInformation: boolean,
-                      requiresExternalAuth: boolean,
-                      supportsSendPayment: boolean,
-                      supportsReceivePayment: boolean,
-                      provider: string,
-                      country: string,
-                      identifier: string,
-                  }): Bank;
+        id: string,
+        name: string,
+        logoUri: string,
+        fullLogoUri: string,
+        supportsAppless: boolean,
+        supportsInformation: boolean,
+        requiresExternalAuth: boolean,
+        supportsSendPayment: boolean,
+        supportsReceivePayment: boolean,
+        provider: string,
+        country: string,
+        identifier: string,
+    }): Bank;
 }
 declare class BankInfo {
     linkingUri: string; // deprecated
@@ -465,13 +465,13 @@ declare export class Profile {
     mediumPictureId: string;
     largePictureId: string;
     static create({
-                      displayNameFirst: string,
-                      displayNameLast: string,
-                      originalPictureId: string,
-                      smallPictureId: string,
-                      mediumPictureId: string,
-                      largePictureId: string,
-                  }): Profile;
+        displayNameFirst: string,
+        displayNameLast: string,
+        originalPictureId: string,
+        smallPictureId: string,
+        mediumPictureId: string,
+        largePictureId: string,
+    }): Profile;
 }
 declare class Subscriber {
     id: string;
@@ -499,15 +499,15 @@ declare class Transfer {
     orderId: string;
     method: any;
     static create({
-                      id: string,
-                      transactionId: string,
-                      createdAtMs: string,
-                      payload: any,
-                      payloadSignatures: Array<Signature>,
-                      status: any,
-                      orderId: string,
-                      method: any,
-                  }): Transfer;
+        id: string,
+        transactionId: string,
+        createdAtMs: string,
+        payload: any,
+        payloadSignatures: Array<Signature>,
+        status: any,
+        orderId: string,
+        method: any,
+    }): Transfer;
 }
 declare class Balance {
     accountId: string;
@@ -526,16 +526,16 @@ declare class Transaction {
     createdAtMs: string;
     metadata: any;
     static create({
-                      id: string;
-                      type: string;
-                      status: string;
-                      amount: Money;
-                      description: string;
-                      tokenId: string;
-                      tokenTransferId: string;
-                      createdAtMs: string;
-                      metadata: any;
-                  }): Transaction;
+        id: string;
+        type: string;
+        status: string;
+        amount: Money;
+        description: string;
+        tokenId: string;
+        tokenTransferId: string;
+        createdAtMs: string;
+        metadata: any;
+    }): Transaction;
 }
 declare export class OauthBankAuthorization {
     bankId: string;

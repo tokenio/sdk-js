@@ -301,6 +301,182 @@ export const io = $root.io = (() => {
                     return account;
                 })();
 
+                common.security = (function() {
+
+                    const security = {};
+
+                    security.Key = (function() {
+
+                        function Key(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Key.prototype.id = "";
+                        Key.prototype.publicKey = "";
+                        Key.prototype.level = 0;
+                        Key.prototype.algorithm = 0;
+                        Key.prototype.expiresAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+                        Key.create = function create(properties) {
+                            return new Key(properties);
+                        };
+
+                        Key.Algorithm = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID_ALGORITHM"] = 0;
+                            values[valuesById[1] = "ED25519"] = 1;
+                            values[valuesById[2] = "ECDSA_SHA256"] = 2;
+                            values[valuesById[3] = "RS256"] = 3;
+                            return values;
+                        })();
+
+                        Key.Level = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID_LEVEL"] = 0;
+                            values[valuesById[1] = "PRIVILEGED"] = 1;
+                            values[valuesById[2] = "STANDARD"] = 2;
+                            values[valuesById[3] = "LOW"] = 3;
+                            return values;
+                        })();
+
+                        return Key;
+                    })();
+
+                    security.PrivateKey = (function() {
+
+                        function PrivateKey(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        PrivateKey.prototype.id = "";
+                        PrivateKey.prototype.privateKey = "";
+                        PrivateKey.prototype.level = 0;
+                        PrivateKey.prototype.algorithm = 0;
+
+                        PrivateKey.create = function create(properties) {
+                            return new PrivateKey(properties);
+                        };
+
+                        return PrivateKey;
+                    })();
+
+                    security.Signature = (function() {
+
+                        function Signature(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Signature.prototype.memberId = "";
+                        Signature.prototype.keyId = "";
+                        Signature.prototype.signature = "";
+
+                        Signature.create = function create(properties) {
+                            return new Signature(properties);
+                        };
+
+                        return Signature;
+                    })();
+
+                    security.SealedMessage = (function() {
+
+                        function SealedMessage(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        SealedMessage.prototype.ciphertext = "";
+                        SealedMessage.prototype.noop = null;
+                        SealedMessage.prototype.rsa = null;
+                        SealedMessage.prototype.rsaAes = null;
+
+                        let $oneOfFields;
+
+                        Object.defineProperty(SealedMessage.prototype, "method", {
+                            get: $util.oneOfGetter($oneOfFields = ["noop", "rsa", "rsaAes"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+
+                        SealedMessage.create = function create(properties) {
+                            return new SealedMessage(properties);
+                        };
+
+                        SealedMessage.NoopMethod = (function() {
+
+                            function NoopMethod(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            NoopMethod.create = function create(properties) {
+                                return new NoopMethod(properties);
+                            };
+
+                            return NoopMethod;
+                        })();
+
+                        SealedMessage.RsaMethod = (function() {
+
+                            function RsaMethod(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            RsaMethod.prototype.keyId = "";
+                            RsaMethod.prototype.algorithm = "";
+                            RsaMethod.prototype.signature = "";
+                            RsaMethod.prototype.signatureKeyId = "";
+
+                            RsaMethod.create = function create(properties) {
+                                return new RsaMethod(properties);
+                            };
+
+                            return RsaMethod;
+                        })();
+
+                        SealedMessage.RsaAesMethod = (function() {
+
+                            function RsaAesMethod(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            RsaAesMethod.prototype.rsaKeyId = "";
+                            RsaAesMethod.prototype.rsaAlgorithm = "";
+                            RsaAesMethod.prototype.aesAlgorithm = "";
+                            RsaAesMethod.prototype.encryptedAesKey = "";
+                            RsaAesMethod.prototype.signature = "";
+                            RsaAesMethod.prototype.signatureKeyId = "";
+
+                            RsaAesMethod.create = function create(properties) {
+                                return new RsaAesMethod(properties);
+                            };
+
+                            return RsaAesMethod;
+                        })();
+
+                        return SealedMessage;
+                    })();
+
+                    return security;
+                })();
+
                 common.address = (function() {
 
                     const address = {};
@@ -432,6 +608,7 @@ export const io = $root.io = (() => {
                         Bank.prototype.requiresExternalAuth = false;
                         Bank.prototype.supportsSendPayment = false;
                         Bank.prototype.supportsReceivePayment = false;
+                        Bank.prototype.requiresLegacyTransfer = false;
                         Bank.prototype.provider = "";
                         Bank.prototype.country = "";
                         Bank.prototype.identifier = "";
@@ -1318,23 +1495,44 @@ export const io = $root.io = (() => {
                         return TokenCancelled;
                     })();
 
-                    notification.RequestTokenAndAddKey = (function() {
+                    notification.EndorseAndAddKey = (function() {
 
-                        function RequestTokenAndAddKey(p) {
+                        function EndorseAndAddKey(p) {
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
                                         this[ks[i]] = p[ks[i]];
                         }
 
-                        RequestTokenAndAddKey.prototype.tokenRequestId = "";
-                        RequestTokenAndAddKey.prototype.addKey = null;
+                        EndorseAndAddKey.prototype.payload = null;
+                        EndorseAndAddKey.prototype.addKey = null;
+                        EndorseAndAddKey.prototype.tokenRequestId = "";
+                        EndorseAndAddKey.prototype.bankId = "";
+                        EndorseAndAddKey.prototype.state = "";
 
-                        RequestTokenAndAddKey.create = function create(properties) {
-                            return new RequestTokenAndAddKey(properties);
+                        EndorseAndAddKey.create = function create(properties) {
+                            return new EndorseAndAddKey(properties);
                         };
 
-                        return RequestTokenAndAddKey;
+                        return EndorseAndAddKey;
+                    })();
+
+                    notification.NotificationInvalidated = (function() {
+
+                        function NotificationInvalidated(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        NotificationInvalidated.prototype.previousNotificationId = "";
+
+                        NotificationInvalidated.create = function create(properties) {
+                            return new NotificationInvalidated(properties);
+                        };
+
+                        return NotificationInvalidated;
                     })();
 
                     notification.NotifyBody = (function() {
@@ -1359,13 +1557,14 @@ export const io = $root.io = (() => {
                         NotifyBody.prototype.tokenCancelled = null;
                         NotifyBody.prototype.balanceStepUp = null;
                         NotifyBody.prototype.transactionStepUp = null;
-                        NotifyBody.prototype.requestTokenAndAddKey = null;
+                        NotifyBody.prototype.endorseAndAddKey = null;
                         NotifyBody.prototype.recoveryCompleted = null;
+                        NotifyBody.prototype.notificationInvalidated = null;
 
                         let $oneOfFields;
 
                         Object.defineProperty(NotifyBody.prototype, "body", {
-                            get: $util.oneOfGetter($oneOfFields = ["payerTransferProcessed", "linkAccounts", "stepUp", "addKey", "linkAccountsAndAddKey", "payeeTransferProcessed", "paymentRequest", "payerTransferFailed", "transferProcessed", "transferFailed", "tokenCancelled", "balanceStepUp", "transactionStepUp", "requestTokenAndAddKey", "recoveryCompleted"]),
+                            get: $util.oneOfGetter($oneOfFields = ["payerTransferProcessed", "linkAccounts", "stepUp", "addKey", "linkAccountsAndAddKey", "payeeTransferProcessed", "paymentRequest", "payerTransferFailed", "transferProcessed", "transferFailed", "tokenCancelled", "balanceStepUp", "transactionStepUp", "endorseAndAddKey", "recoveryCompleted", "notificationInvalidated"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
 
@@ -1441,337 +1640,6 @@ export const io = $root.io = (() => {
                     })();
 
                     return notification;
-                })();
-
-                common.pricing = (function() {
-
-                    const pricing = {};
-
-                    pricing.TransferQuote = (function() {
-
-                        function TransferQuote(p) {
-                            this.fees = [];
-                            this.rates = [];
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        TransferQuote.prototype.id = "";
-                        TransferQuote.prototype.accountCurrency = "";
-                        TransferQuote.prototype.feesTotal = "";
-                        TransferQuote.prototype.fees = $util.emptyArray;
-                        TransferQuote.prototype.rates = $util.emptyArray;
-                        TransferQuote.prototype.expiresAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-
-                        TransferQuote.create = function create(properties) {
-                            return new TransferQuote(properties);
-                        };
-
-                        TransferQuote.Fee = (function() {
-
-                            function Fee(p) {
-                                if (p)
-                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                        if (p[ks[i]] != null)
-                                            this[ks[i]] = p[ks[i]];
-                            }
-
-                            Fee.prototype.amount = "";
-                            Fee.prototype.description = "";
-
-                            Fee.create = function create(properties) {
-                                return new Fee(properties);
-                            };
-
-                            return Fee;
-                        })();
-
-                        TransferQuote.FxRate = (function() {
-
-                            function FxRate(p) {
-                                if (p)
-                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                        if (p[ks[i]] != null)
-                                            this[ks[i]] = p[ks[i]];
-                            }
-
-                            FxRate.prototype.baseCurrency = "";
-                            FxRate.prototype.quoteCurrency = "";
-                            FxRate.prototype.rate = "";
-
-                            FxRate.create = function create(properties) {
-                                return new FxRate(properties);
-                            };
-
-                            return FxRate;
-                        })();
-
-                        return TransferQuote;
-                    })();
-
-                    pricing.Pricing = (function() {
-
-                        function Pricing(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        Pricing.prototype.sourceQuote = null;
-                        Pricing.prototype.destinationQuote = null;
-                        Pricing.prototype.instructions = null;
-
-                        Pricing.create = function create(properties) {
-                            return new Pricing(properties);
-                        };
-
-                        return Pricing;
-                    })();
-
-                    pricing.FeeResponsibility = (function() {
-                        const valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "INVALID_FEE"] = 0;
-                        values[valuesById[1] = "SOURCE_FEE"] = 1;
-                        values[valuesById[2] = "DESTINATION_FEE"] = 2;
-                        values[valuesById[3] = "SHARED_FEE"] = 3;
-                        return values;
-                    })();
-
-                    pricing.FxResponsibility = (function() {
-                        const valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "INVALID_FX"] = 0;
-                        values[valuesById[1] = "SOURCE_FX"] = 1;
-                        values[valuesById[2] = "SHARED_FX"] = 2;
-                        return values;
-                    })();
-
-                    pricing.PricingInstructions = (function() {
-
-                        function PricingInstructions(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        PricingInstructions.prototype.feesPaidBy = 0;
-                        PricingInstructions.prototype.fxPerformedBy = 0;
-
-                        PricingInstructions.create = function create(properties) {
-                            return new PricingInstructions(properties);
-                        };
-
-                        return PricingInstructions;
-                    })();
-
-                    return pricing;
-                })();
-
-                common.security = (function() {
-
-                    const security = {};
-
-                    security.Key = (function() {
-
-                        function Key(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        Key.prototype.id = "";
-                        Key.prototype.publicKey = "";
-                        Key.prototype.level = 0;
-                        Key.prototype.algorithm = 0;
-                        Key.prototype.expiresAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-
-                        Key.create = function create(properties) {
-                            return new Key(properties);
-                        };
-
-                        Key.Algorithm = (function() {
-                            const valuesById = {}, values = Object.create(valuesById);
-                            values[valuesById[0] = "INVALID_ALGORITHM"] = 0;
-                            values[valuesById[1] = "ED25519"] = 1;
-                            values[valuesById[2] = "ECDSA_SHA256"] = 2;
-                            values[valuesById[3] = "RS256"] = 3;
-                            return values;
-                        })();
-
-                        Key.Level = (function() {
-                            const valuesById = {}, values = Object.create(valuesById);
-                            values[valuesById[0] = "INVALID_LEVEL"] = 0;
-                            values[valuesById[1] = "PRIVILEGED"] = 1;
-                            values[valuesById[2] = "STANDARD"] = 2;
-                            values[valuesById[3] = "LOW"] = 3;
-                            return values;
-                        })();
-
-                        return Key;
-                    })();
-
-                    security.PrivateKey = (function() {
-
-                        function PrivateKey(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        PrivateKey.prototype.id = "";
-                        PrivateKey.prototype.privateKey = "";
-                        PrivateKey.prototype.level = 0;
-                        PrivateKey.prototype.algorithm = 0;
-
-                        PrivateKey.create = function create(properties) {
-                            return new PrivateKey(properties);
-                        };
-
-                        return PrivateKey;
-                    })();
-
-                    security.Signature = (function() {
-
-                        function Signature(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        Signature.prototype.memberId = "";
-                        Signature.prototype.keyId = "";
-                        Signature.prototype.signature = "";
-
-                        Signature.create = function create(properties) {
-                            return new Signature(properties);
-                        };
-
-                        return Signature;
-                    })();
-
-                    security.SealedMessage = (function() {
-
-                        function SealedMessage(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        SealedMessage.prototype.ciphertext = "";
-                        SealedMessage.prototype.noop = null;
-                        SealedMessage.prototype.rsa = null;
-                        SealedMessage.prototype.rsaAes = null;
-
-                        let $oneOfFields;
-
-                        Object.defineProperty(SealedMessage.prototype, "method", {
-                            get: $util.oneOfGetter($oneOfFields = ["noop", "rsa", "rsaAes"]),
-                            set: $util.oneOfSetter($oneOfFields)
-                        });
-
-                        SealedMessage.create = function create(properties) {
-                            return new SealedMessage(properties);
-                        };
-
-                        SealedMessage.NoopMethod = (function() {
-
-                            function NoopMethod(p) {
-                                if (p)
-                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                        if (p[ks[i]] != null)
-                                            this[ks[i]] = p[ks[i]];
-                            }
-
-                            NoopMethod.create = function create(properties) {
-                                return new NoopMethod(properties);
-                            };
-
-                            return NoopMethod;
-                        })();
-
-                        SealedMessage.RsaMethod = (function() {
-
-                            function RsaMethod(p) {
-                                if (p)
-                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                        if (p[ks[i]] != null)
-                                            this[ks[i]] = p[ks[i]];
-                            }
-
-                            RsaMethod.prototype.keyId = "";
-                            RsaMethod.prototype.algorithm = "";
-                            RsaMethod.prototype.signature = "";
-                            RsaMethod.prototype.signatureKeyId = "";
-
-                            RsaMethod.create = function create(properties) {
-                                return new RsaMethod(properties);
-                            };
-
-                            return RsaMethod;
-                        })();
-
-                        SealedMessage.RsaAesMethod = (function() {
-
-                            function RsaAesMethod(p) {
-                                if (p)
-                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                        if (p[ks[i]] != null)
-                                            this[ks[i]] = p[ks[i]];
-                            }
-
-                            RsaAesMethod.prototype.rsaKeyId = "";
-                            RsaAesMethod.prototype.rsaAlgorithm = "";
-                            RsaAesMethod.prototype.aesAlgorithm = "";
-                            RsaAesMethod.prototype.encryptedAesKey = "";
-                            RsaAesMethod.prototype.signature = "";
-                            RsaAesMethod.prototype.signatureKeyId = "";
-
-                            RsaAesMethod.create = function create(properties) {
-                                return new RsaAesMethod(properties);
-                            };
-
-                            return RsaAesMethod;
-                        })();
-
-                        return SealedMessage;
-                    })();
-
-                    return security;
-                })();
-
-                common.subscriber = (function() {
-
-                    const subscriber = {};
-
-                    subscriber.Subscriber = (function() {
-
-                        function Subscriber(p) {
-                            this.handlerInstructions = {};
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        Subscriber.prototype.id = "";
-                        Subscriber.prototype.handler = "";
-                        Subscriber.prototype.handlerInstructions = $util.emptyObject;
-
-                        Subscriber.create = function create(properties) {
-                            return new Subscriber(properties);
-                        };
-
-                        return Subscriber;
-                    })();
-
-                    return subscriber;
                 })();
 
                 common.token = (function() {
@@ -2281,92 +2149,131 @@ export const io = $root.io = (() => {
                     return token;
                 })();
 
-                common.transaction = (function() {
+                common.pricing = (function() {
 
-                    const transaction = {};
+                    const pricing = {};
 
-                    transaction.TransactionType = (function() {
-                        const valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "INVALID_TYPE"] = 0;
-                        values[valuesById[1] = "DEBIT"] = 1;
-                        values[valuesById[2] = "CREDIT"] = 2;
-                        return values;
-                    })();
+                    pricing.TransferQuote = (function() {
 
-                    transaction.TransactionStatus = (function() {
-                        const valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "INVALID_STATUS"] = 0;
-                        values[valuesById[1] = "PENDING"] = 1;
-                        values[valuesById[7] = "PROCESSING"] = 7;
-                        values[valuesById[2] = "SUCCESS"] = 2;
-                        values[valuesById[10] = "FAILURE_CANCELED"] = 10;
-                        values[valuesById[3] = "FAILURE_INSUFFICIENT_FUNDS"] = 3;
-                        values[valuesById[4] = "FAILURE_INVALID_CURRENCY"] = 4;
-                        values[valuesById[6] = "FAILURE_PERMISSION_DENIED"] = 6;
-                        values[valuesById[11] = "FAILURE_QUOTE_EXPIRED"] = 11;
-                        values[valuesById[12] = "FAILURE_INVALID_AMOUNT"] = 12;
-                        values[valuesById[13] = "FAILURE_INVALID_QUOTE"] = 13;
-                        values[valuesById[14] = "FAILURE_EXPIRED"] = 14;
-                        values[valuesById[5] = "FAILURE_GENERIC"] = 5;
-                        return values;
-                    })();
-
-                    transaction.Transaction = (function() {
-
-                        function Transaction(p) {
-                            this.metadata = {};
+                        function TransferQuote(p) {
+                            this.fees = [];
+                            this.rates = [];
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
                                         this[ks[i]] = p[ks[i]];
                         }
 
-                        Transaction.prototype.id = "";
-                        Transaction.prototype.type = 0;
-                        Transaction.prototype.status = 0;
-                        Transaction.prototype.amount = null;
-                        Transaction.prototype.description = "";
-                        Transaction.prototype.tokenId = "";
-                        Transaction.prototype.tokenTransferId = "";
-                        Transaction.prototype.createdAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-                        Transaction.prototype.metadata = $util.emptyObject;
+                        TransferQuote.prototype.id = "";
+                        TransferQuote.prototype.accountCurrency = "";
+                        TransferQuote.prototype.feesTotal = "";
+                        TransferQuote.prototype.fees = $util.emptyArray;
+                        TransferQuote.prototype.rates = $util.emptyArray;
+                        TransferQuote.prototype.expiresAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
-                        Transaction.create = function create(properties) {
-                            return new Transaction(properties);
+                        TransferQuote.create = function create(properties) {
+                            return new TransferQuote(properties);
                         };
 
-                        return Transaction;
+                        TransferQuote.Fee = (function() {
+
+                            function Fee(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            Fee.prototype.amount = "";
+                            Fee.prototype.description = "";
+
+                            Fee.create = function create(properties) {
+                                return new Fee(properties);
+                            };
+
+                            return Fee;
+                        })();
+
+                        TransferQuote.FxRate = (function() {
+
+                            function FxRate(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            FxRate.prototype.baseCurrency = "";
+                            FxRate.prototype.quoteCurrency = "";
+                            FxRate.prototype.rate = "";
+
+                            FxRate.create = function create(properties) {
+                                return new FxRate(properties);
+                            };
+
+                            return FxRate;
+                        })();
+
+                        return TransferQuote;
                     })();
 
-                    transaction.Balance = (function() {
+                    pricing.Pricing = (function() {
 
-                        function Balance(p) {
+                        function Pricing(p) {
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
                                         this[ks[i]] = p[ks[i]];
                         }
 
-                        Balance.prototype.accountId = "";
-                        Balance.prototype.current = null;
-                        Balance.prototype.available = null;
+                        Pricing.prototype.sourceQuote = null;
+                        Pricing.prototype.destinationQuote = null;
+                        Pricing.prototype.instructions = null;
 
-                        Balance.create = function create(properties) {
-                            return new Balance(properties);
+                        Pricing.create = function create(properties) {
+                            return new Pricing(properties);
                         };
 
-                        return Balance;
+                        return Pricing;
                     })();
 
-                    transaction.RequestStatus = (function() {
+                    pricing.FeeResponsibility = (function() {
                         const valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "INVALID_REQUEST"] = 0;
-                        values[valuesById[1] = "SUCCESSFUL_REQUEST"] = 1;
-                        values[valuesById[2] = "MORE_SIGNATURES_NEEDED"] = 2;
+                        values[valuesById[0] = "INVALID_FEE"] = 0;
+                        values[valuesById[1] = "SOURCE_FEE"] = 1;
+                        values[valuesById[2] = "DESTINATION_FEE"] = 2;
+                        values[valuesById[3] = "SHARED_FEE"] = 3;
                         return values;
                     })();
 
-                    return transaction;
+                    pricing.FxResponsibility = (function() {
+                        const valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "INVALID_FX"] = 0;
+                        values[valuesById[1] = "SOURCE_FX"] = 1;
+                        values[valuesById[2] = "SHARED_FX"] = 2;
+                        return values;
+                    })();
+
+                    pricing.PricingInstructions = (function() {
+
+                        function PricingInstructions(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        PricingInstructions.prototype.feesPaidBy = 0;
+                        PricingInstructions.prototype.fxPerformedBy = 0;
+
+                        PricingInstructions.create = function create(properties) {
+                            return new PricingInstructions(properties);
+                        };
+
+                        return PricingInstructions;
+                    })();
+
+                    return pricing;
                 })();
 
                 common.transfer = (function() {
@@ -2430,6 +2337,96 @@ export const io = $root.io = (() => {
                     })();
 
                     return transfer;
+                })();
+
+                common.transaction = (function() {
+
+                    const transaction = {};
+
+                    transaction.TransactionType = (function() {
+                        const valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "INVALID_TYPE"] = 0;
+                        values[valuesById[1] = "DEBIT"] = 1;
+                        values[valuesById[2] = "CREDIT"] = 2;
+                        return values;
+                    })();
+
+                    transaction.TransactionStatus = (function() {
+                        const valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "INVALID_STATUS"] = 0;
+                        values[valuesById[1] = "PENDING"] = 1;
+                        values[valuesById[7] = "PROCESSING"] = 7;
+                        values[valuesById[2] = "SUCCESS"] = 2;
+                        values[valuesById[15] = "PENDING_EXTERNAL_AUTHORIZATION"] = 15;
+                        values[valuesById[10] = "FAILURE_CANCELED"] = 10;
+                        values[valuesById[3] = "FAILURE_INSUFFICIENT_FUNDS"] = 3;
+                        values[valuesById[4] = "FAILURE_INVALID_CURRENCY"] = 4;
+                        values[valuesById[6] = "FAILURE_PERMISSION_DENIED"] = 6;
+                        values[valuesById[11] = "FAILURE_QUOTE_EXPIRED"] = 11;
+                        values[valuesById[12] = "FAILURE_INVALID_AMOUNT"] = 12;
+                        values[valuesById[13] = "FAILURE_INVALID_QUOTE"] = 13;
+                        values[valuesById[14] = "FAILURE_EXPIRED"] = 14;
+                        values[valuesById[5] = "FAILURE_GENERIC"] = 5;
+                        values[valuesById[16] = "SENT"] = 16;
+                        return values;
+                    })();
+
+                    transaction.Transaction = (function() {
+
+                        function Transaction(p) {
+                            this.metadata = {};
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Transaction.prototype.id = "";
+                        Transaction.prototype.type = 0;
+                        Transaction.prototype.status = 0;
+                        Transaction.prototype.amount = null;
+                        Transaction.prototype.description = "";
+                        Transaction.prototype.tokenId = "";
+                        Transaction.prototype.tokenTransferId = "";
+                        Transaction.prototype.createdAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        Transaction.prototype.metadata = $util.emptyObject;
+
+                        Transaction.create = function create(properties) {
+                            return new Transaction(properties);
+                        };
+
+                        return Transaction;
+                    })();
+
+                    transaction.Balance = (function() {
+
+                        function Balance(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Balance.prototype.accountId = "";
+                        Balance.prototype.current = null;
+                        Balance.prototype.available = null;
+
+                        Balance.create = function create(properties) {
+                            return new Balance(properties);
+                        };
+
+                        return Balance;
+                    })();
+
+                    transaction.RequestStatus = (function() {
+                        const valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "INVALID_REQUEST"] = 0;
+                        values[valuesById[1] = "SUCCESSFUL_REQUEST"] = 1;
+                        values[valuesById[2] = "MORE_SIGNATURES_NEEDED"] = 2;
+                        return values;
+                    })();
+
+                    return transaction;
                 })();
 
                 common.transferinstructions = (function() {
@@ -2543,6 +2540,34 @@ export const io = $root.io = (() => {
                     })();
 
                     return transferinstructions;
+                })();
+
+                common.subscriber = (function() {
+
+                    const subscriber = {};
+
+                    subscriber.Subscriber = (function() {
+
+                        function Subscriber(p) {
+                            this.handlerInstructions = {};
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Subscriber.prototype.id = "";
+                        Subscriber.prototype.handler = "";
+                        Subscriber.prototype.handlerInstructions = $util.emptyObject;
+
+                        Subscriber.create = function create(properties) {
+                            return new Subscriber(properties);
+                        };
+
+                        return Subscriber;
+                    })();
+
+                    return subscriber;
                 })();
 
                 return common;
