@@ -7,6 +7,11 @@
 		"name": "Token",
 		"url": "https://token.io/"
 	},
+	"homepage": "https://github.com/tokenio/sdk-js",
+	"repository": {
+		"type" : "git",
+		"url" : "git://github.com/tokenio/sdk-js.git"
+	},
 	"scripts": {
 		"lint": "eslint src test",
 		"test": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
