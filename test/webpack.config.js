@@ -2,29 +2,30 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const {resolve, dirname} = require('path');
 
-const {ENV: testEnv = 'dev'} = process.env;
+const {ENV: TEST_ENV = 'dev'} = process.env;
 
-module.exports = (env = 'node') => {
-    const envConfig = {
+const targetConfig = {
+    node: {
+        target: 'node',
+        context: resolve(dirname(__dirname)),
+        externals: [nodeExternals()],
         node: {
-            target: 'node',
-            context: resolve(dirname(__dirname)),
-            externals: [nodeExternals()],
-            node: {
-                __dirname: true,
-            },
+            __dirname: true,
         },
-        browser: {
-            externals: 'fs-extra',
-        },
-    };
+    },
+    browser: {
+        externals: 'fs-extra',
+    },
+};
+
+module.exports = (target = 'node') => {
     return {
-        ...envConfig[env],
+        ...targetConfig[target],
         mode: 'development',
         plugins: [
             new webpack.DefinePlugin({
-                BROWSER: JSON.stringify(env === 'browser'),
-                TEST_ENV: JSON.stringify(testEnv),
+                BROWSER: JSON.stringify(target === 'browser'),
+                TEST_ENV: JSON.stringify(TEST_ENV),
                 TOKEN_VERSION: JSON.stringify(require('../package.json').version),
             }),
         ],

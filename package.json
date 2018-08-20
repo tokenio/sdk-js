@@ -9,19 +9,19 @@
 	},
 	"homepage": "https://github.com/tokenio/sdk-js",
 	"repository": {
-		"type" : "git",
-		"url" : "git://github.com/tokenio/sdk-js.git"
+		"type": "git",
+		"url": "git://github.com/tokenio/sdk-js.git"
 	},
 	"scripts": {
 		"lint": "eslint src test",
 		"test": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
-		"testBrowser": "eslint test && karma start test/karma.config.js",
+		"testBrowser": "eslint test && TARGET=browser karma start test/karma.config.js",
 		"bambooDev": "npm run lint && cross-env node_modules/mocha-webpack/bin/mocha-webpack --webpack-config test/webpack.config.js -t 60000 -c -R mocha-bamboo-reporter  \"test/**/*.spec.js\"",
 		"build:cjs": "rollup -c",
 		"build:esm": "cross-env FORMAT=esm rollup -c",
-		"build:cjs:browser": "cross-env ENV=browser rollup -c",
-		"build:esm:browser": "cross-env FORMAT=esm ENV=browser rollup -c",
-		"build:iife": "cross-env FORMAT=iife ENV=browser rollup -c",
+		"build:cjs:browser": "cross-env TARGET=browser rollup -c",
+		"build:esm:browser": "cross-env FORMAT=esm TARGET=browser rollup -c",
+		"build:iife": "cross-env FORMAT=iife TARGET=browser rollup -c",
 		"build": "eslint src && rimraf dist && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife && ncp index.js.flow dist/tokenio.js.flow",
 		"proto": "node proto.js",
 		"doc": "./node_modules/esdoc/out/src/ESDocCLI.js"
@@ -80,13 +80,12 @@
 		"webpack-node-externals": "^1.7.2"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.0.0-rc.1",
+		"@babel/runtime-corejs2": "^7.0.0-rc.1",
 		"axios": "^0.18.0",
 		"base64-js": "^1.3.0",
 		"base64url": "2.0.0",
 		"bs58": "^4.0.1",
 		"buffer": "5.2.0",
-		"es6-promise": "^4.2.4",
 		"fast-json-stable-stringify": "^2.0.0",
 		"fast-sha256": "^1.1.0",
 		"protobufjs": "^6.8.8",

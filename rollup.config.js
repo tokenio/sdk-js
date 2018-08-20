@@ -9,13 +9,12 @@ import resolve from 'rollup-plugin-node-resolve';
 import pkg from './package.json';
 
 const {
-    ENV: env = 'node',
-    FORMAT: format = 'cjs',
-    TEST_ENV = 'dev',
+    TARGET = 'node',
+    FORMAT = 'cjs',
 } = process.env;
 
-const isBrowser = env === 'browser';
-const isModule = format === 'cjs' || format === 'esm';
+const isBrowser = TARGET === 'browser';
+const isModule = FORMAT === 'cjs' || FORMAT === 'esm';
 
 const dest = {
     node: {
@@ -32,8 +31,8 @@ const dest = {
 const config = {
     input: 'src/index.js',
     output: {
-        format,
-        file: dest[env][format],
+        format: FORMAT,
+        file: dest[TARGET][FORMAT],
         indent: false,
     },
     plugins: [
@@ -44,7 +43,6 @@ const config = {
         }),
         replace({
             BROWSER: isBrowser,
-            TEST_ENV,
             TOKEN_VERSION: JSON.stringify(pkg.version),
         }),
         filesize(),
