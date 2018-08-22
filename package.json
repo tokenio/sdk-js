@@ -5,7 +5,7 @@
 	"license": "ISC",
 	"author": {
 		"name": "Token",
-		"url": "https://token.io/"
+		"url": "https://token.io"
 	},
 	"homepage": "https://github.com/tokenio/sdk-js",
 	"repository": {
@@ -85,7 +85,7 @@
 		"base64-js": "^1.3.0",
 		"base64url": "2.0.0",
 		"bs58": "^4.0.1",
-		"buffer": "5.2.0",
+		"buffer": "^5.2.0",
 		"fast-json-stable-stringify": "^2.0.0",
 		"fast-sha256": "^1.1.0",
 		"protobufjs": "^6.8.8",

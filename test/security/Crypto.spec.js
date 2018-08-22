@@ -1,6 +1,6 @@
-const chai = require('chai');
-const assert = chai.assert;
 import Crypto from '../../src/security/Crypto';
+
+const {assert} = require('chai');
 
 describe('Key management', () => {
     it('should generate a key', async () => {

@@ -1,12 +1,9 @@
-/* eslint-disable no-unused-vars*/
 import FileSystem from '../../../src/security/PromiseFileSystem';
-
-const chai = require('chai');
-const assert = chai.assert;
-
 import UnsecuredFileCryptoEngine from '../../../src/security/engines/UnsecuredFileCryptoEngine';
 import {TokenIO} from '../../../src';
+
 const devKey = require('../../../src/config.json').devKey[TEST_ENV];
+const {assert} = require('chai');
 
 let fs;
 let path;
@@ -165,7 +162,7 @@ describe('Unsecured File crypto engine', () => {
 
             const engine = new UnsecuredFileCryptoEngine(newMemberId);
             try {
-                const signer = await engine.createSigner('LOW');
+                const signer = await engine.createSigner('LOW'); // eslint-disable-line
                 return Promise.reject(new Error('should fail'));
             } catch (err) {
                 // Fails as expeceted

@@ -1,8 +1,7 @@
-const chai = require('chai');
-const assert = chai.assert;
-
 import MemoryCryptoEngine from '../../../src/security/engines/MemoryCryptoEngine';
 import Util from '../../../src/Util';
+
+const {assert} = require('chai');
 
 describe('Memory crypto engines', () => {
     it('should create the memory crypto engines', () => {

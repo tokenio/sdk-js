@@ -1,14 +1,11 @@
 import TestUtil from '../../TestUtil';
-
-const chai = require('chai');
-
-const assert = chai.assert;
-
 import BrowserKeyStore from '../../../src/security/engines/BrowserKeyStore';
 import MemoryKeyStore from '../../../src/security/engines/MemoryKeyStore';
 import UnsecuredFileKeyStore from '../../../src/security/engines/UnsecuredFileKeyStore';
 import Crypto from '../../../src/security/Crypto';
 import Util from '../../../src/Util';
+
+const {assert} = require('chai');
 
 let keyStores = [MemoryKeyStore, BrowserKeyStore];
 let testDir;

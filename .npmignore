@@ -1,5 +1,5 @@
-node_modules
-.tmp
-.DS_Store
-**/.DS_Store
-src
+.npmignore
+.gitignore
+.eslintignore
+proto.js
+index.js.flow

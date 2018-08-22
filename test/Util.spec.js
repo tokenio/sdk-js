@@ -1,4 +1,5 @@
 import Util from '../src/Util';
+
 const {assert} = require('chai');
 
 describe('Util', () => {

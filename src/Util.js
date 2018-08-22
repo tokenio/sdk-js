@@ -1,12 +1,13 @@
-/**
- * Class to provide static utility functions.
- */
 import bs58 from 'bs58';
 import sha256 from 'fast-sha256';
 import stringify from 'fast-json-stable-stringify';
 import base64Url from 'base64url';
 import {Buffer as NodeBuffer} from 'buffer';
+import {Alias, Key} from './proto/classes';
 
+/**
+ * Class to provide static utility functions.
+ */
 class Util {
     /**
      * Generates a random nonce
@@ -23,10 +24,10 @@ class Util {
      * @return {Object} alias protobuf
      */
     static randomAlias() {
-        return {
+        return Alias.create({
             type: 'EMAIL',
             value: 'test-' + Util.generateNonce() + '+noverify@example.com',
-        };
+        });
     }
 
     /**
@@ -35,11 +36,11 @@ class Util {
      * @return {Object} token alias protobuf
      */
     static tokenAlias() {
-        return {
+        return Alias.create({
             type: 'DOMAIN',
             value: 'token.io',
             realm: 'token',
-        };
+        });
     }
 
     /**
@@ -261,13 +262,13 @@ class Util {
      * @return {Object} token key
      */
     static tokenKey(key, level) {
-        return {
+        return Key.create({
             id: key.id,
             level: level,
             algorithm: key.algorithm,
             publicKey: Util.strKey(key.publicKey),
             ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
-        };
+        });
     }
 
     static parseParamsFromUrl(url) {

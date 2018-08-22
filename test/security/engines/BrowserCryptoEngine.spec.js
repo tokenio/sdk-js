@@ -1,8 +1,7 @@
-const chai = require('chai');
-const assert = chai.assert;
-
 import BrowserCryptoEngine from '../../../src/security/engines/BrowserCryptoEngine';
 import Util from '../../../src/Util';
+
+const {assert} = require('chai');
 
 describe('Browser crypto engines', () => {
     if (BROWSER) {

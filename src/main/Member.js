@@ -248,7 +248,7 @@ export default class Member {
                 },
             };
             const res = await this._client.addRecoveryRule(prevHash, rule);
-            return res.data.member?.receoveryRule &&
+            return res.data.member?.recoveryRule &&
                 RecoveryRule.create(res.data.member.recoveryRule);
         });
     }
@@ -324,7 +324,7 @@ export default class Member {
     getDefaultAccount(): Promise<?Account> {
         return Util.callAsync(this.getDefaultAccount, async () => {
             const res = await this._client.getDefaultAccount(this.memberId());
-            return res.data.account && res.data.account.map(a => Account.create(a));
+            return res.data.account && Account.create(res.data.account);
         });
     }
 
@@ -337,7 +337,7 @@ export default class Member {
     setDefaultAccount(accountId: string): Promise<?Account> {
         return Util.callAsync(this.setDefaultAccount, async () => {
             const res = await this._client.setDefaultAccount(accountId, this.memberId());
-            return res.data.account && res.data.account.map(a => Account.create(a));
+            return res.data.account && Account.create(res.data.account);
         });
     }
 

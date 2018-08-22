@@ -1,8 +1,7 @@
-const chai = require('chai');
-const assert = chai.assert;
-
 import FileSystem from '../../src/security/PromiseFileSystem';
 import Util from '../../src/Util';
+
+const {assert} = require('chai');
 
 let fs;
 let path;

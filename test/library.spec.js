@@ -1,7 +1,8 @@
-const devKey = require('../src/config.json').devKey[TEST_ENV];
-const {assert} = require('chai');
 import TestUtil from './TestUtil';
 import {TokenIO} from '../src';
+
+const devKey = require('../src/config.json').devKey[TEST_ENV];
+const {assert} = require('chai');
 
 const Token = new TokenIO({env: TEST_ENV, developerKey: devKey});
 
