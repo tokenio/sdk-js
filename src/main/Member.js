@@ -874,7 +874,7 @@ export default class Member {
                 refId);
 
             if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
-                let error = new Error('PENDING_EXTERNAL_AUTHORIZATION');
+                const error = new Error('PENDING_EXTERNAL_AUTHORIZATION');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
