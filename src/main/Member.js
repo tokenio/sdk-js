@@ -872,6 +872,12 @@ export default class Member {
                 description,
                 destinations,
                 refId);
+
+            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
+                const error = new Error('PENDING_EXTERNAL_AUTHORIZATION');
+                error.authorizationDetails = res.data.authorizationDetails;
+                throw error;
+            }
             return res.data.transfer;
         });
     }
