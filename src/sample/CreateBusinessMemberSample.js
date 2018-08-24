@@ -1,4 +1,4 @@
-import {TokenIO} from '..';
+import {TokenIO, Alias} from '..';
 
 /**
  * Imports and sets up the SDK, and creates a business Token member with the MemoryCryptoEngine
@@ -19,10 +19,10 @@ export default async () => {
     //
     // In test environments, we can use this domain as an alias
     // without verifying it; but in production, we can't.
-    const domain = {
+    const domain = Alias.create({
         type: 'EMAIL',
         value: 'domain-' + Token.Util.generateNonce() + '+nv@rst.com',
-    };
+    });
 
     // Create a member with keys stored in memory:
     return await Token.createBusinessMember(

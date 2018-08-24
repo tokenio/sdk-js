@@ -1,5 +1,5 @@
 import TestUtil from './TestUtil';
-import {TokenIO} from '../src';
+import {TokenIO, TransferEndpoint} from '../src';
 
 const devKey = require('../src/config.json').devKey[TEST_ENV];
 const {assert} = require('chai');
@@ -33,13 +33,13 @@ describe('Token library', () => {
 
         await member1.endorseToken(token.id);
 
-        await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [{
+        await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [TransferEndpoint.create({
             account: {
                 sepa: {
                     iban: Token.Util.generateNonce(),
                 },
             },
-        }]);
+        })]);
 
         await TestUtil.waitUntil(async () => {
             const transfers = await member1.getTransfers(token.id, null, 100);

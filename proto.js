@@ -26,7 +26,7 @@ async function downloadProtoAndGenerateClasses() {
         console.log('Unzipping proto JAR...');
         await exec('unzip -d proto proto/proto.jar *.proto');
         console.log('Generating classes...');
-        await exec('yarn run pbjs -t static-module -w es6 --no-encode --no-decode --no-verify --no-delimited --no-beautify --no-comments --no-convert -o src/proto/gen/proto.js proto/*.proto');
+        await exec('yarn pbjs -t static-module -w es6 --no-encode --no-decode --no-verify --no-delimited --no-beautify --no-comments -o src/proto/gen/proto.js proto/*.proto');
         console.log('Cleaning up...');
         await exec('rm -rf proto');
         console.log('Done!');

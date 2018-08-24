@@ -1,4 +1,6 @@
+import {Key, Alias, Address, Profile} from '..';
 import TestUtil from '../../test/TestUtil';
+import Util from '../Util';
 const {assert} = require('chai');
 
 /**
@@ -36,10 +38,10 @@ function loadPicture() {
 class MemberMethodsSample {
     static async aliases(Token, member) {
         const alias1 = (await member.aliases())[0]; // or member.firstAlias();
-        const alias2 = {
+        const alias2 = Alias.create({
             type: 'EMAIL',
             value: 'alias2-' + Token.Util.generateNonce() + '+noverify@token.io',
-        };
+        });
         await member.addAlias(alias2);
 
         /* only needed when adding +noverify aliases */
@@ -47,14 +49,14 @@ class MemberMethodsSample {
             assert.isOk((await member.aliases())[1]);
         });
 
-        const alias3 = {
+        const alias3 = Alias.create({
             type: 'EMAIL',
             value: 'alias3-' + Token.Util.generateNonce() + '+noverify@token.io',
-        };
-        const alias4 = {
+        });
+        const alias4 = Alias.create({
             type: 'EMAIL',
             value: 'alias4-' + Token.Util.generateNonce() + '+noverify@token.io',
-        };
+        });
         await member.addAliases([alias3, alias4]);
 
         /* only needed when adding +noverify aliases */
@@ -72,12 +74,13 @@ class MemberMethodsSample {
 
     static async keys(Token, member) {
         const keypair4 = await Token.Crypto.generateKeys('LOW');
-        delete keypair4.privateKey;
-        await member.approveKey(keypair4);
+        keypair4.publicKey = Util.strKey(keypair4.publicKey);
+        await member.approveKey(Key.create(keypair4));
         const keypair5 = await Token.Crypto.generateKeys('STANDARD');
         const keypair6 = await Token.Crypto.generateKeys('PRIVILEGED');
-        delete keypair6.privateKey;
-        await member.approveKeys([keypair5, keypair6]);
+        keypair5.publicKey = Util.strKey(keypair5.publicKey);
+        keypair6.publicKey = Util.strKey(keypair6.publicKey);
+        await member.approveKeys([Key.create(keypair5), Key.create(keypair6)]);
 
         await member.removeKey(keypair4.id);
         await member.removeKeys([keypair5.id, keypair6.id]);
@@ -87,32 +90,32 @@ class MemberMethodsSample {
         // This sample code uses a few of the fields available in
         // an address; for full list (place, province, ...), see
         // https://developer.token.io/sdk/pbdoc/io_token_proto_common_address.html
-        const address1 = {
+        const address1 = Address.create({
             houseNumber: '221B',
             street: 'Baker St',
             city: 'London',
             postCode: 'NW1 6XE',
             country: 'UK',
-        };
+        });
         const addressRecord1 = await member.addAddress('Home', address1);
         await member.deleteAddress(addressRecord1.id);
-        const address2 = {
+        const address2 = Address.create({
             houseNumber: '16/17',
             street: 'Osloer Strasse',
             city: 'Berlin',
             postCode: 'D-13359',
             country: 'Germany',
-        };
+        });
         await member.addAddress('Office', address2);
         const addresses = await member.getAddresses();
         return addresses;
     }
 
     static async profiles(member) {
-        const name = {
+        const name = Profile.create({
             displayNameFirst: 'Tycho',
             displayNameLast: 'Nestoris',
-        };
+        });
         await member.setProfile(name);
         const jpeg = loadPicture('tycho.jpg'); // file contents as byte array
         await member.setProfilePicture('image/jpeg', jpeg);

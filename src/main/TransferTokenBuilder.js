@@ -372,7 +372,7 @@ export default class TransferTokenBuilder {
             if (res.data.status !== 'SUCCESS') {
                 throw new Error(res.data.status);
             }
-            return res.data.token && Token.create(res.data.token);
+            return Token.create(res.data.token);
         });
     }
 }

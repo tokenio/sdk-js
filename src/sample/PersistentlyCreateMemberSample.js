@@ -1,4 +1,4 @@
-import {TokenIO} from '..';
+import {TokenIO, Alias} from '..';
 
 /**
  * Imports and sets up the SDK, and creates a Token member with the MemoryCryptoEngine
@@ -18,10 +18,10 @@ export default async (developerKey) => {
     // ('name@token.io' would be more typical than a random string.
     // But if we run this code with the same alias twice,
     // the 2nd time it will fail because the name is taken.)
-    const alias = {
+    const alias = Alias.create({
         type: 'EMAIL',
         value: 'alias-' + Token.Util.generateNonce() + '+noverify@example.com',
-    };
+    });
 
     // Create a member with keys stored in memory:
     const member = await Token.createMember(

@@ -1,4 +1,5 @@
 import Crypto from '../Crypto';
+import Util from '../../Util';
 
 /**
  * Base crypto engine that are extended by others, it handles signatures, verifications, and key storage.
@@ -23,14 +24,13 @@ class KeyStoreCryptoEngine {
      *
      * @param {string} level - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
-     * @return {Object} key
+     * @return {Object} key in proto-compliant format
      */
     async generateKey(level, expirationMs) {
         const keyPair = await Crypto.generateKeys(level, expirationMs);
         const stored = await this._keystore.put(this._memberId, keyPair);
-        if (stored && stored.privateKey) {
-            delete stored.privateKey;
-        }
+        stored.publicKey = Util.strKey(stored.publicKey);
+        delete stored.privateKey;
         return stored;
     }
 

@@ -1,7 +1,7 @@
 import stringify from 'fast-json-stable-stringify';
 import CryptoNode from './CryptoNode';
 import CryptoBrowser from './CryptoBrowser';
-import base64Url from 'base64url';
+import base64url from 'base64url';
 import {Buffer} from 'buffer';
 import Util from '../Util';
 
@@ -21,6 +21,12 @@ class Crypto {
      */
     static async generateKeys(keyLevel, expirationMs, extractable) {
         return await CryptoLib.generateKeys(keyLevel, expirationMs, extractable);
+    }
+
+    static async generateTokenKeys(keyLevel, expirationMs) {
+        const keyPair = await Crypto.generateKeys(keyLevel, expirationMs);
+        keyPair.publicKey = Crypto.strKey(keyPair.publicKey);
+        delete keyPair.privateKey;
     }
 
     /**
@@ -112,7 +118,7 @@ class Crypto {
      */
     static strKey(key) {
         if (typeof key === 'string') return key;
-        return base64Url(key);
+        return base64url(key);
     }
 
     /**
@@ -128,11 +134,11 @@ class Crypto {
     /**
      * Converts a key from a string to buffer.
      *
-     * @param {string} key - base64Url encoded key
+     * @param {string} key - base64url encoded key
      * @return {Uint8Array} buffered key
      */
     static bufferKey(key) {
-        return Crypto.wrapBuffer(base64Url.toBuffer(key));
+        return Crypto.wrapBuffer(base64url.toBuffer(key));
     }
 }
 

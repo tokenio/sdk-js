@@ -1,8 +1,11 @@
+import {KeyLevel} from '..';
+
 /**
  * Sample code illustrating how to provision a device.
  * That is, how a member logs in with one device when their
  * account 'lives' on another device.
  */
+
 class ProvisionDeviceSample {
 
     /**
@@ -21,7 +24,7 @@ class ProvisionDeviceSample {
             alias,
             Token.UnsecuredFileCryptoEngine);
         const lowKey = deviceInfo.keys.filter(
-            k => k.level === Token.KeyLevel.LOW
+            k => k.level === KeyLevel.LOW
         )[0];
         const notifyStatus = await Token.notifyAddKey(
             alias,

@@ -1,9 +1,9 @@
 import bs58 from 'bs58';
 import sha256 from 'fast-sha256';
 import stringify from 'fast-json-stable-stringify';
-import base64Url from 'base64url';
+import base64url from 'base64url';
 import {Buffer as NodeBuffer} from 'buffer';
-import {Alias, Key} from './proto/classes';
+import {Alias} from './proto/classes';
 
 /**
  * Class to provide static utility functions.
@@ -231,7 +231,7 @@ class Util {
      */
     static strKey(key) {
         if (typeof key === 'string') return key;
-        return base64Url(key);
+        return base64url(key);
     }
 
     /**
@@ -247,28 +247,11 @@ class Util {
     /**
      * Converts a key from a string to buffer.
      *
-     * @param {string} key - base64Url encoded key
+     * @param {string} key - base64url encoded key
      * @return {Uint8Array} buffered key
      */
     static bufferKey(key) {
-        return Util.wrapBuffer(base64Url.toBuffer(key));
-    }
-
-    /**
-     * Converts a key to a token key.
-     *
-     * @param {Object} key - key
-     * @param {string} level - key level
-     * @return {Object} token key
-     */
-    static tokenKey(key, level) {
-        return Key.create({
-            id: key.id,
-            level: level,
-            algorithm: key.algorithm,
-            publicKey: Util.strKey(key.publicKey),
-            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
-        });
+        return Util.wrapBuffer(base64url.toBuffer(key));
     }
 
     static parseParamsFromUrl(url) {
@@ -285,7 +268,7 @@ class Util {
         instance.interceptors.response.use(
             (res) => res,
             (err) => {
-                console.log(err.response); // eslint-disable-line
+                console.log(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config.url}]`); // eslint-disable-line
                 return Promise.reject(err);
             });
     }

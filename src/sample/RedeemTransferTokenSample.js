@@ -1,3 +1,4 @@
+import {TransferEndpoint} from '..';
 import Util from '../Util';
 
 /**
@@ -18,13 +19,13 @@ export default async (payee, tokenId) => {
     const transferToken = await payee.getToken(tokenId);
 
     // Destination for sending the funds
-    const destination = {
+    const destination = TransferEndpoint.create({
         account: {
             sepa: {
                 iban: '123',
             },
         },
-    };
+    });
 
     // Payer redeems the token, getting a transfer
     const transfer = await payee.redeemToken(

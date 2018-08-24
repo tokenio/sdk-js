@@ -1,3 +1,5 @@
+import {Resource} from '..';
+
 /**
  * Replace an existing access token.
  *
@@ -8,8 +10,11 @@
 export default async (grantor, oldToken) => {
     const result = await grantor.replaceAndEndorseAccessToken(
         oldToken,
-        [{allAccounts: {}},
-            {allBalances: {}},
-            {allAddresses: {}}]);
+        [
+            Resource.create({allAccounts: {}}),
+            Resource.create({allBalances: {}}),
+            Resource.create({allAddresses: {}}),
+        ]
+    );
     return result.token;
 };

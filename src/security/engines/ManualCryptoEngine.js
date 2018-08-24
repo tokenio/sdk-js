@@ -1,7 +1,7 @@
 import MemoryKeyStore from './MemoryKeyStore';
 import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import Crypto from '../Crypto';
-import base64Url from 'base64url';
+import base64url from 'base64url';
 import sha256 from 'fast-sha256';
 
 let keys = [];
@@ -39,7 +39,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
                 keyPair.privateKey = Crypto.bufferKey(keyPair.privateKey);
             }
             if (!keyPair.id) {
-                keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
+                keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
             }
             keyPair.algorithm = 'ED25519';
         }

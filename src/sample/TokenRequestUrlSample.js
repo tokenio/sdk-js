@@ -1,4 +1,4 @@
-import {TokenIO} from '..';
+import {TokenIO, Resource} from '..';
 import Util from '../Util';
 
 const devKey = require('../../src/config.json').devKey[TEST_ENV];
@@ -78,8 +78,11 @@ class TokenRequestUrlSample {
         const granteeAlias = await grantee.firstAlias();
         const token = await grantor.createAccessToken(
             granteeAlias,
-            [{allAccounts: {}},   // user can call getAccounts
-                {allBalances: {}}]); // for each account, can getBalance
+            [
+                Resource.create({allAccounts: {}}), // user can call getAccounts
+                Resource.create({allBalances: {}}), // for each account, can getBalance
+            ]
+        );
 
         // Grantor endorses the token, creating and submitting a digital signature
         const result = await grantor.endorseToken(token);

@@ -1,3 +1,4 @@
+import {TokenPayload} from '..';
 import Util from '../Util';
 
 /**
@@ -19,7 +20,7 @@ export default async (Token, payee, payerAlias) => {
 
     // Payment request is a TokenPayload
     // protocol buffer.
-    const paymentRequest = {
+    const paymentRequest = TokenPayload.create({
         description: 'Sample payment request',
         from: {
             alias: payerAlias,
@@ -34,7 +35,7 @@ export default async (Token, payee, payerAlias) => {
         // if refID not set, the eventually-created
         // transfer token will have random refId:
         refId: cartId,
-    };
+    });
     const status = await Token.notifyPaymentRequest(paymentRequest);
     return status;
 };

@@ -1,11 +1,9 @@
 import config from '../config.json';
-import Crypto from '../security/Crypto';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
 import Util from '../Util';
-
-const axios = require('axios');
+import axios from 'axios';
 
 /**
  * Client to make unauthenticated requests to the Token gateway.
@@ -135,7 +133,7 @@ class HttpClient {
                     addKey: {
                         key: {
                             id: key.id,
-                            publicKey: Crypto.strKey(key.publicKey),
+                            publicKey: key.publicKey,
                             level: key.level,
                             algorithm: key.algorithm,
                             ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
@@ -176,7 +174,7 @@ class HttpClient {
                 addKey: {
                     key: {
                         id: key.id,
-                        publicKey: Crypto.strKey(key.publicKey),
+                        publicKey: key.publicKey,
                         level: key.level,
                         algorithm: key.algorithm,
                         ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
@@ -311,7 +309,7 @@ class HttpClient {
      * @return {Promise} response - response to the API call
      */
     async getTokenMember() {
-        const resolveAliasRes = await this.resolveAlias(Util.tokenAlias());
+        const resolveAliasRes = await this.resolveAlias(Util.tokenAlias().toJSON());
         const tokenMemberId = resolveAliasRes.data.member.id;
         const getMemberRes = await this.getMember(tokenMemberId);
         return getMemberRes.data.member;

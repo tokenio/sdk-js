@@ -1,6 +1,6 @@
-const utils = require('axios/lib/utils');
-const buildURL = require('axios/lib/helpers/buildURL');
-const isURLSameOrigin = require('axios/lib/helpers/isURLSameOrigin');
+import utils from 'axios/lib/utils';
+import buildURL from 'axios/lib/helpers/buildURL';
+import isURLSameOrigin from 'axios/lib/helpers/isURLSameOrigin';
 const btoa = (typeof window !== 'undefined' && window.btoa) || require('axios/lib/helpers/btoa');
 
 /**

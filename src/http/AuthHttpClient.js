@@ -1,4 +1,3 @@
-import Crypto from '../security/Crypto';
 import Util from '../Util';
 import AuthHeader from './AuthHeader';
 import AuthContext from './AuthContext';
@@ -7,10 +6,9 @@ import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
 import BlockingAdapter from './BlockingAdapter';
-
-const axios = require('axios');
-const base64js = require('base64-js');
-const stringify = require('fast-json-stable-stringify');
+import axios from 'axios';
+import base64js from 'base64-js';
+import stringify from 'fast-json-stable-stringify';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -406,12 +404,13 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async setProfilePicture(type, data) {
+        if (typeof data !== 'string') data = base64js.fromByteArray(data);
         const req = {
             payload: {
                 ownerId: this._memberId,
                 type: type,
                 name: 'profile',
-                data: base64js.fromByteArray(data),
+                data,
                 accessMode: 'PUBLIC',
             },
         };
@@ -1077,7 +1076,7 @@ class AuthHttpClient {
                     addKey: {
                         key: {
                             id: key.id,
-                            publicKey: Crypto.strKey(key.publicKey),
+                            publicKey: key.publicKey,
                             level: key.level,
                             algorithm: key.algorithm,
                             ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
@@ -1103,7 +1102,7 @@ class AuthHttpClient {
                 addKey: {
                     key: {
                         id: key.id,
-                        publicKey: Crypto.strKey(key.publicKey),
+                        publicKey: key.publicKey,
                         level: key.level,
                         algorithm: key.algorithm,
                         ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
@@ -1180,7 +1179,7 @@ class AuthHttpClient {
 
     /**
      * Get default recovery agent.
-     * @return {Object} GetDefaultAgentResponse gen buffer
+     * @return {Object} GetDefaultAgentResponse proto buffer
      */
     async getDefaultRecoveryAgent() {
         const request = {
@@ -1193,8 +1192,8 @@ class AuthHttpClient {
     /**
      * Set member's recovery rule.
      * @param {string} prevHash - hash of the previous directory entry.
-     * @param {Object} rule - RecoveryRule gen buffer specifying behavior.
-     * @return {Object} UpdateMemberResponse gen buffer
+     * @param {Object} rule - RecoveryRule proto buffer specifying behavior.
+     * @return {Object} UpdateMemberResponse proto buffer
      */
     async addRecoveryRule(prevHash, rule) {
         const update = {

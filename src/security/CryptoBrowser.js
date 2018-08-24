@@ -1,4 +1,4 @@
-import base64Url from 'base64url';
+import base64url from 'base64url';
 import Util from '../Util';
 
 const crypto = BROWSER && window.crypto;
@@ -24,7 +24,7 @@ class CryptoBrowser {
     static async generateKeys(keyLevel, expirationMs, extractable = false) {
         const keyPair = await CryptoBrowser._generateKeyPair(extractable);
         keyPair.level = keyLevel;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = (new Date()).getTime() + expirationMs;
+        if (expirationMs !== undefined) keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
         return keyPair;
     }
 
@@ -52,7 +52,7 @@ class CryptoBrowser {
             Util.wrapBuffer(message)
         ));
         if (algorithm === ECDSA) sig = CryptoBrowser._P1363ToDer(sig);
-        return base64Url(sig);
+        return base64url(sig);
     }
 
     /**
@@ -133,7 +133,7 @@ class CryptoBrowser {
             keyPair.privateKey = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
         }
         keyPair.publicKey = new Uint8Array(await crypto.subtle.exportKey('spki', keyPair.publicKey));
-        keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
+        keyPair.id = base64url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = algorithm;
         return keyPair;
     }

@@ -1,5 +1,3 @@
-const base64js = require('base64-js');
-
 /**
  * Fetches contents of a transfer token's attachments.
  *
@@ -19,7 +17,7 @@ export default async (payee, tokenId) => {
         const att = transferBody.attachments[ix];
         // download the content of the attachment[s] we want
         const blob = await payee.getTokenBlob(tokenId, att.blobId);
-        const blobContents = base64js.toByteArray(blob.payload.data);
+        const blobContents = blob.payload.data;
         allContents.push(blobContents);
     }
     return allContents;

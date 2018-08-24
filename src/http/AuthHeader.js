@@ -1,4 +1,4 @@
-const stringify = require('fast-json-stable-stringify');
+import stringify from 'fast-json-stable-stringify';
 import config from '../config.json';
 
 /**

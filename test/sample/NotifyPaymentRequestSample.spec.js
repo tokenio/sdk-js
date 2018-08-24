@@ -1,4 +1,4 @@
-import {TokenIO} from '../../src';
+import {NotifyStatus, TokenIO} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import NotifyPaymentRequestSample from '../../src/sample/NotifyPaymentRequestSample';
@@ -27,6 +27,6 @@ describe('NotifyPaymentRequestSample test', () => {
 
         const payerAlias = await payer.firstAlias();
         const res = await NotifyPaymentRequestSample(Token, payee, payerAlias);
-        assert.equal(res, 'ACCEPTED');
+        assert.equal(res, NotifyStatus.ACCEPTED);
     });
 });

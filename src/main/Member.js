@@ -26,9 +26,10 @@ import {
     RecoveryRule,
     AddressRecord,
     ReceiptContact,
+    TokenSignature,
     TransferEndpoint,
     TokenOperationResult,
-    OauthBankAuthorization,
+    OauthBankAuthorization, NotifyStatus,
 } from '../proto/classes';
 
 /**
@@ -138,7 +139,7 @@ export default class Member {
     approveKey(key: Key): Promise<void> {
         return Util.callAsync(this.approveKey, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.approveKey(prevHash, key);
+            await this._client.approveKey(prevHash, key.toJSON());
         });
     }
 
@@ -151,7 +152,7 @@ export default class Member {
     approveKeys(keys: Array<Key>): Promise<void> {
         return Util.callAsync(this.approveKeys, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.approveKeys(prevHash, keys);
+            await this._client.approveKeys(prevHash, keys.map(k => k.toJSON()));
         });
     }
 
@@ -190,7 +191,7 @@ export default class Member {
     addAlias(alias: Alias): Promise<void> {
         return Util.callAsync(this.addAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addAlias(prevHash, alias);
+            await this._client.addAlias(prevHash, alias.toJSON());
         });
     }
 
@@ -203,7 +204,7 @@ export default class Member {
     addAliases(aliases: Array<Alias>): Promise<void> {
         return Util.callAsync(this.addAliases, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.addAliases(prevHash, aliases);
+            await this._client.addAliases(prevHash, aliases.map(a => a.toJSON()));
         });
     }
 
@@ -216,7 +217,7 @@ export default class Member {
     removeAlias(alias: Alias): Promise<void> {
         return Util.callAsync(this.removeAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.removeAlias(prevHash, alias);
+            await this._client.removeAlias(prevHash, alias.toJSON());
         });
     }
 
@@ -229,14 +230,14 @@ export default class Member {
     removeAliases(aliases: Array<Alias>): Promise<void> {
         return Util.callAsync(this.removeAliases, async () => {
             const prevHash = await this._getPreviousHash();
-            await this._client.removeAliases(prevHash, aliases);
+            await this._client.removeAliases(prevHash, aliases.map(a => a.toJSON()));
         });
     }
 
     /**
      * Set the 'normal consumer' rule as member's recovery rule.
      * (As of Nov 2017, this rule was: To recover, verify an alias.)
-     * @return {Promise} promise containing RecoveryRule gen buffer.
+     * @return {Promise} promise containing RecoveryRule proto buffer.
      */
     useDefaultRecoveryRule(): Promise<?RecoveryRule> {
         return Util.callAsync(this.useDefaultRecoveryRule, async () => {
@@ -265,7 +266,7 @@ export default class Member {
     ): Promise<?Array<Account>> {
         return Util.callAsync(this.linkAccounts, async () => {
             if (authorization.accessToken) {
-                const res = await this._client.linkAccountsOauth(authorization);
+                const res = await this._client.linkAccountsOauth(authorization.toJSON());
                 if (res.data.status === 'FAILURE_BANK_AUTHORIZATION_REQUIRED') {
                     throw new Error('Cannot link accounts. Must send bankAuthorization retrieved' +
                         ' through push notification');
@@ -465,10 +466,10 @@ export default class Member {
      * @param {string} tokenId - token ID
      * @return {Promise} - notification status
      */
-    triggerStepUpNotification(tokenId: string): Promise<?string> {
+    triggerStepUpNotification(tokenId: string): Promise<?number> {
         return Util.callAsync(this.triggerStepUpNotification, async () => {
             const res = await this._client.triggerStepUpNotification(tokenId);
-            return res.data.status;
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -477,10 +478,10 @@ export default class Member {
      * @param {Array} accountIds - array of account ids
      * @return {Promise} - notification status
      */
-    triggerBalanceStepUpNotification(accountIds: Array<string>): Promise<?string> {
+    triggerBalanceStepUpNotification(accountIds: Array<string>): Promise<?number> {
         return Util.callAsync(this.triggerBalanceStepUpNotification, async () => {
             const res = await this._client.triggerBalanceStepUpNotification(accountIds);
-            return res.data.status;
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -493,12 +494,12 @@ export default class Member {
     triggerTransactionStepUpNotification(
         accountId: string,
         transactionId: string
-    ): Promise<?string> {
+    ): Promise<?number> {
         return Util.callAsync(this.triggerTransactionStepUpNotification, async () => {
             const res = await this._client.triggerTransactionStepUpNotification(
                 accountId,
                 transactionId);
-            return res.data.status;
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -511,7 +512,7 @@ export default class Member {
      */
     addAddress(name: string, address: Address): Promise<?AddressRecord> {
         return Util.callAsync(this.addAddress, async () => {
-            const res = await this._client.addAddress(name, address);
+            const res = await this._client.addAddress(name, address.toJSON());
             return res.data.address && AddressRecord.create(res.data.address);
         });
     }
@@ -563,7 +564,7 @@ export default class Member {
      */
     setProfile(profile: Profile): Promise<?Profile> {
         return Util.callAsync(this.setProfile, async () => {
-            const res = await this._client.setProfile(profile);
+            const res = await this._client.setProfile(profile.toJSON());
             return res.data.profile && Profile.create(res.data.profile);
         });
     }
@@ -661,9 +662,9 @@ export default class Member {
      */
     createAccessToken(alias: Alias, resources: Array<Resource>): Promise<?Token> {
         return Util.callAsync(this.createAccessToken, async () => {
-            return await (new AccessTokenBuilder(this._client, this, resources)
+            return await (new AccessTokenBuilder(this._client, this, resources.map(r => r.toJSON()))
                 .setFromId(this.memberId())
-                .setToAlias(alias)
+                .setToAlias(alias.toJSON())
                 .execute());
         });
     }
@@ -691,10 +692,10 @@ export default class Member {
         newResources: Array<Resource>
     ): Promise<?TokenOperationResult> {
         return Util.callAsync(this.replaceAccessToken, async () => {
-            const finalTokenToCancel = await this._resolveToken(tokenToCancel);
+            const finalTokenToCancel = await this._resolveToken(tokenToCancel.toJSON());
             const res = await this._client.replaceToken(
                 finalTokenToCancel,
-                newResources);
+                newResources.map(r => r.toJSON()));
             return res.data.result && TokenOperationResult.create(res.data.result);
         });
     }
@@ -711,10 +712,10 @@ export default class Member {
         newResources: Array<Resource>
     ): Promise<?TokenOperationResult> {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
-            const finalTokenToCancel = await this._resolveToken(tokenToCancel);
+            const finalTokenToCancel = await this._resolveToken(tokenToCancel.toJSON());
             const res = await this._client.replaceAndEndorseToken(
                 finalTokenToCancel,
-                newResources);
+                newResources.map(r => r.toJSON()));
             return res.data.result && TokenOperationResult.create(res.data.result);
         });
     }
@@ -837,12 +838,14 @@ export default class Member {
      * @param {Token} token - Transfer token to endorse. Can also be a {string} tokenId
      * @return {Promise} TokenOperationResult - endorsed token
      */
-    endorseToken(token: Token): Promise<TokenOperationResult> {
+    endorseToken(token: Token | string): Promise<TokenOperationResult> {
         return Util.callAsync(this.endorseToken, async () => {
-            const finalToken = await this._resolveToken(token);
+            let finalToken = await this._resolveToken(token);
+            finalToken = finalToken.toJSON();
             const endorsed = await this._client.endorseToken(finalToken);
             if (typeof token !== 'string') {
-                token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
+                token.payloadSignatures = endorsed.data.result.token.payloadSignatures
+                    .map(s => TokenSignature.create(s));
             }
             return endorsed.data.result && TokenOperationResult.create(endorsed.data.result);
         });
@@ -854,12 +857,14 @@ export default class Member {
      * @param {Token} token - token to cancel. Can also be a {string} tokenId
      * @return {Promise} TokenOperationResult - cancelled token
      */
-    cancelToken(token: Token): Promise<TokenOperationResult> {
+    cancelToken(token: Token | string): Promise<TokenOperationResult> {
         return Util.callAsync(this.cancelToken, async () => {
-            const finalToken = await this._resolveToken(token);
+            let finalToken = await this._resolveToken(token);
+            finalToken = finalToken.toJSON();
             const cancelled = await this._client.cancelToken(finalToken);
             if (typeof token !== 'string') {
-                token.payloadSignatures = cancelled.data.result.token.payloadSignatures;
+                token.payloadSignatures = cancelled.data.result.token.payloadSignatures
+                    .map(s => TokenSignature.create(s));
             }
             return cancelled.data.result && TokenOperationResult.create(cancelled.data.result);
         });
@@ -874,7 +879,7 @@ export default class Member {
     getBlockingCancelTokenFunction(token: Token | string): Promise<?() => void> {
         return Util.callAsync(this.getBlockingCancelTokenFunction, async () => {
             const finalToken = await this._resolveToken(token);
-            const cancelled = await this._client.cancelToken(finalToken, true);
+            const cancelled = await this._client.cancelToken(finalToken.toJSON(), true);
             if (cancelled && cancelled.data &&
               typeof cancelled.data.dispatchRequest === 'function') {
                 return cancelled.data.dispatchRequest;
@@ -897,7 +902,7 @@ export default class Member {
      * @return {Promise} transfer - Transfer created as a result of this redeem call
      */
     redeemToken(
-        token: Token,
+        token: Token | string,
         amount: ?number,
         currency: ?string,
         description: ?string,
@@ -905,7 +910,8 @@ export default class Member {
         refId?: string
     ): Promise<?Transfer> {
         return Util.callAsync(this.redeemToken, async () => {
-            const finalToken = await this._resolveToken(token);
+            let finalToken = await this._resolveToken(token);
+            finalToken = finalToken.toJSON();
             if (amount === undefined) {
                 amount = finalToken?.payload.transfer.lifetimeAmount;
             }
@@ -924,7 +930,7 @@ export default class Member {
                 amount,
                 currency,
                 description,
-                destinations,
+                destinations.map(d => d.toJSON()),
                 refId);
             return res.data.transfer && Transfer.create(res.data.transfer);
         });
@@ -1219,7 +1225,7 @@ export default class Member {
         });
     }
 
-    _resolveToken(token: string | Token): Promise<?Token> {
+    _resolveToken(token: string | Token): Promise<any> {
         return new Promise((resolve) => {
             if (typeof token === 'string') {
                 this.getToken(token)

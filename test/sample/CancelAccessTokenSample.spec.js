@@ -3,6 +3,7 @@ import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import CancelAccessTokenSample from '../../src/sample/CancelAccessTokenSample';
 import TestUtil from '../TestUtil';
+import {TokenOperationStatus} from '../../src';
 
 const {assert} = require('chai');
 
@@ -19,6 +20,6 @@ describe('CancelAccessTokenSample test', () => {
         const member2Alias = await member2.firstAlias();
         const res = await CreateAndEndorseAccessTokenSample(member, member2Alias);
         const res2 = await CancelAccessTokenSample(member, res.id);
-        assert.equal(res2.status, 'SUCCESS');
+        assert.equal(res2.status, TokenOperationStatus.SUCCESS);
     });
 });

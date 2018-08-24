@@ -15,8 +15,11 @@ import {
     Bank,
     Alias,
     Paging,
+    Signature,
     TokenMember,
-    TokenPayload, Signature, DeviceMetadata,
+    NotifyStatus,
+    TokenPayload,
+    DeviceMetadata,
 } from '../proto/classes';
 
 /**
@@ -124,7 +127,7 @@ export class TokenIO {
      */
     aliasExists(alias: Alias): Promise<boolean> {
         return Util.callAsync(this.aliasExists, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
             return !!res.data?.member?.id;
         });
     }
@@ -137,7 +140,7 @@ export class TokenIO {
      */
     resolveAlias(alias: Alias): Promise<?TokenMember> {
         return Util.callAsync(this.resolveAlias, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
             return res.data.member && TokenMember.create(res.data.member);
         });
     }
@@ -209,7 +212,7 @@ export class TokenIO {
         CryptoEngine: KeyStoreCryptoEngine
     ): Promise<{memberId: string, keys: Array<Key>}> {
         return Util.callAsync(this.provisionDevice, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
             if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
@@ -240,7 +243,7 @@ export class TokenIO {
         expirationMs?: number = config.lowKeyExpiration
     ): Promise<{memberId: string, keys: Array<Key>}> {
         return Util.callAsync(this.provisionDeviceLow, async () => {
-            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
             if (!res.data.member || !res.data.member.id) {
                 throw new Error('Invalid alias');
             }
@@ -294,15 +297,15 @@ export class TokenIO {
     notifyLinkAccounts(
         alias: Alias,
         bankAuthorization: any
-    ): Promise<?string> {
+    ): Promise<?number> {
         const body = {
             linkAccounts: {
                 bankAuthorization,
             },
         };
         return Util.callAsync(this.notifyLinkAccounts, async () => {
-            const res = await this._unauthenticatedClient.notify(alias, body);
-            return res.data.status;
+            const res = await this._unauthenticatedClient.notify(alias.toJSON(), body);
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -323,7 +326,8 @@ export class TokenIO {
         key: Key,
         level: string,
         expiresMs: string
-    ): Promise<?string> {
+    ): Promise<?number> {
+        key = key.toJSON();
         const body = {
             addKey: {
                 name: keyName,
@@ -332,14 +336,14 @@ export class TokenIO {
                     id: key.id,
                     level: level,
                     algorithm: key.algorithm,
-                    publicKey: Crypto.strKey(key.publicKey),
+                    publicKey: key.publicKey,
                     ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
                 },
             },
         };
         return Util.callAsync(this.notifyAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(alias, body);
-            return res.data.status;
+            const res = await this._unauthenticatedClient.notify(alias.toJSON(), body);
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -360,7 +364,8 @@ export class TokenIO {
         keyName: string,
         key: Key,
         level: string
-    ): Promise<?string> {
+    ): Promise<?number> {
+        key = key.toJSON();
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
@@ -372,15 +377,15 @@ export class TokenIO {
                         id: key.id,
                         level: level,
                         algorithm: key.algorithm,
-                        publicKey: Crypto.strKey(key.publicKey),
+                        publicKey: key.publicKey,
                         ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
                     },
                 },
             },
         };
         return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(alias, body);
-            return res.data.status;
+            const res = await this._unauthenticatedClient.notify(alias.toJSON(), body);
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -390,13 +395,14 @@ export class TokenIO {
      * @param {Object} tokenPayload - requested transfer token
      * @return {Promise} NotifyStatus - status
      */
-    notifyPaymentRequest(tokenPayload: TokenPayload): Promise<?string> {
+    notifyPaymentRequest(tokenPayload: TokenPayload): Promise<?number> {
+        tokenPayload = tokenPayload.toJSON();
         if (!tokenPayload.refId) {
             tokenPayload.refId = Util.generateNonce();
         }
         return Util.callAsync(this.notifyPaymentRequest, async () => {
             const res = await this._unauthenticatedClient.notifyPaymentRequest(tokenPayload);
-            return res.data.status;
+            return NotifyStatus[res.data.status];
         });
     }
 
@@ -419,12 +425,12 @@ export class TokenIO {
         tokenRequestId: string,
         bankId: string,
         state: string
-    ): Promise<{notificationId: ?string, status: ?string}> {
+    ): Promise<{notificationId: ?string, status: ?number}> {
         const endorseAndAddKey = {
-            payload: tokenPayload,
+            payload: tokenPayload.toJSON(),
             addKey: {
-                keys: keys,
-                deviceMetadata: deviceMetadata,
+                keys: keys.map(k => k.toJSON()),
+                deviceMetadata: deviceMetadata.toJSON(),
             },
             tokenRequestId: tokenRequestId,
             bankId: bankId,
@@ -434,7 +440,7 @@ export class TokenIO {
             const res = await this._unauthenticatedClient.notifyEndorseAndAddKey(endorseAndAddKey);
             return {
                 notificationId: res.data.notificationId,
-                status: res.data.status,
+                status: NotifyStatus[res.data.status],
             };
         });
     }
@@ -445,10 +451,10 @@ export class TokenIO {
      * @param {Object} notificationId - the notification id to invalidate
      * @return {Promise} NotifyStatus - status
      */
-    invalidateNotification(notificationId: string): Promise<?string> {
+    invalidateNotification(notificationId: string): Promise<?number> {
         return Util.callAsync(this.invalidateNotification, async () => {
             const res = await this._unauthenticatedClient.invalidateNotification(notificationId);
-            return res.data.status;
+            return NotifyStatus[res.data.status];
         });
     }
 
