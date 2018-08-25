@@ -39,6 +39,7 @@ export const OauthBankAuthorization = banklink.OauthBankAuthorization;
 export const AliasType = Object.freeze(common.alias.Alias.Type);
 export const TokenOperationStatus = Object.freeze(common.token.TokenOperationResult.Status);
 export const KeyLevel = Object.freeze(common.security.Key.Level);
+export const KeyAlgorithm = Object.freeze(common.security.Key.Algorithm);
 export const NotifyStatus = Object.freeze(common.notification.NotifyStatus);
 export const NotificationStatus = Object.freeze(common.notification.Notification.Status);
 export const ReceiptContactType = Object.freeze(common.member.ReceiptContact.Type);

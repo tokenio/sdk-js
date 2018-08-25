@@ -21,6 +21,7 @@ import {
     TokenPayload,
     DeviceMetadata,
 } from '../proto/classes';
+import type {NotifyStatusEnum} from '../proto/classes';
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,
@@ -267,7 +268,7 @@ export class TokenIO {
      */
     getMember(
         CryptoEngine: KeyStoreCryptoEngine,
-        memberId?: string
+        memberId: any
     ): Member {
         return Util.callSync(this.getMember, () => {
             if (!memberId && typeof CryptoEngine.getActiveMemberId === 'function') {
@@ -297,7 +298,7 @@ export class TokenIO {
     notifyLinkAccounts(
         alias: Alias,
         bankAuthorization: any
-    ): Promise<?number> {
+    ): Promise<NotifyStatusEnum> {
         const body = {
             linkAccounts: {
                 bankAuthorization,
@@ -326,7 +327,7 @@ export class TokenIO {
         key: Key,
         level: string,
         expiresMs: string
-    ): Promise<?number> {
+    ): Promise<NotifyStatusEnum> {
         key = key.toJSON();
         const body = {
             addKey: {
@@ -364,7 +365,7 @@ export class TokenIO {
         keyName: string,
         key: Key,
         level: string
-    ): Promise<?number> {
+    ): Promise<NotifyStatusEnum> {
         key = key.toJSON();
         const body = {
             linkAccountsAndAddKey: {
@@ -395,7 +396,7 @@ export class TokenIO {
      * @param {Object} tokenPayload - requested transfer token
      * @return {Promise} NotifyStatus - status
      */
-    notifyPaymentRequest(tokenPayload: TokenPayload): Promise<?number> {
+    notifyPaymentRequest(tokenPayload: TokenPayload): Promise<NotifyStatusEnum> {
         tokenPayload = tokenPayload.toJSON();
         if (!tokenPayload.refId) {
             tokenPayload.refId = Util.generateNonce();
@@ -425,7 +426,7 @@ export class TokenIO {
         tokenRequestId: string,
         bankId: string,
         state: string
-    ): Promise<{notificationId: ?string, status: ?number}> {
+    ): Promise<{notificationId: string, status: NotifyStatusEnum}> {
         const endorseAndAddKey = {
             payload: tokenPayload.toJSON(),
             addKey: {
@@ -451,7 +452,7 @@ export class TokenIO {
      * @param {Object} notificationId - the notification id to invalidate
      * @return {Promise} NotifyStatus - status
      */
-    invalidateNotification(notificationId: string): Promise<?number> {
+    invalidateNotification(notificationId: string): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.invalidateNotification, async () => {
             const res = await this._unauthenticatedClient.invalidateNotification(notificationId);
             return NotifyStatus[res.data.status];
@@ -473,11 +474,11 @@ export class TokenIO {
             perPage?: number,
             provider?: string,
         }
-    ): Promise<{banks: ?Array<Bank>, paging: Paging}> {
+    ): Promise<{banks: Array<Bank>, paging: Paging}> {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanks(options);
             return {
-                banks: res.data.banks && res.data.banks.map(b => Bank.create(b)),
+                banks: res.data.banks.map(b => Bank.create(b)),
                 paging: Paging.create(res.data.paging),
             };
         });
@@ -567,7 +568,7 @@ export class TokenIO {
      * @param {string} tokenRequestId - token request id
      * @return {Promise} tokenId - token id and signature
      */
-    getTokenRequestResult(tokenRequestId: string): Promise<{tokenId: ?string, signature: ?Signature}> {
+    getTokenRequestResult(tokenRequestId: string): Promise<{tokenId: string, signature: Signature}> {
         return Util.callAsync(this.getTokenRequestResult, async () => {
             const res = await this._unauthenticatedClient.getTokenRequestResult(tokenRequestId);
             return {

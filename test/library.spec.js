@@ -52,6 +52,6 @@ describe('Token library', () => {
     it('should create a member with no aliases', async () => {
         const guest = await Token.createMember(null, Token.MemoryCryptoEngine);
         const aliases = await guest.aliases();
-        assert.isUndefined(aliases);
+        assert.isEmpty(aliases);
     });
 });

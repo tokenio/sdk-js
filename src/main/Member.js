@@ -22,6 +22,7 @@ import {
     Signature,
     Subscriber,
     Transaction,
+    NotifyStatus,
     Notification,
     RecoveryRule,
     AddressRecord,
@@ -29,15 +30,16 @@ import {
     TokenSignature,
     TransferEndpoint,
     TokenOperationResult,
-    OauthBankAuthorization, NotifyStatus,
+    OauthBankAuthorization,
 } from '../proto/classes';
+import type {NotifyStatusEnum} from '../proto/classes';
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
  * objects
  */
 export default class Member {
-    _id: ?string;
+    _id: string;
     _client: AuthHttpClient;
     _unauthenticatedClient: HttpClient;
 
@@ -49,7 +51,7 @@ export default class Member {
      */
     constructor(options: {
         env: string, // Token environment to target
-        memberId: ?string,
+        memberId: string,
         cryptoEngine: KeyStoreCryptoEngine,
         developerKey: ?string, // dev key
         globalRpcErrorCallback: ?({name: string, message: string}) => void, // callback to invoke on any cross-cutting RPC
@@ -67,7 +69,7 @@ export default class Member {
      *
      * @return {string} memberId
      */
-    memberId(): ?string {
+    memberId(): string {
         return this._id;
     }
 
@@ -76,10 +78,12 @@ export default class Member {
      *
      * @return {Promise} aliases - member's aliases
      */
-    aliases(): Promise<?Array<Alias>> {
+    aliases(): Promise<Array<Alias>> {
         return Util.callAsync(this.aliases, async () => {
             const res = await this._client.getAliases();
-            return res.data.aliases && res.data.aliases.map(a => Alias.create(a));
+            return res.data.aliases ?
+                res.data.aliases.map(a => Alias.create(a)) :
+                [];
         });
     }
 
@@ -100,10 +104,12 @@ export default class Member {
      *
      * @return {Promise} keys - keys objects
      */
-    keys(): Promise<?Array<Key>> {
+    keys(): Promise<Array<Key>> {
         return Util.callAsync(this.keys, async () => {
             const member = await this._getMember();
-            return member?.keys && member.keys.map(k => Key.create(k));
+            return member.keys ?
+                member.keys.map(k => Key.create(k)) :
+                [];
         });
     }
 
@@ -239,7 +245,7 @@ export default class Member {
      * (As of Nov 2017, this rule was: To recover, verify an alias.)
      * @return {Promise} promise containing RecoveryRule proto buffer.
      */
-    useDefaultRecoveryRule(): Promise<?RecoveryRule> {
+    useDefaultRecoveryRule(): Promise<RecoveryRule> {
         return Util.callAsync(this.useDefaultRecoveryRule, async () => {
             const agentResponse = await this._client.getDefaultRecoveryAgent();
             const prevHash = await this._getPreviousHash();
@@ -249,8 +255,7 @@ export default class Member {
                 },
             };
             const res = await this._client.addRecoveryRule(prevHash, rule);
-            return res.data.member?.recoveryRule &&
-                RecoveryRule.create(res.data.member.recoveryRule);
+            return RecoveryRule.create(res.data.member.recoveryRule);
         });
     }
 
@@ -263,7 +268,7 @@ export default class Member {
      */
     linkAccounts(
         authorization: OauthBankAuthorization | any
-    ): Promise<?Array<Account>> {
+    ): Promise<Array<Account>> {
         return Util.callAsync(this.linkAccounts, async () => {
             if (authorization.accessToken) {
                 const res = await this._client.linkAccountsOauth(authorization.toJSON());
@@ -271,10 +276,12 @@ export default class Member {
                     throw new Error('Cannot link accounts. Must send bankAuthorization retrieved' +
                         ' through push notification');
                 }
-                return res.data.accounts;
+                return res.data.accounts.map(a => Account.create(a));
             }
             const res = await this._client.linkAccounts(authorization);
-            return res.data.accounts && res.data.accounts.map(a => Account.create(a));
+            return res.data.accounts ?
+                res.data.accounts.map(a => Account.create(a)) :
+                [];
         });
     }
 
@@ -296,10 +303,10 @@ export default class Member {
      * @param {string} accountId - accountId
      * @return {Promise} account - Promise resolving to the account
      */
-    getAccount(accountId: string): Promise<?Account> {
+    getAccount(accountId: string): Promise<Account> {
         return Util.callAsync(this.getAccount, async () => {
             const res = await this._client.getAccount(accountId);
-            return res.data.account && Account.create(res.data.account);
+            return Account.create(res.data.account);
         });
     }
 
@@ -322,10 +329,10 @@ export default class Member {
      *
      * @return {Promise} the default bank account
      */
-    getDefaultAccount(): Promise<?Account> {
+    getDefaultAccount(): Promise<Account> {
         return Util.callAsync(this.getDefaultAccount, async () => {
             const res = await this._client.getDefaultAccount(this.memberId());
-            return res.data.account && Account.create(res.data.account);
+            return Account.create(res.data.account);
         });
     }
 
@@ -335,10 +342,9 @@ export default class Member {
      * @param {string} accountId - the bank account id
      * @return {Promise} account - the account if found
      */
-    setDefaultAccount(accountId: string): Promise<?Account> {
+    setDefaultAccount(accountId: string): Promise<void> {
         return Util.callAsync(this.setDefaultAccount, async () => {
-            const res = await this._client.setDefaultAccount(accountId, this.memberId());
-            return res.data.account && Account.create(res.data.account);
+            await this._client.setDefaultAccount(accountId, this.memberId());
         });
     }
 
@@ -360,10 +366,10 @@ export default class Member {
      * @param {string} bankId - id of the bank
      * @return {Object} bankInfo - info
      */
-    getBankInfo(bankId: string): Promise<?BankInfo> {
+    getBankInfo(bankId: string): Promise<BankInfo> {
         return Util.callAsync(this.getBankInfo, async () => {
             const res = await this._client.getBankInfo(bankId);
-            return res.data.info && BankInfo.create(res.data.info);
+            return BankInfo.create(res.data.info);
         });
     }
 
@@ -378,10 +384,10 @@ export default class Member {
     subscribeToNotifications(
         handler: string = 'token',
         handlerInstructions: {} = {}
-    ): Promise<?Subscriber> {
+    ): Promise<Subscriber> {
         return Util.callAsync(this.subscribeToNotifications, async () => {
             const res = await this._client.subscribeToNotifications(handler, handlerInstructions);
-            return res.data.subscriber && Subscriber.create(res.data.subscriber);
+            return Subscriber.create(res.data.subscriber);
         });
     }
 
@@ -405,10 +411,10 @@ export default class Member {
      * @param {string} subscriberId - id of the subscriber
      * @return {Promise} - subscriber
      */
-    getSubscriber(subscriberId: string): Promise<?Subscriber> {
+    getSubscriber(subscriberId: string): Promise<Subscriber> {
         return Util.callAsync(this.getSubscriber, async () => {
             const res = await this._client.getSubscriber(subscriberId);
-            return res.data.subscriber && Subscriber.create(res.data.subscriber);
+            return Subscriber.create(res.data.subscriber);
         });
     }
 
@@ -422,7 +428,7 @@ export default class Member {
     getNotifications(
         offset: string,
         limit: number
-    ): Promise<{data: Array<Notification>, offset: ?string}>  {
+    ): Promise<{data: Array<Notification>, offset: string}>  {
         return Util.callAsync(this.getNotifications, async () => {
             const res = await this._client.getNotifications(offset, limit);
             const data = res.data.notifications &&
@@ -441,10 +447,10 @@ export default class Member {
      * @param {string} notificationId - id of the notification
      * @return {Promise} - notification
      */
-    getNotification(notificationId: string): Promise<?Notification> {
+    getNotification(notificationId: string): Promise<Notification> {
         return Util.callAsync(this.getNotification, async () => {
             const res = await this._client.getNotification(notificationId);
-            return res.data.notification && Notification.create(res.data.notification);
+            return Notification.create(res.data.notification);
         });
     }
 
@@ -466,7 +472,7 @@ export default class Member {
      * @param {string} tokenId - token ID
      * @return {Promise} - notification status
      */
-    triggerStepUpNotification(tokenId: string): Promise<?number> {
+    triggerStepUpNotification(tokenId: string): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.triggerStepUpNotification, async () => {
             const res = await this._client.triggerStepUpNotification(tokenId);
             return NotifyStatus[res.data.status];
@@ -478,7 +484,7 @@ export default class Member {
      * @param {Array} accountIds - array of account ids
      * @return {Promise} - notification status
      */
-    triggerBalanceStepUpNotification(accountIds: Array<string>): Promise<?number> {
+    triggerBalanceStepUpNotification(accountIds: Array<string>): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.triggerBalanceStepUpNotification, async () => {
             const res = await this._client.triggerBalanceStepUpNotification(accountIds);
             return NotifyStatus[res.data.status];
@@ -494,7 +500,7 @@ export default class Member {
     triggerTransactionStepUpNotification(
         accountId: string,
         transactionId: string
-    ): Promise<?number> {
+    ): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.triggerTransactionStepUpNotification, async () => {
             const res = await this._client.triggerTransactionStepUpNotification(
                 accountId,
@@ -510,10 +516,10 @@ export default class Member {
      * @param {object} address - address
      * @return {Promise} promise of AddressRecord structure
      */
-    addAddress(name: string, address: Address): Promise<?AddressRecord> {
+    addAddress(name: string, address: Address): Promise<AddressRecord> {
         return Util.callAsync(this.addAddress, async () => {
             const res = await this._client.addAddress(name, address.toJSON());
-            return res.data.address && AddressRecord.create(res.data.address);
+            return AddressRecord.create(res.data.address);
         });
     }
 
@@ -523,10 +529,10 @@ export default class Member {
      * @param {string} addressId - the address id
      * @return {Promise} address - AddressRecord structure
      */
-    getAddress(addressId: string): Promise<?AddressRecord> {
+    getAddress(addressId: string): Promise<AddressRecord> {
         return Util.callAsync(this.getAddress, async () => {
             const res = await this._client.getAddress(addressId);
-            return res.data.address && AddressRecord.create(res.data.address);
+            return AddressRecord.create(res.data.address);
         });
     }
 
@@ -562,10 +568,10 @@ export default class Member {
      * @param {Object} profile - profile to set
      * @return {Promise} profile - newly-set profile
      */
-    setProfile(profile: Profile): Promise<?Profile> {
+    setProfile(profile: Profile): Promise<Profile> {
         return Util.callAsync(this.setProfile, async () => {
             const res = await this._client.setProfile(profile.toJSON());
-            return res.data.profile && Profile.create(res.data.profile);
+            return Profile.create(res.data.profile);
         });
     }
 
@@ -575,10 +581,10 @@ export default class Member {
      * @param {string} id - member id whose profile to get
      * @return {Promise} profile - profile
      */
-    getProfile(id: string): Promise<?Profile> {
+    getProfile(id: string): Promise<Profile> {
         return Util.callAsync(this.getProfile, async () => {
             const res = await this._client.getProfile(id);
-            return res.data.profile && Profile.create(res.data.profile);
+            return Profile.create(res.data.profile);
         });
     }
 
@@ -608,10 +614,10 @@ export default class Member {
     getProfilePicture(
         id: string,
         size: 'SMALL' | 'MEDIUM' | 'LARGE' | 'ORIGINAL'
-    ): Promise<?Blob> {
+    ): Promise<Blob> {
         return Util.callAsync(this.getProfilePicture, async () => {
             const res = await this._client.getProfilePicture(id, size);
-            return res.data.blob && Blob.create(res.data.blob);
+            return Blob.create(res.data.blob);
         });
     }
 
@@ -633,10 +639,10 @@ export default class Member {
      *
      * @return {Object} contact - receipt contact: value + type
      */
-    getReceiptContact(): Promise<?ReceiptContact> {
+    getReceiptContact(): Promise<ReceiptContact> {
         return Util.callAsync(this.getReceiptContact, async () => {
             const res = await this._client.getReceiptContact();
-            return res.data.contact && ReceiptContact.create(res.data.contact);
+            return ReceiptContact.create(res.data.contact);
         });
     }
 
@@ -646,7 +652,7 @@ export default class Member {
      * @param {Object} tokenRequest - token request to store
      * @return {Promise} the stored TokenRequest
      */
-    storeTokenRequest(tokenRequest: TokenRequest): Promise<?TokenRequest> {
+    storeTokenRequest(tokenRequest: TokenRequest): Promise<TokenRequest> {
         return Util.callAsync(this.storeTokenRequest, async () => {
             const res = await this._client.storeTokenRequest(tokenRequest);
             return res.data.tokenRequest;
@@ -660,7 +666,7 @@ export default class Member {
      * @param {array} resources - a list of resources to give access to
      * @return {Promise} token - promise of a created Access Token
      */
-    createAccessToken(alias: Alias, resources: Array<Resource>): Promise<?Token> {
+    createAccessToken(alias: Alias, resources: Array<Resource>): Promise<Token> {
         return Util.callAsync(this.createAccessToken, async () => {
             return await (new AccessTokenBuilder(this._client, this, resources.map(r => r.toJSON()))
                 .setFromId(this.memberId())
@@ -688,15 +694,15 @@ export default class Member {
      * @return {Promise} operationResult - the result of the operation
      */
     replaceAccessToken(
-        tokenToCancel: Token,
+        tokenToCancel: Token | string,
         newResources: Array<Resource>
-    ): Promise<?TokenOperationResult> {
+    ): Promise<TokenOperationResult> {
         return Util.callAsync(this.replaceAccessToken, async () => {
-            const finalTokenToCancel = await this._resolveToken(tokenToCancel.toJSON());
+            const finalTokenToCancel = await this._resolveToken(tokenToCancel);
             const res = await this._client.replaceToken(
-                finalTokenToCancel,
+                finalTokenToCancel.toJSON(),
                 newResources.map(r => r.toJSON()));
-            return res.data.result && TokenOperationResult.create(res.data.result);
+            return TokenOperationResult.create(res.data.result);
         });
     }
 
@@ -708,15 +714,15 @@ export default class Member {
      * @return {Promise} operationResult - the result of the operation
      */
     replaceAndEndorseAccessToken(
-        tokenToCancel: Token,
+        tokenToCancel: Token | string,
         newResources: Array<Resource>
-    ): Promise<?TokenOperationResult> {
+    ): Promise<TokenOperationResult> {
         return Util.callAsync(this.replaceAndEndorseAccessToken, async () => {
-            const finalTokenToCancel = await this._resolveToken(tokenToCancel.toJSON());
+            const finalTokenToCancel = await this._resolveToken(tokenToCancel);
             const res = await this._client.replaceAndEndorseToken(
-                finalTokenToCancel,
+                finalTokenToCancel.toJSON(),
                 newResources.map(r => r.toJSON()));
-            return res.data.result && TokenOperationResult.create(res.data.result);
+            return TokenOperationResult.create(res.data.result);
         });
     }
 
@@ -762,10 +768,10 @@ export default class Member {
      * @param {string} tokenId - id of the token
      * @return {Promise} token - token
      */
-    getToken(tokenId: string): Promise<?Token> {
+    getToken(tokenId: string): Promise<Token> {
         return Util.callAsync(this.getToken, async () => {
             const res = await this._client.getToken(tokenId);
-            return res.data.token && Token.create(res.data.token);
+            return Token.create(res.data.token);
         });
     }
 
@@ -776,10 +782,10 @@ export default class Member {
      * @param {string} toMemberId - beneficiary of the active access token
      * @return {Promise} token - access token returned by the server
      */
-    getActiveAccessToken(toMemberId: string): Promise<?Token> {
+    getActiveAccessToken(toMemberId: string): Promise<Token> {
         return Util.callAsync(this.getActiveAccessToken, async () => {
             const res = await this._client.getActiveAccessToken(toMemberId);
-            return res.data.token && Token.create(res.data.token);
+            return Token.create(res.data.token);
         });
     }
 
@@ -793,7 +799,7 @@ export default class Member {
     getTransferTokens(
         offset: string,
         limit: number
-    ): Promise<{data: Array<Token>, offset: ?string}> {
+    ): Promise<{data: Array<Token>, offset: string}> {
         return Util.callAsync(this.getTransferTokens, async () => {
             const res = await this._client.getTokens('TRANSFER', offset, limit);
             const data = res.data.tokens &&
@@ -816,7 +822,7 @@ export default class Member {
     getAccessTokens(
         offset: string,
         limit: number
-    ): Promise<{data: Array<Token>, offset: ?string}> {
+    ): Promise<{data: Array<Token>, offset: string}> {
         return Util.callAsync(this.getAccessTokens, async () => {
             const res = await this._client.getTokens('ACCESS', offset, limit);
             const data = res.data.tokens &&
@@ -847,7 +853,7 @@ export default class Member {
                 token.payloadSignatures = endorsed.data.result.token.payloadSignatures
                     .map(s => TokenSignature.create(s));
             }
-            return endorsed.data.result && TokenOperationResult.create(endorsed.data.result);
+            return TokenOperationResult.create(endorsed.data.result);
         });
     }
 
@@ -866,7 +872,7 @@ export default class Member {
                 token.payloadSignatures = cancelled.data.result.token.payloadSignatures
                     .map(s => TokenSignature.create(s));
             }
-            return cancelled.data.result && TokenOperationResult.create(cancelled.data.result);
+            return TokenOperationResult.create(cancelled.data.result);
         });
     }
 
@@ -908,7 +914,7 @@ export default class Member {
         description: ?string,
         destinations: Array<TransferEndpoint> = [],
         refId?: string
-    ): Promise<?Transfer> {
+    ): Promise<Transfer> {
         return Util.callAsync(this.redeemToken, async () => {
             let finalToken = await this._resolveToken(token);
             finalToken = finalToken.toJSON();
@@ -932,7 +938,7 @@ export default class Member {
                 description,
                 destinations.map(d => d.toJSON()),
                 refId);
-            return res.data.transfer && Transfer.create(res.data.transfer);
+            return Transfer.create(res.data.transfer);
         });
     }
 
@@ -942,10 +948,10 @@ export default class Member {
      * @param {string} transferId - id to look up
      * @return {Promise} transfer - transfer if found
      */
-    getTransfer(transferId: string): Promise<?Transfer> {
+    getTransfer(transferId: string): Promise<Transfer> {
         return Util.callAsync(this.getTransfer, async () => {
             const res = await this._client.getTransfer(transferId);
-            return res.data.transfer && Transfer.create(res.data.transfer);
+            return Transfer.create(res.data.transfer);
         });
     }
 
@@ -961,7 +967,7 @@ export default class Member {
         tokenId: string,
         offset: string,
         limit: number
-    ): Promise<{data: Array<Transfer>, offset: ?string}> {
+    ): Promise<{data: Array<Transfer>, offset: string}> {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             const data = res.data.transfers &&
@@ -984,11 +990,11 @@ export default class Member {
     getBalance(
         accountId: string,
         keyLevel: string
-    ): Promise<{balance: ?Balance, status: ?string}> {
+    ): Promise<{balance: Balance, status: string}> {
         return Util.callAsync(this.getBalance, async () => {
             const res = await this._client.getBalance(accountId, keyLevel);
             return {
-                balance: res.data.balance && Balance.create(res.data.balance),
+                balance: Balance.create(res.data.balance),
                 status: res.data.status,
             };
         });
@@ -1004,14 +1010,14 @@ export default class Member {
     getBalances(
         accountIds: Array<string>,
         keyLevel: string
-    ): Promise<?Array<{balance: ?Balance, status: ?string}>> {
+    ): Promise<Array<{balance: Balance, status: string}>> {
         return Util.callAsync(this.getBalances, async () => {
             const res = await this._client.getBalances(accountIds, keyLevel);
             res.data.response = res.data.response && res.data.response.map(b => ({
-                balance: b.balance && Balance.create(b.balance),
+                balance: Balance.create(b.balance),
                 status: b.status,
             }));
-            return res.data;
+            return res.data || [];
         });
     }
 
@@ -1027,10 +1033,10 @@ export default class Member {
         accountId: string,
         transactionId: string,
         keyLevel: string
-    ): Promise<?Transaction> {
+    ): Promise<Transaction> {
         return Util.callAsync(this.getTransaction, async () => {
             const res = await this._client.getTransaction(accountId, transactionId, keyLevel);
-            return res.data.transaction && Transaction.create(res.data.transaction);
+            return Transaction.create(res.data.transaction);
         });
     }
 
@@ -1048,7 +1054,7 @@ export default class Member {
         offset: string,
         limit: number,
         keyLevel: string
-    ): Promise<{data: Array<Transaction>, offset: ?string}> {
+    ): Promise<{data: Array<Transaction>, offset: string}> {
         return Util.callAsync(this.getTransactions, async () => {
             const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
             const data = res.data.transactions &&
@@ -1075,7 +1081,7 @@ export default class Member {
         type: string,
         name: string,
         data: Uint8Array | Array<number>
-    ): Promise<{blobId: ?string, type: string, name: string}> {
+    ): Promise<{blobId: string, type: string, name: string}> {
         return Util.callAsync(this.createBlob, async () => {
             const res = await this._client.createBlob(ownerId, type, name, data);
             return {
@@ -1092,10 +1098,10 @@ export default class Member {
      * @param {string} blobId - id of the blob
      * @return {Object} blob - downloaded blob
      */
-    getBlob(blobId: string): Promise<?Blob> {
+    getBlob(blobId: string): Promise<Blob> {
         return Util.callAsync(this.getBlob, async () => {
             const res = await this._client.getBlob(blobId);
-            return res.data.blob && Blob.create(res.data.blob);
+            return Blob.create(res.data.blob);
         });
     }
 
@@ -1109,10 +1115,10 @@ export default class Member {
     getTokenBlob(
         tokenId: string,
         blobId: string
-    ): Promise<?Blob> {
+    ): Promise<Blob> {
         return Util.callAsync(this.getTokenBlob, async () => {
             const res = await this._client.getTokenBlob(tokenId, blobId);
-            return res.data.blob && Blob.create(res.data.blob);
+            return Blob.create(res.data.blob);
         });
     }
 
@@ -1128,10 +1134,10 @@ export default class Member {
         tokenRequestId: string,
         tokenId: string,
         state: string
-    ): Promise<?Signature> {
+    ): Promise<Signature> {
         return Util.callAsync(this.signTokenRequestState, async () => {
             const res = await this._client.signTokenRequestState(tokenRequestId, tokenId, state);
-            return res.data.signature && Signature.create(res.data.signature);
+            return Signature.create(res.data.signature);
         });
     }
 
@@ -1174,10 +1180,10 @@ export default class Member {
     createTestBankAccountOauth(
         balance: number,
         currency: string
-    ): Promise<?OauthBankAuthorization> {
+    ): Promise<OauthBankAuthorization> {
         return Util.callAsync(this.createTestBankAccountOauth, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
-            return res.data.authorization && OauthBankAuthorization.create(res.data.authorization);
+            return OauthBankAuthorization.create(res.data.authorization);
         });
     }
     /**
@@ -1190,10 +1196,10 @@ export default class Member {
     getTestBankNotification(
         subscriberId: string,
         notificationId: string
-    ): Promise<?Notification> {
+    ): Promise<Notification> {
         return Util.callAsync(this.getTestBankNotification, async () => {
             const res = await this._client.getTestBankNotification(subscriberId, notificationId);
-            return res.data.notification && Notification.create(res.data.notification);
+            return Notification.create(res.data.notification);
         });
     }
 
@@ -1203,11 +1209,12 @@ export default class Member {
      * @param {string} subscriberId - id of subscriber
      * @return {Object} response - response to the API call
      */
-    getTestBankNotifications(subscriberId: string): Promise<?Array<Notification>> {
+    getTestBankNotifications(subscriberId: string): Promise<Array<Notification>> {
         return Util.callAsync(this.getTestBankNotifications, async () => {
             const res = await this._client.getTestBankNotifications(subscriberId);
-            return res.data.notifications &&
-                res.data.notifications.map(n => Notification.create(n));
+            return res.data.notifications ?
+                res.data.notifications.map(n => Notification.create(n)) :
+                [];
         });
     }
 

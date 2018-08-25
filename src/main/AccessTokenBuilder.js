@@ -340,7 +340,7 @@ export default class AccessTokenBuilder {
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
-            return res.data.token && Token.create(res.data.token);
+            return Token.create(res.data.token);
         });
     }
 }

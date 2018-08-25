@@ -1,0 +1,342 @@
+// @flow
+import {
+    Key,
+    Bank,
+    Alias,
+    Token,
+    Paging,
+    Account,
+    Profile,
+    Address,
+    Balance,
+    Transfer,
+    KeyLevel,
+    Resource,
+    BankInfo,
+    Signature,
+    AliasType,
+    Subscriber,
+    Transaction,
+    TokenMember,
+    TokenPayload,
+    RecoveryRule,
+    KeyAlgorithm,
+    NotifyStatus,
+    Notification,
+    AddressRecord,
+    ReceiptContact,
+    DeviceMetadata,
+    TransferEndpoint,
+    TransactionType,
+    TransactionStatus,
+    NotificationStatus,
+    ReceiptContactType,
+    TokenSignatureAction,
+    TokenOperationStatus,
+    TokenOperationResult,
+    OauthBankAuthorization,
+} from './proto/classes';
+import type {
+    KeyLevelEnum,
+    AliasTypeEnum,
+    KeyAlgorithmEnum,
+    NotifyStatusEnum,
+    TransactionTypeEnum,
+    TransactionStatusEnum,
+    NotificationStatusEnum,
+    ReceiptContactTypeEnum,
+    TokenSignatureActionEnum,
+    TokenOperationStatusEnum,
+} from './proto/classes';
+
+declare export class TokenIO {
+    Crypto: any;
+    BrowserCryptoEngine: any;
+    ManualCryptoEngine: any;
+    MemoryCryptoEngine: any;
+    UnsecuredFileCryptoEngine: any;
+    Util: any;
+    TokenRequest: any;
+    KeyLevel: {LOW?: string, PRIVILEGED?: string, STANDARD?: string};
+
+    constructor(options: {
+        developerKey?: string,
+        env?: string,
+        globalRpcErrorCallback?: ({message: string, name: string}) => void,
+        keyDir?: string,
+        loggingEnabled?: boolean,
+    }): void;
+
+    static enableIframePassthrough(env: string): void;
+
+    static disableIframePassthrough(): void;
+
+    aliasExists(alias: Alias): Promise<boolean>;
+
+    createBusinessMember(alias: ?Alias, CryptoEngine: any): Promise<Member>;
+
+    createMember(alias: ?Alias, CryptoEngine: any, memberType?: string): Promise<Member>;
+
+    generateTokenRequestUrl(requestId: string, state?: string, csrfToken?: string): string;
+
+    getBanks(options?: {
+        country?: string,
+        ids?: Array<string>,
+        page?: number,
+        perPage?: number,
+        provider?: string,
+        search?: string,
+    }): Promise<{banks: Array<Bank>, paging: Paging}>;
+
+    getMember(CryptoEngine: any, memberId?: string): Member;
+
+    getTokenRequestResult(tokenRequestId: string): Promise<{tokenId: string, signature: Signature}>;
+
+    invalidateNotification(notificationId: string): Promise<NotifyStatusEnum>;
+
+    notifyAddKey(alias: Alias, keyName: string, key: Key, level: string, expiresMs: string): Promise<NotifyStatusEnum>;
+
+    notifyEndorseAndAddKey(
+        tokenPayload: TokenPayload,
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
+        tokenRequestId: string,
+        bankId: string,
+        state: string
+    ): Promise<{notificationId: string, status: NotifyStatusEnum}>;
+
+    notifyLinkAccounts(alias: Alias, bankAuthorization: any): Promise<NotifyStatusEnum>;
+
+    notifyLinkAccountsAndAddKey(alias: Alias, bankAuthorization: string, keyName: string, key: Key, level: string): Promise<NotifyStatusEnum>;
+
+    notifyPaymentRequest(tokenPayload: TokenPayload): Promise<NotifyStatusEnum>;
+
+    parseTokenRequestCallbackUrl(callbackUrl: string, csrfToken?: string): Promise<{innerState: string, tokenId: string}>;
+
+    provisionDevice(alias: Alias, CryptoEngine: any): Promise<{keys: Array<Key>, memberId: string}>;
+
+    provisionDeviceLow(alias: Alias, CryptoEngine: any, expirationMs?: number): Promise<{keys: Array<Key>, memberId: string}>;
+
+    resolveAlias(alias: Alias): Promise<?TokenMember>;
+
+    retrieveTokenRequest(requestId: string): Promise<any>;
+}
+
+declare class Member {
+    constructor(options: {
+        env: string,
+        memberId: string,
+        cryptoEngine: any,
+        developerKey: ?string,
+        globalRpcErrorCallback: ?({message: string, name: string}) => void,
+        loggingEnabled: ?boolean,
+    }): void;
+
+    addAddress(name: string, address: Address): Promise<AddressRecord>;
+
+    addAlias(alias: Alias): Promise<void>;
+
+    addAliases(aliases: Array<Alias>): Promise<void>;
+
+    aliases(): Promise<Array<Alias>>;
+
+    approveKey(key: Key): Promise<void>;
+
+    approveKeys(keys: Array<Key>): Promise<void>;
+
+    cancelToken(token: Token | string): Promise<TokenOperationResult>;
+
+    clearAccessToken(): void;
+
+    createAccessToken(alias: Alias, resources: Array<Resource>): Promise<Token>;
+
+    createAccessTokenBuilder(): any;
+
+    createBlob(ownerId: string, type: string, name: string, data: Uint8Array | Array<number>): Promise<{blobId: string, name: string, type: string}>;
+
+    createTestBankAccount(balance: number, currency: string): Promise<Array<any>>;
+
+    createTestBankAccountOauth(balance: number, currency: string): Promise<OauthBankAuthorization>;
+
+    createTransferToken(lifetimeAmount: number, currency: string): any;
+
+    createTransferTokenBuilder(lifetimeAmount: number, currency: string): any;
+
+    deleteAddress(addressId: string): Promise<void>;
+
+    deleteMember(): Promise<void>;
+
+    endorseToken(token: Token | string): Promise<TokenOperationResult>;
+
+    firstAlias(): Promise<Alias>;
+
+    getAccessTokens(offset: string, limit: number): Promise<{data: Array<Token>, offset: string}>;
+
+    getAccount(accountId: string): Promise<Account>;
+
+    getAccounts(): Promise<Array<Account>>;
+
+    getActiveAccessToken(toMemberId: string): Promise<Token>;
+
+    getAddress(addressId: string): Promise<AddressRecord>;
+
+    getAddresses(): Promise<Array<AddressRecord>>;
+
+    getBalance(accountId: string, keyLevel: string): Promise<{balance: Balance, status: string}>;
+
+    getBalances(accountIds: Array<string>, keyLevel: string): Promise<Array<{balance: Balance, status: string}>>;
+
+    getBankInfo(bankId: string): Promise<BankInfo>;
+
+    getBlob(blobId: string): Promise<Blob>;
+
+    getBlockingCancelTokenFunction(token: Token | string): Promise<?() => void>;
+
+    getDefaultAccount(): Promise<Account>;
+
+    getNotification(notificationId: string): Promise<Notification>;
+
+    getNotifications(offset: string, limit: number): Promise<{data: Array<Notification>, offset: string}>;
+
+    getProfile(id: string): Promise<Profile>;
+
+    getProfilePicture(id: string, size: "SMALL" | "MEDIUM" | "LARGE" | "ORIGINAL"): Promise<Blob>;
+
+    getReceiptContact(): Promise<ReceiptContact>;
+
+    getSubscriber(subscriberId: string): Promise<Subscriber>;
+
+    getSubscribers(): Promise<Array<Subscriber>>;
+
+    getTestBankNotification(subscriberId: string, notificationId: string): Promise<Notification>;
+
+    getTestBankNotifications(subscriberId: string): Promise<Array<Notification>>;
+
+    getToken(tokenId: string): Promise<Token>;
+
+    getTokenBlob(tokenId: string, blobId: string): Promise<Blob>;
+
+    getTransaction(accountId: string, transactionId: string, keyLevel: string): Promise<Transaction>;
+
+    getTransactions(accountId: string, offset: string, limit: number, keyLevel: string): Promise<{data: Array<Transaction>, offset: string}>;
+
+    getTransfer(transferId: string): Promise<Transfer>;
+
+    getTransferTokens(offset: string, limit: number): Promise<{data: Array<Token>, offset: string}>;
+
+    getTransfers(tokenId: string, offset: string, limit: number): Promise<{data: Array<Transfer>, offset: string}>;
+
+    isDefaultAccount(accountId: string): Promise<boolean>;
+
+    keys(): Promise<Array<Key>>;
+
+    linkAccounts(authorization: OauthBankAuthorization | any): Promise<Array<Account>>;
+
+    memberId(): ?string;
+
+    redeemToken(
+        token: Token | string,
+        amount: ?number,
+        currency: ?string,
+        description: ?string,
+        destinations?: Array<TransferEndpoint>,
+        refId?: string
+    ): Promise<Transfer>;
+
+    removeAlias(alias: Alias): Promise<void>;
+
+    removeAliases(aliases: Array<Alias>): Promise<void>;
+
+    removeKey(keyId: string): Promise<void>;
+
+    removeKeys(keyIds: Array<string>): Promise<void>;
+
+    replaceAccessToken(tokenToCancel: Token | string, newResources: Array<Resource>): Promise<TokenOperationResult>;
+
+    replaceAndEndorseAccessToken(tokenToCancel: Token | string, newResources: Array<Resource>): Promise<TokenOperationResult>;
+
+    setCustomerInitiated(): void;
+
+    setDefaultAccount(accountId: string): Promise<void>;
+
+    setProfile(profile: Profile): Promise<Profile>;
+
+    setProfilePicture(type: string, data: Uint8Array | Array<number>): Promise<void>;
+
+    setReceiptContact(type: "EMAIL", value: string): Promise<void>;
+
+    signTokenRequestState(tokenRequestId: string, tokenId: string, state: string): Promise<Signature>;
+
+    storeTokenRequest(tokenRequest: any): Promise<any>;
+
+    subscribeToNotifications(handler?: string, handlerInstructions?: {}): Promise<Subscriber>;
+
+    triggerBalanceStepUpNotification(accountIds: Array<string>): Promise<NotifyStatusEnum>;
+
+    triggerStepUpNotification(tokenId: string): Promise<NotifyStatusEnum>;
+
+    triggerTransactionStepUpNotification(accountId: string, transactionId: string): Promise<NotifyStatusEnum>;
+
+    unlinkAccounts(accountIds: Array<string>): Promise<void>;
+
+    unsubscribeFromNotifications(subscriberId: string): Promise<void>;
+
+    useAccessToken(accessTokenId: string): void;
+
+    useDefaultRecoveryRule(): Promise<RecoveryRule>;
+}
+
+// classes
+
+export {
+    Key,
+    Bank,
+    Alias,
+    Token,
+    Paging,
+    Account,
+    Profile,
+    Address,
+    Balance,
+    Transfer,
+    KeyLevel,
+    Resource,
+    BankInfo,
+    Signature,
+    AliasType,
+    Subscriber,
+    Transaction,
+    TokenMember,
+    TokenPayload,
+    RecoveryRule,
+    KeyAlgorithm,
+    NotifyStatus,
+    Notification,
+    AddressRecord,
+    ReceiptContact,
+    DeviceMetadata,
+    TransferEndpoint,
+    TransactionType,
+    TransactionStatus,
+    NotificationStatus,
+    ReceiptContactType,
+    TokenSignatureAction,
+    TokenOperationStatus,
+    TokenOperationResult,
+    OauthBankAuthorization,
+};
+
+// enums
+
+export type {
+    KeyLevelEnum,
+    AliasTypeEnum,
+    KeyAlgorithmEnum,
+    NotifyStatusEnum,
+    TransactionTypeEnum,
+    TransactionStatusEnum,
+    NotificationStatusEnum,
+    ReceiptContactTypeEnum,
+    TokenSignatureActionEnum,
+    TokenOperationStatusEnum,
+};

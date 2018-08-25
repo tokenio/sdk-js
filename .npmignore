@@ -2,4 +2,4 @@
 .gitignore
 .eslintignore
 proto.js
-index.js.flow
+src/index.js.flow
