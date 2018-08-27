@@ -1,5 +1,3 @@
 .npmignore
 .gitignore
 .eslintignore
-proto.js
-src/index.js.flow
