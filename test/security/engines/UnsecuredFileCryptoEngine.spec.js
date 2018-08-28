@@ -1,12 +1,9 @@
-/* eslint-disable no-unused-vars*/
-import FileSystem from "../../../src/security/PromiseFileSystem";
+import FileSystem from '../../../src/security/PromiseFileSystem';
+import UnsecuredFileCryptoEngine from '../../../src/security/engines/UnsecuredFileCryptoEngine';
+import {TokenIO} from '../../../src';
 
-const chai = require('chai');
-const assert = chai.assert;
-import 'babel-regenerator-runtime';
-import UnsecuredFileCryptoEngine from "../../../src/security/engines/UnsecuredFileCryptoEngine";
-const TokenIo = require('../../../src/index');
-const devKey = require("../../../src/config.json").devKey[TEST_ENV];
+const devKey = require('../../../src/config.json').devKey[TEST_ENV];
+const {assert} = require('chai');
 
 let fs;
 let path;
@@ -15,14 +12,9 @@ let testDir;
 if (!BROWSER) {
     fs = require('fs-extra');
     path = require('path');
-
-    // Goes back four dirs to find project base. Does this in order to create the testing dir
-    // in the right place. Assumes process argv[1] is mocha binary
-    testDir = path.join(path.join(
-        path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
-        'test'), 'testDir');
+    testDir = path.join(__dirname, 'testDir');
 }
-const Token = new TokenIo(TEST_ENV, devKey, testDir);
+const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: testDir});
 
 describe('Unsecured File crypto engine', () => {
     if (!BROWSER) {
@@ -64,9 +56,9 @@ describe('Unsecured File crypto engine', () => {
             await engine.generateKey('LOW');
             try {
                 await engine.createSigner('STANDARD');
-                return Promise.reject(new Error("should fail"));
+                return Promise.reject(new Error('should fail'));
             } catch (err) {
-                assert.include(err.message, "No key");
+                assert.include(err.message, 'No key');
             }
         });
 
@@ -107,9 +99,9 @@ describe('Unsecured File crypto engine', () => {
             const sig = await signer.sign('abcdefg');
             try {
                 await verifier.verify('bcdefg', sig);
-                return Promise.reject(new Error("should fail"));
+                return Promise.reject(new Error('should fail'));
             } catch (err) {
-                assert.include(err.message, "Invalid signature");
+                assert.include(err.message, 'Invalid signature');
             }
         });
 
@@ -134,8 +126,8 @@ describe('Unsecured File crypto engine', () => {
                     algorithm: 'ED25519',
                     publicKey: 'b8uKAhTT_55wL1QCBaDLtclfeXOEf5Gm8qYY7KbghCo',
                     privateKey: 'YLYhbPCsfJtKt5wvT69ocAwjTCaX8goEFgDIzS-zRD1vy4oCFNP_' +
-                    'nnAvVAIFoMu1yV95c4R_kabyphjspuCEKg'
-                }]
+                    'nnAvVAIFoMu1yV95c4R_kabyphjspuCEKg',
+                }],
             });
 
             await FileSystem.writeFile(newMemberId, fileContents);
@@ -165,13 +157,13 @@ describe('Unsecured File crypto engine', () => {
 
         it('should fail to load bad JSON', async () => {
             const newMemberId = Token.Util.generateNonce();
-            const fileContents = "{13-+23e. /:::}";
+            const fileContents = '{13-+23e. /:::}';
             await FileSystem.writeFile(newMemberId, fileContents);
 
             const engine = new UnsecuredFileCryptoEngine(newMemberId);
             try {
-                const signer = await engine.createSigner('LOW');
-                return Promise.reject(new Error("should fail"));
+                const signer = await engine.createSigner('LOW'); // eslint-disable-line
+                return Promise.reject(new Error('should fail'));
             } catch (err) {
                 // Fails as expeceted
             }

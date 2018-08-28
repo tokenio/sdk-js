@@ -1,8 +1,6 @@
-const chai = require('chai');
-const assert = chai.assert;
-import Crypto from "../../src/security/Crypto";
+import Crypto from '../../src/security/Crypto';
 
-import 'babel-regenerator-runtime';
+const {assert} = require('chai');
 
 describe('Key management', () => {
     it('should generate a key', async () => {
@@ -48,7 +46,7 @@ describe('Key management', () => {
                 def: 'a string',
                 obj: {
                     an: 'object',
-                }
+                },
             };
             const sig = await Crypto.signJson(json, keys);
             await Crypto.verifyJson(json, sig, keys.publicKey);

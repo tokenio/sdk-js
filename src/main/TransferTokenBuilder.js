@@ -1,5 +1,6 @@
-import Util from "../Util";
-import config from "../config.json";
+import Util from '../Util';
+import config from '../config.json';
+import {Token} from '../proto';
 
 export default class TransferTokenBuilder {
 
@@ -16,7 +17,7 @@ export default class TransferTokenBuilder {
         this._client = client;
         this._member = member;
         this._blobPayloads = [];
-        this._tokenRequestId = "";
+        this._tokenRequestId = '';
 
         if (Util.countDecimals(lifetimeAmount) > config.decimalPrecision) {
             throw new Error('Number of decimals in lifetimeAmount should be at most ' +
@@ -66,7 +67,7 @@ export default class TransferTokenBuilder {
                     memberId: this._member.memberId(),
                     accountId,
                 },
-            }
+            },
         };
         return this;
     }
@@ -84,8 +85,8 @@ export default class TransferTokenBuilder {
                 custom: {
                     bankId: bankId,
                     payload: authorization,
-                }
-            }
+                },
+            },
         };
         return this;
     }
@@ -102,7 +103,7 @@ export default class TransferTokenBuilder {
                 tokenAuthorization: {
                     authorization,
                 },
-            }
+            },
         };
         return this;
     }
@@ -189,17 +190,6 @@ export default class TransferTokenBuilder {
     }
 
     /**
-     * Sets the realm of the redeemer.
-     *
-     * @param {string} redeemerRealm - realm of the redeemer
-     * @return {TransferTokenBuilder} builder - returns back the builder object
-     */
-    setRedeemerRealm(redeemerRealm) {
-        this._payload.transfer.redeemer.realm = redeemerRealm;
-        return this;
-    }
-
-    /**
      * Sets the memberId of the redeemer.
      *
      * @param {Object} redeemerMemberId - memberId of the redeemer
@@ -221,20 +211,6 @@ export default class TransferTokenBuilder {
             this._payload.to = {};
         }
         this._payload.to.alias = toAlias;
-        return this;
-    }
-
-    /**
-     * Sets the realm of the payee.
-     *
-     * @param {string} toRealm - realm of the payee
-     * @return {TransferTokenBuilder} builder - returns back the builder object
-     */
-    setToRealm(toRealm) {
-        if (!this._payload.to) {
-            this._payload.to = {};
-        }
-        this._payload.to.realm = toRealm;
         return this;
     }
 
@@ -277,7 +253,7 @@ export default class TransferTokenBuilder {
             ownerId,
             type,
             name,
-            data
+            data,
         });
         return this;
     }
@@ -388,15 +364,15 @@ export default class TransferTokenBuilder {
                 this.addAttachment(attachment);
             }
             const res = await this._client.createTransferToken(this._payload, this._tokenRequestId);
-            if (res.data.status === "FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED") {
-                let error = new Error("FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED");
+            if (res.data.status === 'FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED') {
+                const error = new Error('FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
-            if (res.data.status !== "SUCCESS") {
+            if (res.data.status !== 'SUCCESS') {
                 throw new Error(res.data.status);
             }
-            return res.data.token;
+            return Token.create(res.data.token);
         });
     }
 }

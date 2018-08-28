@@ -1,18 +1,14 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
+import {TokenIO} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import MemberMethodsSample from '../../src/sample/MemberMethodsSample';
 import TestUtil from '../TestUtil';
 
+const {assert} = require('chai');
+
 describe('MemberMethods test', () => {
     it('Should run the aliases sample', async () => {
-        const TokenLib = require('../../src');
         const devKey = require('../../src/config.json').devKey[TEST_ENV];
-        const Token = new TokenLib(TEST_ENV, devKey);
-
+        const Token = new TokenIO({env: TEST_ENV, developerKey: devKey});
         const member = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
             assert.isOk(await member.firstAlias());
@@ -26,9 +22,8 @@ describe('MemberMethods test', () => {
     });
 
     it('Should run the keys sample', async () => {
-        const TokenLib = require('../../src');
         const devKey = require('../../src/config.json').devKey[TEST_ENV];
-        const Token = new TokenLib(TEST_ENV, devKey);
+        const Token = new TokenIO({env: TEST_ENV, developerKey: devKey});
 
         const member = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {

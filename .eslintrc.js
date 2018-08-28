@@ -1,26 +1,45 @@
 module.exports = {
-    "extends": "google",
-    "env": {
-        "browser": true,
-        "node": true,
-        "es6": true,
-        "mocha": true,
+    extends: [
+        'eslint:recommended',
+        'plugin:flowtype/recommended',
+    ],
+    env: {
+        browser: true,
+        node: true,
+        es6: true,
+        mocha: true,
     },
-    "parserOptions": {
-        "ecmaVersion": 2017
+    parserOptions: {
+        ecmaVersion: 2018,
     },
-    "globals": {
-        "define": true,
-        "BROWSER": true,
-        "TEST_ENV": true,
-        "TOKEN_VERSION": true,
+    globals: {
+        BROWSER: true,
+        TEST_ENV: true,
+        TOKEN_VERSION: true,
     },
-    "rules": {
-        "no-unused-vars": "warn",
-        "max-nested-callbacks": "off",
-        "max-len": ["warn", 150],
-        "indent": "off",
-        "arrow-parens": "off",
-        "comma-dangle": "off",
+    plugins: [
+        'flowtype',
+    ],
+    rules: {
+        'no-var': ['error'],
+        'arrow-parens': 'off',
+        'indent': ['error', 4],
+        'max-len': ['warn', 150],
+        'prefer-const': ['error'],
+        'arrow-spacing': ['error'],
+        'no-unused-vars': ['warn'],
+        'semi': ['error', 'always'],
+        'space-infix-ops': ['error'],
+        'quotes': ['error', 'single'],
+        'eol-last': ['error', 'always'],
+        'no-trailing-spaces': ['error'],
+        'no-whitespace-before-property': ['error'],
+        'comma-dangle': ['error', 'always-multiline'],
+        'no-multiple-empty-lines': ['error', {
+            max: 1,
+            maxEOF: 0,
+            maxBOF: 0,
+        }],
+        'flowtype/delimiter-dangle': ['error', 'always-multiline'],
     },
 };

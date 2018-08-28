@@ -10,12 +10,12 @@ import UnsecuredFileKeyStore from './UnsecuredFileKeyStore';
  * filename: memberId
  *
  * file contents: {
- *    "keys":[{
- *        "id":"HxxJ-LKfhYVSDMgC", // key ID
- *        "level":"LOW",
- *        "algorithm":"ED25519",
- *        "publicKey":"wHhFB13fbFVwXGkHPToWASQCQ3hJegQQ", // Crypto.strKey( public key )
- *        "privateKey":"YgnDobEA0HoZvM7YXvJBR1Sd006apRbeEl6BBA" // Crypto.strKey( secret key )
+ *    'keys':[{
+ *        'id':'HxxJ-LKfhYVSDMgC', // key ID
+ *        'level':'LOW',
+ *        'algorithm':'ED25519',
+ *        'publicKey':'wHhFB13fbFVwXGkHPToWASQCQ3hJegQQ', // Crypto.strKey( public key )
+ *        'privateKey':'YgnDobEA0HoZvM7YXvJBR1Sd006apRbeEl6BBA' // Crypto.strKey( secret key )
  *    }],
  * }
  */
@@ -26,7 +26,7 @@ let dirRootSet = null;
 class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
     /**
      * Set the dir in which we'll store key-files.
-     * When an sdk user calls Token = new TokenLib('sandbox', './keys'),
+     * When an sdk user calls const Token = new TokenIO({env: 'sandbox', developerKey: devKey, keyDir: './keys'});
      * that calls UnsecuredFileCryptoEngine.setDirRoot('./keys')
      *
      * @param {string} dirRoot - path
@@ -43,20 +43,20 @@ class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
      */
     constructor(memberId) {
         if (BROWSER) {
-            throw new Error("Not available on browser");
+            throw new Error('Not available on browser');
         }
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!dirRootSet) {
-            throw new Error("No valid directory set");
+            throw new Error('No valid directory set');
         }
 
         super(memberId, globalKeyStore);
     }
 
     /**
-     * Get ID of "active" member. (This would make more sense in browser,
+     * Get ID of 'active' member. (This would make more sense in browser,
      * where we'd use it to keep track of browser-linked member.)
      *
      * @return {string} member ID of active member (or throw if none such);

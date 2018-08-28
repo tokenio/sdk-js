@@ -5,7 +5,6 @@
  * @return {Object} array of transactions
  */
 export default async (payer) => {
-    const pagedResult = await payer.getTransferTokens("", 10);
+    const pagedResult = await payer.getTransferTokens('', 10);
     return pagedResult.data;
 };
-

@@ -1,11 +1,8 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import DeleteMemberSample from '../../src/sample/DeleteMemberSample';
 import TestUtil from '../TestUtil';
+
+const {assert} = require('chai');
 
 describe('DeleteMemberSample test', () => {
     it('Should run the sample', async () => {
@@ -18,7 +15,7 @@ describe('DeleteMemberSample test', () => {
         try {
             await member.aliases();
         } catch (err) {
-            assert.include(err.info, BROWSER ? "UNKNOWN" : "MEMBER_ID_NOT_FOUND");
+            assert.include(err.info, BROWSER ? 'UNKNOWN' : 'MEMBER_ID_NOT_FOUND');
         }
     });
 });

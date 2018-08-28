@@ -30,14 +30,14 @@ class ErrorHandler {
             if (tokenErrorDetails) {
                 // Log optional error details to ease up troubleshooting.
                 // Available only in non-prod deployments.
-                console.log("Error details: ", tokenErrorDetails);
+                console.log('Error details: ', tokenErrorDetails); // eslint-disable-line
             }
 
             if (this._globalRpcErrorCallback) {
                 const name = tokenError ? tokenError : 'UNKNOWN';
                 const mappedError = {
                     name,
-                    message: error.response.data
+                    message: error.response.data,
                 };
                 this._globalRpcErrorCallback(mappedError);
                 return mappedError;

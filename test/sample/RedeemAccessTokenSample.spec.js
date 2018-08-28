@@ -1,16 +1,14 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import RedeemAccessTokenSample from '../../src/sample/RedeemAccessTokenSample';
 import TestUtil from '../TestUtil';
+import {Resource} from '../../src';
+
+const {assert} = require('chai');
 
 describe('RedeemAccessTokenSample test', () => {
-    it('Should run the "use" sample', async () => {
+    it('Should run the \'use\' sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
@@ -26,7 +24,7 @@ describe('RedeemAccessTokenSample test', () => {
         assert.isAtLeast(parseFloat(balance.value), 1);
     });
 
-    it('Should run the "careful" sample', async () => {
+    it('Should run the \'careful\' sample', async () => {
         const grantor = await CreateMemberSample();
         await TestUtil.waitUntil(async () => {
             assert.isOk(await grantor.firstAlias());
@@ -48,10 +46,12 @@ describe('RedeemAccessTokenSample test', () => {
 
         await grantor.replaceAndEndorseAccessToken(
             token1,
-            [{account: {accountId: account1.id}},
-             {account: {accountId: account2.id}},
-             {balance: {accountId: account1.id}},
-             {balance: {accountId: account2.id}}]);
+            [
+                Resource.create({account: {accountId: account1.id}}),
+                Resource.create({account: {accountId: account2.id}}),
+                Resource.create({balance: {accountId: account1.id}}),
+                Resource.create({balance: {accountId: account2.id}}),
+            ]);
 
         const balance2 = await RedeemAccessTokenSample.carefullyUse(grantee, token1.id);
         assert.isAtLeast(parseFloat(balance2.value), 1);

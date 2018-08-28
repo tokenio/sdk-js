@@ -1,12 +1,13 @@
+import bs58 from 'bs58';
+import sha256 from 'fast-sha256';
+import stringify from 'fast-json-stable-stringify';
+import base64url from 'base64url';
+import {Buffer as NodeBuffer} from 'buffer';
+import {Alias} from './proto';
+
 /**
  * Class to provide static utility functions.
  */
-import bs58 from 'bs58';
-import sha256 from "fast-sha256";
-import stringify from "json-stable-stringify";
-import base64Url from 'base64url/dist/base64url';
-import {Buffer as NodeBuffer} from "buffer";
-
 class Util {
     /**
      * Generates a random nonce
@@ -23,10 +24,10 @@ class Util {
      * @return {Object} alias protobuf
      */
     static randomAlias() {
-        return {
+        return Alias.create({
             type: 'EMAIL',
-            value: 'test-' + Util.generateNonce() + '+noverify@example.com'
-        };
+            value: 'test-' + Util.generateNonce() + '+noverify@example.com',
+        });
     }
 
     /**
@@ -35,19 +36,11 @@ class Util {
      * @return {Object} token alias protobuf
      */
     static tokenAlias() {
-        return {
+        return Alias.create({
             type: 'DOMAIN',
-            value: 'token.io'
-        };
-    }
-
-    /**
-     * Returns the token realm.
-     *
-     * @return {string} token realm
-     */
-    static tokenRealm() {
-        return 'token';
+            value: 'token.io',
+            realm: 'token',
+        });
     }
 
     /**
@@ -96,7 +89,7 @@ class Util {
         if (Math.floor(value) === value) {
             return 0;
         }
-        return value.toString().split(".")[1].length || 0;
+        return value.toString().split('.')[1].length || 0;
     }
 
     /**
@@ -114,7 +107,7 @@ class Util {
         } catch (err) {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
                 err.response.data :
-                "UNKNOWN";
+                'UNKNOWN';
             err.info = method.name + ': ' + err.message + '. Reason: ' + reason;
             return Promise.reject(err);
         }
@@ -133,7 +126,7 @@ class Util {
         } catch (err) {
             const reason = (err.response !== undefined && err.response.data !== undefined) ?
                 err.response.data :
-                "UNKNOWN";
+                'UNKNOWN';
             err.info = method.name + ': ' + err.message + '. Reason: ' + reason;
             throw err;
         }
@@ -207,7 +200,7 @@ class Util {
             if (window.oldFetch) {
                 window.fetch = window.oldFetch;
             }
-            let iframe = document.getElementById('tokenApiIframe');
+            const iframe = document.getElementById('tokenApiIframe');
             if (iframe !== null) {
                 document.body.removeChild(iframe);
             }
@@ -222,7 +215,7 @@ class Util {
      * @return {Object} key - the signing key
      */
     static getSigningKey(keys, signature) {
-        for (let key of keys) {
+        for (const key of keys) {
             if (key.id === signature.keyId) {
                 return key;
             }
@@ -237,7 +230,8 @@ class Util {
      * @return {string} encoded key
      */
     static strKey(key) {
-        return base64Url(key);
+        if (typeof key === 'string') return key;
+        return base64url(key);
     }
 
     /**
@@ -247,41 +241,24 @@ class Util {
      * @return {Uint8Array} data
      */
     static wrapBuffer(buffer) {
-        return new Uint8Array(new NodeBuffer(buffer));
+        return new Uint8Array(NodeBuffer.from(buffer));
     }
 
     /**
      * Converts a key from a string to buffer.
      *
-     * @param {string} key - base64Url encoded key
+     * @param {string} key - base64url encoded key
      * @return {Uint8Array} buffered key
      */
     static bufferKey(key) {
-        return Util.wrapBuffer(base64Url.toBuffer(key));
-    }
-
-    /**
-     * Converts a key to a token key.
-     *
-     * @param {Object} key - key
-     * @param {string} level - key level
-     * @return {Object} token key
-     */
-    static tokenKey(key, level) {
-        return {
-            id: key.id,
-            level: level,
-            algorithm: key.algorithm,
-            publicKey: Util.strKey(key.publicKey),
-            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs}
-        };
+        return Util.wrapBuffer(base64url.toBuffer(key));
     }
 
     static parseParamsFromUrl(url) {
-        let query = url.split('?')[1];
-        let result = {};
-        query.split("&").forEach(function(part) {
-            var item = part.split("=");
+        const query = url.split('?')[1];
+        const result = {};
+        query.split('&').forEach(function(part) {
+            const item = part.split('=');
             result[item[0]] = decodeURIComponent(item[1]);
         });
         return result;
@@ -291,7 +268,7 @@ class Util {
         instance.interceptors.response.use(
             (res) => res,
             (err) => {
-                console.log(err.response);
+                console.log(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config.url}]`); // eslint-disable-line
                 return Promise.reject(err);
             });
     }

@@ -1,4 +1,4 @@
-import config from "../config.json";
+import config from '../config.json';
 
 /**
  * Gets a member's recent transactions
@@ -12,9 +12,8 @@ export default async (payer) => {
 
     const pagedResult = await payer.getTransactions(
         accountId,
-        "",
+        '',
         10,
         config.KeyLevel.STANDARD);
     return pagedResult.data;
 };
-

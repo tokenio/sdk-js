@@ -1,8 +1,7 @@
-const chai = require('chai');
-const assert = chai.assert;
-import 'babel-regenerator-runtime';
 import FileSystem from '../../src/security/PromiseFileSystem';
 import Util from '../../src/Util';
+
+const {assert} = require('chai');
 
 let fs;
 let path;
@@ -11,12 +10,7 @@ let testDir;
 if (!BROWSER) {
     fs = require('fs-extra');
     path = require('path');
-
-    // Goes back four dirs to find project base. Does this in order to create the testing dir
-    // in the right place. Assumes process argv[1] is mocha binary
-    testDir = path.join(path.join(
-            path.dirname(path.dirname(path.dirname(path.dirname(process.argv[1])))),
-            'test'), 'testDir');
+    testDir = path.join(__dirname, 'testDir');
 }
 
 describe('Filesystem', () => {

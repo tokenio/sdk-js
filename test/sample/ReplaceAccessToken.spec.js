@@ -1,14 +1,11 @@
-/* eslint-disable new-cap */
-const chai = require('chai');
-const assert = chai.assert;
-
-import 'babel-regenerator-runtime';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import GetAccessTokensSample from '../../src/sample/GetAccessTokensSample';
 import ReplaceAccessTokenSample from '../../src/sample/ReplaceAccessTokenSample';
 import TestUtil from '../TestUtil';
+
+const {assert} = require('chai');
 
 describe('ReplaceAccessTokenSample test', () => {
     it('Should run the sample', async () => {
@@ -24,6 +21,8 @@ describe('ReplaceAccessTokenSample test', () => {
         await CreateAndEndorseAccessTokenSample(member, member2Alias);
         const foundToken = await GetAccessTokensSample(member, member2.memberId());
         const newToken = await ReplaceAccessTokenSample(member, foundToken);
-        assert.deepEqual(newToken.payload.to.alias, member2Alias);
+        assert.equal(
+            JSON.stringify(newToken.payload.to.alias),
+            JSON.stringify(member2Alias));
     });
 });

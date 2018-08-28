@@ -1,13 +1,13 @@
 import TestUtil from './TestUtil';
-import TokenIo from "../src";
-const devKey = require("../src/config.json").devKey[TEST_ENV];
-const Token = new TokenIo(TEST_ENV, devKey);
-const chai = require('chai');
-const assert = chai.assert;
-import 'babel-regenerator-runtime';
+import {TokenIO, TransferEndpoint} from '../src';
+
+const devKey = require('../src/config.json').devKey[TEST_ENV];
+const {assert} = require('chai');
+
+const Token = new TokenIO({env: TEST_ENV, developerKey: devKey});
 
 describe('Token library', () => {
-    it("should perform a transfer flow", async () => {
+    it('should perform a transfer flow', async () => {
         const alias1 = Token.Util.randomAlias();
         const alias2 = Token.Util.randomAlias();
 
@@ -15,7 +15,7 @@ describe('Token library', () => {
         await TestUtil.waitUntil(async () => {
             assert.isOk(await member1.firstAlias());
         });
-        await member1.subscribeToNotifications("iron");
+        await member1.subscribeToNotifications('iron');
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];
@@ -33,13 +33,13 @@ describe('Token library', () => {
 
         await member1.endorseToken(token.id);
 
-        await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [{
+        await member2.redeemToken(token.id, 5, 'EUR', 'lunch', [TransferEndpoint.create({
             account: {
                 sepa: {
                     iban: Token.Util.generateNonce(),
-                }
-            }
-        }]);
+                },
+            },
+        })]);
 
         await TestUtil.waitUntil(async () => {
             const transfers = await member1.getTransfers(token.id, null, 100);
@@ -49,12 +49,9 @@ describe('Token library', () => {
 });
 
 describe('Token library', () => {
-    it('should create two members with no aliases', async () => {
-        const guest = await Token.createMember({}, Token.MemoryCryptoEngine);
+    it('should create a member with no aliases', async () => {
+        const guest = await Token.createMember(null, Token.MemoryCryptoEngine);
         const aliases = await guest.aliases();
-        const guest2 = await Token.createMember(null, Token.MemoryCryptoEngine);
-        const aliases2 = await guest2.aliases();
-        assert.isUndefined(aliases);
-        assert.isUndefined(aliases2);
+        assert.isEmpty(aliases);
     });
 });

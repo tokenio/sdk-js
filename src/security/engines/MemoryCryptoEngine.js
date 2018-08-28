@@ -8,19 +8,19 @@ import MemoryKeyStore from './MemoryKeyStore';
  * for multiple members at once, and uses the following schema:
  *
  * {
- *   "ACTIVE": "m:12345:678", // member ID of most-recently active member
- *   "m:12345:678": { // a member's keys:
- *     "PRIVILEGED": {
- *          id: "456", // key ID
+ *   'ACTIVE': 'm:12345:678', // member ID of most-recently active member
+ *   'm:12345:678': { // a member's keys:
+ *     'PRIVILEGED': {
+ *          id: '456', // key ID
  *          algorithm: ED25519,
  *          level: PRIVILEGED,
  *          publicKey: Buffer(...), // public key data
  *          privateKey: Buffer(...), // secret key data
  *      },
- *     "LOW": {...},
- *     "STANDARD": {...},
+ *     'LOW': {...},
+ *     'STANDARD': {...},
  *   },
- *   "m:91011:12d": {...} // other member's keys...
+ *   'm:91011:12d': {...} // other member's keys...
  * }
  *
  */

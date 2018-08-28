@@ -1,4 +1,4 @@
-import config from "../config.json";
+import config from '../config.json';
 
 /**
  * Sample code illustrating how a grantee might use an access token.
@@ -6,7 +6,7 @@ import config from "../config.json";
 class RedeemAccessTokenSample {
     /**
      * Redeems an information access token token to fetch an account balance.
-     * Assumes the token grants "allAccounts" access.
+     * Assumes the token grants 'allAccounts' access.
      *
      * @param {Member} grantee - grantee member
      * @param {string} tokenId - id of the token to redeem
@@ -28,21 +28,21 @@ class RedeemAccessTokenSample {
 
     /**
      * Redeems an information access token token to fetch an account balance.
-     * Does not assume the token grants "allAccounts" access.
+     * Does not assume the token grants 'allAccounts' access.
      *
      * @param {Member} grantee - grantee member
      * @param {string} tokenId - id of the token to redeem
      * @return {Object} balance of one account (or {} if no access to any accounts)
      */
     static async carefullyUse(grantee, tokenId) {
-        var accessToken = await grantee.getToken(tokenId);
+        let accessToken = await grantee.getToken(tokenId);
         while (accessToken.replacedByTokenId) {
             accessToken = await grantee.getToken(accessToken.replacedByTokenId);
         }
-        var accountIds = {};
-        var haveAllBalancesAccess = false;
-        var haveAllAccountsAccess = false;
-        var i;
+        const accountIds = {};
+        let haveAllBalancesAccess = false;
+        let haveAllAccountsAccess = false;
+        let i;
         for (i = 0; i < accessToken.payload.access.resources.length; i++) {
             const resource = accessToken.payload.access.resources[i];
             if (resource.balance && resource.balance.accountId) {
@@ -80,7 +80,7 @@ class RedeemAccessTokenSample {
             } catch (ex) {
                 // If grantor previously un-linked an account, then grantee can't get its balance.
                 if (ex.response && ex.response.data && ex.response.data.startsWith &&
-                    ex.response.data.startsWith("FAILED_PRECONDITION")) {
+                    ex.response.data.startsWith('FAILED_PRECONDITION')) {
                     continue;
                 }
             }

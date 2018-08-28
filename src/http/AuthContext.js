@@ -1,4 +1,4 @@
-import config from "../config.json";
+import config from '../config.json';
 
 /**
  * Handles the auth context when using access tokens.

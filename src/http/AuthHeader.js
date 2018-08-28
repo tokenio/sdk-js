@@ -1,5 +1,5 @@
-const stringify = require('json-stable-stringify');
-import config from "../config.json";
+import stringify from 'fast-json-stable-stringify';
+import config from '../config.json';
 
 /**
  * Handles the addition of the http headers (with signature) to the request
@@ -26,19 +26,18 @@ class AuthHeader {
      * @param {AuthContext} context - auth context for access token redemption
      */
     async addAuthorizationHeader(memberId, request, context) {
-        let now = new Date().getTime();
+        const now = new Date().getTime();
 
         // Parses out the base uri
         let uriPath = request.url.replace(this._baseUrl, '');
-
         // Makes sure the uri is formatted correctly
-        uriPath = uriPath.substring(0, 1) === '/' ? uriPath : uriPath + '/';
+        uriPath = uriPath.substring(0, 1) === '/' ? uriPath : `/${uriPath}`;
         uriPath = uriPath.substring(uriPath.length - 1) === '/' ?
             uriPath.substring(0, uriPath.length - 1) : uriPath;
 
         // Path should not include query parameters
-        if (uriPath.indexOf("?") >= 0) {
-            uriPath = uriPath.substring(0, uriPath.indexOf("?"));
+        if (uriPath.indexOf('?') >= 0) {
+            uriPath = uriPath.substring(0, uriPath.indexOf('?'));
         }
 
         // Creates the payload from the request info
@@ -46,7 +45,7 @@ class AuthHeader {
             method: request.method.toUpperCase(),
             uriHost: this._baseUrl.replace('http://', '').replace('https://', ''),
             uriPath,
-            createdAtMs: now.toString()
+            createdAtMs: now.toString(),
         };
 
         if (request.data !== undefined && request.data !== '') {
@@ -54,8 +53,8 @@ class AuthHeader {
         }
 
         // Signs the query string as well, if it exists
-        if (request.url.indexOf("?") !== -1) {
-            payload.queryString = request.url.substring(request.url.indexOf("?") + 1);
+        if (request.url.indexOf('?') !== -1) {
+            payload.queryString = request.url.substring(request.url.indexOf('?') + 1);
         }
 
         // Creates the signer object
@@ -74,7 +73,7 @@ class AuthHeader {
             AuthHeader._customerInitiated(context);
 
         request.headers = {
-            Authorization: header
+            Authorization: header,
         };
     }
 

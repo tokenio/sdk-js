@@ -1,3 +1,3 @@
-import Token from './main/Token';
-
-module.exports = Token;
+// @flow
+export * from './main/TokenIO';
+export * from './proto';

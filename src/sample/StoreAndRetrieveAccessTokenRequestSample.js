@@ -1,6 +1,7 @@
-const devKey = require("../../src/config.json").devKey[TEST_ENV];
-const TokenLib = require('../../src');
-const Token = new TokenLib(TEST_ENV, devKey, './keys');
+import {TokenIO} from '..';
+
+const devKey = require('../../src/config.json').devKey[TEST_ENV];
+const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'});
 
 /**
  * Creates a access token request and retrieve it.

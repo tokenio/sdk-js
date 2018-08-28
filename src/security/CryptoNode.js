@@ -1,7 +1,7 @@
 import Util from '../Util';
-import base64Url from "base64url";
-import nacl from "tweetnacl";
-import sha256 from "fast-sha256";
+import base64url from 'base64url';
+import nacl from 'tweetnacl';
+import sha256 from 'fast-sha256';
 
 /**
  * Class providing static crypto primitives for Node environments using libsodium.
@@ -10,18 +10,17 @@ class CryptoNode {
     /**
      * Generates a key pair to use with the Token system.
      *
-     * @param {string} keyLevel - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
-     * @param {boolean} extractable - whether the private key can be extracted into raw data
      * @return {Object} generated key pair
      */
-    static async generateKeys(keyLevel, expirationMs, extractable = false) {
+    static async generateKeys(keyLevel, expirationMs) {
         const keyPair = nacl.sign.keyPair();
-        keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
+        keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
         keyPair.privateKey = keyPair.secretKey;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = (new Date()).getTime() + expirationMs;
+        if (expirationMs !== undefined) keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
         delete keyPair.secretKey;
         return keyPair;
     }
@@ -35,7 +34,7 @@ class CryptoNode {
      */
     static async sign(message, keys) {
         const msg = Util.wrapBuffer(message);
-        return base64Url(nacl.sign.detached(msg, keys.privateKey));
+        return base64url(nacl.sign.detached(msg, keys.privateKey));
     }
 
     /**

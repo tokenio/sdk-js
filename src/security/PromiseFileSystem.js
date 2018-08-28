@@ -2,7 +2,7 @@ let fs;
 let path;
 
 if (!BROWSER) {
-    fs = require('fs');
+    fs = require('fs-extra');
     path = require('path');
 }
 
@@ -19,15 +19,15 @@ class PromiseFileSystem {
 
         return new Promise((resolve, reject) => {
             fs.readFile(
-                    PromiseFileSystem._getFullFilename(filename),
-                    PromiseFileSystem._options,
-                    (err, buffer) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(buffer);
-                }
-            });
+                PromiseFileSystem._getFullFilename(filename),
+                PromiseFileSystem._options,
+                (err, buffer) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(buffer);
+                    }
+                });
         });
     }
 

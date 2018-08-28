@@ -9,4 +9,3 @@ export default async (payer, transferId) => {
     const transfer = await payer.getTransfer(transferId);
     return transfer;
 };
-

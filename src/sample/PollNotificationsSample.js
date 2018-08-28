@@ -9,17 +9,17 @@ class PollNotificationsSample {
      * @return {Object} subscription
      */
     static async subscribeMember(member) {
-        const subscription = await member.subscribeToNotifications("iron");
+        const subscription = await member.subscribeToNotifications('iron');
         return subscription;
     }
 
-   /**
+    /**
      * Get member's notifications, perhaps trying a few times
      *
      * @param {Object} member - whose notifications to get
      */
     static async get(member) {
-        var retries = 5;
+        let retries = 5;
         /**
          * poll for notifications
          */
@@ -29,11 +29,11 @@ class PollNotificationsSample {
             if (pagedList.data.length > 0) {
                 const notification = pagedList.data[0];
                 switch (notification.content.type) {
-                case "PAYEE_TRANSFER_PROCESSED":
-                    // console.log("Transfer Processed: ", JSON.stringify(notification));
+                case 'PAYEE_TRANSFER_PROCESSED':
+                    // console.log('Transfer Processed: ', JSON.stringify(notification));
                     break;
                 default:
-                    // console.log("Got Notification: ", JSON.stringify(notification));
+                    // console.log('Got Notification: ', JSON.stringify(notification));
                     break;
                 }
                 return;

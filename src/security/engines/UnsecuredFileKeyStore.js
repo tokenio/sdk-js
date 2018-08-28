@@ -2,7 +2,7 @@ import Crypto from '../Crypto';
 import FileSystem from '../PromiseFileSystem';
 
 const globals = {
-    activeMemberId: ''
+    activeMemberId: '',
 };
 
 class UnsecuredFileKeyStore {
@@ -19,19 +19,19 @@ class UnsecuredFileKeyStore {
      */
     async put(memberId, keyPair) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!keyPair) {
-            throw new Error("Don't know what key to put");
+            throw new Error('Don\'t know what key to put');
         }
         if (!keyPair.level) {
-            throw new Error("Don't know what level to put key");
+            throw new Error('Don\'t know what level to put key');
         }
         if (keyPair.expiresAtMs < Date.now()) {
             throw new Error(`Key ${keyPair.id} has expired`);
         }
         if (BROWSER) {
-            throw new Error("Not available on browser");
+            throw new Error('Not available on browser');
         }
         const member = await this._loadMember(memberId) || {};
         member[keyPair.level] = keyPair;
@@ -44,18 +44,18 @@ class UnsecuredFileKeyStore {
      * Look up a key by memberId and level.
      *
      * @param {string} memberId - ID of member
-     * @param {string} level - "LOW", "STANDARD", or "PRIVILEGED"
+     * @param {string} level - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @return {Object} key pair
      */
     async getByLevel(memberId, level) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!level) {
-            throw new Error("Don't know what key level to get");
+            throw new Error('Don\'t know what key level to get');
         }
         if (BROWSER) {
-            throw new Error("Not available on browser");
+            throw new Error('Not available on browser');
         }
         const member = await this._loadMember(memberId);
         if (!member) {
@@ -80,13 +80,13 @@ class UnsecuredFileKeyStore {
      */
     async getById(memberId, keyId) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (!keyId) {
-            throw new Error(`Don't know id of key to get`);
+            throw new Error('Don\'t know id of key to get');
         }
         if (BROWSER) {
-            throw new Error("Not available on browser");
+            throw new Error('Not available on browser');
         }
         const member = await this._loadMember(memberId);
         if (!member) {
@@ -114,10 +114,10 @@ class UnsecuredFileKeyStore {
      */
     async listKeys(memberId) {
         if (!memberId) {
-            throw new Error("Invalid memberId");
+            throw new Error('Invalid memberId');
         }
         if (BROWSER) {
-            throw new Error("Not available on browser");
+            throw new Error('Not available on browser');
         }
         const member = await this._loadMember(memberId);
         if (!member) {
@@ -162,7 +162,7 @@ class UnsecuredFileKeyStore {
      * Save a member's keys.
      *
      * @param {string} memberId - member Id
-     * @param {Object} member - obj dict of keys { "LOW": {...}, "STANDARD": {...}, ... }
+     * @param {Object} member - obj dict of keys { 'LOW': {...}, 'STANDARD': {...}, ... }
      */
     async _saveMember(memberId, member) {
         // instead of { LOW: {...}, ... } we want [ {...}, ... ]
@@ -180,16 +180,14 @@ class UnsecuredFileKeyStore {
                 strKeys.push(keyCopy);
             }
         }
-        await FileSystem.writeFile(
-                memberId.split(':').join('_'),
-            JSON.stringify({keys: strKeys}));
+        await FileSystem.writeFile(memberId.split(':').join('_'), JSON.stringify({keys: strKeys}));
     }
 
     /**
      * Load a member's keys.
      *
      * @param {string} memberId - ID of member
-     * @return {Object} object dict level : key {"LOW": {...}, "STANDARD": {...}, ...}
+     * @return {Object} object dict level : key {'LOW': {...}, 'STANDARD': {...}, ...}
      */
     async _loadMember(memberId) {
         let data;

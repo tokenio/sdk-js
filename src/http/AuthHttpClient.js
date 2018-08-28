@@ -1,19 +1,14 @@
-/* eslint-disable camelcase */
-
-import Crypto from "../security/Crypto";
-import Util from "../Util";
-import AuthHeader from "./AuthHeader";
-import AuthContext from "./AuthContext";
-import config from "../config.json";
-import ErrorHandler from "./ErrorHandler";
-import DeveloperHeader from "./DeveloperHeader";
-import VersionHeader from "./VersionHeader";
-
-const base64js = require('base64-js');
-const stringify = require('json-stable-stringify');
-const axios = require('axios');
-
-const BlockingAdapter = require('./BlockingAdapter');
+import Util from '../Util';
+import AuthHeader from './AuthHeader';
+import AuthContext from './AuthContext';
+import config from '../config.json';
+import ErrorHandler from './ErrorHandler';
+import DeveloperHeader from './DeveloperHeader';
+import VersionHeader from './VersionHeader';
+import BlockingAdapter from './BlockingAdapter';
+import axios from 'axios';
+import base64js from 'base64-js';
+import stringify from 'fast-json-stable-stringify';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -24,22 +19,24 @@ class AuthHttpClient {
      * the CryptoEngine, for Low, Standard, and Privileged keys, which will be used to sign
      * appropriate requests.
      *
-     * @param {string} env - desired env, such as 'prd'
-     * @param {string} memberId - member making the requests
-     * @param {Object} cryptoEngine - engines to use for signing
-     * @param {string} developerKey - the developer key
-     * @param {function} globalRpcErrorCallback - callback to invoke on any cross-cutting RPC
-     * @param {bool} loggingEnabled - enable HTTP error logging if true
-     * call error. For example: SDK version mismatch
-     * @param {string} customSdkUrl - set to override the default sdk url
+     * @param {Object} options
      */
-    constructor(env, memberId, cryptoEngine, developerKey, globalRpcErrorCallback, loggingEnabled, customSdkUrl) {
+    constructor(options) {
+        const {
+            env,
+            memberId,
+            cryptoEngine,
+            developerKey,
+            globalRpcErrorCallback,
+            loggingEnabled,
+            customSdkUrl,
+        } = options;
         if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: customSdkUrl || config.urls[env]
+            baseURL: customSdkUrl || config.urls[env],
         });
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
@@ -140,7 +137,7 @@ class AuthHttpClient {
     }
 
     /**
-     * Subcribes to push notifications.
+     * Subscribes to push notifications.
      *
      * @param {string} handler - who is handling the notifications
      * @param {string} handlerInstructions - how to send the notification
@@ -154,8 +151,8 @@ class AuthHttpClient {
 
         const request = {
             method: 'post',
-            url: `/subscribers`,
-            data: req
+            url: '/subscribers',
+            data: req,
         };
         return this._instance(request);
     }
@@ -168,7 +165,7 @@ class AuthHttpClient {
     async getSubscribers() {
         const request = {
             method: 'get',
-            url: `/subscribers`
+            url: '/subscribers',
         };
         return this._instance(request);
     }
@@ -182,7 +179,7 @@ class AuthHttpClient {
     async getSubscriber(subscriberId) {
         const request = {
             method: 'get',
-            url: `/subscribers/${subscriberId}`
+            url: `/subscribers/${subscriberId}`,
         };
         return this._instance(request);
     }
@@ -211,7 +208,7 @@ class AuthHttpClient {
     async getNotification(notificationId) {
         const request = {
             method: 'get',
-            url: `/notifications/${notificationId}`
+            url: `/notifications/${notificationId}`,
         };
         return this._instance(request);
     }
@@ -225,7 +222,7 @@ class AuthHttpClient {
     async unsubscribeFromNotifications(subscriberId) {
         const request = {
             method: 'delete',
-            url: `/subscribers/${subscriberId}`
+            url: `/subscribers/${subscriberId}`,
         };
         return this._instance(request);
     }
@@ -233,17 +230,19 @@ class AuthHttpClient {
     /**
      * Trigger a token step up notification.
      *
-     * @param {Object} stepUp - token step up notification payload
+     * @param {string} tokenId - token ID
      * @return {Object} response - response to the Api call
      */
-    async triggerStepUpNotification(stepUp) {
+    async triggerStepUpNotification(tokenId) {
         const req = {
-            tokenStepUp: stepUp
+            tokenStepUp: {
+                tokenId: tokenId,
+            },
         };
         const request = {
             method: 'post',
-            url: `/notify/stepup`,
-            data: req
+            url: '/notify/stepup',
+            data: req,
         };
         return this._instance(request);
     }
@@ -257,13 +256,13 @@ class AuthHttpClient {
     async triggerBalanceStepUpNotification(accountIds) {
         const req = {
             balanceStepUp: {
-                accountId: accountIds
-            }
+                accountId: accountIds,
+            },
         };
         const request = {
             method: 'post',
-            url: `/notify/stepup`,
-            data: req
+            url: '/notify/stepup',
+            data: req,
         };
         return this._instance(request);
     }
@@ -279,13 +278,13 @@ class AuthHttpClient {
         const req = {
             transactionStepUp: {
                 accountId,
-                transactionId
-            }
+                transactionId,
+            },
         };
         const request = {
             method: 'post',
-            url: `/notify/stepup`,
-            data: req
+            url: '/notify/stepup',
+            data: req,
         };
         return this._instance(request);
     }
@@ -310,12 +309,12 @@ class AuthHttpClient {
                 memberId: this._memberId,
                 keyId: signer.getKeyId(),
                 signature: await signer.signJson(address),
-            }
+            },
         };
         const request = {
             method: 'post',
-            url: `/addresses`,
-            data: req
+            url: '/addresses',
+            data: req,
         };
         return this._instance(request);
     }
@@ -329,7 +328,7 @@ class AuthHttpClient {
     async getAddress(addressId) {
         const request = {
             method: 'get',
-            url: `/addresses/${addressId}`
+            url: `/addresses/${addressId}`,
         };
         return this._instance(request);
     }
@@ -342,7 +341,7 @@ class AuthHttpClient {
     async getAddresses() {
         const request = {
             method: 'get',
-            url: `/addresses`
+            url: '/addresses',
         };
         return this._instance(request);
     }
@@ -356,7 +355,7 @@ class AuthHttpClient {
     async deleteAddress(addressId) {
         const request = {
             method: 'delete',
-            url: `/addresses/${addressId}`
+            url: `/addresses/${addressId}`,
         };
         return this._instance(request);
     }
@@ -373,12 +372,12 @@ class AuthHttpClient {
      */
     async setProfile(profile) {
         const req = {
-            profile
+            profile,
         };
         const request = {
             method: 'put',
-            url: `/profile`,
-            data: req
+            url: '/profile',
+            data: req,
         };
         return this._instance(request);
     }
@@ -405,19 +404,20 @@ class AuthHttpClient {
      * @return {Object} response - response to the API call
      */
     async setProfilePicture(type, data) {
+        if (typeof data !== 'string') data = base64js.fromByteArray(data);
         const req = {
             payload: {
                 ownerId: this._memberId,
                 type: type,
-                name: "profile",
-                data: base64js.fromByteArray(data),
-                accessMode: "PUBLIC",
+                name: 'profile',
+                data,
+                accessMode: 'PUBLIC',
             },
         };
         const request = {
             method: 'put',
-            url: `/profilepicture`,
-            data: req
+            url: '/profilepicture',
+            data: req,
         };
         return this._instance(request);
     }
@@ -445,12 +445,12 @@ class AuthHttpClient {
      */
     async setReceiptContact(contact) {
         const req = {
-            contact: contact
+            contact: contact,
         };
         const request = {
             method: 'put',
-            url: `/receipt-contact`,
-            data: req
+            url: '/receipt-contact',
+            data: req,
         };
         return this._instance(request);
     }
@@ -463,7 +463,7 @@ class AuthHttpClient {
     async getReceiptContact() {
         const request = {
             method: 'get',
-            url: `/receipt-contact`
+            url: '/receipt-contact',
         };
         return this._instance(request);
     }
@@ -475,17 +475,18 @@ class AuthHttpClient {
     /**
      * Links accounts to the member.
      *
+     * @deprecated - use linkAccountsOauth
      * @param {Object} bankAuthorization - encrypted authorization to accounts
      * @return {Object} response - response to the API call
      */
     async linkAccounts(bankAuthorization) {
         const req = {
-            bankAuthorization
+            bankAuthorization,
         };
         const request = {
             method: 'post',
-            url: `/accounts`,
-            data: req
+            url: '/accounts',
+            data: req,
         };
         return this._instance(request);
     }
@@ -503,8 +504,8 @@ class AuthHttpClient {
         };
         const request = {
             method: 'post',
-            url: `/bank-accounts`,
-            data: req
+            url: '/bank-accounts',
+            data: req,
         };
         return this._instance(request);
     }
@@ -517,12 +518,12 @@ class AuthHttpClient {
      */
     async unlinkAccounts(accountIds) {
         const req = {
-            accountIds
+            accountIds,
         };
         const request = {
             method: 'delete',
-            url: `/accounts`,
-            data: req
+            url: '/accounts',
+            data: req,
         };
         return this._instance(request);
     }
@@ -535,7 +536,7 @@ class AuthHttpClient {
     async getAccounts() {
         const request = {
             method: 'get',
-            url: `/accounts`
+            url: '/accounts',
         };
         return this._instance(request);
     }
@@ -549,7 +550,7 @@ class AuthHttpClient {
     async getAccount(accountId) {
         const request = {
             method: 'get',
-            url: `/accounts/${accountId}`
+            url: `/accounts/${accountId}`,
         };
         return this._instance(request);
     }
@@ -562,7 +563,7 @@ class AuthHttpClient {
     async getDefaultAccount() {
         const request = {
             method: 'get',
-            url: `/members/${this._memberId}/default-account`
+            url: `/members/${this._memberId}/default-account`,
         };
         return this._instance(request);
     }
@@ -578,7 +579,7 @@ class AuthHttpClient {
         const request = {
             method: 'put',
             url: `/members/${this._memberId}/default-account`,
-            data: req
+            data: req,
         };
         return this._instance(request);
     }
@@ -593,7 +594,7 @@ class AuthHttpClient {
     async setAccountName(accountId, name) {
         const request = {
             method: 'patch',
-            url: `/accounts/${accountId}?name=${name}`
+            url: `/accounts/${accountId}?name=${name}`,
         };
         return this._instance(request);
     }
@@ -624,7 +625,7 @@ class AuthHttpClient {
      */
     async getBalances(accountIds, keyLevel) {
         this.useKeyLevel(keyLevel);
-        var url = '/accounts/balance?' +
+        const url = '/accounts/balance?' +
             accountIds.map((accountId) => 'account_id=' + accountId).join('&');
 
         const request = {
@@ -689,8 +690,8 @@ class AuthHttpClient {
         };
         const request = {
             method: 'post',
-            url: `/blobs`,
-            data: req
+            url: '/blobs',
+            data: req,
         };
         return this._instance(request);
     }
@@ -705,7 +706,7 @@ class AuthHttpClient {
     async getTokenBlob(tokenId, blobId) {
         const request = {
             method: 'get',
-            url: `tokens/${tokenId}/blobs/${blobId}`,
+            url: `/tokens/${tokenId}/blobs/${blobId}`,
         };
         return this._instance(request);
     }
@@ -733,7 +734,7 @@ class AuthHttpClient {
     async getBankInfo(bankId) {
         const request = {
             method: 'get',
-            url: `/banks/${bankId}/info`
+            url: `/banks/${bankId}/info`,
         };
         return this._instance(request);
     }
@@ -751,7 +752,7 @@ class AuthHttpClient {
     async storeTokenRequest(tokenRequest) {
         const request = {
             method: 'post',
-            url: `/token-requests`,
+            url: '/token-requests',
             data: tokenRequest,
         };
         return this._instance(request);
@@ -767,11 +768,11 @@ class AuthHttpClient {
     async createTransferToken(payload, tokenRequestId) {
         const request = {
             method: 'post',
-            url: `/tokens?type=transfer`,
+            url: '/tokens?type=transfer',
             data: {
                 payload,
                 tokenRequestId,
-            }
+            },
         };
         return this._instance(request);
     }
@@ -786,11 +787,11 @@ class AuthHttpClient {
     async createAccessToken(payload, tokenRequestId) {
         const request = {
             method: 'post',
-            url: `/tokens?type=access`,
+            url: '/tokens?type=access',
             data: {
                 payload,
                 tokenRequestId,
-            }
+            },
         };
         return this._instance(request);
     }
@@ -826,8 +827,8 @@ class AuthHttpClient {
             url: `/tokens/${cancelTokenId}/replace`,
             data: {
                 cancel_token: cancelReq,
-                create_token: createReq
-            }
+                create_token: createReq,
+            },
         };
         return this._instance(request);
     }
@@ -858,7 +859,7 @@ class AuthHttpClient {
 
         const createReq = {
             payload,
-            payload_signature: await this._tokenOperationSignature(payload, 'endorsed')
+            payload_signature: await this._tokenOperationSignature(payload, 'endorsed'),
         };
 
         const request = {
@@ -866,8 +867,8 @@ class AuthHttpClient {
             url: `/tokens/${cancelTokenId}/replace`,
             data: {
                 cancel_token: cancelReq,
-                create_token: createReq
-            }
+                create_token: createReq,
+            },
         };
         return this._instance(request);
     }
@@ -920,7 +921,7 @@ class AuthHttpClient {
             tokenId: transferToken.id,
             amount: {
                 value: amount.toString(),
-                currency
+                currency,
             },
         };
 
@@ -939,12 +940,12 @@ class AuthHttpClient {
                 memberId: this._memberId,
                 keyId: signer.getKeyId(),
                 signature: await signer.signJson(payload),
-            }
+            },
         };
         const request = {
             method: 'post',
-            url: `/transfers`,
-            data: req
+            url: '/transfers',
+            data: req,
         };
         return this._instance(request);
     }
@@ -958,7 +959,7 @@ class AuthHttpClient {
     async getToken(tokenId) {
         const request = {
             method: 'get',
-            url: `/tokens/${tokenId}`
+            url: `/tokens/${tokenId}`,
         };
         return this._instance(request);
     }
@@ -973,7 +974,7 @@ class AuthHttpClient {
     async getActiveAccessToken(toMemberId) {
         const request = {
             method: 'get',
-            url: `/tokens/active-access-token/${toMemberId}`
+            url: `/tokens/active-access-token/${toMemberId}`,
         };
         return this._instance(request);
     }
@@ -989,7 +990,7 @@ class AuthHttpClient {
     async getTokens(type, offset, limit) {
         const request = {
             method: 'get',
-            url: `/tokens?type=${type}&offset=${offset}&limit=${limit}`
+            url: `/tokens?type=${type}&offset=${offset}&limit=${limit}`,
         };
         return this._instance(request);
     }
@@ -999,7 +1000,7 @@ class AuthHttpClient {
         const request = {
             method: 'put',
             url: `/tokens/${tokenId}/${operation}`,
-            data: await this._tokenOperationRequest(token, suffix)
+            data: await this._tokenOperationRequest(token, suffix),
         };
         if (blocking) request.adapter = BlockingAdapter;
         return this._instance(request);
@@ -1008,7 +1009,7 @@ class AuthHttpClient {
     async _tokenOperationRequest(token, suffix) {
         return {
             tokenId: token.id,
-            signature: await this._tokenOperationSignature(token.payload, suffix)
+            signature: await this._tokenOperationSignature(token.payload, suffix),
         };
     }
 
@@ -1035,7 +1036,7 @@ class AuthHttpClient {
     async getTransfer(transferId) {
         const request = {
             method: 'get',
-            url: `/transfers/${transferId}`
+            url: `/transfers/${transferId}`,
         };
         return this._instance(request);
     }
@@ -1051,7 +1052,7 @@ class AuthHttpClient {
     async getTransfers(tokenId, offset, limit) {
         const request = {
             method: 'get',
-            url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`
+            url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`,
         };
         return this._instance(request);
     }
@@ -1075,14 +1076,14 @@ class AuthHttpClient {
                     addKey: {
                         key: {
                             id: key.id,
-                            publicKey: Crypto.strKey(key.publicKey),
+                            publicKey: key.publicKey,
                             level: key.level,
                             algorithm: key.algorithm,
-                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs.toString()}
-                        }
-                    }
-                }
-            ]
+                            ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                        },
+                    },
+                },
+            ],
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -1101,13 +1102,13 @@ class AuthHttpClient {
                 addKey: {
                     key: {
                         id: key.id,
-                        publicKey: Crypto.strKey(key.publicKey),
+                        publicKey: key.publicKey,
                         level: key.level,
                         algorithm: key.algorithm,
-                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs.toString()}
-                    }
-                }
-            }))
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                    },
+                },
+            })),
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -1125,10 +1126,10 @@ class AuthHttpClient {
             operations: [
                 {
                     removeKey: {
-                        keyId
-                    }
-                }
-            ]
+                        keyId,
+                    },
+                },
+            ],
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -1145,8 +1146,8 @@ class AuthHttpClient {
             memberId: this._memberId,
             operations: keyIds.map((keyId) => ({
                 removeKey: {
-                    keyId
-                }
+                    keyId,
+                },
             })),
         };
         return this._memberUpdate(update, prevHash);
@@ -1157,11 +1158,10 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} alias - alias to add
-     * @param {string} realm - (optional) realm of the alias
      * @return {Object} response - response to the API call
      */
-    async addAlias(prevHash, alias, realm) {
-        return this.addAliases(prevHash, [alias], realm);
+    async addAlias(prevHash, alias) {
+        return this.addAliases(prevHash, [alias]);
     }
 
     /**
@@ -1172,7 +1172,7 @@ class AuthHttpClient {
     async getAliases() {
         const request = {
             method: 'get',
-            url: '/aliases'
+            url: '/aliases',
         };
         return this._instance(request);
     }
@@ -1184,7 +1184,7 @@ class AuthHttpClient {
     async getDefaultRecoveryAgent() {
         const request = {
             method: 'get',
-            url: '/recovery/defaults/agent'
+            url: '/recovery/defaults/agent',
         };
         return this._instance(request);
     }
@@ -1199,8 +1199,8 @@ class AuthHttpClient {
         const update = {
             memberId: this._memberId,
             operations: [{
-                recoveryRules: rule
-            }]
+                recoveryRules: rule,
+            }],
         };
         return this._memberUpdate(update, prevHash);
     }
@@ -1210,17 +1210,16 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} aliases - aliases to add
-     * @param {string} realm - (optional) realm of the aliases
      * @return {Object} response - response to the API call
      */
-    async addAliases(prevHash, aliases, realm) {
+    async addAliases(prevHash, aliases) {
         const update = {
             memberId: this._memberId,
             operations: aliases.map((alias) => ({
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
-                    realm: realm
-                }
+                    realm: alias.realm || 'token',
+                },
             })),
         };
 
@@ -1228,8 +1227,7 @@ class AuthHttpClient {
             addAliasMetadata: {
                 aliasHash: Util.hashAndSerializeAlias(alias),
                 alias: alias,
-                realm: realm
-            }
+            },
         }));
 
         return this._memberUpdate(update, prevHash, metadata);
@@ -1258,8 +1256,8 @@ class AuthHttpClient {
             memberId: this._memberId,
             operations: aliases.map((alias) => ({
                 removeAlias: {
-                    aliasHash: Util.hashAndSerializeAlias(alias)
-                }
+                    aliasHash: Util.hashAndSerializeAlias(alias),
+                },
             })),
         };
         return this._memberUpdate(update, prevHash);
@@ -1269,7 +1267,7 @@ class AuthHttpClient {
         if (prevHash !== '') {
             update.prevHash = prevHash;
         }
-        if (typeof metadata === "undefined") {
+        if (typeof metadata === 'undefined') {
             metadata = [];
         }
 
@@ -1281,12 +1279,12 @@ class AuthHttpClient {
                 keyId: signer.getKeyId(),
                 signature: await signer.signJson(update),
             },
-            metadata
+            metadata,
         };
         const request = {
             method: 'post',
             url: `/members/${this._memberId}/updates`,
-            data: req
+            data: req,
         };
         return this._instance(request);
     }
@@ -1305,12 +1303,12 @@ class AuthHttpClient {
                 tokenId,
                 state,
             },
-            tokenRequestId
+            tokenRequestId,
         };
 
         const request = {
             method: 'put',
-            url: `/sign-token-request-state`,
+            url: '/sign-token-request-state',
             data: req,
         };
 
@@ -1326,7 +1324,7 @@ class AuthHttpClient {
         this.useKeyLevel(config.KeyLevel.PRIVILEGED);
         const request = {
             method: 'delete',
-            url: `/members`,
+            url: '/members',
         };
 
         return this._instance(request);
@@ -1353,7 +1351,7 @@ class AuthHttpClient {
 
         const request = {
             method: 'post',
-            url: `/test/create-account`,
+            url: '/test/create-account',
             data: req,
         };
         return this._instance(request);
