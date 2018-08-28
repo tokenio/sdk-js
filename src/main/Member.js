@@ -31,8 +31,8 @@ import {
     TransferEndpoint,
     TokenOperationResult,
     OauthBankAuthorization,
-} from '../proto/classes';
-import type {NotifyStatusEnum} from '../proto/classes';
+} from '../proto';
+import type {NotifyStatusEnum} from '../proto';
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -302,6 +302,7 @@ export default class Member {
      *
      * @param {string} accountId - accountId
      * @return {Promise} account - Promise resolving to the account
+     * @throws error if account not found
      */
     getAccount(accountId: string): Promise<Account> {
         return Util.callAsync(this.getAccount, async () => {
@@ -328,6 +329,7 @@ export default class Member {
      * Gets the default bank account.
      *
      * @return {Promise} the default bank account
+     * @throws error if default account not found
      */
     getDefaultAccount(): Promise<Account> {
         return Util.callAsync(this.getDefaultAccount, async () => {
@@ -340,7 +342,7 @@ export default class Member {
      * Sets the member's default bank account.
      *
      * @param {string} accountId - the bank account id
-     * @return {Promise} account - the account if found
+     * @return {Promise} empty - empty promise
      */
     setDefaultAccount(accountId: string): Promise<void> {
         return Util.callAsync(this.setDefaultAccount, async () => {
@@ -365,6 +367,7 @@ export default class Member {
      *
      * @param {string} bankId - id of the bank
      * @return {Object} bankInfo - info
+     * @throws error if bank not found
      */
     getBankInfo(bankId: string): Promise<BankInfo> {
         return Util.callAsync(this.getBankInfo, async () => {
@@ -410,6 +413,7 @@ export default class Member {
      *
      * @param {string} subscriberId - id of the subscriber
      * @return {Promise} - subscriber
+     * @throws error if subscriber not found
      */
     getSubscriber(subscriberId: string): Promise<Subscriber> {
         return Util.callAsync(this.getSubscriber, async () => {
@@ -446,6 +450,7 @@ export default class Member {
      *
      * @param {string} notificationId - id of the notification
      * @return {Promise} - notification
+     * @throws error if notification not found
      */
     getNotification(notificationId: string): Promise<Notification> {
         return Util.callAsync(this.getNotification, async () => {
@@ -528,6 +533,7 @@ export default class Member {
      *
      * @param {string} addressId - the address id
      * @return {Promise} address - AddressRecord structure
+     * @throws error if address not found
      */
     getAddress(addressId: string): Promise<AddressRecord> {
         return Util.callAsync(this.getAddress, async () => {
@@ -580,6 +586,7 @@ export default class Member {
      *
      * @param {string} id - member id whose profile to get
      * @return {Promise} profile - profile
+     * @throws error if profile not found
      */
     getProfile(id: string): Promise<Profile> {
         return Util.callAsync(this.getProfile, async () => {
@@ -610,6 +617,7 @@ export default class Member {
      * @param {string} id - member id whose picture to get
      * @param {Object} size - desired size category SMALL/MEDIUM/LARGE/ORIGINAL
      * @return {Object} blob - downloaded blob
+     * @throws error if profile picture not found
      */
     getProfilePicture(
         id: string,
@@ -638,6 +646,7 @@ export default class Member {
      * Get member's receipt contact.
      *
      * @return {Object} contact - receipt contact: value + type
+     * @throws error if receipt contact not found
      */
     getReceiptContact(): Promise<ReceiptContact> {
         return Util.callAsync(this.getReceiptContact, async () => {
@@ -767,6 +776,7 @@ export default class Member {
      *
      * @param {string} tokenId - id of the token
      * @return {Promise} token - token
+     * @throws error if token not found
      */
     getToken(tokenId: string): Promise<Token> {
         return Util.callAsync(this.getToken, async () => {
@@ -953,6 +963,7 @@ export default class Member {
      *
      * @param {string} transferId - id to look up
      * @return {Promise} transfer - transfer if found
+     * @throws error if transfer not found
      */
     getTransfer(transferId: string): Promise<Transfer> {
         return Util.callAsync(this.getTransfer, async () => {
@@ -1034,6 +1045,7 @@ export default class Member {
      * @param {string} transactionId - which transaction to look up
      * @param {string} keyLevel - key level
      * @return {Promise} transaction - the Transaction
+     * @throws error if transaction not found
      */
     getTransaction(
         accountId: string,
@@ -1103,6 +1115,7 @@ export default class Member {
      *
      * @param {string} blobId - id of the blob
      * @return {Object} blob - downloaded blob
+     * @throws error if blob not found
      */
     getBlob(blobId: string): Promise<Blob> {
         return Util.callAsync(this.getBlob, async () => {
@@ -1117,6 +1130,7 @@ export default class Member {
      * @param {string} tokenId - id of the token
      * @param {string} blobId - id of the blob
      * @return {Object} blob - downloaded blob
+     * @throws error if token blob not found
      */
     getTokenBlob(
         tokenId: string,

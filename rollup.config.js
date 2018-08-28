@@ -50,6 +50,7 @@ const config = {
 };
 
 if (isModule) {
+    config.plugins.push(resolve());
     config.external = id => [...Object.keys(pkg.dependencies), 'core-js', 'regenerator']
         .some(dep => id.includes(dep));
 } else {

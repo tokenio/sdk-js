@@ -1,6 +1,6 @@
 import Util from '../Util';
 import config from '../config.json';
-import {Token} from '../proto/classes';
+import {Token} from '../proto';
 
 export default class AccessTokenBuilder {
     /**

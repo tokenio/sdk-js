@@ -20,8 +20,8 @@ import {
     NotifyStatus,
     TokenPayload,
     DeviceMetadata,
-} from '../proto/classes';
-import type {NotifyStatusEnum} from '../proto/classes';
+} from '../proto';
+import type {NotifyStatusEnum} from '../proto';
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,

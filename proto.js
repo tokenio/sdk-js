@@ -1,5 +1,7 @@
 /* eslint-disable no-console, max-len */
-const TOKEN_PROTO_VER = process.argv[2] || '1.1.3';
+const TOKEN_PROTO_VER = process.argv[2];
+
+if (!TOKEN_PROTO_VER) throw 'Must specify a Token protobuf version!';
 
 const file = `tokenio-proto-common-${TOKEN_PROTO_VER}.jar`;
 const url = `https://token.jfrog.io/token/libs-release/io/token/proto/tokenio-proto-common/${TOKEN_PROTO_VER}/${file}`;
