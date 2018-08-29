@@ -3970,12 +3970,6 @@ mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   dependencies:
     minimist "0.0.8"
 
-mocha-bamboo-reporter@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/mocha-bamboo-reporter/-/mocha-bamboo-reporter-1.1.1.tgz#baa3d024641b736ace1afc9fa0d188413ab7e4f9"
-  dependencies:
-    mocha ">=1.8.1"
-
 mocha-webpack@2.0.0-beta.0:
   version "2.0.0-beta.0"
   resolved "https://registry.yarnpkg.com/mocha-webpack/-/mocha-webpack-2.0.0-beta.0.tgz#d85fc9a70f82a4ad595b7702a1181605dfa59549"
@@ -3998,7 +3992,7 @@ mocha-webpack@2.0.0-beta.0:
     toposort "^1.0.0"
     yargs "^11.0.0"
 
-mocha@>=1.8.1, mocha@^5.2.0:
+mocha@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.2.0.tgz#6d8ae508f59167f940f2b5b3c4a612ae50c90ae6"
   dependencies:
