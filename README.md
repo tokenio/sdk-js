@@ -1,5 +1,7 @@
 # [Token](https://token.io) JavaScript SDK
 
+Below describes SDK v2 beta, for v1, see [here](https://github.com/tokenio/sdk-js/releases/tag/v1.5.21).
+
 [![npm version](https://badge.fury.io/js/token-io.svg)](https://www.npmjs.com/package/token-io)
 
 The JavaScript SDK for interacting with [TokenOS](https://developer.token.io/).
