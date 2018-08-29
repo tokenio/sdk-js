@@ -23,12 +23,6 @@ class Crypto {
         return await CryptoLib.generateKeys(keyLevel, expirationMs, extractable);
     }
 
-    static async generateTokenKeys(keyLevel, expirationMs) {
-        const keyPair = await Crypto.generateKeys(keyLevel, expirationMs);
-        keyPair.publicKey = Crypto.strKey(keyPair.publicKey);
-        delete keyPair.privateKey;
-    }
-
     /**
      * Signs a json object and returns the signature
      *
