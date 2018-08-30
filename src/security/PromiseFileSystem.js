@@ -2,7 +2,7 @@ let fs;
 let path;
 
 if (!BROWSER) {
-    fs = require('fs-extra');
+    fs = require('fs');
     path = require('path');
 }
 
