@@ -26,19 +26,25 @@ See [SDK docs](https://developer.token.io/sdk/?javascript#) and [API reference](
 
 There are also [samples](https://github.com/tokenio/sdk-js/tree/master/src/sample) and [sample tests](https://github.com/tokenio/sdk-js/tree/master/test/sample) in the source code for reference.
 
-Node:
+#### Node:
 
 ```javascript
 const {TokenIO} = require('token-io');
 const Token = new TokenIO({env: 'sandbox'});
 ```
 
-Browser:
+#### Browser:
 
 ```javascript
 import {TokenIO} from 'token-io';
 const Token = new TokenIO({env: 'sandbox'});
 ```
+
+If not using as a module, then include it as a script:
+```html
+<script src="https://unpkg.com/token-io@2.0.0-beta.2/dist/tokenio.iife.min.js"></script>
+```
+This will provide you with the `TokenIO` global object.
 
 #### Typing
 
@@ -52,7 +58,7 @@ yarn flow check # npm run flow check
 
 ## Testing
 
-Node:
+#### Node:
 
 ```sh
 # targets dev environment by default
@@ -62,7 +68,7 @@ yarn test
 ENV=sandbox yarn test
 ```
 
-Browser:
+#### Browser:
 
 ```sh
 # targets dev environment and Chrome by default
