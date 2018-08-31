@@ -197,8 +197,8 @@ export default class Member {
     addAlias(alias: Alias): Promise<void> {
         return Util.callAsync(this.addAlias, async () => {
             const prevHash = await this._getPreviousHash();
-            const normalizedAlias = this._unauthenticatedClient.normalizeAlias(alias.toJSON());
-            await this._client.addAlias(prevHash, normalizedAlias.toJSON());
+            const res = await this._unauthenticatedClient.normalizeAlias(alias.toJSON());
+            await this._client.addAlias(prevHash, res.data.alias);
         });
     }
 
