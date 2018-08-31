@@ -85,9 +85,9 @@ declare export class Account {
     id: string;
     name: string;
     bankId: string;
-    tags: Array<any>;
     isLocked: boolean;
     accountFeatures: any;
+    accountDetails: Array<any>;
     lastCacheUpdateMs: string;
     nextCacheUpdateMs: string;
     accountDetails: any;
@@ -95,9 +95,9 @@ declare export class Account {
         id: string,
         name: string,
         bankId: string,
-        tags: Array<any>,
         isLocked: boolean,
         accountFeatures: any,
+        accountDetails: Array<any>,
         lastCacheUpdateMs: string,
         nextCacheUpdateMs: string,
         accountDetails?: any,
