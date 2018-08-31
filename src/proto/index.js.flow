@@ -81,16 +81,21 @@ declare export class Address {
     }): Address;
     toJSON(): Object;
 }
+type AccountDetails = {
+    identifier: string;
+    type: 'INVALID' | 'OTHER' | 'CHECKING' | 'SAVINGS' | 'LOAN';
+    status: string;
+    metadata: Object;
+}
 declare export class Account {
     id: string;
     name: string;
     bankId: string;
-    tags: Array<any>;
     isLocked: boolean;
     accountFeatures: any;
     lastCacheUpdateMs: string;
     nextCacheUpdateMs: string;
-    accountDetails: any;
+    accountDetails: ?AccountDetails;
     static create({
         id: string,
         name: string,
@@ -100,7 +105,7 @@ declare export class Account {
         accountFeatures: any,
         lastCacheUpdateMs: string,
         nextCacheUpdateMs: string,
-        accountDetails?: any,
+        accountDetails?: AccountDetails,
     }): Account;
     toJSON(): Object;
 }
@@ -196,7 +201,7 @@ type ResourceTypes = {
 };
 declare export class Resource {
     resource: $Values<ResourceTypes>;
-    static create($Values<ResourceTypes>): Resource;
+    static create({resource: $Values<ResourceTypes>}): Resource;
     toJSON(): Object;
 }
 declare export class Notification {

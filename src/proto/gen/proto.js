@@ -110,59 +110,6 @@ export const io = $root.io = (() => {
                         return PlaintextBankAuthorization;
                     })();
 
-                    account.AccountTag = (function() {
-
-                        function AccountTag(p) {
-                            if (p)
-                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                    if (p[ks[i]] != null)
-                                        this[ks[i]] = p[ks[i]];
-                        }
-
-                        AccountTag.prototype.key = "";
-                        AccountTag.prototype.value = "";
-
-                        AccountTag.create = function create(properties) {
-                            return new AccountTag(properties);
-                        };
-
-                        AccountTag.fromObject = function fromObject(d) {
-                            if (d instanceof $root.io.token.proto.common.account.AccountTag)
-                                return d;
-                            var m = new $root.io.token.proto.common.account.AccountTag();
-                            if (d.key != null) {
-                                m.key = String(d.key);
-                            }
-                            if (d.value != null) {
-                                m.value = String(d.value);
-                            }
-                            return m;
-                        };
-
-                        AccountTag.toObject = function toObject(m, o) {
-                            if (!o)
-                                o = {};
-                            var d = {};
-                            if (o.defaults) {
-                                d.key = "";
-                                d.value = "";
-                            }
-                            if (m.key != null && m.hasOwnProperty("key")) {
-                                d.key = m.key;
-                            }
-                            if (m.value != null && m.hasOwnProperty("value")) {
-                                d.value = m.value;
-                            }
-                            return d;
-                        };
-
-                        AccountTag.prototype.toJSON = function toJSON() {
-                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                        };
-
-                        return AccountTag;
-                    })();
-
                     account.AccountFeatures = (function() {
 
                         function AccountFeatures(p) {
@@ -240,10 +187,119 @@ export const io = $root.io = (() => {
                         return AccountFeatures;
                     })();
 
+                    account.AccountDetails = (function() {
+
+                        function AccountDetails(p) {
+                            this.metadata = {};
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        AccountDetails.prototype.identifier = "";
+                        AccountDetails.prototype.type = 0;
+                        AccountDetails.prototype.status = "";
+                        AccountDetails.prototype.metadata = $util.emptyObject;
+
+                        AccountDetails.create = function create(properties) {
+                            return new AccountDetails(properties);
+                        };
+
+                        AccountDetails.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.account.AccountDetails)
+                                return d;
+                            var m = new $root.io.token.proto.common.account.AccountDetails();
+                            if (d.identifier != null) {
+                                m.identifier = String(d.identifier);
+                            }
+                            switch (d.type) {
+                            case "INVALID":
+                            case 0:
+                                m.type = 0;
+                                break;
+                            case "OTHER":
+                            case 1:
+                                m.type = 1;
+                                break;
+                            case "CHECKING":
+                            case 2:
+                                m.type = 2;
+                                break;
+                            case "SAVINGS":
+                            case 3:
+                                m.type = 3;
+                                break;
+                            case "LOAN":
+                            case 4:
+                                m.type = 4;
+                                break;
+                            }
+                            if (d.status != null) {
+                                m.status = String(d.status);
+                            }
+                            if (d.metadata) {
+                                if (typeof d.metadata !== "object")
+                                    throw TypeError(".io.token.proto.common.account.AccountDetails.metadata: object expected");
+                                m.metadata = {};
+                                for (var ks = Object.keys(d.metadata), i = 0; i < ks.length; ++i) {
+                                    m.metadata[ks[i]] = String(d.metadata[ks[i]]);
+                                }
+                            }
+                            return m;
+                        };
+
+                        AccountDetails.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.objects || o.defaults) {
+                                d.metadata = {};
+                            }
+                            if (o.defaults) {
+                                d.identifier = "";
+                                d.type = o.enums === String ? "INVALID" : 0;
+                                d.status = "";
+                            }
+                            if (m.identifier != null && m.hasOwnProperty("identifier")) {
+                                d.identifier = m.identifier;
+                            }
+                            if (m.type != null && m.hasOwnProperty("type")) {
+                                d.type = o.enums === String ? $root.io.token.proto.common.account.AccountDetails.AccountType[m.type] : m.type;
+                            }
+                            if (m.status != null && m.hasOwnProperty("status")) {
+                                d.status = m.status;
+                            }
+                            var ks2;
+                            if (m.metadata && (ks2 = Object.keys(m.metadata)).length) {
+                                d.metadata = {};
+                                for (var j = 0; j < ks2.length; ++j) {
+                                    d.metadata[ks2[j]] = m.metadata[ks2[j]];
+                                }
+                            }
+                            return d;
+                        };
+
+                        AccountDetails.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        AccountDetails.AccountType = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID"] = 0;
+                            values[valuesById[1] = "OTHER"] = 1;
+                            values[valuesById[2] = "CHECKING"] = 2;
+                            values[valuesById[3] = "SAVINGS"] = 3;
+                            values[valuesById[4] = "LOAN"] = 4;
+                            return values;
+                        })();
+
+                        return AccountDetails;
+                    })();
+
                     account.Account = (function() {
 
                         function Account(p) {
-                            this.tags = [];
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
@@ -253,11 +309,11 @@ export const io = $root.io = (() => {
                         Account.prototype.id = "";
                         Account.prototype.name = "";
                         Account.prototype.bankId = "";
-                        Account.prototype.tags = $util.emptyArray;
                         Account.prototype.isLocked = false;
                         Account.prototype.accountFeatures = null;
                         Account.prototype.lastCacheUpdateMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
                         Account.prototype.nextCacheUpdateMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        Account.prototype.accountDetails = null;
 
                         Account.create = function create(properties) {
                             return new Account(properties);
@@ -275,16 +331,6 @@ export const io = $root.io = (() => {
                             }
                             if (d.bankId != null) {
                                 m.bankId = String(d.bankId);
-                            }
-                            if (d.tags) {
-                                if (!Array.isArray(d.tags))
-                                    throw TypeError(".io.token.proto.common.account.Account.tags: array expected");
-                                m.tags = [];
-                                for (var i = 0; i < d.tags.length; ++i) {
-                                    if (typeof d.tags[i] !== "object")
-                                        throw TypeError(".io.token.proto.common.account.Account.tags: object expected");
-                                    m.tags[i] = $root.io.token.proto.common.account.AccountTag.fromObject(d.tags[i]);
-                                }
                             }
                             if (d.isLocked != null) {
                                 m.isLocked = Boolean(d.isLocked);
@@ -314,6 +360,11 @@ export const io = $root.io = (() => {
                                 else if (typeof d.nextCacheUpdateMs === "object")
                                     m.nextCacheUpdateMs = new $util.LongBits(d.nextCacheUpdateMs.low >>> 0, d.nextCacheUpdateMs.high >>> 0).toNumber();
                             }
+                            if (d.accountDetails != null) {
+                                if (typeof d.accountDetails !== "object")
+                                    throw TypeError(".io.token.proto.common.account.Account.accountDetails: object expected");
+                                m.accountDetails = $root.io.token.proto.common.account.AccountDetails.fromObject(d.accountDetails);
+                            }
                             return m;
                         };
 
@@ -321,9 +372,6 @@ export const io = $root.io = (() => {
                             if (!o)
                                 o = {};
                             var d = {};
-                            if (o.arrays || o.defaults) {
-                                d.tags = [];
-                            }
                             if (o.defaults) {
                                 d.id = "";
                                 d.name = "";
@@ -340,6 +388,7 @@ export const io = $root.io = (() => {
                                     d.nextCacheUpdateMs = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
                                 } else
                                     d.nextCacheUpdateMs = o.longs === String ? "0" : 0;
+                                d.accountDetails = null;
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -349,12 +398,6 @@ export const io = $root.io = (() => {
                             }
                             if (m.bankId != null && m.hasOwnProperty("bankId")) {
                                 d.bankId = m.bankId;
-                            }
-                            if (m.tags && m.tags.length) {
-                                d.tags = [];
-                                for (var j = 0; j < m.tags.length; ++j) {
-                                    d.tags[j] = $root.io.token.proto.common.account.AccountTag.toObject(m.tags[j], o);
-                                }
                             }
                             if (m.isLocked != null && m.hasOwnProperty("isLocked")) {
                                 d.isLocked = m.isLocked;
@@ -373,6 +416,9 @@ export const io = $root.io = (() => {
                                     d.nextCacheUpdateMs = o.longs === String ? String(m.nextCacheUpdateMs) : m.nextCacheUpdateMs;
                                 else
                                     d.nextCacheUpdateMs = o.longs === String ? $util.Long.prototype.toString.call(m.nextCacheUpdateMs) : o.longs === Number ? new $util.LongBits(m.nextCacheUpdateMs.low >>> 0, m.nextCacheUpdateMs.high >>> 0).toNumber() : m.nextCacheUpdateMs;
+                            }
+                            if (m.accountDetails != null && m.hasOwnProperty("accountDetails")) {
+                                d.accountDetails = $root.io.token.proto.common.account.AccountDetails.toObject(m.accountDetails, o);
                             }
                             return d;
                         };
@@ -3248,7 +3294,6 @@ export const io = $root.io = (() => {
                         Member.prototype.lastRecoverySequence = 0;
                         Member.prototype.lastOperationSequence = 0;
                         Member.prototype.type = 0;
-                        Member.prototype.tppId = "";
 
                         Member.create = function create(properties) {
                             return new Member(properties);
@@ -3323,9 +3368,6 @@ export const io = $root.io = (() => {
                                 m.type = 4;
                                 break;
                             }
-                            if (d.tppId != null) {
-                                m.tppId = String(d.tppId);
-                            }
                             return m;
                         };
 
@@ -3345,7 +3387,6 @@ export const io = $root.io = (() => {
                                 d.lastRecoverySequence = 0;
                                 d.lastOperationSequence = 0;
                                 d.type = o.enums === String ? "INVALID_MEMBER_TYPE" : 0;
-                                d.tppId = "";
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -3382,9 +3423,6 @@ export const io = $root.io = (() => {
                             }
                             if (m.type != null && m.hasOwnProperty("type")) {
                                 d.type = o.enums === String ? $root.io.token.proto.common.member.Member.MemberType[m.type] : m.type;
-                            }
-                            if (m.tppId != null && m.hasOwnProperty("tppId")) {
-                                d.tppId = m.tppId;
                             }
                             return d;
                         };
@@ -5242,6 +5280,7 @@ export const io = $root.io = (() => {
                         TokenRequest.prototype.id = "";
                         TokenRequest.prototype.payload = null;
                         TokenRequest.prototype.options = $util.emptyObject;
+                        TokenRequest.prototype.userRefId = "";
 
                         TokenRequest.create = function create(properties) {
                             return new TokenRequest(properties);
@@ -5267,6 +5306,9 @@ export const io = $root.io = (() => {
                                     m.options[ks[i]] = String(d.options[ks[i]]);
                                 }
                             }
+                            if (d.userRefId != null) {
+                                m.userRefId = String(d.userRefId);
+                            }
                             return m;
                         };
 
@@ -5280,6 +5322,7 @@ export const io = $root.io = (() => {
                             if (o.defaults) {
                                 d.id = "";
                                 d.payload = null;
+                                d.userRefId = "";
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -5293,6 +5336,9 @@ export const io = $root.io = (() => {
                                 for (var j = 0; j < ks2.length; ++j) {
                                     d.options[ks2[j]] = m.options[ks2[j]];
                                 }
+                            }
+                            if (m.userRefId != null && m.hasOwnProperty("userRefId")) {
+                                d.userRefId = m.userRefId;
                             }
                             return d;
                         };

@@ -68,6 +68,14 @@ class HttpClient {
         return this._instance(request);
     }
 
+    normalizeAlias(alias) {
+        const request = {
+            method: 'get',
+            url: `/aliases/normalize/${alias.type}/${alias.value}/${alias.realm || 'token'}`,
+        };
+        return this._instance(request);
+    }
+
     /**
      * Gets a member given an alias.
      *
