@@ -51,14 +51,19 @@ class HttpClient {
      * Creates a memberId.
      *
      * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
+     * @param  {string} tokenRequestID - token request id if the member is being claimed
      * @return {Object} response - response to the API call
      */
-    createMemberId(memberType) {
+    createMemberId(memberType, tokenRequestId) {
         if (memberType === undefined) {
             memberType = 'PERSONAL';
         }
+        if (tokenRequestId && memberType !== 'TRANSIENT') {
+            throw new Error('Can only claim transient members');
+        }
         const req = {
             memberType,
+            tokenRequestId,
         };
         const request = {
             method: 'post',
