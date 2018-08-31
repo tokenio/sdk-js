@@ -129,7 +129,20 @@ export class TokenIO {
     aliasExists(alias: Alias): Promise<boolean> {
         return Util.callAsync(this.aliasExists, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
-            return !!res.data?.member?.id;
+            return !!res.data.member?.id;
+        });
+    }
+
+    /**
+     * Normalizes an alias, you probably won't need to call this as this is automatically called before addAlias()
+     *
+     * @param alias - alias to normalize
+     * @returns normalized alias
+     */
+    normalizeAlias(alias: Alias): Promise<Alias> {
+        return Util.callAsync(this.normalizeAlias, async () => {
+            const res = await this._unauthenticatedClient.normalizeAlias(alias.toJSON());
+            return Alias.create(res.data.alias);
         });
     }
 

@@ -143,6 +143,7 @@ class Util {
         if (alias.type === 'USERNAME') {
             return alias.value;
         }
+        alias.realm = undefined; // backend clears realm before hashing
         return bs58.encode(sha256(Buffer.from(stringify(alias), 'utf8')));
     }
 
