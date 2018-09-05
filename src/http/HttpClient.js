@@ -51,7 +51,7 @@ class HttpClient {
      * Creates a memberId.
      *
      * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
-     * @param  {string} tokenRequestID - token request id if the member is being claimed
+     * @param  {string} tokenRequestID - (optional) token request id if the member is being claimed
      * @return {Object} response - response to the API call
      */
     createMemberId(memberType, tokenRequestId) {
