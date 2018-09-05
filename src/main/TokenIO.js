@@ -166,15 +166,17 @@ export class TokenIO {
      *                  falsy value or empty object for a temporary member without an alias
      * @param  {Class} CryptoEngine - engine to use for key creation and storage
      * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
+     * @param  {String} tokenRequestId - (optional) token request id if the member is being claimed
      * @return {Promise} member - Promise of created Member
      */
     createMember(
         alias: ?Alias,
         CryptoEngine: KeyStoreCryptoEngine,
-        memberType?: string
+        memberType?: string,
+        tokenRequestId?: string
     ): Promise<Member> {
         return Util.callAsync(this.createMember, async () => {
-            const response = await this._unauthenticatedClient.createMemberId(memberType);
+            const response = await this._unauthenticatedClient.createMemberId(memberType, tokenRequestId);
             const engine = new CryptoEngine(response.data.memberId);
             const pk1 = await engine.generateKey('PRIVILEGED');
             const pk2 = await engine.generateKey('STANDARD');
@@ -210,6 +212,23 @@ export class TokenIO {
         CryptoEngine: KeyStoreCryptoEngine
     ): Promise<Member> {
         return this.createMember(alias, CryptoEngine, 'BUSINESS');
+    }
+
+    /**
+     * Creates a claimed member with a alias and a keypair, using the provided engine
+     *
+     * @param  {Object} alias - alias to set for member,
+     *                  falsy value or empty object for a temporary member without an alias
+     * @param  {Class} CryptoEngine - engine to use for key creation and storage
+     * @param  {string} tokenRequestId - token request id
+     * @return {Promise} member - Promise of created Member
+     */
+    createClaimedMember(
+        alias: ?Alias,
+        CryptoEngine: KeyStoreCryptoEngine,
+        tokenRequestId: string
+    ): Promise<Member> {
+        return this.createMember(alias, CryptoEngine, 'TRANSIENT', tokenRequestId);
     }
 
     /**
