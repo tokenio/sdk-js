@@ -53,4 +53,15 @@ export default class TokenRequest {
         this.options.redirectUrl = redirectUrl;
         return this;
     }
+
+    /**
+     * Sets a user ref ID for the TokenRequest
+     *
+     * @param {string} userRefId - user ref id
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setUserRefId(userRefId) {
+        this.userRefId = userRefId;
+        return this;
+    }
 }
