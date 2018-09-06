@@ -14,8 +14,8 @@ export default async (member) => {
 
     const balancesResponse = await member.getBalances(accountIds, config.KeyLevel.STANDARD);
 
-    for (let i = 0; i < balancesResponse.response.length; i++) {
-        const balance = balancesResponse.response[i].balance;
+    for (let i = 0; i < balancesResponse.length; i++) {
+        const balance = balancesResponse[i].balance;
         const currency = balance.available.currency;
         sums[currency] = (sums[currency] || 0) +
             parseFloat(balance.available.value);
