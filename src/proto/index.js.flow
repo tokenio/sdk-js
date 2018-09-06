@@ -408,18 +408,6 @@ export const AliasType = Object.freeze({
     BANK: 6,     // for banks only
 });
 
-export const TokenOperationStatus = Object.freeze({
-    INVALID: 0,
-    SUCCESS: 1,
-    MORE_SIGNATURES_NEEDED: 2,
-});
-
-export const TokenSignatureAction = Object.freeze({
-    INVALID: 0,
-    ENDORSED: 1,
-    CANCELLED: 2,
-});
-
 export const KeyAlgorithm = Object.freeze({
     INVALID_ALGORITHM: 0,
     ED25519: 1,
@@ -434,12 +422,6 @@ export const KeyLevel = Object.freeze({
     LOW: 3,
 });
 
-export const NotifyStatus = Object.freeze({
-    INVALID: 0,
-    ACCEPTED: 1,
-    NO_SUBSCRIBERS: 2,
-});
-
 export const NotificationStatus = Object.freeze({
     INVALID: 0,
     PENDING: 1,
@@ -448,15 +430,33 @@ export const NotificationStatus = Object.freeze({
     INVALIDATED: 4,
 });
 
+export const NotifyStatus = Object.freeze({
+    INVALID: 0,
+    ACCEPTED: 1,
+    NO_SUBSCRIBERS: 2,
+});
+
 export const ReceiptContactType = Object.freeze({
     INVALID: 0,
     EMAIL: 1,
 });
 
-export const TransactionType = Object.freeze({
-    INVALID_TYPE: 0,
-    DEBIT: 1,
-    CREDIT: 2,
+export const RequestStatus = Object.freeze({
+    INVALID: 0,
+    SUCCESSFUL_REQUEST: 1,
+    MORE_SIGNATURES_NEEDED: 2,
+});
+
+export const TokenOperationStatus = Object.freeze({
+    INVALID: 0,
+    SUCCESS: 1,
+    MORE_SIGNATURES_NEEDED: 2,
+});
+
+export const TokenSignatureAction = Object.freeze({
+    INVALID: 0,
+    ENDORSED: 1,
+    CANCELLED: 2,
 });
 
 export const TransactionStatus = Object.freeze({
@@ -477,13 +477,20 @@ export const TransactionStatus = Object.freeze({
     SENT: 16,                            // legacy transfers only: the transaction has been sent but has not been acknowledged by the bank
 });
 
+export const TransactionType = Object.freeze({
+    INVALID_TYPE: 0,
+    DEBIT: 1,
+    CREDIT: 2,
+});
+
 export type AliasTypeEnum = $Values<typeof AliasType>;
-export type TokenOperationStatusEnum = $Values<typeof TokenOperationStatus>;
 export type KeyAlgorithmEnum = $Values<typeof KeyAlgorithm>;
 export type KeyLevelEnum = $Values<typeof KeyLevel>;
-export type NotifyStatusEnum = $Values<typeof NotifyStatus>;
 export type NotificationStatusEnum = $Values<typeof NotificationStatus>;
+export type NotifyStatusEnum = $Values<typeof NotifyStatus>;
 export type ReceiptContactTypeEnum = $Values<typeof ReceiptContactType>;
+export type RequestStatusEnum = $Values<typeof RequestStatus>;
+export type TokenOperationStatusEnum = $Values<typeof TokenOperationStatus>;
 export type TokenSignatureActionEnum = $Values<typeof TokenSignatureAction>;
-export type TransactionTypeEnum = $Values<typeof TransactionType>;
 export type TransactionStatusEnum = $Values<typeof TransactionStatus>;
+export type TransactionTypeEnum = $Values<typeof TransactionType>;

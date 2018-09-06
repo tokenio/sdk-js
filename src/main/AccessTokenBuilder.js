@@ -1,6 +1,6 @@
 import Util from '../Util';
 import config from '../config.json';
-import {Token} from '../proto';
+import {Token, TokenPayload} from '../proto';
 
 export default class AccessTokenBuilder {
     /**
@@ -314,7 +314,7 @@ export default class AccessTokenBuilder {
      * @return {Object} tokenPayload - token payload
      */
     build() {
-        return this._payload;
+        return TokenPayload.create(this._payload);
     }
 
     /**
