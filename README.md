@@ -42,7 +42,7 @@ const Token = new TokenIO({env: 'sandbox'});
 
 If not using as a module, then include it as a script:
 ```html
-<script src="https://unpkg.com/token-io@2.0.0-beta.2/dist/tokenio.iife.min.js"></script>
+<script src="https://unpkg.com/token-io@^2.0.0-beta/dist/tokenio.iife.min.js"></script>
 ```
 This will provide you with the `TokenIO` global object.
 

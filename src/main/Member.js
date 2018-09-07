@@ -1,38 +1,42 @@
 // @flow
-import Util from '../Util';
-import config from '../config.json';
-import TokenRequest from './TokenRequest';
-import HttpClient from '../http/HttpClient';
-import AuthHttpClient from '../http/AuthHttpClient';
 import AccessTokenBuilder from './AccessTokenBuilder';
-import TransferTokenBuilder from './TransferTokenBuilder';
+import AuthHttpClient from '../http/AuthHttpClient';
+import config from '../config.json';
+import HttpClient from '../http/HttpClient';
 import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
+import TokenRequest from './TokenRequest';
+import TransferTokenBuilder from './TransferTokenBuilder';
+import Util from '../Util';
 import {
-    Key,
-    Blob,
-    Alias,
-    Token,
     Account,
     Address,
+    AddressRecord,
+    Alias,
     Balance,
-    Profile,
-    Transfer,
     BankInfo,
+    Blob,
+    Key,
+    Notification,
+    NotifyStatus,
+    OauthBankAuthorization,
+    Profile,
+    ReceiptContact,
+    RecoveryRule,
+    RequestStatus,
     Resource,
     Signature,
     Subscriber,
-    Transaction,
-    NotifyStatus,
-    Notification,
-    RecoveryRule,
-    AddressRecord,
-    ReceiptContact,
-    TokenSignature,
-    TransferEndpoint,
+    Token,
     TokenOperationResult,
-    OauthBankAuthorization,
+    TokenSignature,
+    Transaction,
+    Transfer,
+    TransferEndpoint,
 } from '../proto';
-import type {NotifyStatusEnum} from '../proto';
+import type {
+    NotifyStatusEnum,
+    RequestStatusEnum,
+} from '../proto';
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
@@ -1008,12 +1012,12 @@ export default class Member {
     getBalance(
         accountId: string,
         keyLevel: string
-    ): Promise<{balance: Balance, status: string}> {
+    ): Promise<{balance: Balance, status: RequestStatusEnum}> {
         return Util.callAsync(this.getBalance, async () => {
             const res = await this._client.getBalance(accountId, keyLevel);
             return {
                 balance: Balance.create(res.data.balance),
-                status: res.data.status,
+                status: RequestStatus[res.data.status],
             };
         });
     }
@@ -1028,14 +1032,14 @@ export default class Member {
     getBalances(
         accountIds: Array<string>,
         keyLevel: string
-    ): Promise<Array<{balance: Balance, status: string}>> {
+    ): Promise<Array<{balance: Balance, status: RequestStatusEnum}>> {
         return Util.callAsync(this.getBalances, async () => {
             const res = await this._client.getBalances(accountIds, keyLevel);
             res.data.response = res.data.response && res.data.response.map(b => ({
                 balance: Balance.create(b.balance),
-                status: b.status,
+                status: RequestStatus[b.status],
             }));
-            return res.data || [];
+            return res.data.response || [];
         });
     }
 

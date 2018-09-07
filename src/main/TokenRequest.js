@@ -1,3 +1,5 @@
+import {TokenPayload} from '../proto';
+
 export default class TokenRequest {
     /**
      * Constructs a TokenRequest.
@@ -16,7 +18,7 @@ export default class TokenRequest {
      * @return {TokenRequest} - TokenRequest object
      */
     static create(payload) {
-        return new TokenRequest(payload);
+        return new TokenRequest(TokenPayload.create(payload));
     }
 
     /**

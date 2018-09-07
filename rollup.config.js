@@ -1,10 +1,10 @@
-import json from 'rollup-plugin-json';
 import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
-import {uglify} from 'rollup-plugin-uglify';
 import commonjs from 'rollup-plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
+import json from 'rollup-plugin-json';
+import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
+import {uglify} from 'rollup-plugin-uglify';
 
 import pkg from './package.json';
 

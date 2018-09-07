@@ -1,25 +1,25 @@
 // @flow
-import Util from '../Util';
-import Member from './Member';
+import BrowserCryptoEngine from '../security/engines/BrowserCryptoEngine';
 import config from '../config.json';
 import Crypto from '../security/Crypto';
-import TokenRequest from './TokenRequest';
 import HttpClient from '../http/HttpClient';
-import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
-import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
-import BrowserCryptoEngine from '../security/engines/BrowserCryptoEngine';
 import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
+import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
+import Member from './Member';
+import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
+import TokenRequest from './TokenRequest';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
+import Util from '../Util';
 import {
-    Key,
-    Bank,
     Alias,
+    Bank,
+    DeviceMetadata,
+    Key,
+    NotifyStatus,
     Paging,
     Signature,
     TokenMember,
-    NotifyStatus,
     TokenPayload,
-    DeviceMetadata,
 } from '../proto';
 import type {NotifyStatusEnum} from '../proto';
 
@@ -510,7 +510,7 @@ export class TokenIO {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanks(options);
             return {
-                banks: res.data.banks.map(b => Bank.create(b)),
+                banks: res.data.banks ? res.data.banks.map(b => Bank.create(b)) : [],
                 paging: Paging.create(res.data.paging),
             };
         });
