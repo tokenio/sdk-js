@@ -475,6 +475,7 @@ export const TransactionStatus = Object.freeze({
     FAILURE_EXPIRED: 14,                 // the transaction has failed to complete within allotted time
     FAILURE_GENERIC: 5,                  // the transaction has failed due to other reasons
     SENT: 16,                            // legacy transfers only: the transaction has been sent but has not been acknowledged by the bank
+    INITIATED: 17,                       // the transaction has been initiated but the status is unknown
 });
 
 export const TransactionType = Object.freeze({

@@ -7263,6 +7263,10 @@ export const io = $root.io = (() => {
                             case 16:
                                 m.status = 16;
                                 break;
+                            case "INITIATED":
+                            case 17:
+                                m.status = 17;
+                                break;
                             }
                             if (d.orderId != null) {
                                 m.orderId = String(d.orderId);
@@ -7471,6 +7475,7 @@ export const io = $root.io = (() => {
                         values[valuesById[14] = "FAILURE_EXPIRED"] = 14;
                         values[valuesById[5] = "FAILURE_GENERIC"] = 5;
                         values[valuesById[16] = "SENT"] = 16;
+                        values[valuesById[17] = "INITIATED"] = 17;
                         return values;
                     })();
 
@@ -7579,6 +7584,10 @@ export const io = $root.io = (() => {
                             case "SENT":
                             case 16:
                                 m.status = 16;
+                                break;
+                            case "INITIATED":
+                            case 17:
+                                m.status = 17;
                                 break;
                             }
                             if (d.amount != null) {
