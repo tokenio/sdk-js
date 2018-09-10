@@ -3,8 +3,17 @@
     "destination": "./doc",
     "excludes": ["^sample/"],
     "plugins": [
-        { "name": "esdoc-standard-plugin", "option": { } },
-        { "name": "esdoc-inject-script-plugin", "option": {
-                "scripts": ["config/esdoc-analytics.js"]
-        }}]
+        {
+            "name": "esdoc-standard-plugin",
+            "option": {}
+        },
+        {
+            "name": "esdoc-inject-script-plugin",
+            "option": {}
+        },
+        {
+            "name": "esdoc-ecmascript-proposal-plugin",
+            "option": {"all": true}
+        }
+    ]
 }

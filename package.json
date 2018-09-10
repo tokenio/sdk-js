@@ -50,6 +50,7 @@
         "chai": "^4.1.2",
         "cross-env": "^5.2.0",
         "esdoc": "^1.0.3",
+        "esdoc-ecmascript-proposal-plugin": "^1.0.0",
         "esdoc-inject-script-plugin": "^1.0.0",
         "esdoc-standard-plugin": "^1.0.0",
         "eslint": "^5.2.0",
