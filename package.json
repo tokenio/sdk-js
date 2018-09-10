@@ -87,6 +87,7 @@
         "base64url": "2.0.0",
         "bs58": "^4.0.1",
         "buffer": "^5.2.0",
+        "esdoc-ecmascript-proposal-plugin": "^1.0.0",
         "fast-json-stable-stringify": "^2.0.0",
         "fast-sha256": "^1.1.0",
         "protobufjs": "^6.8.8",
