@@ -8,10 +8,6 @@
             "option": {}
         },
         {
-            "name": "esdoc-inject-script-plugin",
-            "option": {}
-        },
-        {
             "name": "esdoc-ecmascript-proposal-plugin",
             "option": {"all": true}
         }

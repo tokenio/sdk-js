@@ -27,7 +27,7 @@
         "build:iife": "cross-env FORMAT=iife TARGET=browser rollup -c",
         "build": "flow check && eslint src && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife",
         "proto": "node proto.js $npm_package_config_proto",
-        "doc": "./node_modules/esdoc/out/src/ESDocCLI.js"
+        "doc": "esdoc"
     },
     "main": "dist/tokenio.js",
     "module": "dist/tokenio.esm.js",
@@ -51,7 +51,6 @@
         "cross-env": "^5.2.0",
         "esdoc": "^1.0.3",
         "esdoc-ecmascript-proposal-plugin": "^1.0.0",
-        "esdoc-inject-script-plugin": "^1.0.0",
         "esdoc-standard-plugin": "^1.0.0",
         "eslint": "^5.2.0",
         "eslint-plugin-flowtype": "^2.50.0",
