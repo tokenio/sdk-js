@@ -32,9 +32,6 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
             if (!keyPair.publicKey || !keyPair.privateKey || !keyPair.level) {
                 throw new Error('Invalid keyPair format');
             }
-            if (typeof keyPair.publicKey === 'string') {
-                keyPair.publicKey = Crypto.bufferKey(keyPair.publicKey);
-            }
             if (typeof keyPair.privateKey === 'string') {
                 keyPair.privateKey = Crypto.bufferKey(keyPair.privateKey);
             }
