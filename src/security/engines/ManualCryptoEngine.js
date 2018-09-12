@@ -36,7 +36,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
                 keyPair.privateKey = Crypto.bufferKey(keyPair.privateKey);
             }
             if (!keyPair.id) {
-                keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
+                keyPair.id = base64url(sha256(Crypto.bufferKey(keyPair.publicKey))).substring(0, 16);
             }
             keyPair.algorithm = 'ED25519';
         }
