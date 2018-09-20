@@ -269,7 +269,7 @@ class Util {
         instance.interceptors.response.use(
             (res) => res,
             (err) => {
-                console.log(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config.url}]`); // eslint-disable-line
+                console.log(`API response error: ${err.response?.status} ${err.response?.statusText}, ${err.response?.data} [${err.response?.config.url}]`); // eslint-disable-line
                 return Promise.reject(err);
             });
     }
