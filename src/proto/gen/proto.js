@@ -4612,6 +4612,7 @@ export const io = $root.io = (() => {
                         EndorseAndAddKey.prototype.tokenRequestId = "";
                         EndorseAndAddKey.prototype.bankId = "";
                         EndorseAndAddKey.prototype.state = "";
+                        EndorseAndAddKey.prototype.contact = null;
 
                         EndorseAndAddKey.create = function create(properties) {
                             return new EndorseAndAddKey(properties);
@@ -4640,6 +4641,11 @@ export const io = $root.io = (() => {
                             if (d.state != null) {
                                 m.state = String(d.state);
                             }
+                            if (d.contact != null) {
+                                if (typeof d.contact !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.EndorseAndAddKey.contact: object expected");
+                                m.contact = $root.io.token.proto.common.member.ReceiptContact.fromObject(d.contact);
+                            }
                             return m;
                         };
 
@@ -4653,6 +4659,7 @@ export const io = $root.io = (() => {
                                 d.tokenRequestId = "";
                                 d.bankId = "";
                                 d.state = "";
+                                d.contact = null;
                             }
                             if (m.payload != null && m.hasOwnProperty("payload")) {
                                 d.payload = $root.io.token.proto.common.token.TokenPayload.toObject(m.payload, o);
@@ -4668,6 +4675,9 @@ export const io = $root.io = (() => {
                             }
                             if (m.state != null && m.hasOwnProperty("state")) {
                                 d.state = m.state;
+                            }
+                            if (m.contact != null && m.hasOwnProperty("contact")) {
+                                d.contact = $root.io.token.proto.common.member.ReceiptContact.toObject(m.contact, o);
                             }
                             return d;
                         };
