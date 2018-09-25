@@ -2791,6 +2791,36 @@ export const io = $root.io = (() => {
                         return MemberDeleteOperation;
                     })();
 
+                    member.MemberPartnerOperation = (function() {
+
+                        function MemberPartnerOperation(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        MemberPartnerOperation.create = function create(properties) {
+                            return new MemberPartnerOperation(properties);
+                        };
+
+                        MemberPartnerOperation.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.member.MemberPartnerOperation)
+                                return d;
+                            return new $root.io.token.proto.common.member.MemberPartnerOperation();
+                        };
+
+                        MemberPartnerOperation.toObject = function toObject() {
+                            return {};
+                        };
+
+                        MemberPartnerOperation.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return MemberPartnerOperation;
+                    })();
+
                     member.MemberOperation = (function() {
 
                         function MemberOperation(p) {
@@ -2808,11 +2838,13 @@ export const io = $root.io = (() => {
                         MemberOperation.prototype.recoveryRules = null;
                         MemberOperation.prototype.recover = null;
                         MemberOperation.prototype["delete"] = null;
+                        MemberOperation.prototype.verifyPartner = null;
+                        MemberOperation.prototype.unverifyPartner = null;
 
                         let $oneOfFields;
 
                         Object.defineProperty(MemberOperation.prototype, "operation", {
-                            get: $util.oneOfGetter($oneOfFields = ["addKey", "removeKey", "removeAlias", "addAlias", "verifyAlias", "recoveryRules", "recover", "delete"]),
+                            get: $util.oneOfGetter($oneOfFields = ["addKey", "removeKey", "removeAlias", "addAlias", "verifyAlias", "recoveryRules", "recover", "delete", "verifyPartner", "unverifyPartner"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
 
@@ -2864,6 +2896,16 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.member.MemberOperation.delete: object expected");
                                 m["delete"] = $root.io.token.proto.common.member.MemberDeleteOperation.fromObject(d["delete"]);
                             }
+                            if (d.verifyPartner != null) {
+                                if (typeof d.verifyPartner !== "object")
+                                    throw TypeError(".io.token.proto.common.member.MemberOperation.verifyPartner: object expected");
+                                m.verifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.fromObject(d.verifyPartner);
+                            }
+                            if (d.unverifyPartner != null) {
+                                if (typeof d.unverifyPartner !== "object")
+                                    throw TypeError(".io.token.proto.common.member.MemberOperation.unverifyPartner: object expected");
+                                m.unverifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.fromObject(d.unverifyPartner);
+                            }
                             return m;
                         };
 
@@ -2910,6 +2952,16 @@ export const io = $root.io = (() => {
                                 d["delete"] = $root.io.token.proto.common.member.MemberDeleteOperation.toObject(m["delete"], o);
                                 if (o.oneofs)
                                     d.operation = "delete";
+                            }
+                            if (m.verifyPartner != null && m.hasOwnProperty("verifyPartner")) {
+                                d.verifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.toObject(m.verifyPartner, o);
+                                if (o.oneofs)
+                                    d.operation = "verifyPartner";
+                            }
+                            if (m.unverifyPartner != null && m.hasOwnProperty("unverifyPartner")) {
+                                d.unverifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.toObject(m.unverifyPartner, o);
+                                if (o.oneofs)
+                                    d.operation = "unverifyPartner";
                             }
                             return d;
                         };
@@ -3294,6 +3346,8 @@ export const io = $root.io = (() => {
                         Member.prototype.lastRecoverySequence = 0;
                         Member.prototype.lastOperationSequence = 0;
                         Member.prototype.type = 0;
+                        Member.prototype.partnerId = "";
+                        Member.prototype.isVerifiedPartner = false;
 
                         Member.create = function create(properties) {
                             return new Member(properties);
@@ -3368,6 +3422,12 @@ export const io = $root.io = (() => {
                                 m.type = 4;
                                 break;
                             }
+                            if (d.partnerId != null) {
+                                m.partnerId = String(d.partnerId);
+                            }
+                            if (d.isVerifiedPartner != null) {
+                                m.isVerifiedPartner = Boolean(d.isVerifiedPartner);
+                            }
                             return m;
                         };
 
@@ -3387,6 +3447,8 @@ export const io = $root.io = (() => {
                                 d.lastRecoverySequence = 0;
                                 d.lastOperationSequence = 0;
                                 d.type = o.enums === String ? "INVALID_MEMBER_TYPE" : 0;
+                                d.partnerId = "";
+                                d.isVerifiedPartner = false;
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -3423,6 +3485,12 @@ export const io = $root.io = (() => {
                             }
                             if (m.type != null && m.hasOwnProperty("type")) {
                                 d.type = o.enums === String ? $root.io.token.proto.common.member.Member.MemberType[m.type] : m.type;
+                            }
+                            if (m.partnerId != null && m.hasOwnProperty("partnerId")) {
+                                d.partnerId = m.partnerId;
+                            }
+                            if (m.isVerifiedPartner != null && m.hasOwnProperty("isVerifiedPartner")) {
+                                d.isVerifiedPartner = m.isVerifiedPartner;
                             }
                             return d;
                         };

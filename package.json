@@ -13,7 +13,7 @@
         "url": "git://github.com/tokenio/sdk-js.git"
     },
     "config": {
-        "proto": "1.1.13"
+        "proto": "1.1.15"
     },
     "scripts": {
         "type": "flow check",
