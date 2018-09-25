@@ -1330,6 +1330,22 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Verifies an affiliated TPP.
+     *
+     * @param {string} memberId - id of the member to verify
+     * @return {Object} response - response to the api call
+     */
+    async verifyAffiliate(memberId) {
+        const request = {
+            method: 'put',
+            url: '/members/affiliates/verify',
+            data: {memberId}
+        };
+
+        return this._instance(request);
+    }
+
     //
     // Test
     //
