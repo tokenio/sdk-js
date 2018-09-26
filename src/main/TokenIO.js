@@ -17,6 +17,7 @@ import {
     Key,
     NotifyStatus,
     Paging,
+    ReceiptContact,
     Signature,
     TokenMember,
     TokenPayload,
@@ -449,6 +450,7 @@ export class TokenIO {
      * @param {string} tokenRequestId - (optional) token request Id
      * @param {string} bankId - (optional) bank Id
      * @param {string} state - (optional) token request state for signing
+     * @param {ReceiptContact} receiptContact - (optional) receipt contact
      * @return {Promise} result - notification Id and notify status
      */
     notifyEndorseAndAddKey(
@@ -457,7 +459,8 @@ export class TokenIO {
         deviceMetadata: DeviceMetadata,
         tokenRequestId: string,
         bankId: string,
-        state: string
+        state: string,
+        receiptContact: ReceiptContact,
     ): Promise<{notificationId: string, status: NotifyStatusEnum}> {
         const endorseAndAddKey = {
             payload: tokenPayload.toJSON(),
@@ -468,6 +471,7 @@ export class TokenIO {
             tokenRequestId: tokenRequestId,
             bankId: bankId,
             state: state,
+            contact: receiptContact,
         };
         return Util.callAsync(this.notifyEndorseAndAddKey, async () => {
             const res = await this._unauthenticatedClient.notifyEndorseAndAddKey(endorseAndAddKey);

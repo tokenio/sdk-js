@@ -199,11 +199,7 @@ export default class Member {
      * @return {Promise} empty - empty promise
      */
     addAlias(alias: Alias): Promise<void> {
-        return Util.callAsync(this.addAlias, async () => {
-            const prevHash = await this._getPreviousHash();
-            const res = await this._unauthenticatedClient.normalizeAlias(alias.toJSON());
-            await this._client.addAlias(prevHash, res.data.alias);
-        });
+        return this.addAliases([alias]);
     }
 
     /**
@@ -214,8 +210,11 @@ export default class Member {
      */
     addAliases(aliases: Array<Alias>): Promise<void> {
         return Util.callAsync(this.addAliases, async () => {
+            const member = await this._getMember();
+            const normalized = await Promise.all(aliases.map(alias =>
+                this._normalizeAlias(alias, member.partnerId)));
             const prevHash = await this._getPreviousHash();
-            await this._client.addAliases(prevHash, aliases.map(a => a.toJSON()));
+            await this._client.addAliases(prevHash, normalized);
         });
     }
 
@@ -1178,6 +1177,18 @@ export default class Member {
     }
 
     /**
+     * Verifies and affiliated TPP.
+     *
+     * @param memberId - id of the member to verify
+     * @return {Promise} empty - empty promise
+     */
+    verifyAffiliate(memberId: string): Promise<void> {
+        return Util.callAsync(this.verifyAffiliate, async () => {
+            await this._client.verifyAffiliate(memberId);
+        });
+    }
+
+    /**
      * Creates a test bank account in a fake bank
      *
      * @deprecated - use createTestBankAccountOauth
@@ -1265,6 +1276,22 @@ export default class Member {
             } else {
                 resolve(token);       // Token, already in json representation
             }
+        });
+    }
+
+    _normalizeAlias(alias: Alias, partnerId: string): Promise<Alias> {
+        return Util.callAsync(this._normalizeAlias, async () => {
+            const normalized =
+                (await this._unauthenticatedClient.normalizeAlias(alias.toJSON())).data.alias;
+
+            if (partnerId && partnerId !== 'token') {
+                // Realm must equal member's partner ID if affiliated
+                if (normalized.realm && normalized.realm !== partnerId) {
+                    throw new Error('Alias realm must equal partner ID: ' + partnerId);
+                }
+                normalized.realm = partnerId;
+            }
+            return normalized;
         });
     }
 }

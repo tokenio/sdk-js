@@ -2791,6 +2791,36 @@ export const io = $root.io = (() => {
                         return MemberDeleteOperation;
                     })();
 
+                    member.MemberPartnerOperation = (function() {
+
+                        function MemberPartnerOperation(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        MemberPartnerOperation.create = function create(properties) {
+                            return new MemberPartnerOperation(properties);
+                        };
+
+                        MemberPartnerOperation.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.member.MemberPartnerOperation)
+                                return d;
+                            return new $root.io.token.proto.common.member.MemberPartnerOperation();
+                        };
+
+                        MemberPartnerOperation.toObject = function toObject() {
+                            return {};
+                        };
+
+                        MemberPartnerOperation.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return MemberPartnerOperation;
+                    })();
+
                     member.MemberOperation = (function() {
 
                         function MemberOperation(p) {
@@ -2808,11 +2838,13 @@ export const io = $root.io = (() => {
                         MemberOperation.prototype.recoveryRules = null;
                         MemberOperation.prototype.recover = null;
                         MemberOperation.prototype["delete"] = null;
+                        MemberOperation.prototype.verifyPartner = null;
+                        MemberOperation.prototype.unverifyPartner = null;
 
                         let $oneOfFields;
 
                         Object.defineProperty(MemberOperation.prototype, "operation", {
-                            get: $util.oneOfGetter($oneOfFields = ["addKey", "removeKey", "removeAlias", "addAlias", "verifyAlias", "recoveryRules", "recover", "delete"]),
+                            get: $util.oneOfGetter($oneOfFields = ["addKey", "removeKey", "removeAlias", "addAlias", "verifyAlias", "recoveryRules", "recover", "delete", "verifyPartner", "unverifyPartner"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
 
@@ -2864,6 +2896,16 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.member.MemberOperation.delete: object expected");
                                 m["delete"] = $root.io.token.proto.common.member.MemberDeleteOperation.fromObject(d["delete"]);
                             }
+                            if (d.verifyPartner != null) {
+                                if (typeof d.verifyPartner !== "object")
+                                    throw TypeError(".io.token.proto.common.member.MemberOperation.verifyPartner: object expected");
+                                m.verifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.fromObject(d.verifyPartner);
+                            }
+                            if (d.unverifyPartner != null) {
+                                if (typeof d.unverifyPartner !== "object")
+                                    throw TypeError(".io.token.proto.common.member.MemberOperation.unverifyPartner: object expected");
+                                m.unverifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.fromObject(d.unverifyPartner);
+                            }
                             return m;
                         };
 
@@ -2910,6 +2952,16 @@ export const io = $root.io = (() => {
                                 d["delete"] = $root.io.token.proto.common.member.MemberDeleteOperation.toObject(m["delete"], o);
                                 if (o.oneofs)
                                     d.operation = "delete";
+                            }
+                            if (m.verifyPartner != null && m.hasOwnProperty("verifyPartner")) {
+                                d.verifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.toObject(m.verifyPartner, o);
+                                if (o.oneofs)
+                                    d.operation = "verifyPartner";
+                            }
+                            if (m.unverifyPartner != null && m.hasOwnProperty("unverifyPartner")) {
+                                d.unverifyPartner = $root.io.token.proto.common.member.MemberPartnerOperation.toObject(m.unverifyPartner, o);
+                                if (o.oneofs)
+                                    d.operation = "unverifyPartner";
                             }
                             return d;
                         };
@@ -3294,6 +3346,8 @@ export const io = $root.io = (() => {
                         Member.prototype.lastRecoverySequence = 0;
                         Member.prototype.lastOperationSequence = 0;
                         Member.prototype.type = 0;
+                        Member.prototype.partnerId = "";
+                        Member.prototype.isVerifiedPartner = false;
 
                         Member.create = function create(properties) {
                             return new Member(properties);
@@ -3368,6 +3422,12 @@ export const io = $root.io = (() => {
                                 m.type = 4;
                                 break;
                             }
+                            if (d.partnerId != null) {
+                                m.partnerId = String(d.partnerId);
+                            }
+                            if (d.isVerifiedPartner != null) {
+                                m.isVerifiedPartner = Boolean(d.isVerifiedPartner);
+                            }
                             return m;
                         };
 
@@ -3387,6 +3447,8 @@ export const io = $root.io = (() => {
                                 d.lastRecoverySequence = 0;
                                 d.lastOperationSequence = 0;
                                 d.type = o.enums === String ? "INVALID_MEMBER_TYPE" : 0;
+                                d.partnerId = "";
+                                d.isVerifiedPartner = false;
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -3423,6 +3485,12 @@ export const io = $root.io = (() => {
                             }
                             if (m.type != null && m.hasOwnProperty("type")) {
                                 d.type = o.enums === String ? $root.io.token.proto.common.member.Member.MemberType[m.type] : m.type;
+                            }
+                            if (m.partnerId != null && m.hasOwnProperty("partnerId")) {
+                                d.partnerId = m.partnerId;
+                            }
+                            if (m.isVerifiedPartner != null && m.hasOwnProperty("isVerifiedPartner")) {
+                                d.isVerifiedPartner = m.isVerifiedPartner;
                             }
                             return d;
                         };
@@ -4612,6 +4680,7 @@ export const io = $root.io = (() => {
                         EndorseAndAddKey.prototype.tokenRequestId = "";
                         EndorseAndAddKey.prototype.bankId = "";
                         EndorseAndAddKey.prototype.state = "";
+                        EndorseAndAddKey.prototype.contact = null;
 
                         EndorseAndAddKey.create = function create(properties) {
                             return new EndorseAndAddKey(properties);
@@ -4640,6 +4709,11 @@ export const io = $root.io = (() => {
                             if (d.state != null) {
                                 m.state = String(d.state);
                             }
+                            if (d.contact != null) {
+                                if (typeof d.contact !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.EndorseAndAddKey.contact: object expected");
+                                m.contact = $root.io.token.proto.common.member.ReceiptContact.fromObject(d.contact);
+                            }
                             return m;
                         };
 
@@ -4653,6 +4727,7 @@ export const io = $root.io = (() => {
                                 d.tokenRequestId = "";
                                 d.bankId = "";
                                 d.state = "";
+                                d.contact = null;
                             }
                             if (m.payload != null && m.hasOwnProperty("payload")) {
                                 d.payload = $root.io.token.proto.common.token.TokenPayload.toObject(m.payload, o);
@@ -4668,6 +4743,9 @@ export const io = $root.io = (() => {
                             }
                             if (m.state != null && m.hasOwnProperty("state")) {
                                 d.state = m.state;
+                            }
+                            if (m.contact != null && m.hasOwnProperty("contact")) {
+                                d.contact = $root.io.token.proto.common.member.ReceiptContact.toObject(m.contact, o);
                             }
                             return d;
                         };
@@ -7693,6 +7771,7 @@ export const io = $root.io = (() => {
                     transaction.Balance = (function() {
 
                         function Balance(p) {
+                            this.otherBalances = [];
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
@@ -7702,6 +7781,8 @@ export const io = $root.io = (() => {
                         Balance.prototype.accountId = "";
                         Balance.prototype.current = null;
                         Balance.prototype.available = null;
+                        Balance.prototype.updatedAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        Balance.prototype.otherBalances = $util.emptyArray;
 
                         Balance.create = function create(properties) {
                             return new Balance(properties);
@@ -7724,6 +7805,26 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.transaction.Balance.available: object expected");
                                 m.available = $root.io.token.proto.common.money.Money.fromObject(d.available);
                             }
+                            if (d.updatedAtMs != null) {
+                                if ($util.Long)
+                                    (m.updatedAtMs = $util.Long.fromValue(d.updatedAtMs)).unsigned = false;
+                                else if (typeof d.updatedAtMs === "string")
+                                    m.updatedAtMs = parseInt(d.updatedAtMs, 10);
+                                else if (typeof d.updatedAtMs === "number")
+                                    m.updatedAtMs = d.updatedAtMs;
+                                else if (typeof d.updatedAtMs === "object")
+                                    m.updatedAtMs = new $util.LongBits(d.updatedAtMs.low >>> 0, d.updatedAtMs.high >>> 0).toNumber();
+                            }
+                            if (d.otherBalances) {
+                                if (!Array.isArray(d.otherBalances))
+                                    throw TypeError(".io.token.proto.common.transaction.Balance.otherBalances: array expected");
+                                m.otherBalances = [];
+                                for (var i = 0; i < d.otherBalances.length; ++i) {
+                                    if (typeof d.otherBalances[i] !== "object")
+                                        throw TypeError(".io.token.proto.common.transaction.Balance.otherBalances: object expected");
+                                    m.otherBalances[i] = $root.io.token.proto.common.transaction.Balance.TypedBalance.fromObject(d.otherBalances[i]);
+                                }
+                            }
                             return m;
                         };
 
@@ -7731,10 +7832,18 @@ export const io = $root.io = (() => {
                             if (!o)
                                 o = {};
                             var d = {};
+                            if (o.arrays || o.defaults) {
+                                d.otherBalances = [];
+                            }
                             if (o.defaults) {
                                 d.accountId = "";
                                 d.current = null;
                                 d.available = null;
+                                if ($util.Long) {
+                                    var n = new $util.Long(0, 0, false);
+                                    d.updatedAtMs = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
+                                } else
+                                    d.updatedAtMs = o.longs === String ? "0" : 0;
                             }
                             if (m.accountId != null && m.hasOwnProperty("accountId")) {
                                 d.accountId = m.accountId;
@@ -7745,12 +7854,101 @@ export const io = $root.io = (() => {
                             if (m.available != null && m.hasOwnProperty("available")) {
                                 d.available = $root.io.token.proto.common.money.Money.toObject(m.available, o);
                             }
+                            if (m.updatedAtMs != null && m.hasOwnProperty("updatedAtMs")) {
+                                if (typeof m.updatedAtMs === "number")
+                                    d.updatedAtMs = o.longs === String ? String(m.updatedAtMs) : m.updatedAtMs;
+                                else
+                                    d.updatedAtMs = o.longs === String ? $util.Long.prototype.toString.call(m.updatedAtMs) : o.longs === Number ? new $util.LongBits(m.updatedAtMs.low >>> 0, m.updatedAtMs.high >>> 0).toNumber() : m.updatedAtMs;
+                            }
+                            if (m.otherBalances && m.otherBalances.length) {
+                                d.otherBalances = [];
+                                for (var j = 0; j < m.otherBalances.length; ++j) {
+                                    d.otherBalances[j] = $root.io.token.proto.common.transaction.Balance.TypedBalance.toObject(m.otherBalances[j], o);
+                                }
+                            }
                             return d;
                         };
 
                         Balance.prototype.toJSON = function toJSON() {
                             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                         };
+
+                        Balance.TypedBalance = (function() {
+
+                            function TypedBalance(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            TypedBalance.prototype.type = "";
+                            TypedBalance.prototype.amount = null;
+                            TypedBalance.prototype.updatedAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+                            TypedBalance.create = function create(properties) {
+                                return new TypedBalance(properties);
+                            };
+
+                            TypedBalance.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.transaction.Balance.TypedBalance)
+                                    return d;
+                                var m = new $root.io.token.proto.common.transaction.Balance.TypedBalance();
+                                if (d.type != null) {
+                                    m.type = String(d.type);
+                                }
+                                if (d.amount != null) {
+                                    if (typeof d.amount !== "object")
+                                        throw TypeError(".io.token.proto.common.transaction.Balance.TypedBalance.amount: object expected");
+                                    m.amount = $root.io.token.proto.common.money.Money.fromObject(d.amount);
+                                }
+                                if (d.updatedAtMs != null) {
+                                    if ($util.Long)
+                                        (m.updatedAtMs = $util.Long.fromValue(d.updatedAtMs)).unsigned = false;
+                                    else if (typeof d.updatedAtMs === "string")
+                                        m.updatedAtMs = parseInt(d.updatedAtMs, 10);
+                                    else if (typeof d.updatedAtMs === "number")
+                                        m.updatedAtMs = d.updatedAtMs;
+                                    else if (typeof d.updatedAtMs === "object")
+                                        m.updatedAtMs = new $util.LongBits(d.updatedAtMs.low >>> 0, d.updatedAtMs.high >>> 0).toNumber();
+                                }
+                                return m;
+                            };
+
+                            TypedBalance.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.defaults) {
+                                    d.type = "";
+                                    d.amount = null;
+                                    if ($util.Long) {
+                                        var n = new $util.Long(0, 0, false);
+                                        d.updatedAtMs = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
+                                    } else
+                                        d.updatedAtMs = o.longs === String ? "0" : 0;
+                                }
+                                if (m.type != null && m.hasOwnProperty("type")) {
+                                    d.type = m.type;
+                                }
+                                if (m.amount != null && m.hasOwnProperty("amount")) {
+                                    d.amount = $root.io.token.proto.common.money.Money.toObject(m.amount, o);
+                                }
+                                if (m.updatedAtMs != null && m.hasOwnProperty("updatedAtMs")) {
+                                    if (typeof m.updatedAtMs === "number")
+                                        d.updatedAtMs = o.longs === String ? String(m.updatedAtMs) : m.updatedAtMs;
+                                    else
+                                        d.updatedAtMs = o.longs === String ? $util.Long.prototype.toString.call(m.updatedAtMs) : o.longs === Number ? new $util.LongBits(m.updatedAtMs.low >>> 0, m.updatedAtMs.high >>> 0).toNumber() : m.updatedAtMs;
+                                }
+                                return d;
+                            };
+
+                            TypedBalance.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            return TypedBalance;
+                        })();
 
                         return Balance;
                     })();
