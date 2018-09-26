@@ -86,7 +86,7 @@ class Util {
      * @return {Number} count - number of decimals
      */
     static countDecimals(value) {
-        if (Math.floor(value) === value) {
+        if (Math.floor(value) == value) {
             return 0;
         }
         return value.toString().split('.')[1].length || 0;
@@ -269,7 +269,11 @@ class Util {
         instance.interceptors.response.use(
             (res) => res,
             (err) => {
-                console.log(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config.url}]`); // eslint-disable-line
+                /* eslint-disable */
+                err.response
+                    ? console.error(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config.url}]`)
+                    : console.error(`API no response: [${err.config.url}]`);
+                /* eslint-enable */
                 return Promise.reject(err);
             });
     }
