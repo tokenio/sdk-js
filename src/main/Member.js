@@ -1185,7 +1185,7 @@ export default class Member {
     verifyAffiliate(memberId: string): Promise<void> {
         return Util.callAsync(this.verifyAffiliate, async () => {
             await this._client.verifyAffiliate(memberId);
-        })
+        });
     }
 
     /**

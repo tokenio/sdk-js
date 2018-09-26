@@ -1340,7 +1340,7 @@ class AuthHttpClient {
         const request = {
             method: 'put',
             url: '/members/affiliates/verify',
-            data: {memberId}
+            data: {memberId},
         };
 
         return this._instance(request);
