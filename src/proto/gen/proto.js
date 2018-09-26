@@ -7771,6 +7771,7 @@ export const io = $root.io = (() => {
                     transaction.Balance = (function() {
 
                         function Balance(p) {
+                            this.otherBalances = [];
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
@@ -7780,6 +7781,8 @@ export const io = $root.io = (() => {
                         Balance.prototype.accountId = "";
                         Balance.prototype.current = null;
                         Balance.prototype.available = null;
+                        Balance.prototype.updatedAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+                        Balance.prototype.otherBalances = $util.emptyArray;
 
                         Balance.create = function create(properties) {
                             return new Balance(properties);
@@ -7802,6 +7805,26 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.transaction.Balance.available: object expected");
                                 m.available = $root.io.token.proto.common.money.Money.fromObject(d.available);
                             }
+                            if (d.updatedAtMs != null) {
+                                if ($util.Long)
+                                    (m.updatedAtMs = $util.Long.fromValue(d.updatedAtMs)).unsigned = false;
+                                else if (typeof d.updatedAtMs === "string")
+                                    m.updatedAtMs = parseInt(d.updatedAtMs, 10);
+                                else if (typeof d.updatedAtMs === "number")
+                                    m.updatedAtMs = d.updatedAtMs;
+                                else if (typeof d.updatedAtMs === "object")
+                                    m.updatedAtMs = new $util.LongBits(d.updatedAtMs.low >>> 0, d.updatedAtMs.high >>> 0).toNumber();
+                            }
+                            if (d.otherBalances) {
+                                if (!Array.isArray(d.otherBalances))
+                                    throw TypeError(".io.token.proto.common.transaction.Balance.otherBalances: array expected");
+                                m.otherBalances = [];
+                                for (var i = 0; i < d.otherBalances.length; ++i) {
+                                    if (typeof d.otherBalances[i] !== "object")
+                                        throw TypeError(".io.token.proto.common.transaction.Balance.otherBalances: object expected");
+                                    m.otherBalances[i] = $root.io.token.proto.common.transaction.Balance.TypedBalance.fromObject(d.otherBalances[i]);
+                                }
+                            }
                             return m;
                         };
 
@@ -7809,10 +7832,18 @@ export const io = $root.io = (() => {
                             if (!o)
                                 o = {};
                             var d = {};
+                            if (o.arrays || o.defaults) {
+                                d.otherBalances = [];
+                            }
                             if (o.defaults) {
                                 d.accountId = "";
                                 d.current = null;
                                 d.available = null;
+                                if ($util.Long) {
+                                    var n = new $util.Long(0, 0, false);
+                                    d.updatedAtMs = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
+                                } else
+                                    d.updatedAtMs = o.longs === String ? "0" : 0;
                             }
                             if (m.accountId != null && m.hasOwnProperty("accountId")) {
                                 d.accountId = m.accountId;
@@ -7823,12 +7854,101 @@ export const io = $root.io = (() => {
                             if (m.available != null && m.hasOwnProperty("available")) {
                                 d.available = $root.io.token.proto.common.money.Money.toObject(m.available, o);
                             }
+                            if (m.updatedAtMs != null && m.hasOwnProperty("updatedAtMs")) {
+                                if (typeof m.updatedAtMs === "number")
+                                    d.updatedAtMs = o.longs === String ? String(m.updatedAtMs) : m.updatedAtMs;
+                                else
+                                    d.updatedAtMs = o.longs === String ? $util.Long.prototype.toString.call(m.updatedAtMs) : o.longs === Number ? new $util.LongBits(m.updatedAtMs.low >>> 0, m.updatedAtMs.high >>> 0).toNumber() : m.updatedAtMs;
+                            }
+                            if (m.otherBalances && m.otherBalances.length) {
+                                d.otherBalances = [];
+                                for (var j = 0; j < m.otherBalances.length; ++j) {
+                                    d.otherBalances[j] = $root.io.token.proto.common.transaction.Balance.TypedBalance.toObject(m.otherBalances[j], o);
+                                }
+                            }
                             return d;
                         };
 
                         Balance.prototype.toJSON = function toJSON() {
                             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                         };
+
+                        Balance.TypedBalance = (function() {
+
+                            function TypedBalance(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            TypedBalance.prototype.type = "";
+                            TypedBalance.prototype.amount = null;
+                            TypedBalance.prototype.updatedAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+                            TypedBalance.create = function create(properties) {
+                                return new TypedBalance(properties);
+                            };
+
+                            TypedBalance.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.transaction.Balance.TypedBalance)
+                                    return d;
+                                var m = new $root.io.token.proto.common.transaction.Balance.TypedBalance();
+                                if (d.type != null) {
+                                    m.type = String(d.type);
+                                }
+                                if (d.amount != null) {
+                                    if (typeof d.amount !== "object")
+                                        throw TypeError(".io.token.proto.common.transaction.Balance.TypedBalance.amount: object expected");
+                                    m.amount = $root.io.token.proto.common.money.Money.fromObject(d.amount);
+                                }
+                                if (d.updatedAtMs != null) {
+                                    if ($util.Long)
+                                        (m.updatedAtMs = $util.Long.fromValue(d.updatedAtMs)).unsigned = false;
+                                    else if (typeof d.updatedAtMs === "string")
+                                        m.updatedAtMs = parseInt(d.updatedAtMs, 10);
+                                    else if (typeof d.updatedAtMs === "number")
+                                        m.updatedAtMs = d.updatedAtMs;
+                                    else if (typeof d.updatedAtMs === "object")
+                                        m.updatedAtMs = new $util.LongBits(d.updatedAtMs.low >>> 0, d.updatedAtMs.high >>> 0).toNumber();
+                                }
+                                return m;
+                            };
+
+                            TypedBalance.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.defaults) {
+                                    d.type = "";
+                                    d.amount = null;
+                                    if ($util.Long) {
+                                        var n = new $util.Long(0, 0, false);
+                                        d.updatedAtMs = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
+                                    } else
+                                        d.updatedAtMs = o.longs === String ? "0" : 0;
+                                }
+                                if (m.type != null && m.hasOwnProperty("type")) {
+                                    d.type = m.type;
+                                }
+                                if (m.amount != null && m.hasOwnProperty("amount")) {
+                                    d.amount = $root.io.token.proto.common.money.Money.toObject(m.amount, o);
+                                }
+                                if (m.updatedAtMs != null && m.hasOwnProperty("updatedAtMs")) {
+                                    if (typeof m.updatedAtMs === "number")
+                                        d.updatedAtMs = o.longs === String ? String(m.updatedAtMs) : m.updatedAtMs;
+                                    else
+                                        d.updatedAtMs = o.longs === String ? $util.Long.prototype.toString.call(m.updatedAtMs) : o.longs === Number ? new $util.LongBits(m.updatedAtMs.low >>> 0, m.updatedAtMs.high >>> 0).toNumber() : m.updatedAtMs;
+                                }
+                                return d;
+                            };
+
+                            TypedBalance.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            return TypedBalance;
+                        })();
 
                         return Balance;
                     })();

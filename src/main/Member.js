@@ -1177,6 +1177,18 @@ export default class Member {
     }
 
     /**
+     * Verifies and affiliated TPP.
+     *
+     * @param memberId - id of the member to verify
+     * @return {Promise} empty - empty promise
+     */
+    verifyAffiliate(memberId: string): Promise<void> {
+        return Util.callAsync(this.verifyAffiliate, async () => {
+            await this._client.verifyAffiliate(memberId);
+        })
+    }
+
+    /**
      * Creates a test bank account in a fake bank
      *
      * @deprecated - use createTestBankAccountOauth
