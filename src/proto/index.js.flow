@@ -357,7 +357,22 @@ declare export class Balance {
     accountId: string;
     current: Money;
     available: Money;
-    static create({accountId: string, current: Money, available: Money}): Balance;
+    updatedAtMs: number;
+    typedBalances: Array<TypedBalance>;
+    static create({
+        accountId: string,
+        current: Money,
+        available: Money,
+        updatedAtMs: number,
+        typedBalances: Array<TypedBalance>,
+    }): Balance;
+    toJSON(): Object;
+}
+declare export class TypedBalance {
+    type: string;
+    amount: Money;
+    updatedAtMs: number;
+    static create({type: string, amount: Money, updatedAtMs: number}): Balance;
     toJSON(): Object;
 }
 declare export class Transaction {
