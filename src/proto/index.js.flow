@@ -372,7 +372,7 @@ declare export class TypedBalance {
     type: string;
     amount: Money;
     updatedAtMs: number;
-    static create({type: string, amount: Money, updatedAtMs: number}): Balance;
+    static create({type: string, amount: Money, updatedAtMs: number}): TypedBalance;
     toJSON(): Object;
 }
 declare export class Transaction {
