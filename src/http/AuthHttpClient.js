@@ -1346,6 +1346,21 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Resolves transfer destinations for the given account ID.
+     *
+     * @param {string} accountId - id of account to resolve destinations for
+     * @returns {Object} response - api response
+     */
+    async resolveTransferDestinations(accountId) {
+        const request = {
+            method: 'get',
+            url: `/accounts/${accountId}/transfer-destinations`,
+        };
+
+        return this._instance(request);
+    }
+
     //
     // Test
     //

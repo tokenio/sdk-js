@@ -192,6 +192,48 @@ export default class AccessTokenBuilder {
     }
 
     /**
+     * Adds a resource for resolved transfer destinations of all accounts.
+     *
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    forAllTransferDestinations() {
+        this._payload.access.resources.push({
+            allTransferDestinations: {},
+        });
+        return this;
+    }
+
+    /**
+     * Adds a resource for resolved transfer destinations of all accounts at a given bank.
+     *
+     * @param {String} bankId - id of the bank
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    forAllTransferDestinationsAtBank(bankId) {
+        this._payload.access.resources.push({
+            allTransferDestinationsAtBank: {
+                bankId,
+            },
+        });
+        return this;
+    }
+
+    /**
+     * Adds a resource for resolved transfer destinations of a given account.
+     *
+     * @param {String} accountId - id of the account
+     * @return {AccessTokenBuilder} builder - returns back the builder object
+     */
+    forTransferDestinations(accountId) {
+        this._payload.access.resources.push({
+            transferDestinations: {
+                accountId,
+            },
+        });
+        return this;
+    }
+
+    /**
      * Adds a resource for full access.
      *
      * @return {AccessTokenBuilder} builder - returns back the builder object
@@ -200,7 +242,8 @@ export default class AccessTokenBuilder {
         return this.forAllAccounts()
             .forAllAddresses()
             .forAllTransactions()
-            .forAllBalances();
+            .forAllBalances()
+            .forAllTransferDestinations();
     }
 
     /**
