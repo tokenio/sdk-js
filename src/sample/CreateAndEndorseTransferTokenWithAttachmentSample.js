@@ -13,6 +13,7 @@ export default async (payer, payeeAlias) => {
         .setFromId(payer.memberId())
         .setAccountId(accounts[0].id)
         .setRedeemerAlias(payeeAlias)
+        .setToAlias(payeeAlias)
         .addAttachmentData(
             payer.memberId(),
             'image/jpeg',

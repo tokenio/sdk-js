@@ -18,6 +18,7 @@ export default async (payer, payeeAlias) => {
     const token = await payer.createTransferToken(100.00, 'EUR')
         .setAccountId(accounts[0].id)
         .setRedeemerAlias(payeeAlias)
+        .setToAlias(payeeAlias)
     // attach reference to token:
         .addAttachment(attachment)
         .execute();
