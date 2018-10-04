@@ -20,6 +20,7 @@ describe('NotificationsSample test', () => {
 
         const payerAlias = await payer.firstAlias();
 
+        // TODO to test
         const token = await payer.createTransferToken(100.00, 'EUR')
             .setAccountId(accounts[0].id)
             .setRedeemerAlias(payerAlias)

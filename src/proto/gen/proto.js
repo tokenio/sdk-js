@@ -5925,7 +5925,6 @@ export const io = $root.io = (() => {
                                         this[ks[i]] = p[ks[i]];
                         }
 
-                        TransferBody.prototype.redeemer = null;
                         TransferBody.prototype.instructions = null;
                         TransferBody.prototype.currency = "";
                         TransferBody.prototype.lifetimeAmount = "";
@@ -5941,11 +5940,6 @@ export const io = $root.io = (() => {
                             if (d instanceof $root.io.token.proto.common.token.TransferBody)
                                 return d;
                             var m = new $root.io.token.proto.common.token.TransferBody();
-                            if (d.redeemer != null) {
-                                if (typeof d.redeemer !== "object")
-                                    throw TypeError(".io.token.proto.common.token.TransferBody.redeemer: object expected");
-                                m.redeemer = $root.io.token.proto.common.token.TokenMember.fromObject(d.redeemer);
-                            }
                             if (d.instructions != null) {
                                 if (typeof d.instructions !== "object")
                                     throw TypeError(".io.token.proto.common.token.TransferBody.instructions: object expected");
@@ -5986,15 +5980,11 @@ export const io = $root.io = (() => {
                                 d.attachments = [];
                             }
                             if (o.defaults) {
-                                d.redeemer = null;
                                 d.instructions = null;
                                 d.currency = "";
                                 d.lifetimeAmount = "";
                                 d.amount = "";
                                 d.pricing = null;
-                            }
-                            if (m.redeemer != null && m.hasOwnProperty("redeemer")) {
-                                d.redeemer = $root.io.token.proto.common.token.TokenMember.toObject(m.redeemer, o);
                             }
                             if (m.instructions != null && m.hasOwnProperty("instructions")) {
                                 d.instructions = $root.io.token.proto.common.transferinstructions.TransferInstructions.toObject(m.instructions, o);

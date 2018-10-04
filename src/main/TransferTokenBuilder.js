@@ -34,7 +34,6 @@ export default class TransferTokenBuilder {
                     destinations: [],
                     metadata: {},
                 },
-                redeemer: {},
                 attachments: [],
             },
         };
@@ -181,23 +180,23 @@ export default class TransferTokenBuilder {
     /**
      * Sets the alias of the redeemer.
      *
+     * @deprecated - use setToAlias
      * @param {Object} redeemerAlias - alias of the redeemer
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerAlias(redeemerAlias) {
-        this._payload.transfer.redeemer.alias = redeemerAlias;
-        return this;
+        return this.setToAlias(redeemerAlias);
     }
 
     /**
      * Sets the memberId of the redeemer.
      *
+     * @deprecated - use setToMemberId
      * @param {Object} redeemerMemberId - memberId of the redeemer
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerMemberId(redeemerMemberId) {
-        this._payload.transfer.redeemer.id = redeemerMemberId;
-        return this;
+        return this.setToMemberId(redeemerMemberId);
     }
 
     /**
@@ -350,8 +349,8 @@ export default class TransferTokenBuilder {
                 !this._payload.transfer.instructions.source.account.custom)) {
                 throw new Error('No source on token');
             }
-            if (!this._payload.transfer.redeemer.alias &&
-                !this._payload.transfer.redeemer.id) {
+            if (!this._payload.to.alias &&
+                !this._payload.to.id) {
                 throw new Error('No redeemer on token');
             }
             for (let i = 0; i < this._blobPayloads.length; i++) {

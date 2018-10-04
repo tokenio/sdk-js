@@ -28,7 +28,6 @@ describe('Token library', () => {
         const token = await member1.createTransferToken(100.00, 'EUR')
             .setAccountId(account.id)
             .setToAlias(alias2)
-            .setRedeemerAlias(alias2)
             .execute();
 
         await member1.endorseToken(token.id);
