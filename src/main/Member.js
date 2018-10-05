@@ -1189,6 +1189,18 @@ export default class Member {
     }
 
     /**
+     * Resolves transfer destinations for the given account ID.
+     *
+     * @param {string} accountId - id of account to resolve destinations for
+     * @returns {Promise} response - resolved transfer endpoints
+     */
+    resolveTransferDestinations(accountId: string): Promise<TransferEndpoint[]> {
+        return Util.callAsync(this.resolveTransferDestinations, async () => {
+            await this._client.resolveTransferDestinations(accountId);
+        });
+    }
+
+    /**
      * Creates a test bank account in a fake bank
      *
      * @deprecated - use createTestBankAccountOauth
