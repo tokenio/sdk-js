@@ -201,6 +201,7 @@ export const io = $root.io = (() => {
                         AccountDetails.prototype.type = 0;
                         AccountDetails.prototype.status = "";
                         AccountDetails.prototype.metadata = $util.emptyObject;
+                        AccountDetails.prototype.providerSpecific = null;
 
                         AccountDetails.create = function create(properties) {
                             return new AccountDetails(properties);
@@ -246,6 +247,11 @@ export const io = $root.io = (() => {
                                     m.metadata[ks[i]] = String(d.metadata[ks[i]]);
                                 }
                             }
+                            if (d.providerSpecific != null) {
+                                if (typeof d.providerSpecific !== "object")
+                                    throw TypeError(".io.token.proto.common.account.AccountDetails.providerSpecific: object expected");
+                                m.providerSpecific = $root.io.token.proto.common.providerspecific.ProviderAccountDetails.fromObject(d.providerSpecific);
+                            }
                             return m;
                         };
 
@@ -260,6 +266,7 @@ export const io = $root.io = (() => {
                                 d.identifier = "";
                                 d.type = o.enums === String ? "INVALID" : 0;
                                 d.status = "";
+                                d.providerSpecific = null;
                             }
                             if (m.identifier != null && m.hasOwnProperty("identifier")) {
                                 d.identifier = m.identifier;
@@ -276,6 +283,9 @@ export const io = $root.io = (() => {
                                 for (var j = 0; j < ks2.length; ++j) {
                                     d.metadata[ks2[j]] = m.metadata[ks2[j]];
                                 }
+                            }
+                            if (m.providerSpecific != null && m.hasOwnProperty("providerSpecific")) {
+                                d.providerSpecific = $root.io.token.proto.common.providerspecific.ProviderAccountDetails.toObject(m.providerSpecific, o);
                             }
                             return d;
                         };
@@ -1578,6 +1588,308 @@ export const io = $root.io = (() => {
                     })();
 
                     return security;
+                })();
+
+                common.providerspecific = (function() {
+
+                    const providerspecific = {};
+
+                    providerspecific.ProviderAccountDetails = (function() {
+
+                        function ProviderAccountDetails(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        ProviderAccountDetails.prototype.cma9AccountDetails = null;
+
+                        let $oneOfFields;
+
+                        Object.defineProperty(ProviderAccountDetails.prototype, "details", {
+                            get: $util.oneOfGetter($oneOfFields = ["cma9AccountDetails"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+
+                        ProviderAccountDetails.create = function create(properties) {
+                            return new ProviderAccountDetails(properties);
+                        };
+
+                        ProviderAccountDetails.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.providerspecific.ProviderAccountDetails)
+                                return d;
+                            var m = new $root.io.token.proto.common.providerspecific.ProviderAccountDetails();
+                            if (d.cma9AccountDetails != null) {
+                                if (typeof d.cma9AccountDetails !== "object")
+                                    throw TypeError(".io.token.proto.common.providerspecific.ProviderAccountDetails.cma9AccountDetails: object expected");
+                                m.cma9AccountDetails = $root.io.token.proto.common.providerspecific.Cma9AccountDetails.fromObject(d.cma9AccountDetails);
+                            }
+                            return m;
+                        };
+
+                        ProviderAccountDetails.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (m.cma9AccountDetails != null && m.hasOwnProperty("cma9AccountDetails")) {
+                                d.cma9AccountDetails = $root.io.token.proto.common.providerspecific.Cma9AccountDetails.toObject(m.cma9AccountDetails, o);
+                                if (o.oneofs)
+                                    d.details = "cma9AccountDetails";
+                            }
+                            return d;
+                        };
+
+                        ProviderAccountDetails.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return ProviderAccountDetails;
+                    })();
+
+                    providerspecific.Cma9AccountDetails = (function() {
+
+                        function Cma9AccountDetails(p) {
+                            this.address = [];
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Cma9AccountDetails.prototype.partyId = "";
+                        Cma9AccountDetails.prototype.partyNumber = "";
+                        Cma9AccountDetails.prototype.partyType = 0;
+                        Cma9AccountDetails.prototype.name = "";
+                        Cma9AccountDetails.prototype.emailAddress = "";
+                        Cma9AccountDetails.prototype.phone = "";
+                        Cma9AccountDetails.prototype.mobile = "";
+                        Cma9AccountDetails.prototype.address = $util.emptyArray;
+
+                        Cma9AccountDetails.create = function create(properties) {
+                            return new Cma9AccountDetails(properties);
+                        };
+
+                        Cma9AccountDetails.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.providerspecific.Cma9AccountDetails)
+                                return d;
+                            var m = new $root.io.token.proto.common.providerspecific.Cma9AccountDetails();
+                            if (d.partyId != null) {
+                                m.partyId = String(d.partyId);
+                            }
+                            if (d.partyNumber != null) {
+                                m.partyNumber = String(d.partyNumber);
+                            }
+                            switch (d.partyType) {
+                            case "INVALID_PARTY_TYPE":
+                            case 0:
+                                m.partyType = 0;
+                                break;
+                            case "DELEGATE":
+                            case 1:
+                                m.partyType = 1;
+                                break;
+                            case "JOINT":
+                            case 2:
+                                m.partyType = 2;
+                                break;
+                            case "SOLE":
+                            case 3:
+                                m.partyType = 3;
+                                break;
+                            }
+                            if (d.name != null) {
+                                m.name = String(d.name);
+                            }
+                            if (d.emailAddress != null) {
+                                m.emailAddress = String(d.emailAddress);
+                            }
+                            if (d.phone != null) {
+                                m.phone = String(d.phone);
+                            }
+                            if (d.mobile != null) {
+                                m.mobile = String(d.mobile);
+                            }
+                            if (d.address) {
+                                if (!Array.isArray(d.address))
+                                    throw TypeError(".io.token.proto.common.providerspecific.Cma9AccountDetails.address: array expected");
+                                m.address = [];
+                                for (var i = 0; i < d.address.length; ++i) {
+                                    if (typeof d.address[i] !== "object")
+                                        throw TypeError(".io.token.proto.common.providerspecific.Cma9AccountDetails.address: object expected");
+                                    m.address[i] = $root.io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address.fromObject(d.address[i]);
+                                }
+                            }
+                            return m;
+                        };
+
+                        Cma9AccountDetails.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.arrays || o.defaults) {
+                                d.address = [];
+                            }
+                            if (o.defaults) {
+                                d.partyId = "";
+                                d.partyNumber = "";
+                                d.partyType = o.enums === String ? "INVALID_PARTY_TYPE" : 0;
+                                d.name = "";
+                                d.emailAddress = "";
+                                d.phone = "";
+                                d.mobile = "";
+                            }
+                            if (m.partyId != null && m.hasOwnProperty("partyId")) {
+                                d.partyId = m.partyId;
+                            }
+                            if (m.partyNumber != null && m.hasOwnProperty("partyNumber")) {
+                                d.partyNumber = m.partyNumber;
+                            }
+                            if (m.partyType != null && m.hasOwnProperty("partyType")) {
+                                d.partyType = o.enums === String ? $root.io.token.proto.common.providerspecific.Cma9AccountDetails.PartyType[m.partyType] : m.partyType;
+                            }
+                            if (m.name != null && m.hasOwnProperty("name")) {
+                                d.name = m.name;
+                            }
+                            if (m.emailAddress != null && m.hasOwnProperty("emailAddress")) {
+                                d.emailAddress = m.emailAddress;
+                            }
+                            if (m.phone != null && m.hasOwnProperty("phone")) {
+                                d.phone = m.phone;
+                            }
+                            if (m.mobile != null && m.hasOwnProperty("mobile")) {
+                                d.mobile = m.mobile;
+                            }
+                            if (m.address && m.address.length) {
+                                d.address = [];
+                                for (var j = 0; j < m.address.length; ++j) {
+                                    d.address[j] = $root.io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address.toObject(m.address[j], o);
+                                }
+                            }
+                            return d;
+                        };
+
+                        Cma9AccountDetails.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        Cma9AccountDetails.Cma9Address = (function() {
+
+                            function Cma9Address(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            Cma9Address.prototype.addressType = 0;
+                            Cma9Address.prototype.address = null;
+
+                            Cma9Address.create = function create(properties) {
+                                return new Cma9Address(properties);
+                            };
+
+                            Cma9Address.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address)
+                                    return d;
+                                var m = new $root.io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address();
+                                switch (d.addressType) {
+                                case "INVALID_ADDRESS_TYPE":
+                                case 0:
+                                    m.addressType = 0;
+                                    break;
+                                case "BUSINESS":
+                                case 1:
+                                    m.addressType = 1;
+                                    break;
+                                case "CORRESPONDENCE":
+                                case 2:
+                                    m.addressType = 2;
+                                    break;
+                                case "DELIVERYTO":
+                                case 3:
+                                    m.addressType = 3;
+                                    break;
+                                case "MAILTO":
+                                case 4:
+                                    m.addressType = 4;
+                                    break;
+                                case "POBOX":
+                                case 5:
+                                    m.addressType = 5;
+                                    break;
+                                case "POSTAL":
+                                case 6:
+                                    m.addressType = 6;
+                                    break;
+                                case "RESIDENTIAL":
+                                case 7:
+                                    m.addressType = 7;
+                                    break;
+                                case "STATEMENT":
+                                case 8:
+                                    m.addressType = 8;
+                                    break;
+                                }
+                                if (d.address != null) {
+                                    if (typeof d.address !== "object")
+                                        throw TypeError(".io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address.address: object expected");
+                                    m.address = $root.io.token.proto.common.address.Address.fromObject(d.address);
+                                }
+                                return m;
+                            };
+
+                            Cma9Address.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.defaults) {
+                                    d.addressType = o.enums === String ? "INVALID_ADDRESS_TYPE" : 0;
+                                    d.address = null;
+                                }
+                                if (m.addressType != null && m.hasOwnProperty("addressType")) {
+                                    d.addressType = o.enums === String ? $root.io.token.proto.common.providerspecific.Cma9AccountDetails.AddressType[m.addressType] : m.addressType;
+                                }
+                                if (m.address != null && m.hasOwnProperty("address")) {
+                                    d.address = $root.io.token.proto.common.address.Address.toObject(m.address, o);
+                                }
+                                return d;
+                            };
+
+                            Cma9Address.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            return Cma9Address;
+                        })();
+
+                        Cma9AccountDetails.PartyType = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID_PARTY_TYPE"] = 0;
+                            values[valuesById[1] = "DELEGATE"] = 1;
+                            values[valuesById[2] = "JOINT"] = 2;
+                            values[valuesById[3] = "SOLE"] = 3;
+                            return values;
+                        })();
+
+                        Cma9AccountDetails.AddressType = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID_ADDRESS_TYPE"] = 0;
+                            values[valuesById[1] = "BUSINESS"] = 1;
+                            values[valuesById[2] = "CORRESPONDENCE"] = 2;
+                            values[valuesById[3] = "DELIVERYTO"] = 3;
+                            values[valuesById[4] = "MAILTO"] = 4;
+                            values[valuesById[5] = "POBOX"] = 5;
+                            values[valuesById[6] = "POSTAL"] = 6;
+                            values[valuesById[7] = "RESIDENTIAL"] = 7;
+                            values[valuesById[8] = "STATEMENT"] = 8;
+                            return values;
+                        })();
+
+                        return Cma9AccountDetails;
+                    })();
+
+                    return providerspecific;
                 })();
 
                 common.address = (function() {
@@ -3811,6 +4123,116 @@ export const io = $root.io = (() => {
                         return values;
                     })();
 
+                    member.TrustedBeneficiary = (function() {
+
+                        function TrustedBeneficiary(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        TrustedBeneficiary.prototype.payload = null;
+                        TrustedBeneficiary.prototype.signature = null;
+
+                        TrustedBeneficiary.create = function create(properties) {
+                            return new TrustedBeneficiary(properties);
+                        };
+
+                        TrustedBeneficiary.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.member.TrustedBeneficiary)
+                                return d;
+                            var m = new $root.io.token.proto.common.member.TrustedBeneficiary();
+                            if (d.payload != null) {
+                                if (typeof d.payload !== "object")
+                                    throw TypeError(".io.token.proto.common.member.TrustedBeneficiary.payload: object expected");
+                                m.payload = $root.io.token.proto.common.member.TrustedBeneficiary.Payload.fromObject(d.payload);
+                            }
+                            if (d.signature != null) {
+                                if (typeof d.signature !== "object")
+                                    throw TypeError(".io.token.proto.common.member.TrustedBeneficiary.signature: object expected");
+                                m.signature = $root.io.token.proto.common.security.Signature.fromObject(d.signature);
+                            }
+                            return m;
+                        };
+
+                        TrustedBeneficiary.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.defaults) {
+                                d.payload = null;
+                                d.signature = null;
+                            }
+                            if (m.payload != null && m.hasOwnProperty("payload")) {
+                                d.payload = $root.io.token.proto.common.member.TrustedBeneficiary.Payload.toObject(m.payload, o);
+                            }
+                            if (m.signature != null && m.hasOwnProperty("signature")) {
+                                d.signature = $root.io.token.proto.common.security.Signature.toObject(m.signature, o);
+                            }
+                            return d;
+                        };
+
+                        TrustedBeneficiary.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        TrustedBeneficiary.Payload = (function() {
+
+                            function Payload(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            Payload.prototype.memberId = "";
+                            Payload.prototype.nonce = "";
+
+                            Payload.create = function create(properties) {
+                                return new Payload(properties);
+                            };
+
+                            Payload.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.member.TrustedBeneficiary.Payload)
+                                    return d;
+                                var m = new $root.io.token.proto.common.member.TrustedBeneficiary.Payload();
+                                if (d.memberId != null) {
+                                    m.memberId = String(d.memberId);
+                                }
+                                if (d.nonce != null) {
+                                    m.nonce = String(d.nonce);
+                                }
+                                return m;
+                            };
+
+                            Payload.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.defaults) {
+                                    d.memberId = "";
+                                    d.nonce = "";
+                                }
+                                if (m.memberId != null && m.hasOwnProperty("memberId")) {
+                                    d.memberId = m.memberId;
+                                }
+                                if (m.nonce != null && m.hasOwnProperty("nonce")) {
+                                    d.nonce = m.nonce;
+                                }
+                                return d;
+                            };
+
+                            Payload.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            return Payload;
+                        })();
+
+                        return TrustedBeneficiary;
+                    })();
+
                     return member;
                 })();
 
@@ -5925,6 +6347,7 @@ export const io = $root.io = (() => {
                                         this[ks[i]] = p[ks[i]];
                         }
 
+                        TransferBody.prototype.redeemer = null;
                         TransferBody.prototype.instructions = null;
                         TransferBody.prototype.currency = "";
                         TransferBody.prototype.lifetimeAmount = "";
@@ -5940,6 +6363,11 @@ export const io = $root.io = (() => {
                             if (d instanceof $root.io.token.proto.common.token.TransferBody)
                                 return d;
                             var m = new $root.io.token.proto.common.token.TransferBody();
+                            if (d.redeemer != null) {
+                                if (typeof d.redeemer !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TransferBody.redeemer: object expected");
+                                m.redeemer = $root.io.token.proto.common.token.TokenMember.fromObject(d.redeemer);
+                            }
                             if (d.instructions != null) {
                                 if (typeof d.instructions !== "object")
                                     throw TypeError(".io.token.proto.common.token.TransferBody.instructions: object expected");
@@ -5980,11 +6408,15 @@ export const io = $root.io = (() => {
                                 d.attachments = [];
                             }
                             if (o.defaults) {
+                                d.redeemer = null;
                                 d.instructions = null;
                                 d.currency = "";
                                 d.lifetimeAmount = "";
                                 d.amount = "";
                                 d.pricing = null;
+                            }
+                            if (m.redeemer != null && m.hasOwnProperty("redeemer")) {
+                                d.redeemer = $root.io.token.proto.common.token.TokenMember.toObject(m.redeemer, o);
                             }
                             if (m.instructions != null && m.hasOwnProperty("instructions")) {
                                 d.instructions = $root.io.token.proto.common.transferinstructions.TransferInstructions.toObject(m.instructions, o);
