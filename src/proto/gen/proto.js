@@ -6083,18 +6083,21 @@ export const io = $root.io = (() => {
                             Resource.prototype.allAccounts = null;
                             Resource.prototype.allTransactions = null;
                             Resource.prototype.allBalances = null;
+                            Resource.prototype.allTransferDestinations = null;
                             Resource.prototype.address = null;
                             Resource.prototype.account = null;
                             Resource.prototype.transactions = null;
                             Resource.prototype.balance = null;
+                            Resource.prototype.transferDestinations = null;
                             Resource.prototype.allAccountsAtBank = null;
                             Resource.prototype.allTransactionsAtBank = null;
                             Resource.prototype.allBalancesAtBank = null;
+                            Resource.prototype.allTransferDestinationsAtBank = null;
 
                             let $oneOfFields;
 
                             Object.defineProperty(Resource.prototype, "resource", {
-                                get: $util.oneOfGetter($oneOfFields = ["allAddresses", "allAccounts", "allTransactions", "allBalances", "address", "account", "transactions", "balance", "allAccountsAtBank", "allTransactionsAtBank", "allBalancesAtBank"]),
+                                get: $util.oneOfGetter($oneOfFields = ["allAddresses", "allAccounts", "allTransactions", "allBalances", "allTransferDestinations", "address", "account", "transactions", "balance", "transferDestinations", "allAccountsAtBank", "allTransactionsAtBank", "allBalancesAtBank", "allTransferDestinationsAtBank"]),
                                 set: $util.oneOfSetter($oneOfFields)
                             });
 
@@ -6126,6 +6129,11 @@ export const io = $root.io = (() => {
                                         throw TypeError(".io.token.proto.common.token.AccessBody.Resource.allBalances: object expected");
                                     m.allBalances = $root.io.token.proto.common.token.AccessBody.Resource.AllAccountBalances.fromObject(d.allBalances);
                                 }
+                                if (d.allTransferDestinations != null) {
+                                    if (typeof d.allTransferDestinations !== "object")
+                                        throw TypeError(".io.token.proto.common.token.AccessBody.Resource.allTransferDestinations: object expected");
+                                    m.allTransferDestinations = $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinations.fromObject(d.allTransferDestinations);
+                                }
                                 if (d.address != null) {
                                     if (typeof d.address !== "object")
                                         throw TypeError(".io.token.proto.common.token.AccessBody.Resource.address: object expected");
@@ -6146,6 +6154,11 @@ export const io = $root.io = (() => {
                                         throw TypeError(".io.token.proto.common.token.AccessBody.Resource.balance: object expected");
                                     m.balance = $root.io.token.proto.common.token.AccessBody.Resource.AccountBalance.fromObject(d.balance);
                                 }
+                                if (d.transferDestinations != null) {
+                                    if (typeof d.transferDestinations !== "object")
+                                        throw TypeError(".io.token.proto.common.token.AccessBody.Resource.transferDestinations: object expected");
+                                    m.transferDestinations = $root.io.token.proto.common.token.AccessBody.Resource.TransferDestinations.fromObject(d.transferDestinations);
+                                }
                                 if (d.allAccountsAtBank != null) {
                                     if (typeof d.allAccountsAtBank !== "object")
                                         throw TypeError(".io.token.proto.common.token.AccessBody.Resource.allAccountsAtBank: object expected");
@@ -6160,6 +6173,11 @@ export const io = $root.io = (() => {
                                     if (typeof d.allBalancesAtBank !== "object")
                                         throw TypeError(".io.token.proto.common.token.AccessBody.Resource.allBalancesAtBank: object expected");
                                     m.allBalancesAtBank = $root.io.token.proto.common.token.AccessBody.Resource.AllBalancesAtBank.fromObject(d.allBalancesAtBank);
+                                }
+                                if (d.allTransferDestinationsAtBank != null) {
+                                    if (typeof d.allTransferDestinationsAtBank !== "object")
+                                        throw TypeError(".io.token.proto.common.token.AccessBody.Resource.allTransferDestinationsAtBank: object expected");
+                                    m.allTransferDestinationsAtBank = $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinationsAtBank.fromObject(d.allTransferDestinationsAtBank);
                                 }
                                 return m;
                             };
@@ -6222,6 +6240,21 @@ export const io = $root.io = (() => {
                                     d.allBalancesAtBank = $root.io.token.proto.common.token.AccessBody.Resource.AllBalancesAtBank.toObject(m.allBalancesAtBank, o);
                                     if (o.oneofs)
                                         d.resource = "allBalancesAtBank";
+                                }
+                                if (m.transferDestinations != null && m.hasOwnProperty("transferDestinations")) {
+                                    d.transferDestinations = $root.io.token.proto.common.token.AccessBody.Resource.TransferDestinations.toObject(m.transferDestinations, o);
+                                    if (o.oneofs)
+                                        d.resource = "transferDestinations";
+                                }
+                                if (m.allTransferDestinations != null && m.hasOwnProperty("allTransferDestinations")) {
+                                    d.allTransferDestinations = $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinations.toObject(m.allTransferDestinations, o);
+                                    if (o.oneofs)
+                                        d.resource = "allTransferDestinations";
+                                }
+                                if (m.allTransferDestinationsAtBank != null && m.hasOwnProperty("allTransferDestinationsAtBank")) {
+                                    d.allTransferDestinationsAtBank = $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinationsAtBank.toObject(m.allTransferDestinationsAtBank, o);
+                                    if (o.oneofs)
+                                        d.resource = "allTransferDestinationsAtBank";
                                 }
                                 return d;
                             };
@@ -6663,6 +6696,126 @@ export const io = $root.io = (() => {
                                 };
 
                                 return AccountBalance;
+                            })();
+
+                            Resource.AllTransferDestinations = (function() {
+
+                                function AllTransferDestinations(p) {
+                                    if (p)
+                                        for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                            if (p[ks[i]] != null)
+                                                this[ks[i]] = p[ks[i]];
+                                }
+
+                                AllTransferDestinations.create = function create(properties) {
+                                    return new AllTransferDestinations(properties);
+                                };
+
+                                AllTransferDestinations.fromObject = function fromObject(d) {
+                                    if (d instanceof $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinations)
+                                        return d;
+                                    return new $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinations();
+                                };
+
+                                AllTransferDestinations.toObject = function toObject() {
+                                    return {};
+                                };
+
+                                AllTransferDestinations.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+
+                                return AllTransferDestinations;
+                            })();
+
+                            Resource.AllTransferDestinationsAtBank = (function() {
+
+                                function AllTransferDestinationsAtBank(p) {
+                                    if (p)
+                                        for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                            if (p[ks[i]] != null)
+                                                this[ks[i]] = p[ks[i]];
+                                }
+
+                                AllTransferDestinationsAtBank.prototype.bankId = "";
+
+                                AllTransferDestinationsAtBank.create = function create(properties) {
+                                    return new AllTransferDestinationsAtBank(properties);
+                                };
+
+                                AllTransferDestinationsAtBank.fromObject = function fromObject(d) {
+                                    if (d instanceof $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinationsAtBank)
+                                        return d;
+                                    var m = new $root.io.token.proto.common.token.AccessBody.Resource.AllTransferDestinationsAtBank();
+                                    if (d.bankId != null) {
+                                        m.bankId = String(d.bankId);
+                                    }
+                                    return m;
+                                };
+
+                                AllTransferDestinationsAtBank.toObject = function toObject(m, o) {
+                                    if (!o)
+                                        o = {};
+                                    var d = {};
+                                    if (o.defaults) {
+                                        d.bankId = "";
+                                    }
+                                    if (m.bankId != null && m.hasOwnProperty("bankId")) {
+                                        d.bankId = m.bankId;
+                                    }
+                                    return d;
+                                };
+
+                                AllTransferDestinationsAtBank.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+
+                                return AllTransferDestinationsAtBank;
+                            })();
+
+                            Resource.TransferDestinations = (function() {
+
+                                function TransferDestinations(p) {
+                                    if (p)
+                                        for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                            if (p[ks[i]] != null)
+                                                this[ks[i]] = p[ks[i]];
+                                }
+
+                                TransferDestinations.prototype.accountId = "";
+
+                                TransferDestinations.create = function create(properties) {
+                                    return new TransferDestinations(properties);
+                                };
+
+                                TransferDestinations.fromObject = function fromObject(d) {
+                                    if (d instanceof $root.io.token.proto.common.token.AccessBody.Resource.TransferDestinations)
+                                        return d;
+                                    var m = new $root.io.token.proto.common.token.AccessBody.Resource.TransferDestinations();
+                                    if (d.accountId != null) {
+                                        m.accountId = String(d.accountId);
+                                    }
+                                    return m;
+                                };
+
+                                TransferDestinations.toObject = function toObject(m, o) {
+                                    if (!o)
+                                        o = {};
+                                    var d = {};
+                                    if (o.defaults) {
+                                        d.accountId = "";
+                                    }
+                                    if (m.accountId != null && m.hasOwnProperty("accountId")) {
+                                        d.accountId = m.accountId;
+                                    }
+                                    return d;
+                                };
+
+                                TransferDestinations.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+
+                                return TransferDestinations;
                             })();
 
                             return Resource;
