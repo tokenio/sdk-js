@@ -185,7 +185,11 @@ export default class TransferTokenBuilder {
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerAlias(redeemerAlias) {
-        return this.setToAlias(redeemerAlias);
+        if (!this._payload.to) {
+            this._payload.to = {};
+        }
+        this._payload.to.alias = redeemerAlias;
+        return this;
     }
 
     /**
@@ -196,7 +200,11 @@ export default class TransferTokenBuilder {
      * @return {TransferTokenBuilder} builder - returns back the builder object
      */
     setRedeemerMemberId(redeemerMemberId) {
-        return this.setToMemberId(redeemerMemberId);
+        if (!this._payload.to) {
+            this._payload.to = {};
+        }
+        this._payload.to.id = redeemerMemberId;
+        return this;
     }
 
     /**
