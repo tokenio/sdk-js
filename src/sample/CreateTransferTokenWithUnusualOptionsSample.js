@@ -25,7 +25,6 @@ export default async (payer, payee) => {
     const token = await payer.createTransferToken(120.00, 'EUR')
         .setAccountId(accounts[0].id)
         .setToMemberId(payeeId)
-        .setRedeemerMemberId(payeeId)
         .setEffectiveAtMs(now + 1000)       // effective in one second
         .setExpiresAtMs(now + (300 * 1000)) // expires in 300 seconds
         .setRefId('a713c8a61994a749')

@@ -12,7 +12,6 @@ export default async (payer, payeeAlias) => {
     const token = await payer.createTransferTokenBuilder(100.00, 'EUR')
         .setFromId(payer.memberId())
         .setAccountId(accounts[0].id)
-        .setRedeemerAlias(payeeAlias)
         .setToAlias(payeeAlias)
         .addAttachmentData(
             payer.memberId(),
