@@ -1,6 +1,7 @@
 import {Key, Alias, Address, Profile} from '..';
 import TestUtil from '../../test/TestUtil';
 import Util from '../Util';
+import CreateMemberSample from './CreateMemberSample';
 const {assert} = require('chai');
 
 /**
@@ -122,6 +123,19 @@ class MemberMethodsSample {
 
         const profile = await member.getProfile(member.memberId());
         return profile;
+    }
+
+    static async trustedBeneficiaries(member) {
+        const beneficiary1 = await CreateMemberSample();
+        const beneficiary2 = await CreateMemberSample();
+
+        await member.addTrustedBeneficiary(beneficiary1._id);
+        await member.addTrustedBeneficiary(beneficiary2._id);
+
+        await member.removeTrustedBeneficiary(beneficiary1._id);
+
+        const trustedBeneficiaries = await member.getTrustedBeneficiaries();
+        return trustedBeneficiaries;
     }
 }
 

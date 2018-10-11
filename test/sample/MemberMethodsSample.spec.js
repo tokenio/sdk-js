@@ -1,4 +1,4 @@
-import {TokenIO} from '../../src';
+import {TokenIO, TrustedBeneficiary} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import MemberMethodsSample from '../../src/sample/MemberMethodsSample';
 import TestUtil from '../TestUtil';
@@ -44,5 +44,13 @@ describe('MemberMethods test', () => {
         assert.isOk(profile);
         assert.isOk(profile.displayNameFirst);
         assert.isOk(profile.displayNameLast);
+    });
+
+    it('Should run the trusted beneficiaries sample', async () => {
+        const member = await CreateMemberSample();
+        const trustedBeneficiaries = await MemberMethodsSample.trustedBeneficiaries(member);
+
+        assert.isOk(trustedBeneficiaries);
+        assert.equal(trustedBeneficiaries.length, 1);
     });
 });

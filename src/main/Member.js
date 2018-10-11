@@ -32,6 +32,7 @@ import {
     Transaction,
     Transfer,
     TransferEndpoint,
+    TrustedBeneficiary,
 } from '../proto';
 import type {
     NotifyStatusEnum,
@@ -656,6 +657,42 @@ export default class Member {
         return Util.callAsync(this.getReceiptContact, async () => {
             const res = await this._client.getReceiptContact();
             return ReceiptContact.create(res.data.contact);
+        });
+    }
+
+    /**
+     * Adds a Token member to this member's list of trusted beneficiaries.
+     *
+     * @param {string} memberId - member ID of the trusted beneficiary to add
+     * @return {Promise} empty - empty promise
+     */
+    addTrustedBeneficiary(memberId: string): Promise<void> {
+        return Util.callAsync(this.addTrustedBeneficiary, async () => {
+            await this._client.addTrustedBeneficiary(memberId);
+        });
+    }
+
+    /**
+     * Removes a Token member from this member's list of trusted beneficiaries.
+     *
+     * @param {string} memberId - member ID of the trusted beneficiary to remove
+     * @return {Promise} empty - empty promise
+     */
+    removeTrustedBeneficiary(memberId: string): Promise<void> {
+        return Util.callAsync(this.removeTrustedBeneficiary, async () => {
+            await this._client.removeTrustedBeneficiary(memberId);
+        });
+    }
+
+    /**
+     * Get the member's list of trusted beneficiaries.
+     *
+     * @returns {Promise} trusted beneficiaries - list of TrustedBeneficiary objects
+     */
+    getTrustedBeneficiaries(): Promise<Array<TrustedBeneficiary>> {
+        return Util.callAsync(this.getTrustedBeneficiaries, async () => {
+            const res = await this._client.getTrustedBeneficiaries();
+            return res.data.trustedBeneficiaries || [];
         });
     }
 

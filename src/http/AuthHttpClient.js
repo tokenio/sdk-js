@@ -437,6 +437,10 @@ class AuthHttpClient {
         return this._instance(request);
     }
 
+    //
+    // RECEIPT CONTACTS
+    //
+
     /**
      * Replaces member's receipt contact.
      *
@@ -464,6 +468,85 @@ class AuthHttpClient {
         const request = {
             method: 'get',
             url: '/receipt-contact',
+        };
+        return this._instance(request);
+    }
+
+    //
+    // TRUSTED BENEFICIARIES
+    //
+
+    /**
+     * Adds a Token member to this member's list of trusted beneficiaries.
+     *
+     * @param {string} memberId - member ID of the trusted beneficiary to add
+     * @returns {Object} response - response to the API call
+     */
+    async addTrustedBeneficiary(memberId) {
+        const signer = await this.getSigner(config.KeyLevel.STANDARD);
+        const nonce = Util.generateNonce();
+        const payload = {
+            memberId,
+            nonce,
+        };
+        const req = {
+            trustedBeneficiary: {
+                payload,
+                signature: {
+                    memberId: this._memberId,
+                    keyId: signer.getKeyId(),
+                    signature: await signer.signJson(payload),
+                },
+            },
+        };
+        const request = {
+            method: 'post',
+            url: '/trusted-beneficiaries',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Removes a Token member from this member's list of trusted beneficiaries.
+     *
+     * @param {string} memberId - member ID of the trusted beneficiary to remove
+     * @returns {Object} response - response of the API
+     */
+    async removeTrustedBeneficiary(memberId) {
+        const signer = await this.getSigner(config.KeyLevel.STANDARD);
+        const nonce = Util.generateNonce();
+        const payload = {
+            memberId,
+            nonce,
+        };
+        const req = {
+            trustedBeneficiary: {
+                payload,
+                signature: {
+                    memberId: this._memberId,
+                    keyId: signer.getKeyId(),
+                    signature: await signer.signJson(payload),
+                },
+            },
+        };
+        const request = {
+            method: 'delete',
+            url: `/trusted-beneficiaries/${memberId}`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Get the member's list of trusted beneficiaries.
+     *
+     * @returns {Object} response - response to the API call
+     */
+    async getTrustedBeneficiaries() {
+        const request = {
+            method: 'get',
+            url: '/trusted-beneficiaries',
         };
         return this._instance(request);
     }
