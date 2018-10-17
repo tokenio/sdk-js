@@ -31,7 +31,7 @@ async function downloadProtoAndGenerateClasses() {
         await exec('yarn pbjs -t static-module -w es6 --no-encode --no-decode --no-verify --no-delimited --no-beautify --no-comments -o src/proto/gen/proto.js proto/*.proto');
         console.log('Cleaning up...');
         await exec('rm -rf proto');
-        console.log('Done!');
+        console.log('Done! Make sure to add classes you want to expose to src/proto/index.js');
     });
     res.data.on('error', (e) => Promise.reject(e));
 }

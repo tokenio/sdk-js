@@ -1,5 +1,5 @@
 import Util from '../Util';
-import base64url from 'base64url';
+import {base64Url} from './Base64UrlCodec';
 import nacl from 'tweetnacl';
 import sha256 from 'fast-sha256';
 
@@ -16,7 +16,7 @@ class CryptoNode {
      */
     static async generateKeys(keyLevel, expirationMs) {
         const keyPair = nacl.sign.keyPair();
-        keyPair.id = base64url(sha256(keyPair.publicKey)).substring(0, 16);
+        keyPair.id = base64Url(sha256(keyPair.publicKey)).substring(0, 16);
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
         keyPair.privateKey = keyPair.secretKey;
@@ -34,7 +34,7 @@ class CryptoNode {
      */
     static async sign(message, keys) {
         const msg = Util.wrapBuffer(message);
-        return base64url(nacl.sign.detached(msg, keys.privateKey));
+        return base64Url(nacl.sign.detached(msg, keys.privateKey));
     }
 
     /**

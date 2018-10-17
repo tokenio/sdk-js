@@ -1,7 +1,7 @@
 import stringify from 'fast-json-stable-stringify';
 import CryptoNode from './CryptoNode';
 import CryptoBrowser from './CryptoBrowser';
-import base64url from 'base64url';
+import {base64Url, base64UrlToBuffer} from './Base64UrlCodec';
 import {Buffer} from 'buffer';
 import Util from '../Util';
 
@@ -112,7 +112,7 @@ class Crypto {
      */
     static strKey(key) {
         if (typeof key === 'string') return key;
-        return base64url(key);
+        return base64Url(key);
     }
 
     /**
@@ -132,7 +132,7 @@ class Crypto {
      * @return {Uint8Array} buffered key
      */
     static bufferKey(key) {
-        return Crypto.wrapBuffer(base64url.toBuffer(key));
+        return Crypto.wrapBuffer(base64UrlToBuffer(key));
     }
 }
 
