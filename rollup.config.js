@@ -47,6 +47,10 @@ const config = {
         }),
         filesize(),
     ],
+    onwarn: (warning) => {      // Treat warnings as errors
+        throw Error(warning.message);
+    },
+
 };
 
 if (isModule) {
