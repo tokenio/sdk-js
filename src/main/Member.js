@@ -4,6 +4,7 @@ import AuthHttpClient from '../http/AuthHttpClient';
 import config from '../config.json';
 import HttpClient from '../http/HttpClient';
 import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
+import Representable from './Representable';
 import TokenRequest from './TokenRequest';
 import TransferTokenBuilder from './TransferTokenBuilder';
 import Util from '../Util';
@@ -47,6 +48,7 @@ export default class Member {
     _id: string;
     _client: AuthHttpClient;
     _unauthenticatedClient: HttpClient;
+    _options: Object;
 
     /**
      * Represents a Member
@@ -67,6 +69,7 @@ export default class Member {
         this._id = memberId;
         this._client = new AuthHttpClient(options);
         this._unauthenticatedClient = new HttpClient(options);
+        this._options = options;
     }
 
     /**
@@ -119,8 +122,21 @@ export default class Member {
     }
 
     /**
+     * Creates a representable that acts as another member via an access token.
+     *
+     * @param {string} accessTokenId - Id of the access token
+     * @return {Representable} representable - new member that acts as another member
+     */
+    forAccessToken(accessTokenId: string) {
+        const newClient = new AuthHttpClient(this._options);
+        newClient.useAccessToken(accessTokenId);
+        return new Representable(newClient);
+    }
+
+    /**
      * Sets the access token id to be used with this client.
      *
+     * @deprecated use forAccessToken instead
      * @param {string} accessTokenId - the access token id
      */
     useAccessToken(accessTokenId: string): void {
@@ -129,6 +145,8 @@ export default class Member {
 
     /**
      * Clears the access token id used with this client.
+     *
+     * @deprecated use forAccessToken instead
      */
     clearAccessToken(): void {
         this._client.clearAccessToken();
