@@ -1,7 +1,7 @@
 import bs58 from 'bs58';
 import sha256 from 'fast-sha256';
 import stringify from 'fast-json-stable-stringify';
-import base64url from 'base64url';
+import {base64Url, base64UrlToBuffer} from './security/Base64UrlCodec';
 import {Buffer as NodeBuffer} from 'buffer';
 import {Alias} from './proto';
 
@@ -232,7 +232,7 @@ class Util {
      */
     static strKey(key) {
         if (typeof key === 'string') return key;
-        return base64url(key);
+        return base64Url(key);
     }
 
     /**
@@ -252,7 +252,7 @@ class Util {
      * @return {Uint8Array} buffered key
      */
     static bufferKey(key) {
-        return Util.wrapBuffer(base64url.toBuffer(key));
+        return Util.wrapBuffer(base64UrlToBuffer(key));
     }
 
     static parseParamsFromUrl(url) {
