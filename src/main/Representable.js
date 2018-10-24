@@ -1,25 +1,23 @@
 // @flow
 import type {RequestStatusEnum} from '../proto/index';
 import {Account, AddressRecord, Balance, Transaction} from '../proto';
-import Util from '../Util';
-import AuthHttpClient from '../http/AuthHttpClient';
-import {RequestStatus} from '../proto/index';
+import Member from './Member';
 
 /**
  * Member object. Allows member-wide actions. Some calls return a promise, and some return
  * objects
  */
 export default class Representable {
-    _client: AuthHttpClient;
+    _member: Member;
 
     /**
      * Represents the part of a token member that can be accessed through an access token.
      *
      * @constructor
-     * @param {AuthHttpClient} client - the http client
+     * @param {Member} member - the member
      */
-    constructor(client: AuthHttpClient) {
-        this._client = client;
+    constructor(member: Member) {
+        this._member = member;
     }
 
     /**
@@ -30,10 +28,7 @@ export default class Representable {
      * @throws error if account not found
      */
     getAccount(accountId: string): Promise<Account> {
-        return Util.callAsync(this.getAccount, async () => {
-            const res = await this._client.getAccount(accountId);
-            return Account.create(res.data.account);
-        });
+        return this._member.getAccount(accountId);
     }
 
     /**
@@ -42,12 +37,7 @@ export default class Representable {
      * @return {Promise} accounts - Promise resolving to the accounts
      */
     getAccounts(): Promise<Array<Account>> {
-        return Util.callAsync(this.getAccounts, async () => {
-            const res = await this._client.getAccounts();
-            return res.data.accounts &&
-                    res.data.accounts.map(a => Account.create(a)) ||
-                    [];
-        });
+        return this._member.getAccounts();
     }
 
     /**
@@ -61,13 +51,7 @@ export default class Representable {
         accountId: string,
         keyLevel: string
     ): Promise<{ balance: Balance, status: RequestStatusEnum }> {
-        return Util.callAsync(this.getBalance, async () => {
-            const res = await this._client.getBalance(accountId, keyLevel);
-            return {
-                balance: Balance.create(res.data.balance),
-                status: RequestStatus[res.data.status],
-            };
-        });
+        return this._member.getBalance(accountId, keyLevel);
     }
 
     /**
@@ -81,14 +65,7 @@ export default class Representable {
         accountIds: Array<string>,
         keyLevel: string
     ): Promise<Array<{ balance: Balance, status: RequestStatusEnum }>> {
-        return Util.callAsync(this.getBalances, async () => {
-            const res = await this._client.getBalances(accountIds, keyLevel);
-            res.data.response = res.data.response && res.data.response.map(b => ({
-                balance: Balance.create(b.balance),
-                status: RequestStatus[b.status],
-            }));
-            return res.data.response || [];
-        });
+        return this._member.getBalances(accountIds, keyLevel);
     }
 
     /**
@@ -105,10 +82,7 @@ export default class Representable {
         transactionId: string,
         keyLevel: string
     ): Promise<Transaction> {
-        return Util.callAsync(this.getTransaction, async () => {
-            const res = await this._client.getTransaction(accountId, transactionId, keyLevel);
-            return Transaction.create(res.data.transaction);
-        });
+        return this._member.getTransaction(accountId, transactionId, keyLevel);
     }
 
     /**
@@ -126,16 +100,7 @@ export default class Representable {
         limit: number,
         keyLevel: string
     ): Promise<{data: Array<Transaction>, offset: string}> {
-        return Util.callAsync(this.getTransactions, async () => {
-            const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
-            const data = res.data.transactions &&
-                    res.data.transactions.map(t => Transaction.create(t)) ||
-                    [];
-            return {
-                data,
-                offset: res.data.offset,
-            };
-        });
+        return this._member.getTransactions(accountId, offset, limit, keyLevel);
     }
 
     /**
@@ -146,10 +111,7 @@ export default class Representable {
      * @throws error if address not found
      */
     getAddress(addressId: string): Promise<AddressRecord> {
-        return Util.callAsync(this.getAddress, async () => {
-            const res = await this._client.getAddress(addressId);
-            return AddressRecord.create(res.data.address);
-        });
+        return this._member.getAddress(addressId);
     }
 
     /**
@@ -158,11 +120,6 @@ export default class Representable {
      * @return {Promise} addresses - list of AddressRecord structures
      */
     getAddresses(): Promise<Array<AddressRecord>> {
-        return Util.callAsync(this.getAddresses, async () => {
-            const res = await this._client.getAddresses();
-            return res.data.addresses &&
-                    res.data.addresses.map(a => AddressRecord.create(a)) ||
-                    [];
-        });
+        return this._member.getAddresses();
     }
 }

@@ -128,9 +128,9 @@ export default class Member {
      * @return {Representable} representable - new member that acts as another member
      */
     forAccessToken(accessTokenId: string) {
-        const newClient = new AuthHttpClient(this._options);
-        newClient.useAccessToken(accessTokenId);
-        return new Representable(newClient);
+        const newMember = new Member(this._options);
+        newMember._client.useAccessToken(accessTokenId);
+        return new Representable(newMember);
     }
 
     /**
