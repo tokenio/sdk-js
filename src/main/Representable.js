@@ -1,7 +1,6 @@
 // @flow
-import type {RequestStatusEnum} from '../proto/index';
-import {Account, AddressRecord, Balance, Transaction} from '../proto';
-import Member from './Member';
+import type {Account, AddressRecord, Balance, Transaction, RequestStatusEnum} from '../proto';
+import type Member from './Member';
 
 /**
  * Represents the part of a Token member that can be accessed through an access token.
