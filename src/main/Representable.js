@@ -4,17 +4,16 @@ import {Account, AddressRecord, Balance, Transaction} from '../proto';
 import Member from './Member';
 
 /**
- * Member object. Allows member-wide actions. Some calls return a promise, and some return
- * objects
+ * Represents the part of a Token member that can be accessed through an access token.
  */
 export default class Representable {
     _member: Member;
 
     /**
-     * Represents the part of a token member that can be accessed through an access token.
+     * Instantiate a representable that acts on behalf of a Token member.
      *
      * @constructor
-     * @param {Member} member - the member
+     * @param {Member} member - the Token member
      */
     constructor(member: Member) {
         this._member = member;
