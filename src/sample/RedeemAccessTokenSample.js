@@ -13,7 +13,6 @@ class RedeemAccessTokenSample {
      * @return {Object} balance0 - balance of one account
      */
     static async use(grantee, tokenId) {
-        // forAccessToken snippet begin
         // Use the access token, now making API calls
         // on behalf of the grantor, and get accounts
         grantee.useAccessToken(tokenId);
@@ -24,8 +23,6 @@ class RedeemAccessTokenSample {
 
         // When done using access, clear the access token:
         grantee.clearAccessToken();
-        // forAccessToken snippet end
-
         return balance0.balance.current;
     }
 
@@ -61,9 +58,9 @@ class RedeemAccessTokenSample {
                 continue;
             }
         }
-        const representable = grantee.forAccessToken(accessToken.id);
+        grantee.useAccessToken(accessToken.id);
         if (haveAllBalancesAccess && haveAllAccountsAccess) {
-            const accounts = await representable.getAccounts();
+            const accounts = await grantee.getAccounts();
             for (i = 0; i < accounts.length; i++) {
                 accountIds[accounts[i].id] = true;
             }
@@ -75,9 +72,10 @@ class RedeemAccessTokenSample {
         for (i = 0; i < Object.keys(accountIds).length; i++) {
             try {
                 const accountId = Object.keys(accountIds)[i];
-                const balanceResponse = await representable.getBalance(
+                const balanceResponse = await grantee.getBalance(
                     accountId,
                     config.KeyLevel.LOW);
+                grantee.clearAccessToken();
                 return balanceResponse.balance.current;
             } catch (ex) {
                 // If grantor previously un-linked an account, then grantee can't get its balance.
