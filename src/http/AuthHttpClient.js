@@ -123,6 +123,8 @@ class AuthHttpClient {
 
     /**
      * Clears the AuthContext, so this client no longer acts on behalf of another member.
+     *
+     * @deprecated
      */
     clearAccessToken() {
         this._context.onBehalfOf = undefined;
