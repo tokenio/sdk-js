@@ -1258,7 +1258,6 @@ export default class Member {
     /**
      * Creates a test bank account in a fake bank
      *
-     * @deprecated - use createTestBankAccountOauth
      * @param {double} balance - balance of the account
      * @param {string} currency - currency of the account
      * @return {Array} bank authorization to use with linkAccounts
@@ -1266,16 +1265,17 @@ export default class Member {
     createTestBankAccount(
         balance: number,
         currency: string
-    ): Promise<Array<any>> {
+    ): Promise<OauthBankAuthorization> {
         return Util.callAsync(this.createTestBankAccount, async () => {
             const res = await this._client.createTestBankAccount(balance, currency);
-            return res.data.bankAuthorization;
+            return OauthBankAuthorization.create(res.data.authorization);
         });
     }
 
     /**
      * Creates a test bank account in a fake bank
      *
+     * @deprecated - use createTestBankAccount
      * @param {double} balance - balance of the account
      * @param {string} currency - currency of the account
      * @return {Array} bank authorization to use with linkAccounts
@@ -1289,6 +1289,7 @@ export default class Member {
             return OauthBankAuthorization.create(res.data.authorization);
         });
     }
+
     /**
      * Gets test bank notification.
      *
