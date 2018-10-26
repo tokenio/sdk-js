@@ -348,31 +348,19 @@ export class TokenIO {
      * optional name
      *
      * @param {Object} alias - alias to notify
-     * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
-     * @param {Object} key - key
-     * @param {string} level - key level
-     * @param {string} expiresMs - when the UI will time out
+     * @param {Array} keys - token keys to be added
+     * @param {Object} deviceMetadata - device metadata of the keys
      * @return {Promise} NotifyStatus - status
      */
     notifyAddKey(
         alias: Alias,
-        keyName: string,
-        key: Key,
-        level: string,
-        expiresMs: string
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
     ): Promise<NotifyStatusEnum> {
-        key = key.toJSON();
         const body = {
             addKey: {
-                name: keyName,
-                expiresMs,
-                key: {
-                    id: key.id,
-                    level: level,
-                    algorithm: key.algorithm,
-                    publicKey: key.publicKey,
-                    ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
-                },
+                keys: keys.map(k => k.toJSON()),
+                deviceMetadata: deviceMetadata.toJSON(),
             },
         };
         return Util.callAsync(this.notifyAddKey, async () => {
@@ -387,32 +375,26 @@ export class TokenIO {
      *
      * @param {Object} alias - alias to notify
      * @param {string} bankAuthorization - bankAuthorization retrieved from bank
-     * @param {string} keyName - name for the new key, (e.g Chrome 53.0)
-     * @param {Object} key - key
+     * @param {Array} keys - token keys to be added
+     * @param {Object} deviceMetadata - device metadata of the keys
      * @param {string} level - key level
      * @return {Promise} NotifyStatus - status
      */
     notifyLinkAccountsAndAddKey(
         alias: Alias,
         bankAuthorization: string,
-        keyName: string,
-        key: Key,
-        level: string
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
     ): Promise<NotifyStatusEnum> {
-        key = key.toJSON();
         const body = {
             linkAccountsAndAddKey: {
                 linkAccounts: {
                     bankAuthorization,
                 },
                 addKey: {
-                    name: keyName,
                     key: {
-                        id: key.id,
-                        level: level,
-                        algorithm: key.algorithm,
-                        publicKey: key.publicKey,
-                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                        keys: keys.map(k => k.toJSON()),
+                        deviceMetadata: deviceMetadata.toJSON(),
                     },
                 },
             },

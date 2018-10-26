@@ -1,4 +1,5 @@
 import {KeyLevel} from '..';
+import {DeviceMetadata} from '../proto';
 
 /**
  * Sample code illustrating how to provision a device.
@@ -26,11 +27,14 @@ class ProvisionDeviceSample {
         const lowKey = deviceInfo.keys.filter(
             k => k.level === KeyLevel.LOW
         )[0];
+        const deviceMetadata = DeviceMetadata.create({
+            application: 'SDK Sample',
+        });
         const notifyStatus = await Token.notifyAddKey(
             alias,
-            'SDK Sample',
-            lowKey,
-            Token.KeyLevel.LOW);
+            [lowKey],
+            deviceMetadata,
+        );
         if (notifyStatus !== 'ACCEPTED') {
             console.log('notifyAddKey got ' + notifyStatus); // eslint-disable-line
         }
