@@ -392,10 +392,8 @@ export class TokenIO {
                     bankAuthorization,
                 },
                 addKey: {
-                    key: {
-                        keys: keys.map(k => k.toJSON()),
-                        deviceMetadata: deviceMetadata.toJSON(),
-                    },
+                    keys: keys.map(k => k.toJSON()),
+                    deviceMetadata: deviceMetadata.toJSON(),
                 },
             },
         };
