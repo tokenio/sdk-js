@@ -91,23 +91,6 @@ export default class TransferTokenBuilder {
     }
 
     /**
-     * Sets the source bank authorization.
-     *
-     * @param {Object} authorization - bank authorization for source account
-     * @return {TransferTokenBuilder} builder - returns back the builder object
-     */
-    setBankAuthorization(authorization) {
-        this._payload.transfer.instructions.source = {
-            account: {
-                tokenAuthorization: {
-                    authorization,
-                },
-            },
-        };
-        return this;
-    }
-
-    /**
      * Sets the expiration date of the token.
      *
      * @param {number} expiresAtMs - expiration date in milliseconds
