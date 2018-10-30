@@ -321,29 +321,6 @@ export class TokenIO {
     }
 
     /**
-     * Notifies subscribers that accounts should be linked, and passes the bank id and
-     * payload
-     *
-     * @param {Object} alias - alias to notify
-     * @param {string} bankAuthorization - bankAuthorization retrieved from bank
-     * @return {Promise} NotifyStatus - status
-     */
-    notifyLinkAccounts(
-        alias: Alias,
-        bankAuthorization: any
-    ): Promise<NotifyStatusEnum> {
-        const body = {
-            linkAccounts: {
-                bankAuthorization,
-            },
-        };
-        return Util.callAsync(this.notifyLinkAccounts, async () => {
-            const res = await this._unauthenticatedClient.notify(alias.toJSON(), body);
-            return NotifyStatus[res.data.status];
-        });
-    }
-
-    /**
      * Notifies subscribers that a key should be added and passes the public Key and
      * optional name
      *
@@ -364,40 +341,6 @@ export class TokenIO {
             },
         };
         return Util.callAsync(this.notifyAddKey, async () => {
-            const res = await this._unauthenticatedClient.notify(alias.toJSON(), body);
-            return NotifyStatus[res.data.status];
-        });
-    }
-
-    /**
-     * Notifies subscribed devices that accounts should be linked, and passes the bank id and
-     * payload
-     *
-     * @param {Object} alias - alias to notify
-     * @param {string} bankAuthorization - bankAuthorization retrieved from bank
-     * @param {Array} keys - token keys to be added
-     * @param {Object} deviceMetadata - device metadata of the keys
-     * @param {string} level - key level
-     * @return {Promise} NotifyStatus - status
-     */
-    notifyLinkAccountsAndAddKey(
-        alias: Alias,
-        bankAuthorization: string,
-        keys: Array<Key>,
-        deviceMetadata: DeviceMetadata,
-    ): Promise<NotifyStatusEnum> {
-        const body = {
-            linkAccountsAndAddKey: {
-                linkAccounts: {
-                    bankAuthorization,
-                },
-                addKey: {
-                    keys: keys.map(k => k.toJSON()),
-                    deviceMetadata: deviceMetadata.toJSON(),
-                },
-            },
-        };
-        return Util.callAsync(this.notifyLinkAccountsAndAddKey, async () => {
             const res = await this._unauthenticatedClient.notify(alias.toJSON(), body);
             return NotifyStatus[res.data.status];
         });
