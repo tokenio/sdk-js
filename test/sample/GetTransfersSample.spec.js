@@ -13,10 +13,7 @@ describe('GetTransfersSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await member.firstAlias());
-            assert.isOk(await member2.firstAlias());
-        });
+
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
@@ -34,10 +31,7 @@ describe('GetTransferSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await member.firstAlias());
-            assert.isOk(await member2.firstAlias());
-        });
+
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 
@@ -53,10 +47,7 @@ describe('GetTransferTokensSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await member.firstAlias());
-            assert.isOk(await member2.firstAlias());
-        });
+
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 

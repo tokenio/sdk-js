@@ -3,7 +3,6 @@ import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseTransferTokenSample
     from '../../src/sample/CreateAndEndorseTransferTokenSample';
 import RedeemTransferTokenSample from '../../src/sample/RedeemTransferTokenSample';
-import TestUtil from '../TestUtil';
 
 const {assert} = require('chai');
 
@@ -11,10 +10,7 @@ describe('RedeemTransferTokenSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const member2 = await CreateMemberSample();
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await member.firstAlias());
-            assert.isOk(await member2.firstAlias());
-        });
+
         await LinkMemberAndBankSample(member);
         await LinkMemberAndBankSample(member2);
 

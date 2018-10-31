@@ -12,18 +12,12 @@ describe('Token library', () => {
         const alias2 = Token.Util.randomAlias();
 
         const member1 = await Token.createMember(alias1, Token.MemoryCryptoEngine);
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await member1.firstAlias());
-        });
         await member1.subscribeToNotifications('iron');
         const auth = await member1.createTestBankAccount(100000, 'EUR');
         const accounts = await member1.linkAccounts(auth);
         const account = accounts[0];
 
         const member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await member2.firstAlias());
-        });
 
         const token = await member1.createTransferToken(100.00, 'EUR')
             .setAccountId(account.id)
