@@ -1,7 +1,6 @@
 import {TokenIO} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import ProvisionDeviceSample from '../../src/sample/ProvisionDeviceSample';
-import TestUtil from '../TestUtil';
 
 const {assert} = require('chai');
 
@@ -9,9 +8,6 @@ describe('ProvisionDeviceSample test', () => {
     if (!BROWSER) {
         it('ProvisionDeviceSample should run', async () => {
             const member = await CreateMemberSample();
-            await TestUtil.waitUntil(async () => {
-                assert.isOk(await member.firstAlias());
-            });
             await member.subscribeToNotifications('iron');
             const alias = await member.firstAlias();
 

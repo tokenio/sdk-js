@@ -2,7 +2,6 @@ import {NotifyStatus, TokenIO} from '../../src';
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import NotifyPaymentRequestSample from '../../src/sample/NotifyPaymentRequestSample';
-import TestUtil from '../TestUtil';
 
 const {assert} = require('chai');
 
@@ -13,10 +12,7 @@ describe('NotifyPaymentRequestSample test', () => {
 
         const payee = await CreateMemberSample();
         const payer = await CreateMemberSample();
-        await TestUtil.waitUntil(async () => {
-            assert.isOk(await payee.firstAlias());
-            assert.isOk(await payer.firstAlias());
-        });
+
         await LinkMemberAndBankSample(payee);
         await LinkMemberAndBankSample(payer);
 
