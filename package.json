@@ -1,6 +1,6 @@
 {
     "name": "token-io",
-    "version": "2.0.0-beta.21",
+    "version": "2.0.0-beta.22",
     "description": "Token JavaScript SDK",
     "license": "ISC",
     "author": {
@@ -85,7 +85,7 @@
         "@babel/runtime-corejs2": "^7.0.0",
         "axios": "^0.18.0",
         "base64-js": "^1.3.0",
-        "bs58": "^4.0.1",
+        "bs58": "4.0.0",
         "buffer": "^5.2.0",
         "fast-json-stable-stringify": "^2.0.0",
         "fast-sha256": "^1.1.0",
