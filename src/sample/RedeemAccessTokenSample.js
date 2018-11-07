@@ -16,11 +16,11 @@ class RedeemAccessTokenSample {
         // forAccessToken snippet begin
         // Use the access token, now making API calls
         // on behalf of the grantor, and get accounts
-        const grantor = grantee.forAccessToken(tokenId);
-        const accounts = await grantor.getAccounts();
+        const representable = grantee.forAccessToken(tokenId);
+        const accounts = await representable.getAccounts();
 
         // Get informtion we want:
-        const balance0 = await grantee.getBalance(accounts[0].id, config.KeyLevel.LOW);
+        const balance0 = await representable.getBalance(accounts[0].id, config.KeyLevel.LOW);
         // forAccessToken snippet end
 
         return balance0.balance.current;
