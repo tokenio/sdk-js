@@ -19,7 +19,7 @@ class RedeemAccessTokenSample {
         const grantor = grantee.forAccessToken(tokenId);
         const accounts = await grantor.getAccounts();
 
-        // Get informtion we want:
+        // Get information we want:
         const balance0 = await grantor.getBalance(accounts[0].id, config.KeyLevel.LOW);
         // forAccessToken snippet end
 
