@@ -13,9 +13,9 @@ class RedeemAccessTokenSample {
      * @return {Object} balance0 - balance of one account
      */
     static async use(grantee, tokenId) {
-        // forAccessToken snippet begin
         // Use the access token, now making API calls
         // on behalf of the grantor, and get accounts
+        // forAccessToken snippet begin
         const grantor = grantee.forAccessToken(tokenId);
         const accounts = await grantor.getAccounts();
 
