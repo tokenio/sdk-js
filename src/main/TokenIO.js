@@ -476,7 +476,7 @@ export class TokenIO {
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
 
-            return `${this._customSdkUrl || config.webAppUrls[this._env]}/request-token/${requestId}?state=${serializedState}`;
+            return `${this._customSdkUrl || config.webAppUrls[this._env]}/app/request-token/${requestId}?state=${serializedState}`;
         });
     }
 
