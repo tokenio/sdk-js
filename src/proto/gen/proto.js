@@ -1665,6 +1665,9 @@ export const io = $root.io = (() => {
                         Cma9AccountDetails.prototype.phone = "";
                         Cma9AccountDetails.prototype.mobile = "";
                         Cma9AccountDetails.prototype.address = $util.emptyArray;
+                        Cma9AccountDetails.prototype.accountType = 0;
+                        Cma9AccountDetails.prototype.accountSubtype = 0;
+                        Cma9AccountDetails.prototype.description = "";
 
                         Cma9AccountDetails.create = function create(properties) {
                             return new Cma9AccountDetails(properties);
@@ -1720,6 +1723,61 @@ export const io = $root.io = (() => {
                                     m.address[i] = $root.io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address.fromObject(d.address[i]);
                                 }
                             }
+                            switch (d.accountType) {
+                            case "INVALID_ACCOUNT_TYPE":
+                            case 0:
+                                m.accountType = 0;
+                                break;
+                            case "BUSINESS_ACCOUNT":
+                            case 1:
+                                m.accountType = 1;
+                                break;
+                            case "PERSONAL_ACCOUNT":
+                            case 2:
+                                m.accountType = 2;
+                                break;
+                            }
+                            switch (d.accountSubtype) {
+                            case "INVALID_ACCOUNT_SUBTYPE":
+                            case 0:
+                                m.accountSubtype = 0;
+                                break;
+                            case "CHARGE_CARD":
+                            case 1:
+                                m.accountSubtype = 1;
+                                break;
+                            case "CREDIT_CARD":
+                            case 2:
+                                m.accountSubtype = 2;
+                                break;
+                            case "CURRENT_ACCOUNT":
+                            case 3:
+                                m.accountSubtype = 3;
+                                break;
+                            case "EMONEY":
+                            case 4:
+                                m.accountSubtype = 4;
+                                break;
+                            case "LOAN":
+                            case 5:
+                                m.accountSubtype = 5;
+                                break;
+                            case "MORTGAGE":
+                            case 6:
+                                m.accountSubtype = 6;
+                                break;
+                            case "PREPAID_CARD":
+                            case 7:
+                                m.accountSubtype = 7;
+                                break;
+                            case "SAVINGS":
+                            case 8:
+                                m.accountSubtype = 8;
+                                break;
+                            }
+                            if (d.description != null) {
+                                m.description = String(d.description);
+                            }
                             return m;
                         };
 
@@ -1738,6 +1796,9 @@ export const io = $root.io = (() => {
                                 d.emailAddress = "";
                                 d.phone = "";
                                 d.mobile = "";
+                                d.accountType = o.enums === String ? "INVALID_ACCOUNT_TYPE" : 0;
+                                d.accountSubtype = o.enums === String ? "INVALID_ACCOUNT_SUBTYPE" : 0;
+                                d.description = "";
                             }
                             if (m.partyId != null && m.hasOwnProperty("partyId")) {
                                 d.partyId = m.partyId;
@@ -1765,6 +1826,15 @@ export const io = $root.io = (() => {
                                 for (var j = 0; j < m.address.length; ++j) {
                                     d.address[j] = $root.io.token.proto.common.providerspecific.Cma9AccountDetails.Cma9Address.toObject(m.address[j], o);
                                 }
+                            }
+                            if (m.accountType != null && m.hasOwnProperty("accountType")) {
+                                d.accountType = o.enums === String ? $root.io.token.proto.common.providerspecific.Cma9AccountDetails.AccountType[m.accountType] : m.accountType;
+                            }
+                            if (m.accountSubtype != null && m.hasOwnProperty("accountSubtype")) {
+                                d.accountSubtype = o.enums === String ? $root.io.token.proto.common.providerspecific.Cma9AccountDetails.AccountSubtype[m.accountSubtype] : m.accountSubtype;
+                            }
+                            if (m.description != null && m.hasOwnProperty("description")) {
+                                d.description = m.description;
                             }
                             return d;
                         };
@@ -1883,6 +1953,28 @@ export const io = $root.io = (() => {
                             values[valuesById[6] = "POSTAL"] = 6;
                             values[valuesById[7] = "RESIDENTIAL"] = 7;
                             values[valuesById[8] = "STATEMENT"] = 8;
+                            return values;
+                        })();
+
+                        Cma9AccountDetails.AccountType = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID_ACCOUNT_TYPE"] = 0;
+                            values[valuesById[1] = "BUSINESS_ACCOUNT"] = 1;
+                            values[valuesById[2] = "PERSONAL_ACCOUNT"] = 2;
+                            return values;
+                        })();
+
+                        Cma9AccountDetails.AccountSubtype = (function() {
+                            const valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "INVALID_ACCOUNT_SUBTYPE"] = 0;
+                            values[valuesById[1] = "CHARGE_CARD"] = 1;
+                            values[valuesById[2] = "CREDIT_CARD"] = 2;
+                            values[valuesById[3] = "CURRENT_ACCOUNT"] = 3;
+                            values[valuesById[4] = "EMONEY"] = 4;
+                            values[valuesById[5] = "LOAN"] = 5;
+                            values[valuesById[6] = "MORTGAGE"] = 6;
+                            values[valuesById[7] = "PREPAID_CARD"] = 7;
+                            values[valuesById[8] = "SAVINGS"] = 8;
                             return values;
                         })();
 
@@ -2531,7 +2623,119 @@ export const io = $root.io = (() => {
                         return Paging;
                     })();
 
+                    bank.BankFilter = (function() {
+
+                        function BankFilter(p) {
+                            this.ids = [];
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        BankFilter.prototype.provider = "";
+                        BankFilter.prototype.tppId = "";
+                        BankFilter.prototype.destinationCountry = "";
+                        BankFilter.prototype.country = "";
+                        BankFilter.prototype.ids = $util.emptyArray;
+                        BankFilter.prototype.search = "";
+
+                        BankFilter.create = function create(properties) {
+                            return new BankFilter(properties);
+                        };
+
+                        BankFilter.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.bank.BankFilter)
+                                return d;
+                            var m = new $root.io.token.proto.common.bank.BankFilter();
+                            if (d.provider != null) {
+                                m.provider = String(d.provider);
+                            }
+                            if (d.tppId != null) {
+                                m.tppId = String(d.tppId);
+                            }
+                            if (d.destinationCountry != null) {
+                                m.destinationCountry = String(d.destinationCountry);
+                            }
+                            if (d.country != null) {
+                                m.country = String(d.country);
+                            }
+                            if (d.ids) {
+                                if (!Array.isArray(d.ids))
+                                    throw TypeError(".io.token.proto.common.bank.BankFilter.ids: array expected");
+                                m.ids = [];
+                                for (var i = 0; i < d.ids.length; ++i) {
+                                    m.ids[i] = String(d.ids[i]);
+                                }
+                            }
+                            if (d.search != null) {
+                                m.search = String(d.search);
+                            }
+                            return m;
+                        };
+
+                        BankFilter.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.arrays || o.defaults) {
+                                d.ids = [];
+                            }
+                            if (o.defaults) {
+                                d.provider = "";
+                                d.tppId = "";
+                                d.destinationCountry = "";
+                                d.country = "";
+                                d.search = "";
+                            }
+                            if (m.provider != null && m.hasOwnProperty("provider")) {
+                                d.provider = m.provider;
+                            }
+                            if (m.tppId != null && m.hasOwnProperty("tppId")) {
+                                d.tppId = m.tppId;
+                            }
+                            if (m.destinationCountry != null && m.hasOwnProperty("destinationCountry")) {
+                                d.destinationCountry = m.destinationCountry;
+                            }
+                            if (m.country != null && m.hasOwnProperty("country")) {
+                                d.country = m.country;
+                            }
+                            if (m.ids && m.ids.length) {
+                                d.ids = [];
+                                for (var j = 0; j < m.ids.length; ++j) {
+                                    d.ids[j] = m.ids[j];
+                                }
+                            }
+                            if (m.search != null && m.hasOwnProperty("search")) {
+                                d.search = m.search;
+                            }
+                            return d;
+                        };
+
+                        BankFilter.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return BankFilter;
+                    })();
+
                     return bank;
+                })();
+
+                common.bankstatus = (function() {
+
+                    const bankstatus = {};
+
+                    bankstatus.BankStatus = (function() {
+                        const valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "INVALID"] = 0;
+                        values[valuesById[1] = "AVAILABLE"] = 1;
+                        values[valuesById[2] = "UNAVAILABLE"] = 2;
+                        values[valuesById[3] = "UNKNOWN"] = 3;
+                        return values;
+                    })();
+
+                    return bankstatus;
                 })();
 
                 common.blob = (function() {
@@ -4062,6 +4266,7 @@ export const io = $root.io = (() => {
                     member.Device = (function() {
 
                         function Device(p) {
+                            this.keys = [];
                             if (p)
                                 for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
                                     if (p[ks[i]] != null)
@@ -4070,6 +4275,7 @@ export const io = $root.io = (() => {
 
                         Device.prototype.name = "";
                         Device.prototype.key = null;
+                        Device.prototype.keys = $util.emptyArray;
 
                         Device.create = function create(properties) {
                             return new Device(properties);
@@ -4087,6 +4293,16 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.member.Device.key: object expected");
                                 m.key = $root.io.token.proto.common.security.Key.fromObject(d.key);
                             }
+                            if (d.keys) {
+                                if (!Array.isArray(d.keys))
+                                    throw TypeError(".io.token.proto.common.member.Device.keys: array expected");
+                                m.keys = [];
+                                for (var i = 0; i < d.keys.length; ++i) {
+                                    if (typeof d.keys[i] !== "object")
+                                        throw TypeError(".io.token.proto.common.member.Device.keys: object expected");
+                                    m.keys[i] = $root.io.token.proto.common.security.Key.fromObject(d.keys[i]);
+                                }
+                            }
                             return m;
                         };
 
@@ -4094,6 +4310,9 @@ export const io = $root.io = (() => {
                             if (!o)
                                 o = {};
                             var d = {};
+                            if (o.arrays || o.defaults) {
+                                d.keys = [];
+                            }
                             if (o.defaults) {
                                 d.name = "";
                                 d.key = null;
@@ -4103,6 +4322,12 @@ export const io = $root.io = (() => {
                             }
                             if (m.key != null && m.hasOwnProperty("key")) {
                                 d.key = $root.io.token.proto.common.security.Key.toObject(m.key, o);
+                            }
+                            if (m.keys && m.keys.length) {
+                                d.keys = [];
+                                for (var j = 0; j < m.keys.length; ++j) {
+                                    d.keys[j] = $root.io.token.proto.common.security.Key.toObject(m.keys[j], o);
+                                }
                             }
                             return d;
                         };
@@ -4231,6 +4456,79 @@ export const io = $root.io = (() => {
                         })();
 
                         return TrustedBeneficiary;
+                    })();
+
+                    member.Customization = (function() {
+
+                        function Customization(p) {
+                            this.colors = {};
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Customization.prototype.customizationId = "";
+                        Customization.prototype.logoBlobId = "";
+                        Customization.prototype.colors = $util.emptyObject;
+
+                        Customization.create = function create(properties) {
+                            return new Customization(properties);
+                        };
+
+                        Customization.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.member.Customization)
+                                return d;
+                            var m = new $root.io.token.proto.common.member.Customization();
+                            if (d.customizationId != null) {
+                                m.customizationId = String(d.customizationId);
+                            }
+                            if (d.logoBlobId != null) {
+                                m.logoBlobId = String(d.logoBlobId);
+                            }
+                            if (d.colors) {
+                                if (typeof d.colors !== "object")
+                                    throw TypeError(".io.token.proto.common.member.Customization.colors: object expected");
+                                m.colors = {};
+                                for (var ks = Object.keys(d.colors), i = 0; i < ks.length; ++i) {
+                                    m.colors[ks[i]] = String(d.colors[ks[i]]);
+                                }
+                            }
+                            return m;
+                        };
+
+                        Customization.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.objects || o.defaults) {
+                                d.colors = {};
+                            }
+                            if (o.defaults) {
+                                d.customizationId = "";
+                                d.logoBlobId = "";
+                            }
+                            if (m.customizationId != null && m.hasOwnProperty("customizationId")) {
+                                d.customizationId = m.customizationId;
+                            }
+                            if (m.logoBlobId != null && m.hasOwnProperty("logoBlobId")) {
+                                d.logoBlobId = m.logoBlobId;
+                            }
+                            var ks2;
+                            if (m.colors && (ks2 = Object.keys(m.colors)).length) {
+                                d.colors = {};
+                                for (var j = 0; j < ks2.length; ++j) {
+                                    d.colors[ks2[j]] = m.colors[ks2[j]];
+                                }
+                            }
+                            return d;
+                        };
+
+                        Customization.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return Customization;
                     })();
 
                     return member;
@@ -4841,8 +5139,6 @@ export const io = $root.io = (() => {
                                         this[ks[i]] = p[ks[i]];
                         }
 
-                        AddKey.prototype.name = "";
-                        AddKey.prototype.key = null;
                         AddKey.prototype.expiresMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
                         AddKey.prototype.keys = $util.emptyArray;
                         AddKey.prototype.deviceMetadata = null;
@@ -4855,14 +5151,6 @@ export const io = $root.io = (() => {
                             if (d instanceof $root.io.token.proto.common.notification.AddKey)
                                 return d;
                             var m = new $root.io.token.proto.common.notification.AddKey();
-                            if (d.name != null) {
-                                m.name = String(d.name);
-                            }
-                            if (d.key != null) {
-                                if (typeof d.key !== "object")
-                                    throw TypeError(".io.token.proto.common.notification.AddKey.key: object expected");
-                                m.key = $root.io.token.proto.common.security.Key.fromObject(d.key);
-                            }
                             if (d.expiresMs != null) {
                                 if ($util.Long)
                                     (m.expiresMs = $util.Long.fromValue(d.expiresMs)).unsigned = false;
@@ -4899,20 +5187,12 @@ export const io = $root.io = (() => {
                                 d.keys = [];
                             }
                             if (o.defaults) {
-                                d.name = "";
-                                d.key = null;
                                 if ($util.Long) {
                                     var n = new $util.Long(0, 0, false);
                                     d.expiresMs = o.longs === String ? n.toString() : o.longs === Number ? n.toNumber() : n;
                                 } else
                                     d.expiresMs = o.longs === String ? "0" : 0;
                                 d.deviceMetadata = null;
-                            }
-                            if (m.name != null && m.hasOwnProperty("name")) {
-                                d.name = m.name;
-                            }
-                            if (m.key != null && m.hasOwnProperty("key")) {
-                                d.key = $root.io.token.proto.common.security.Key.toObject(m.key, o);
                             }
                             if (m.expiresMs != null && m.hasOwnProperty("expiresMs")) {
                                 if (typeof m.expiresMs === "number")
@@ -5781,6 +6061,8 @@ export const io = $root.io = (() => {
                         TokenRequest.prototype.payload = null;
                         TokenRequest.prototype.options = $util.emptyObject;
                         TokenRequest.prototype.userRefId = "";
+                        TokenRequest.prototype.customizationId = "";
+                        TokenRequest.prototype.destinationCountry = "";
 
                         TokenRequest.create = function create(properties) {
                             return new TokenRequest(properties);
@@ -5809,6 +6091,12 @@ export const io = $root.io = (() => {
                             if (d.userRefId != null) {
                                 m.userRefId = String(d.userRefId);
                             }
+                            if (d.customizationId != null) {
+                                m.customizationId = String(d.customizationId);
+                            }
+                            if (d.destinationCountry != null) {
+                                m.destinationCountry = String(d.destinationCountry);
+                            }
                             return m;
                         };
 
@@ -5823,6 +6111,8 @@ export const io = $root.io = (() => {
                                 d.id = "";
                                 d.payload = null;
                                 d.userRefId = "";
+                                d.customizationId = "";
+                                d.destinationCountry = "";
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -5839,6 +6129,12 @@ export const io = $root.io = (() => {
                             }
                             if (m.userRefId != null && m.hasOwnProperty("userRefId")) {
                                 d.userRefId = m.userRefId;
+                            }
+                            if (m.customizationId != null && m.hasOwnProperty("customizationId")) {
+                                d.customizationId = m.customizationId;
+                            }
+                            if (m.destinationCountry != null && m.hasOwnProperty("destinationCountry")) {
+                                d.destinationCountry = m.destinationCountry;
                             }
                             return d;
                         };
