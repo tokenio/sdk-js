@@ -64,4 +64,15 @@ export default class TokenRequest {
         this.userRefId = userRefId;
         return this;
     }
+
+    /**
+     * Sets a destination country for the TokenRequest
+     *
+     * @param {string} destinationCountry - destination country
+     * @return {TokenRequest} tokenRequest - token request
+     */
+    setDestinationCountry(destinationCountry) {
+        this.options.destinationCountry = destinationCountry;
+        return this;
+    }
 }
