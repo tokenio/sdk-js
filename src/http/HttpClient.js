@@ -284,8 +284,10 @@ class HttpClient {
             perPage: options.perPage,
             // Optional provider
             provider: options.provider || '',
+            // Optional destination country
+            destinationCountry: options.destinationCountry || '',
         });
-        const {ids, search, country, page, perPage, provider} = formattedOptions;
+        const {ids, search, country, page, perPage, provider, destinationCountry} = formattedOptions;
         let url = '/banks?';
         for (const id of ids) {
             url += `ids=${encodeURIComponent(id)}&`;
@@ -295,6 +297,7 @@ class HttpClient {
         if (page) url += `page=${encodeURIComponent(page)}&`;
         if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
         if (provider) url += `provider=${encodeURIComponent(provider)}&`;
+        if (destinationCountry) url += `destinationCountry=${encodeURIComponent(destinationCountry)}&`;
         const request = {
             method: 'get',
             url: url,

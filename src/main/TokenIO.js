@@ -438,6 +438,7 @@ export class TokenIO {
             page?: number,
             perPage?: number,
             provider?: string,
+            destinationCountry?: string,
         }
     ): Promise<{banks: Array<Bank>, paging: Paging}> {
         return Util.callAsync(this.getBanks, async () => {
