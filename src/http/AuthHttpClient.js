@@ -52,7 +52,7 @@ class AuthHttpClient {
         this._resetRequestInterceptor();
 
         const errorHandler = new ErrorHandler(globalRpcErrorCallback);
-        this._instance.interceptors.response.use(null, (error) => {
+        this._instance.interceptors.response.use(null, error => {
             throw errorHandler.handleError(error);
         });
     }
@@ -93,7 +93,7 @@ class AuthHttpClient {
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(this._developerKey);
-        this._interceptor = this._instance.interceptors.request.use(async (request) => {
+        this._interceptor = this._instance.interceptors.request.use(async request => {
             await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
@@ -711,7 +711,7 @@ class AuthHttpClient {
     async getBalances(accountIds, keyLevel) {
         this.useKeyLevel(keyLevel);
         const url = '/accounts/balance?' +
-            accountIds.map((accountId) => 'account_id=' + accountId).join('&');
+            accountIds.map(accountId => 'account_id=' + accountId).join('&');
 
         const request = {
             method: 'get',
@@ -1183,7 +1183,7 @@ class AuthHttpClient {
     async approveKeys(prevHash, keys) {
         const update = {
             memberId: this._memberId,
-            operations: keys.map((key) => ({
+            operations: keys.map(key => ({
                 addKey: {
                     key: {
                         id: key.id,
@@ -1229,7 +1229,7 @@ class AuthHttpClient {
     async removeKeys(prevHash, keyIds) {
         const update = {
             memberId: this._memberId,
-            operations: keyIds.map((keyId) => ({
+            operations: keyIds.map(keyId => ({
                 removeKey: {
                     keyId,
                 },
@@ -1300,7 +1300,7 @@ class AuthHttpClient {
     async addAliases(prevHash, aliases) {
         const update = {
             memberId: this._memberId,
-            operations: aliases.map((alias) => ({
+            operations: aliases.map(alias => ({
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
                     realm: alias.realm || 'token',
@@ -1308,7 +1308,7 @@ class AuthHttpClient {
             })),
         };
 
-        const metadata = aliases.map((alias) => ({
+        const metadata = aliases.map(alias => ({
             addAliasMetadata: {
                 aliasHash: Util.hashAndSerializeAlias(alias),
                 alias: alias,
@@ -1339,7 +1339,7 @@ class AuthHttpClient {
     async removeAliases(prevHash, aliases) {
         const update = {
             memberId: this._memberId,
-            operations: aliases.map((alias) => ({
+            operations: aliases.map(alias => ({
                 removeAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
                 },

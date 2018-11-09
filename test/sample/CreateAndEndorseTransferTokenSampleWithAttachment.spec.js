@@ -1,6 +1,7 @@
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
-import CreateAndEndorseTransferTokenWithAttachmentSample from '../../src/sample/CreateAndEndorseTransferTokenWithAttachmentSample';
+import CreateAndEndorseTransferTokenWithAttachmentSample
+    from '../../src/sample/CreateAndEndorseTransferTokenWithAttachmentSample';
 import CreateTransferTokenAttachSample from '../../src/sample/CreateTransferTokenAttachSample';
 
 const {assert} = require('chai');

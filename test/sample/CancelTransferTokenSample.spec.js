@@ -1,6 +1,7 @@
 import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
-import CreateAndEndorseTransferTokenSample from '../../src/sample/CreateAndEndorseTransferTokenSample';
+import CreateAndEndorseTransferTokenSample
+    from '../../src/sample/CreateAndEndorseTransferTokenSample';
 import CancelTransferTokenSample from '../../src/sample/CancelTransferTokenSample';
 import {TokenOperationStatus} from '../../src';
 

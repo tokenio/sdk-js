@@ -18,7 +18,7 @@ export default class TestUtil {
                 if (Date.now() - start > timeoutMs) {
                     throw e;
                 }
-                await new Promise((resolve) => setTimeout(resolve, waitTimeMs));
+                await new Promise(resolve => setTimeout(resolve, waitTimeMs));
             }
         }
     }

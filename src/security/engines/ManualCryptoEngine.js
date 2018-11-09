@@ -36,7 +36,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
                 keyPair.privateKey = Crypto.bufferKey(keyPair.privateKey);
             }
             if (!keyPair.id) {
-                keyPair.id = base64Url(sha256(Crypto.bufferKey(keyPair.publicKey))).substring(0, 16);
+                keyPair.id = base64Url(sha256(Crypto.bufferKey(keyPair.publicKey)))
+                    .substring(0, 16);
             }
             keyPair.algorithm = 'ED25519';
         }
@@ -74,7 +75,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements sign, signJson
      */
     async createSigner(level) {
-        const keyPairs = keys.filter((k) => (k.level === level));
+        const keyPairs = keys.filter(k => (k.level === level));
         if (!keyPairs || !keyPairs.length) {
             throw new Error(`No key with level ${level} found`);
         }
@@ -88,7 +89,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * @return {Object} signer - object that implements verify, verifyJson
      */
     async createVerifier(keyId) {
-        const keyPairs = keys.filter((k) => (k.id === keyId));
+        const keyPairs = keys.filter(k => (k.id === keyId));
         if (!keyPairs || !keyPairs.length) {
             throw new Error(`No key with id ${keyId} found`);
         }

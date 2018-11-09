@@ -47,7 +47,7 @@ const config = {
         }),
         filesize(),
     ],
-    onwarn: (warning) => {      // Treat warnings as errors
+    onwarn: warning => {      // Treat warnings as errors
         throw Error(warning.message);
     },
 

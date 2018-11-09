@@ -7,7 +7,10 @@ const crypto = BROWSER && window.crypto;
 const ECDSA = 'ECDSA_SHA256';
 const RSA = 'RS256';
 
-let algorithm = Util.isFirefox || Util.isEdge() ? RSA : ECDSA; // default to ECDSA and fallback to RSA
+// default to ECDSA and fallback to RSA
+let algorithm = Util.isFirefox || Util.isEdge()
+    ? RSA
+    : ECDSA;
 
 /**
  * Class providing static crypto primitives for the browser using Web Cryptography API.
@@ -24,7 +27,8 @@ class CryptoBrowser {
     static async generateKeys(keyLevel, expirationMs, extractable = false) {
         const keyPair = await CryptoBrowser._generateKeyPair(extractable);
         keyPair.level = keyLevel;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
+        if (expirationMs !== undefined)
+            keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
         return keyPair;
     }
 
@@ -132,8 +136,10 @@ class CryptoBrowser {
         if (extractable) {
             keyPair.privateKey = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
         }
-        keyPair.publicKey = new Uint8Array(await crypto.subtle.exportKey('spki', keyPair.publicKey));
-        keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey)).substring(0, 16);
+        keyPair.publicKey = new Uint8Array(
+            await crypto.subtle.exportKey('spki', keyPair.publicKey));
+        keyPair.id = base64Url(await crypto.subtle.digest('SHA-256', keyPair.publicKey))
+            .substring(0, 16);
         keyPair.algorithm = algorithm;
         return keyPair;
     }
@@ -146,7 +152,7 @@ class CryptoBrowser {
      * @private
      */
     static _P1363ToDer(sig) {
-        const signature = Array.from(sig, (x) => ('00' + x.toString(16)).slice(-2)).join('');
+        const signature = Array.from(sig, x => ('00' + x.toString(16)).slice(-2)).join('');
         let r = signature.substr(0, signature.length / 2);
         let s = signature.substr(signature.length / 2);
         r = r.replace(/^(00)+/, '');
@@ -155,8 +161,9 @@ class CryptoBrowser {
         if ((parseInt(s, 16) & '0x80') > 0) s = `00${s}`;
         const rString = `02${(r.length / 2).toString(16).padStart(2, '0')}${r}`;
         const sString = `02${(s.length / 2).toString(16).padStart(2, '0')}${s}`;
-        const derSig = `30${((rString.length + sString.length) / 2).toString(16).padStart(2, '0')}${rString}${sString}`;
-        return new Uint8Array(derSig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
+        const derSig = `30${((rString.length + sString.length) / 2)
+            .toString(16).padStart(2, '0')}${rString}${sString}`;
+        return new Uint8Array(derSig.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
     }
 
     /**
@@ -167,14 +174,14 @@ class CryptoBrowser {
      * @private
      */
     static _DerToP1363(sig) {
-        const signature = Array.from(sig, (x) => ('00' + x.toString(16)).slice(-2)).join('');
+        const signature = Array.from(sig, x => ('00' + x.toString(16)).slice(-2)).join('');
         const rLength = parseInt(signature.substr(6, 2), 16) * 2;
         let r = signature.substr(8, rLength);
         let s = signature.substr(12 + rLength);
         r = r.length > 64 ? r.substr(-64) : r.padStart(64, '0');
         s = s.length > 64 ? s.substr(-64) : s.padStart(64, '0');
         const p1363Sig = `${r}${s}`;
-        return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)));
+        return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
     }
 }
 

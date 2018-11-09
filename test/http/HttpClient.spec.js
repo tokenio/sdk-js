@@ -32,14 +32,14 @@ describe('Unauthenticated', () => {
         const unauthenticatedClient = new HttpClient({
             env: TEST_ENV,
             developerKey: devKey,
-            globalRpcErrorCallback: (error) => {
+            globalRpcErrorCallback: error => {
                 assert.equal(error.name, BROWSER ? 'UNKNOWN' : 'unsupported-client-version');
                 handlerCalled = true;
             },
         });
         // Override sdk version to force version mismatch error.
         unauthenticatedClient._instance.interceptors.request.eject(0);
-        unauthenticatedClient._instance.interceptors.request.use((config) => {
+        unauthenticatedClient._instance.interceptors.request.use(config => {
             config.headers['token-sdk'] = 'js';
             config.headers['token-sdk-version'] = '0.0.1';
             return config;

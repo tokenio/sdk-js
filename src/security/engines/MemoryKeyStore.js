@@ -74,7 +74,8 @@ class MemoryKeyStore {
             if (Object.prototype.hasOwnProperty.call(globalStorage[memberId], level)) {
                 if (globalStorage[memberId][level].id === keyId) {
                     if (globalStorage[memberId][level].expiresAtMs < Date.now()) {
-                        throw new Error('Key with id ${globalStorage[memberId][level].id} has expired');
+                        throw new Error(
+                            'Key with id ${globalStorage[memberId][level].id} has expired');
                     }
                     return clone(globalStorage[memberId][level]);
                 }

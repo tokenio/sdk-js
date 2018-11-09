@@ -4,6 +4,6 @@
  * @param {Member} member - member that will be deleted
  */
 
-export default async (member) => {
+export default async member => {
     await member.deleteMember();
 };

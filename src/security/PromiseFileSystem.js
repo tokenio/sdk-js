@@ -35,7 +35,7 @@ class PromiseFileSystem {
         if (BROWSER) return Promise.reject('Not available on browser');
 
         return new Promise((resolve, reject) => {
-            PromiseFileSystem._ensureExists(PromiseFileSystem.dirRoot, (err) => {
+            PromiseFileSystem._ensureExists(PromiseFileSystem.dirRoot, err => {
                 if (err) {
                     reject(err);
                 }
@@ -43,7 +43,7 @@ class PromiseFileSystem {
                     PromiseFileSystem._getFullFilename(filename),
                     data,
                     PromiseFileSystem._options,
-                    (err) => {
+                    err => {
                         if (err) {
                             reject(err);
                         } else {
@@ -57,7 +57,7 @@ class PromiseFileSystem {
     static _ensureExists(path, cb) {
         if (BROWSER) return Promise.reject('Not available on browser');
 
-        fs.mkdir(path, (err) => {
+        fs.mkdir(path, err => {
             if (err) {
                 if (err.code === 'EEXIST') cb(null); // ignore folder already exists
                 else cb(err);                        // something else went wrong

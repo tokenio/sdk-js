@@ -56,14 +56,18 @@ class BrowserKeyStore {
             const getReq = store.get(memberId);
             getReq.onsuccess = () => {
                 const member = getReq.result || {};
-                const putReq = store.put(Object.assign(member, {[keyPair.level]: keyPair}), memberId);
+                const putReq = store.put(
+                    Object.assign(member, {[keyPair.level]: keyPair}),
+                    memberId);
                 putReq.onsuccess = () => {
                     BrowserKeyStore.setActiveMemberId(memberId);
                     resolve(keyPair);
                 };
-                putReq.onerror = () => reject(new Error(`Error saving member to database: ${putReq.error}`));
+                putReq.onerror = () =>
+                    reject(new Error(`Error saving member to database: ${putReq.error}`));
             };
-            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
+            getReq.onerror = () =>
+                reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -101,7 +105,8 @@ class BrowserKeyStore {
                 BrowserKeyStore.setActiveMemberId(memberId);
                 resolve(getReq.result[level]);
             };
-            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
+            getReq.onerror = () =>
+                reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -130,7 +135,7 @@ class BrowserKeyStore {
                 if (!member) {
                     return reject(new Error(`member ${memberId} not found`));
                 }
-                Object.values(member).forEach((keyPair) => {
+                Object.values(member).forEach(keyPair => {
                     if (keyPair.id === keyId) {
                         if (keyPair.expiresAtMs < Date.now()) {
                             reject(new Error(`Key with id ${keyPair.id} has expired`));
@@ -141,7 +146,8 @@ class BrowserKeyStore {
                 });
                 reject(new Error(`No key with id ${keyId} found`));
             };
-            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
+            getReq.onerror = () =>
+                reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -167,9 +173,11 @@ class BrowserKeyStore {
                     return reject(new Error(`member ${memberId} not found`));
                 }
                 BrowserKeyStore.setActiveMemberId(memberId);
-                resolve(Object.values(member).filter(keyPair => !(keyPair.expiresAtMs < Date.now())));
+                resolve(Object.values(member)
+                    .filter(keyPair => !(keyPair.expiresAtMs < Date.now())));
             };
-            getReq.onerror = () => reject(new Error(`Error getting member from database: ${getReq.error}`));
+            getReq.onerror = () =>
+                reject(new Error(`Error getting member from database: ${getReq.error}`));
         });
     }
 
@@ -183,7 +191,8 @@ class BrowserKeyStore {
         return new Promise((resolve, reject) => {
             const clearReq = store.clear();
             clearReq.onsuccess = () => resolve();
-            clearReq.onerror = () => reject(new Error(`Error clearing the database: ${clearReq.error}`));
+            clearReq.onerror = () =>
+                reject(new Error(`Error clearing the database: ${clearReq.error}`));
         });
     }
 
@@ -203,7 +212,7 @@ class BrowserKeyStore {
                 resolve(openReq.result);
             };
             openReq.onerror = () => reject(new Error(`Error opening database: ${openReq.error}`));
-            openReq.onupgradeneeded = (e) => {
+            openReq.onupgradeneeded = e => {
                 const db = e.target.result;
                 db.createObjectStore(MEMBER_KEY_STORE);
             };

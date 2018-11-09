@@ -4,7 +4,7 @@
  * @param {String|Buffer} input input string or buffer
  * @return {String} encoded output
  */
-export const base64Url = (input) => {
+export const base64Url = input => {
     if (Buffer.isBuffer(input)) {
         return base64ToBase64Url(input.toString('base64'));
     }
@@ -17,7 +17,7 @@ export const base64Url = (input) => {
  * @param {String} input input string
  * @return {Buffer} buffer output
  */
-export const base64UrlToBuffer = (input) => {
+export const base64UrlToBuffer = input => {
     return Buffer.from(base64UrlToBase64(input), 'base64');
 };
 

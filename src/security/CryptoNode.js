@@ -20,7 +20,8 @@ class CryptoNode {
         keyPair.algorithm = 'ED25519';
         keyPair.level = keyLevel;
         keyPair.privateKey = keyPair.secretKey;
-        if (expirationMs !== undefined) keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
+        if (expirationMs !== undefined)
+            keyPair.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
         delete keyPair.secretKey;
         return keyPair;
     }

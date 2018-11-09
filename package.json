@@ -1,6 +1,6 @@
 {
     "name": "token-io",
-    "version": "2.0.0-beta.23",
+    "version": "2.0.0-beta.24",
     "description": "Token JavaScript SDK",
     "license": "ISC",
     "author": {
@@ -46,7 +46,8 @@
         "@babel/plugin-transform-runtime": "^7.0.0",
         "@babel/preset-env": "^7.0.0",
         "@babel/preset-flow": "^7.0.0",
-        "babel-eslint": "^9.0.0",
+        "@token-io/eslint-config": "^1.0.0",
+        "babel-eslint": "^10.0.1",
         "babel-loader": "^8.0.0",
         "chai": "^4.1.2",
         "cross-env": "^5.2.0",
@@ -55,6 +56,8 @@
         "esdoc-standard-plugin": "^1.0.0",
         "eslint": "^5.2.0",
         "eslint-plugin-flowtype": "^2.50.0",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-react": "^7.11.1",
         "flow-bin": "^0.79.1",
         "fs-extra": "^7.0.0",
         "karma": "^3.0.0",
