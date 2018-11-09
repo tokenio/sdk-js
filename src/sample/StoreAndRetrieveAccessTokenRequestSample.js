@@ -9,7 +9,7 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * @param {Member} grantee - member that will create the TokenRequest, and receive the funds
  * @return {Object} tokenRequest - retrieved token request
  */
-export default async (grantee) => {
+export default async grantee => {
     const builder = grantee.createAccessTokenBuilder()
         .setDescription('balance access')
         .forAllBalances()

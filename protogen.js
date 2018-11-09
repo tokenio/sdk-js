@@ -33,7 +33,7 @@ async function downloadProtoAndGenerateClasses() {
         await exec('rm -rf proto');
         console.log('Done! Make sure to add classes you want to expose to src/proto/index.js');
     });
-    res.data.on('error', (e) => Promise.reject(e));
+    res.data.on('error', e => Promise.reject(e));
 }
 
 downloadProtoAndGenerateClasses();

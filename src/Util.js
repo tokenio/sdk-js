@@ -267,8 +267,8 @@ class Util {
 
     static setUpHttpErrorLogging(instance) {
         instance.interceptors.response.use(
-            (res) => res,
-            (err) => {
+            res => res,
+            err => {
                 /* eslint-disable */
                 err.response
                     ? console.error(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config.url}]`)

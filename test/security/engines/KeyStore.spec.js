@@ -38,7 +38,7 @@ describe('Key store', () => {
         }
     });
 
-    keyStores.forEach((KeyStore) => {
+    keyStores.forEach(KeyStore => {
         it('should create the keyStore and generate keys', async () => {
             const keyStore = new KeyStore();
             const keyPairLow = await Crypto.generateKeys('LOW');

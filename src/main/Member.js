@@ -61,7 +61,8 @@ export default class Member {
         memberId: string,
         cryptoEngine: KeyStoreCryptoEngine,
         developerKey: ?string, // dev key
-        globalRpcErrorCallback: ?({name: string, message: string}) => void, // callback to invoke on any cross-cutting RPC
+        // callback to invoke on any cross-cutting RPC
+        globalRpcErrorCallback: ?({name: string, message: string}) => void,
         loggingEnabled: ?boolean, // enable HTTP error logging if true
         customSdkUrl: ?string, // override the default SDK URL
     }): void {
@@ -1337,7 +1338,7 @@ export default class Member {
     }
 
     _resolveToken(token: string | Token): Promise<any> {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (typeof token === 'string') {
                 this.getToken(token)
                     .then(lookedUp => resolve(lookedUp));

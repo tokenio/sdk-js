@@ -2,7 +2,8 @@ import Crypto from '../Crypto';
 import Util from '../../Util';
 
 /**
- * Base crypto engine that are extended by others, it handles signatures, verifications, and key storage.
+ * Base crypto engine that are extended by others.
+ * It handles signatures, verifications, and key storage.
  */
 class KeyStoreCryptoEngine {
     constructor(memberId, keystore) {

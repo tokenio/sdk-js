@@ -54,10 +54,10 @@ class Crypto {
      */
     static createSignerFromKeypair(keyPair) {
         return {
-            sign: async (message) => {
+            sign: async message => {
                 return await Crypto.sign(message, keyPair);
             },
-            signJson: async (json) => {
+            signJson: async json => {
                 return await Crypto.signJson(json, keyPair);
             },
             getKeyId: () => keyPair.id,

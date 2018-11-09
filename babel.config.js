@@ -13,7 +13,7 @@ const targets = {
     },
 };
 
-module.exports = (api) => {
+module.exports = api => {
     api && api.cache(true);
     const presets = [
         [

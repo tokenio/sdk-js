@@ -35,14 +35,14 @@ class HttpClient {
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
-        this._instance.interceptors.request.use((request) => {
+        this._instance.interceptors.request.use(request => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
             return request;
         });
 
         const errorHandler = new ErrorHandler(globalRpcErrorCallback);
-        this._instance.interceptors.response.use(null, (error) => {
+        this._instance.interceptors.response.use(null, error => {
             throw errorHandler.handleError(error);
         });
     }
@@ -90,7 +90,7 @@ class HttpClient {
     resolveAlias(alias) {
         const request = {
             method: 'get',
-            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${alias.realm || ''}`,
+            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${alias.realm || ''}`, // eslint-disable-line max-len
         };
         return this._instance(request);
     }
@@ -183,7 +183,7 @@ class HttpClient {
         const signer = await cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
         const update = {
             memberId: memberId,
-            operations: keys.map((key) => ({
+            operations: keys.map(key => ({
                 addKey: {
                     key: {
                         id: key.id,

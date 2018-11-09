@@ -6,7 +6,7 @@ import {TokenIO, Alias} from '..';
  * @param {string} developerKey - developer key
  * @return {Member} member - created member
  */
-export default async (developerKey) => {
+export default async developerKey => {
     // Initialize SDK:
     const Token = new TokenIO({
         env: 'sandbox',

@@ -9,7 +9,7 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * @param {Member} payee - member that will create the TokenRequest, and receive the funds
  * @return {Object} tokenRequest - retrieved token request
  */
-export default async (payee) => {
+export default async payee => {
     const builder = payee.createTransferTokenBuilder(100.00, 'EUR')
         .setDescription('Book purchase')
         .setToMemberId(payee.memberId());

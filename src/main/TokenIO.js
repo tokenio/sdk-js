@@ -56,8 +56,10 @@ export class TokenIO {
     constructor(options: {
         env?: string, // Token environment to target, defaults to production
         developerKey?: string, // dev key
-        keyDir?: string, // absolute path of the key storage directory (if using UnsecuredFileCryptoEngine)
-        globalRpcErrorCallback?: ({name: string, message: string}) => void, // callback to invoke on any cross-cutting RPC
+        // absolute path of the key storage directory (if using UnsecuredFileCryptoEngine)
+        keyDir?: string,
+        // callback to invoke on any cross-cutting RPC
+        globalRpcErrorCallback?: ({name: string, message: string}) => void,
         loggingEnabled?: boolean, // enable HTTP error logging if true
         customSdkUrl?: string, // override the default SDK URL
     }): void {
@@ -135,7 +137,8 @@ export class TokenIO {
     }
 
     /**
-     * Normalizes an alias, you probably won't need to call this as this is automatically called before addAlias()
+     * Normalizes an alias
+     * you probably won't need to call this as this is automatically called before addAlias()
      *
      * @param alias - alias to normalize
      * @returns normalized alias
@@ -177,7 +180,10 @@ export class TokenIO {
         tokenRequestId?: string
     ): Promise<Member> {
         return Util.callAsync(this.createMember, async () => {
-            const response = await this._unauthenticatedClient.createMemberId(memberType, tokenRequestId);
+            const response = await this._unauthenticatedClient.createMemberId(
+                memberType,
+                tokenRequestId
+            );
             const engine = new CryptoEngine(response.data.memberId);
             const pk1 = await engine.generateKey('PRIVILEGED');
             const pk2 = await engine.generateKey('STANDARD');
@@ -475,8 +481,7 @@ export class TokenIO {
                 innerState: state,
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
-
-            return `${this._customSdkUrl || config.webAppUrls[this._env]}/app/request-token/${requestId}?state=${serializedState}`;
+            return `${this._customSdkUrl || config.webAppUrls[this._env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
         });
     }
 
@@ -527,7 +532,9 @@ export class TokenIO {
      * @param {string} tokenRequestId - token request id
      * @return {Promise} tokenId - token id and signature
      */
-    getTokenRequestResult(tokenRequestId: string): Promise<{tokenId: string, signature: Signature}> {
+    getTokenRequestResult(
+        tokenRequestId: string
+    ): Promise<{tokenId: string, signature: Signature}> {
         return Util.callAsync(this.getTokenRequestResult, async () => {
             const res = await this._unauthenticatedClient.getTokenRequestResult(tokenRequestId);
             return {
