@@ -42,6 +42,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for all addresses.
      *
+     * @deprecated Support for this resource will be removed.
      * @return {AccessTokenBuilder} returns back the builder object
      */
     forAllAddresses() {
@@ -68,6 +69,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for metadata of all accounts.
      *
+     * @deprecated Support for this resource will be removed.
      * @return {AccessTokenBuilder} returns back the builder object
      */
     forAllAccounts() {
@@ -80,6 +82,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for metadata of all accounts at a given bank.
      *
+     * @deprecated Support for this resource will be removed.
      * @param {String} bankId - id of the bank
      * @return {AccessTokenBuilder} returns back the builder object
      */
@@ -110,6 +113,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for transactions of all accounts.
      *
+     * @deprecated Support for this resource will be removed.
      * @return {AccessTokenBuilder} returns back the builder object
      */
     forAllTransactions() {
@@ -122,6 +126,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for transactions of all accounts at a given bank.
      *
+     * @deprecated Support for this resource will be removed.
      * @param {String} bankId - id of the bank
      * @return {AccessTokenBuilder} returns back the builder object
      */
@@ -152,6 +157,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for balances of all accounts.
      *
+     * @deprecated Support for this resource will be removed.
      * @return {AccessTokenBuilder} returns back the builder object
      */
     forAllBalances() {
@@ -164,6 +170,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for balances of all accounts at a given bank.
      *
+     * @deprecated Support for this resource will be removed.
      * @param {String} bankId - id of the bank
      * @return {AccessTokenBuilder} returns back the builder object
      */
@@ -194,6 +201,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for resolved transfer destinations of all accounts.
      *
+     * @deprecated Support for this resource will be removed.
      * @return {AccessTokenBuilder} returns back the builder object
      */
     forAllTransferDestinations() {
@@ -206,6 +214,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for resolved transfer destinations of all accounts at a given bank.
      *
+     * @deprecated Support for this resource will be removed.
      * @param {String} bankId - id of the bank
      * @return {AccessTokenBuilder} returns back the builder object
      */
@@ -236,6 +245,7 @@ export default class AccessTokenBuilder {
     /**
      * Adds a resource for full access.
      *
+     * @deprecated Support for these resources will be removed.
      * @return {AccessTokenBuilder} returns back the builder object
      */
     forAll() {

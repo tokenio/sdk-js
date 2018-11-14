@@ -6,7 +6,7 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
 /**
  * Creates a access token request and retrieve it.
  *
- * @param {Member} grantee - member that will create the TokenRequest, and receive the funds
+ * @param {Member} grantee - member that will create the TokenRequest and receive access
  * @return {Object} retrieved token request
  */
 export default async grantee => {
@@ -18,7 +18,7 @@ export default async grantee => {
         accessBody: {
             type: ['ACCOUNTS', 'BALANCES'],
         },
-        description: 'Book purchase',
+        description: 'Account and balance access',
         redirectUrl: 'https://token.io/callback',
     };
 
