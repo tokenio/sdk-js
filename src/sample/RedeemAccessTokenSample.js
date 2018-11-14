@@ -10,7 +10,7 @@ class RedeemAccessTokenSample {
      *
      * @param {Member} grantee - grantee member
      * @param {string} tokenId - id of the token to redeem
-     * @return {Object} balance0 - balance of one account
+     * @return {Object} balance of one account
      */
     static async use(grantee, tokenId) {
         // Use the access token, now making API calls

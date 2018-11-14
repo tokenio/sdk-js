@@ -20,7 +20,7 @@ class ErrorHandler {
      * Handles RPC error and calls the globalRpcErrorCallback.
      *
      * @param {object} error - error to handle
-     * @return {object} error - original RPC error
+     * @return {object} original RPC error
      */
     handleError(error) {
         if (error.response && error.response.headers) {

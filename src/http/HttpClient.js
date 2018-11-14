@@ -51,8 +51,8 @@ class HttpClient {
      * Creates a memberId.
      *
      * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
-     * @param  {string} tokenRequestID - (optional) token request id if the member is being claimed
-     * @return {Object} response - response to the API call
+     * @param  {string} tokenRequestId - (optional) token request id if the member is being claimed
+     * @return {Object} response to the API call
      */
     createMemberId(memberType, tokenRequestId) {
         if (memberType === undefined) {
@@ -85,7 +85,7 @@ class HttpClient {
      * Gets a member given an alias.
      *
      * @param {Object} alias - alias to lookup
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     resolveAlias(alias) {
         const request = {
@@ -99,7 +99,7 @@ class HttpClient {
      * Gets the member's information.
      *
      * @param {string} memberId - member id to lookup the member for
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     getMember(memberId) {
         const request = {
@@ -114,7 +114,7 @@ class HttpClient {
      *
      * @param {Object} alias - user to notify
      * @param {Object} body - body of the notification
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     notify(alias, body) {
         const req = {
@@ -135,7 +135,7 @@ class HttpClient {
      * @param {string} memberId - id of the member
      * @param {Object} key - key to approve
      * @param {Object} cryptoEngine - engine to use for signing
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async approveFirstKey(memberId, key, cryptoEngine) {
         const signer = await cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
@@ -177,7 +177,7 @@ class HttpClient {
      * @param {string} memberId - id of the member
      * @param {Array} keys - keys to approve
      * @param {Object} cryptoEngine - engine to use for signing
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async approveFirstKeys(memberId, keys, cryptoEngine) {
         const signer = await cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
@@ -215,7 +215,7 @@ class HttpClient {
      * Sends a notification to a user to request a payment.
      *
      * @param {Object} tokenPayload - requested transfer token
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     notifyPaymentRequest(tokenPayload) {
         const req = {
@@ -234,7 +234,7 @@ class HttpClient {
      * added.
      *
      * @param {Object} endorseAndAddKey - the endorseAndAddKey payload to be sent
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     notifyEndorseAndAddKey(endorseAndAddKey) {
         const req = {
@@ -252,7 +252,7 @@ class HttpClient {
      * Invalidate a notification.
      *
      * @param {Object} notificationId - the notification id to invalidate
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     invalidateNotification(notificationId) {
         const req = {
@@ -270,7 +270,7 @@ class HttpClient {
      * Gets banks.
      *
      * @param {Object} options - optional parameters for getBanks
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getBanks(options = {}) {
         const formattedOptions = Object.assign({}, {
@@ -318,7 +318,7 @@ class HttpClient {
      * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
      *
      * @param {string} requestId - token request id
-     * @return {Promise} response - response to the API call
+     * @return {Promise} response to the API call
      */
     async retrieveTokenRequest(requestId) {
         const request = {
@@ -331,7 +331,7 @@ class HttpClient {
     /**
      * Returns the Token member.
      *
-     * @return {Promise} response - response to the API call
+     * @return {Promise} response to the API call
      */
     async getTokenMember() {
         const resolveAliasRes = await this.resolveAlias(Util.tokenAlias().toJSON());
@@ -344,7 +344,7 @@ class HttpClient {
      * Get the token request result based on its token request ID.
      *
      * @param {string} tokenRequestId - token request id
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTokenRequestResult(tokenRequestId) {
         const request = {

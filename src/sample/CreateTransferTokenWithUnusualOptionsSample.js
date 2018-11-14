@@ -3,7 +3,7 @@
  *
  * @param {Member} payer - member that will fund the token
  * @param {Member} payee - payee member
- * @return {Object} token - endorsed token
+ * @return {Object} endorsed token
  */
 export default async (payer, payee) => {
     const payeeId = payee.memberId();

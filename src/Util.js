@@ -12,7 +12,7 @@ class Util {
     /**
      * Generates a random nonce
      *
-     * @return {string} nonce - random string
+     * @return {string} random string
      */
     static generateNonce() {
         return Math.random().toString(36).slice(-9) + Math.random().toString(36).slice(-9);
@@ -48,7 +48,7 @@ class Util {
      *
      * @param {string} str - the string to test
      * @param {string} suffix - the suffix to test
-     * @return {boolean} endsWith - true if it does
+     * @return {boolean} true if it does
      */
     static stringEndsWith(str, suffix) {
         if (((str === null) || (str === '')) || ((suffix === null) || (suffix === ''))) {
@@ -65,7 +65,7 @@ class Util {
      *
      * @param {number} word - 32 bit value number, in 2s complement
      * @param {number} index - index of the byte to return
-     * @return {number} result - the desired byte [0, 255]
+     * @return {number} the desired byte [0, 255]
      */
     static getByte(word, index) {
         if (index === 0) {
@@ -83,7 +83,7 @@ class Util {
      * Count the number of decimal points in a number
      *
      * @param {Number} value - number
-     * @return {Number} count - number of decimals
+     * @return {Number} number of decimals
      */
     static countDecimals(value) {
         if (Math.floor(value) == value) {
@@ -99,7 +99,7 @@ class Util {
      *
      * @param {function} method - outside method that is being executed
      * @param {function} fn - function to try to execute
-     * @return {Promise} promise - successful or rejected promise
+     * @return {Promise} successful or rejected promise
      */
     static async callAsync(method, fn) {
         try {
@@ -118,7 +118,7 @@ class Util {
      *
      * @param {function} method - outside method that is being executed
      * @param {function} fn - function to try to execute
-     * @return {Object} result - successful result or thrown error
+     * @return {Object} successful result or thrown error
      */
     static callSync(method, fn) {
         try {
@@ -136,7 +136,7 @@ class Util {
      * Support alias hashing
      *
      * @param {Object} alias - alias to be hashed
-     * @return {String} result - hashed alias
+     * @return {String} hashed alias
      * TODO(PR-1138): remove username support
      */
     static hashAndSerializeAlias(alias) {
@@ -151,7 +151,7 @@ class Util {
      * Hash a string value.
      *
      * @param {string} value - value to be hahsed
-     * @return {string} result - hashed value
+     * @return {string} hashed value
      */
     static hashString(value) {
         return bs58.encode(sha256(Buffer.from(value, 'utf8')));
@@ -213,7 +213,7 @@ class Util {
      *
      * @param {Array} keys -  list of keys
      * @param {Object} signature - signature
-     * @return {Object} key - the signing key
+     * @return {Object} the signing key
      */
     static getSigningKey(keys, signature) {
         for (const key of keys) {

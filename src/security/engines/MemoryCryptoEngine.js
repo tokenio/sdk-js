@@ -36,7 +36,7 @@ class MemoryCryptoEngine extends KeyStoreCryptoEngine {
      * Gets the currently active memberId.
      * This allows login without caching memberId somewhere
      *
-     * @return {string} memberId - active memberId
+     * @return {string} active memberId
      */
     static getActiveMemberId() {
         const memberId = MemoryKeyStore.getActiveMemberId();

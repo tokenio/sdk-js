@@ -62,7 +62,7 @@ class AuthHttpClient {
      * If the level is not available, attempts to fetch a lower level.
      *
      * @param {string} level - requested level of key
-     * @return {Promise} signer - object used to sign
+     * @return {Promise} object used to sign
      */
     async getSigner(level) {
         if (level === config.KeyLevel.LOW) {
@@ -143,7 +143,7 @@ class AuthHttpClient {
      *
      * @param {string} handler - who is handling the notifications
      * @param {string} handlerInstructions - how to send the notification
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async subscribeToNotifications(handler, handlerInstructions) {
         const req = {
@@ -162,7 +162,7 @@ class AuthHttpClient {
     /**
      * Gets all subscribers for a member.
      *
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getSubscribers() {
         const request = {
@@ -176,7 +176,7 @@ class AuthHttpClient {
      * Gets a subscriber by id.
      *
      * @param {string} subscriberId - Id of the subscriber to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getSubscriber(subscriberId) {
         const request = {
@@ -191,7 +191,7 @@ class AuthHttpClient {
      *
      * @param {string} offset - where to start looking
      * @param {Number} limit - how many to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getNotifications(offset, limit) {
         const request = {
@@ -205,7 +205,7 @@ class AuthHttpClient {
      * Gets a notification by id.
      *
      * @param {string} notificationId - Id of the notification to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getNotification(notificationId) {
         const request = {
@@ -219,7 +219,7 @@ class AuthHttpClient {
      * Unsubscribes from notifications (deletes a subscriber).
      *
      * @param {string} subscriberId - subscriber to delete
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async unsubscribeFromNotifications(subscriberId) {
         const request = {
@@ -233,7 +233,7 @@ class AuthHttpClient {
      * Trigger a token step up notification.
      *
      * @param {string} tokenId - token ID
-     * @return {Object} response - response to the Api call
+     * @return {Object} response to the Api call
      */
     async triggerStepUpNotification(tokenId) {
         const req = {
@@ -253,7 +253,7 @@ class AuthHttpClient {
      * Trigger a balance step up notification.
      *
      * @param {Array} accountIds - array of account ids
-     * @return {Object} response - response to the Api call
+     * @return {Object} response to the Api call
      */
     async triggerBalanceStepUpNotification(accountIds) {
         const req = {
@@ -274,7 +274,7 @@ class AuthHttpClient {
      *
      * @param {string} accountId - account id
      * @param {string} transactionId - transaction id
-     * @return {Object} response - response to the Api call
+     * @return {Object} response to the Api call
      */
     async triggerTransactionStepUpNotification(accountId, transactionId) {
         const req = {
@@ -300,7 +300,7 @@ class AuthHttpClient {
      *
      * @param {string} name - name of the address
      * @param {Object} address - address to add
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async addAddress(name, address) {
         const signer = await this.getSigner(config.KeyLevel.LOW);
@@ -325,7 +325,7 @@ class AuthHttpClient {
      * Gets an address by id.
      *
      * @param {string} addressId - address to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getAddress(addressId) {
         const request = {
@@ -338,7 +338,7 @@ class AuthHttpClient {
     /**
      * Gets all addresses.
      *
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getAddresses() {
         const request = {
@@ -352,7 +352,7 @@ class AuthHttpClient {
      * Deletes an address.
      *
      * @param {string} addressId - address to delete
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async deleteAddress(addressId) {
         const request = {
@@ -370,7 +370,7 @@ class AuthHttpClient {
      * Replaces the authenticated member's public profile.
      *
      * @param {Object} profile - profile to set
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async setProfile(profile) {
         const req = {
@@ -388,7 +388,7 @@ class AuthHttpClient {
      * Gets a member's public profile.
      *
      * @param {string} id - member id whose profile to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getProfile(id) {
         const request = {
@@ -403,7 +403,7 @@ class AuthHttpClient {
      *
      * @param {string} type - MIME type
      * @param {Buffer} data - data in bytes
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async setProfilePicture(type, data) {
         if (typeof data !== 'string') data = base64js.fromByteArray(data);
@@ -429,7 +429,7 @@ class AuthHttpClient {
      *
      * @param {string} id - member Id whose picture to get
      * @param {Object} size - desired size category: SMALL/MEDIUM/LARGE/ORIGINAL
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getProfilePicture(id, size) {
         const request = {
@@ -447,7 +447,7 @@ class AuthHttpClient {
      * Replaces member's receipt contact.
      *
      * @param {Object} contact - receipt contact to set: value + type
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async setReceiptContact(contact) {
         const req = {
@@ -464,7 +464,7 @@ class AuthHttpClient {
     /**
      * Gets member's receipt contact.
      *
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getReceiptContact() {
         const request = {
@@ -482,7 +482,7 @@ class AuthHttpClient {
      * Adds a Token member to this member's list of trusted beneficiaries.
      *
      * @param {string} memberId - member ID of the trusted beneficiary to add
-     * @returns {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async addTrustedBeneficiary(memberId) {
         const signer = await this.getSigner(config.KeyLevel.STANDARD);
@@ -513,7 +513,7 @@ class AuthHttpClient {
      * Removes a Token member from this member's list of trusted beneficiaries.
      *
      * @param {string} memberId - member ID of the trusted beneficiary to remove
-     * @returns {Object} response - response of the API
+     * @return {Object} response of the API
      */
     async removeTrustedBeneficiary(memberId) {
         const signer = await this.getSigner(config.KeyLevel.STANDARD);
@@ -543,7 +543,7 @@ class AuthHttpClient {
     /**
      * Get the member's list of trusted beneficiaries.
      *
-     * @returns {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTrustedBeneficiaries() {
         const request = {
@@ -562,7 +562,7 @@ class AuthHttpClient {
      *
      * @deprecated - use linkAccountsOauth
      * @param {Object} bankAuthorization - encrypted authorization to accounts
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async linkAccounts(bankAuthorization) {
         const req = {
@@ -581,7 +581,7 @@ class AuthHttpClient {
      *
      * @param {string} authorization - oauthBankAuthorization continaing bank_id and
      * access_token
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async linkAccountsOauth(authorization) {
         const req = {
@@ -599,7 +599,7 @@ class AuthHttpClient {
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
      * @param {Array} accountIds - account ids to unlink
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async unlinkAccounts(accountIds) {
         const req = {
@@ -616,7 +616,7 @@ class AuthHttpClient {
     /**
      * Gets all accounts linked to the member.
      *
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getAccounts() {
         const request = {
@@ -630,7 +630,7 @@ class AuthHttpClient {
      * Gets an account.
      *
      * @param {string} accountId - account to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getAccount(accountId) {
         const request = {
@@ -643,7 +643,7 @@ class AuthHttpClient {
     /**
      * Gets the default bank account.
      *
-     * @return {Promise} response - the default bank account
+     * @return {Promise} the default bank account
      */
     async getDefaultAccount() {
         const request = {
@@ -674,7 +674,7 @@ class AuthHttpClient {
      *
      * @param {string} accountId - account
      * @param {string} name - new name
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async setAccountName(accountId, name) {
         const request = {
@@ -689,7 +689,7 @@ class AuthHttpClient {
      *
      * @param {string} accountId - accountId
      * @param {string} keyLevel - key level
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getBalance(accountId, keyLevel) {
         this.useKeyLevel(keyLevel);
@@ -706,7 +706,7 @@ class AuthHttpClient {
      *
      * @param {Array} accountIds - array of accountIds
      * @param {string} keyLevel - key level
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getBalances(accountIds, keyLevel) {
         this.useKeyLevel(keyLevel);
@@ -726,7 +726,7 @@ class AuthHttpClient {
      * @param {string} accountId - account that initiated the transaction
      * @param {string} transactionId - id of the transaction
      * @param {string} keyLevel - key level
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTransaction(accountId, transactionId, keyLevel) {
         this.useKeyLevel(keyLevel);
@@ -744,7 +744,7 @@ class AuthHttpClient {
      * @param {string} offset - where to start
      * @param {Number} limit - how many to get
      * @param {string} keyLevel - key level
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTransactions(accountId, offset, limit, keyLevel) {
         this.useKeyLevel(keyLevel);
@@ -762,7 +762,7 @@ class AuthHttpClient {
      * @param {string} type - MIME type
      * @param {string} name - name of the file
      * @param {Buffer} data - data in bytes
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async createBlob(ownerId, type, name, data) {
         const req = {
@@ -786,7 +786,7 @@ class AuthHttpClient {
      *
      * @param {string} tokenId - id of the token
      * @param {string} blobId - id of the blob
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTokenBlob(tokenId, blobId) {
         const request = {
@@ -800,7 +800,7 @@ class AuthHttpClient {
      * Gets a blob from the server.
      *
      * @param {string} blobId - id of the blob
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getBlob(blobId) {
         const request = {
@@ -814,7 +814,7 @@ class AuthHttpClient {
      * Gets info about a bank.
      *
      * @param {string} bankId - id of the bank to lookup
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getBankInfo(bankId) {
         const request = {
@@ -832,7 +832,7 @@ class AuthHttpClient {
      * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
      *
      * @param {Object} tokenRequest - token request to store
-     * @return {Promise} response - response to the API call
+     * @return {Promise} response to the API call
      */
     async storeTokenRequest(tokenRequest) {
         const request = {
@@ -848,7 +848,7 @@ class AuthHttpClient {
      *
      * @param {Object} payload - payload of the token
      * @param {string} tokenRequestId - token request id
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async createTransferToken(payload, tokenRequestId) {
         const request = {
@@ -867,7 +867,7 @@ class AuthHttpClient {
      *
      * @param {Object} payload - access token payload
      * @param {string} tokenRequestId - token request id
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async createAccessToken(payload, tokenRequestId) {
         const request = {
@@ -886,7 +886,7 @@ class AuthHttpClient {
      *
      * @param {Object} tokenToCancel - access token to replace
      * @param {Array} newResources - new resources
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
@@ -923,7 +923,7 @@ class AuthHttpClient {
      *
      * @param {Object} tokenToCancel - access token to replace
      * @param {Array} newResources - new resources
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async replaceAndEndorseToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
@@ -962,7 +962,7 @@ class AuthHttpClient {
      * Endorses a token.
      *
      * @param {Object} token - token to endorse
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async endorseToken(token) {
         return this._tokenOperation(
@@ -976,7 +976,7 @@ class AuthHttpClient {
      *
      * @param {Object} token - token to cancel
      * @param {bool} blocking - creates a blocking request
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async cancelToken(token, blocking) {
         return this._tokenOperation(
@@ -995,7 +995,7 @@ class AuthHttpClient {
      * @param {string} description - description of the transfer
      * @param {Array} destinations - destinations money should go to
      * @param {string} refId - reference Id to attach to the transfer
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async redeemToken(transferToken, amount, currency, description, destinations, refId) {
         if (!refId) {
@@ -1039,7 +1039,7 @@ class AuthHttpClient {
      * Gets a token by its id.
      *
      * @param {string} tokenId - id of the token to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getToken(tokenId) {
         const request = {
@@ -1054,7 +1054,7 @@ class AuthHttpClient {
      * the grantee.
      *
      * @param {string} toMemberId - beneficiary of the active access token
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getActiveAccessToken(toMemberId) {
         const request = {
@@ -1070,7 +1070,7 @@ class AuthHttpClient {
      * @param {string} type - type of tokens to get
      * @param {string} offset - where to start looking
      * @param {Number} limit - how many to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTokens(type, offset, limit) {
         const request = {
@@ -1116,7 +1116,7 @@ class AuthHttpClient {
      * Gets a transfer by id.
      *
      * @param {string} transferId - id of the transfer
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTransfer(transferId) {
         const request = {
@@ -1132,7 +1132,7 @@ class AuthHttpClient {
      * @param {string} tokenId - id of the token
      * @param {string} offset - where to start
      * @param {Number} limit - how many to get
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTransfers(tokenId, offset, limit) {
         const request = {
@@ -1151,7 +1151,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} key - key to add
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async approveKey(prevHash, key) {
         const update = {
@@ -1178,7 +1178,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} keys - keys to add
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async approveKeys(prevHash, keys) {
         const update = {
@@ -1203,7 +1203,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {string} keyId - keyId to remove
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async removeKey(prevHash, keyId) {
         const update = {
@@ -1224,7 +1224,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} keyIds - keys to remove
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async removeKeys(prevHash, keyIds) {
         const update = {
@@ -1243,7 +1243,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} alias - alias to add
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async addAlias(prevHash, alias) {
         return this.addAliases(prevHash, [alias]);
@@ -1295,7 +1295,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} aliases - aliases to add
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async addAliases(prevHash, aliases) {
         const update = {
@@ -1323,7 +1323,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Object} alias - alias to remove
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async removeAlias(prevHash, alias) {
         return this.removeAliases(prevHash, [alias]);
@@ -1334,7 +1334,7 @@ class AuthHttpClient {
      *
      * @param {string} prevHash - hash of the previous directory entry.
      * @param {Array} aliases - aliases to remove
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async removeAliases(prevHash, aliases) {
         const update = {
@@ -1380,7 +1380,7 @@ class AuthHttpClient {
      * @param {string} tokenRequestId - token request id
      * @param {string} tokenId - token id
      * @param {string} state - url state
-     * @return {Object} response - response to the api call
+     * @return {Object} response to the api call
      */
     async signTokenRequestState(tokenRequestId, tokenId, state) {
         const req = {
@@ -1403,7 +1403,7 @@ class AuthHttpClient {
     /**
      * Deletes the member.
      *
-     * @return {Object} response - response to the api call
+     * @return {Object} response to the api call
      */
     async deleteMember() {
         this.useKeyLevel(config.KeyLevel.PRIVILEGED);
@@ -1419,7 +1419,7 @@ class AuthHttpClient {
      * Verifies an affiliated TPP.
      *
      * @param {string} memberId - id of the member to verify
-     * @return {Object} response - response to the api call
+     * @return {Object} response to the api call
      */
     async verifyAffiliate(memberId) {
         const request = {
@@ -1435,7 +1435,7 @@ class AuthHttpClient {
      * Resolves transfer destinations for the given account ID.
      *
      * @param {string} accountId - id of account to resolve destinations for
-     * @returns {Object} response - api response
+     * @return {Object} api response
      */
     async resolveTransferDestinations(accountId) {
         const request = {
@@ -1455,7 +1455,7 @@ class AuthHttpClient {
      *
      * @param {Number} balance - balance to put in the account
      * @param {string} currency - currency in the account
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async createTestBankAccount(balance, currency) {
         const req = {
@@ -1478,7 +1478,7 @@ class AuthHttpClient {
      *
      * @param {string} subscriberId - id of subscriber
      * @param {string} notificationId - id of notification
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTestBankNotification(subscriberId, notificationId) {
         const request = {
@@ -1492,7 +1492,7 @@ class AuthHttpClient {
      * Gets test bank notifications.
      *
      * @param {string} subscriberId - id of subscriber
-     * @return {Object} response - response to the API call
+     * @return {Object} response to the API call
      */
     async getTestBankNotifications(subscriberId) {
         const request = {

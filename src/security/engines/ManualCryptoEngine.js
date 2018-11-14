@@ -72,7 +72,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * Create a signer. Assumes we previously generated the relevant key.
      *
      * @param {string} level - privilege level 'LOW', 'STANDARD', 'PRIVILEGED'
-     * @return {Object} signer - object that implements sign, signJson
+     * @return {Object} object that implements sign, signJson
      */
     async createSigner(level) {
         const keyPairs = keys.filter(k => (k.level === level));
@@ -86,7 +86,7 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      * Create a verifier. Assumes we have the key with the passed ID.
      *
      * @param {string} keyId - ID of key to use
-     * @return {Object} signer - object that implements verify, verifyJson
+     * @return {Object} object that implements verify, verifyJson
      */
     async createVerifier(keyId) {
         const keyPairs = keys.filter(k => (k.id === keyId));

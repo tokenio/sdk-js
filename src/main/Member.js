@@ -54,7 +54,6 @@ export default class Member {
      * Represents a Member
      *
      * @constructor
-     * @param {Object} options - see below
      */
     constructor(options: {
         env: string, // Token environment to target
@@ -75,8 +74,6 @@ export default class Member {
 
     /**
      * Gets the memberId
-     *
-     * @return {string} memberId
      */
     memberId(): string {
         return this._id;
@@ -84,8 +81,6 @@ export default class Member {
 
     /**
      * Gets all of the member's aliases
-     *
-     * @return {Promise} aliases - member's aliases
      */
     aliases(): Promise<Array<Alias>> {
         return Util.callAsync(this.aliases, async () => {
@@ -99,7 +94,7 @@ export default class Member {
     /**
      * Gets the member's first alias
      *
-     * @return {Promise} alias - member's alias
+     * @return {Promise<Alias|undefined>} member's alias
      */
     firstAlias(): Promise<?Alias> {
         return Util.callAsync(this.firstAlias, async () => {
@@ -111,7 +106,7 @@ export default class Member {
     /**
      * Gets the member's public keys
      *
-     * @return {Promise} keys - keys objects
+     * @return keys objects
      */
     keys(): Promise<Array<Key>> {
         return Util.callAsync(this.keys, async () => {
@@ -125,8 +120,8 @@ export default class Member {
     /**
      * Creates a representable that acts as another member via an access token.
      *
-     * @param {string} accessTokenId - Id of the access token
-     * @return {Representable} representable - new member that acts as another member
+     * @param accessTokenId - Id of the access token
+     * @return new member that acts as another member
      */
     forAccessToken(accessTokenId: string) {
         const newMember = new Member(this._options);
@@ -138,7 +133,7 @@ export default class Member {
      * Sets the access token id to be used with this client.
      *
      * @deprecated use forAccessToken instead
-     * @param {string} accessTokenId - the access token id
+     * @param accessTokenId - the access token id
      */
     useAccessToken(accessTokenId: string): void {
         this._client.useAccessToken(accessTokenId);
@@ -163,8 +158,8 @@ export default class Member {
     /**
      * Approves a new key for this member
      *
-     * @param {Object} key - key to add
-     * @return {Promise} empty - empty promise
+     * @param key - key to add
+     * @return empty promise
      */
     approveKey(key: Key): Promise<void> {
         return Util.callAsync(this.approveKey, async () => {
@@ -176,8 +171,8 @@ export default class Member {
     /**
      * Approves new keys for this member
      *
-     * @param {Array} keys - keys to add
-     * @return {Promise} empty - empty promise
+     * @param keys - keys to add
+     * @return empty promise
      */
     approveKeys(keys: Array<Key>): Promise<void> {
         return Util.callAsync(this.approveKeys, async () => {
@@ -189,8 +184,8 @@ export default class Member {
     /**
      * Removes a key from this member
      *
-     * @param {string} keyId - keyId to remove. Note, keyId is the hash of the pk
-     * @return {Promise} empty - empty promise
+     * @param keyId - keyId to remove. Note, keyId is the hash of the pk
+     * @return empty promise
      */
     removeKey(keyId: string): Promise<void> {
         return Util.callAsync(this.removeKey, async () => {
@@ -202,8 +197,8 @@ export default class Member {
     /**
      * Removes keys from this member
      *
-     * @param {Array} keyIds - keyIds to remove. Note, keyId is the hash of the pk
-     * @return {Promise} empty - empty promise
+     * @param keyIds - keyIds to remove. Note, keyId is the hash of the pk
+     * @return empty promise
      */
     removeKeys(keyIds: Array<string>): Promise<void> {
         return Util.callAsync(this.removeKeys, async () => {
@@ -215,8 +210,8 @@ export default class Member {
     /**
      * Adds an alias to this member
      *
-     * @param {Object} alias - alias to add
-     * @return {Promise} empty - empty promise
+     * @param alias - alias to add
+     * @return empty promise
      */
     addAlias(alias: Alias): Promise<void> {
         return this.addAliases([alias]);
@@ -225,8 +220,8 @@ export default class Member {
     /**
      * Adds aliases to this member
      *
-     * @param {Array} aliases - aliases to add
-     * @return {Promise} empty - empty promise
+     * @param aliases - aliases to add
+     * @return empty promise
      */
     addAliases(aliases: Array<Alias>): Promise<void> {
         return Util.callAsync(this.addAliases, async () => {
@@ -241,8 +236,8 @@ export default class Member {
     /**
      * Removes an alias from the memberId
      *
-     * @param {Object} alias - alias to remove
-     * @return {Promise} empty - empty promise
+     * @param alias - alias to remove
+     * @return empty promise
      */
     removeAlias(alias: Alias): Promise<void> {
         return Util.callAsync(this.removeAlias, async () => {
@@ -254,8 +249,8 @@ export default class Member {
     /**
      * Removes aliases from the memberId
      *
-     * @param {Array} aliases - aliases to remove
-     * @return {Promise} empty - empty promise
+     * @param aliases - aliases to remove
+     * @return empty promise
      */
     removeAliases(aliases: Array<Alias>): Promise<void> {
         return Util.callAsync(this.removeAliases, async () => {
@@ -267,7 +262,7 @@ export default class Member {
     /**
      * Set the 'normal consumer' rule as member's recovery rule.
      * (As of Nov 2017, this rule was: To recover, verify an alias.)
-     * @return {Promise} promise containing RecoveryRule proto buffer.
+     * @return promise containing RecoveryRule proto buffer.
      */
     useDefaultRecoveryRule(): Promise<RecoveryRule> {
         return Util.callAsync(this.useDefaultRecoveryRule, async () => {
@@ -286,9 +281,9 @@ export default class Member {
     /**
      * Links bank accounts to the member
      *
-     * @param {string} authorization - bankAuthorization obtained from bank, or
+     * @param authorization - bankAuthorization obtained from bank, or
      * oauthBankAuthorization
-     * @return {Promise} accounts - Promise resolving the the Accounts linked
+     * @return Promise resolving the the Accounts linked
      */
     linkAccounts(
         authorization: OauthBankAuthorization | any
@@ -312,8 +307,8 @@ export default class Member {
     /**
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
-     * @param {Array} accountIds - account ids to unlink
-     * @return {Promise} empty - empty promise
+     * @param accountIds - account ids to unlink
+     * @return empty promise
      */
     unlinkAccounts(accountIds: Array<string>): Promise<void> {
         return Util.callAsync(this.unlinkAccounts, async() => {
@@ -324,8 +319,8 @@ export default class Member {
     /**
      * Looks up a member's account by Id
      *
-     * @param {string} accountId - accountId
-     * @return {Promise} account - Promise resolving to the account
+     * @param accountId - accountId
+     * @return Promise resolving to the account
      * @throws error if account not found
      */
     getAccount(accountId: string): Promise<Account> {
@@ -338,7 +333,7 @@ export default class Member {
     /**
      * Looks up the member's accounts
      *
-     * @return {Promise} accounts - Promise resolving to the accounts
+     * @return Promise resolving to the accounts
      */
     getAccounts(): Promise<Array<Account>> {
         return Util.callAsync(this.getAccounts, async () => {
@@ -352,7 +347,7 @@ export default class Member {
     /**
      * Gets the default bank account.
      *
-     * @return {Promise} the default bank account
+     * @return the default bank account
      * @throws error if default account not found
      */
     getDefaultAccount(): Promise<Account> {
@@ -365,8 +360,8 @@ export default class Member {
     /**
      * Sets the member's default bank account.
      *
-     * @param {string} accountId - the bank account id
-     * @return {Promise} empty - empty promise
+     * @param accountId - the bank account id
+     * @return empty promise
      */
     setDefaultAccount(accountId: string): Promise<void> {
         return Util.callAsync(this.setDefaultAccount, async () => {
@@ -377,20 +372,21 @@ export default class Member {
     /**
      * Looks up if this account is default.
      *
-     * @param {string} accountId - the bank account id
-     * @return {Promise} response - true if the account is default; false otherwise
+     * @param accountId - the bank account id
+     * @return true if the account is default; false otherwise
      */
     isDefaultAccount(accountId: string): Promise<boolean> {
         return Util.callAsync(this.isDefaultAccount, async () => {
-            return (await this.getDefaultAccount())?.id === accountId;
+            const defaultAcc = await this.getDefaultAccount();
+            return defaultAcc && defaultAcc.id === accountId;
         });
     }
 
     /**
      * Gets the info of a bank, including a link for pairing accounts at this bank
      *
-     * @param {string} bankId - id of the bank
-     * @return {Object} bankInfo - info
+     * @param bankId - id of the bank
+     * @return info
      * @throws error if bank not found
      */
     getBankInfo(bankId: string): Promise<BankInfo> {
@@ -404,9 +400,9 @@ export default class Member {
      * Creates a subscriber to receive notifications of member events, such as step up auth,
      * new device requests, linking account requests, or transfer notifications
      *
-     * @param {string} handler - who is handling the notifications
-     * @param {Object} handlerInstructions - map of strings with delivery options
-     * @return {Promise} subscriber - Subscriber
+     * @param handler - who is handling the notifications
+     * @param handlerInstructions - map of strings with delivery options
+     * @return Subscriber
      */
     subscribeToNotifications(
         handler: string = 'token',
@@ -421,7 +417,7 @@ export default class Member {
     /**
      * Gets all subscribers for this member
      *
-     * @return {Promise} - subscribers
+     * @return subscribers
      */
     getSubscribers(): Promise<Array<Subscriber>> {
         return Util.callAsync(this.getSubscribers, async () => {
@@ -435,8 +431,8 @@ export default class Member {
     /**
      * Gets a specific subscriber by Id
      *
-     * @param {string} subscriberId - id of the subscriber
-     * @return {Promise} - subscriber
+     * @param subscriberId - id of the subscriber
+     * @return subscriber
      * @throws error if subscriber not found
      */
     getSubscriber(subscriberId: string): Promise<Subscriber> {
@@ -449,9 +445,9 @@ export default class Member {
     /**
      * Gets all notifications for this member
      *
-     * @param {string} offset - where to start looking
-     * @param {int} limit - how many to look for
-     * @return {Promise} - notifications
+     * @param offset - where to start looking
+     * @param limit - how many to look for
+     * @return notifications
      */
     getNotifications(
         offset: string,
@@ -472,8 +468,8 @@ export default class Member {
     /**
      * Gets a specific notification by Id
      *
-     * @param {string} notificationId - id of the notification
-     * @return {Promise} - notification
+     * @param notificationId - id of the notification
+     * @return notification
      * @throws error if notification not found
      */
     getNotification(notificationId: string): Promise<Notification> {
@@ -486,8 +482,8 @@ export default class Member {
     /**
      * Unsubscribes from notifications (removes a subscriber)
      *
-     * @param {string} subscriberId - subscriber to remove
-     * @return {Promise} empty - empty promise
+     * @param subscriberId - subscriber to remove
+     * @return empty promise
      */
     unsubscribeFromNotifications(subscriberId: string): Promise<void> {
         return Util.callAsync(this.unsubscribeFromNotifications, async () => {
@@ -498,8 +494,8 @@ export default class Member {
     /**
      * Triggers a token step up notification on the user's app
      *
-     * @param {string} tokenId - token ID
-     * @return {Promise} - notification status
+     * @param tokenId - token ID
+     * @return notification status
      */
     triggerStepUpNotification(tokenId: string): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.triggerStepUpNotification, async () => {
@@ -510,8 +506,8 @@ export default class Member {
 
     /**
      * Triggers a balance step up notification on the user's app
-     * @param {Array} accountIds - array of account ids
-     * @return {Promise} - notification status
+     * @param accountIds - array of account ids
+     * @return notification status
      */
     triggerBalanceStepUpNotification(accountIds: Array<string>): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.triggerBalanceStepUpNotification, async () => {
@@ -522,9 +518,9 @@ export default class Member {
 
     /**
      * Triggers a transaction step up notification on the user's app
-     * @param {String} accountId - account id
-     * @param {String} transactionId - transaction id
-     * @return {Promise} - notification status
+     * @param accountId - account id
+     * @param transactionId - transaction id
+     * @return notification status
      */
     triggerTransactionStepUpNotification(
         accountId: string,
@@ -541,9 +537,9 @@ export default class Member {
     /**
      * Creates an address for this member, and saves it
      *
-     * @param {string} name - name of the address (e.g 'Home')
-     * @param {object} address - address
-     * @return {Promise} promise of AddressRecord structure
+     * @param name - name of the address (e.g 'Home')
+     * @param address - address
+     * @return promise of AddressRecord structure
      */
     addAddress(name: string, address: Address): Promise<AddressRecord> {
         return Util.callAsync(this.addAddress, async () => {
@@ -555,8 +551,8 @@ export default class Member {
     /**
      * Gets the member's address
      *
-     * @param {string} addressId - the address id
-     * @return {Promise} address - AddressRecord structure
+     * @param addressId - the address id
+     * @return AddressRecord structure
      * @throws error if address not found
      */
     getAddress(addressId: string): Promise<AddressRecord> {
@@ -569,7 +565,7 @@ export default class Member {
     /**
      * Gets the member's addresses
      *
-     * @return {Promise} addresses - list of AddressRecord structures
+     * @return list of AddressRecord structures
      */
     getAddresses(): Promise<Array<AddressRecord>> {
         return Util.callAsync(this.getAddresses, async () => {
@@ -583,8 +579,8 @@ export default class Member {
     /**
      * Deletes a member's address by id
      *
-     * @param {string} addressId - the address id
-     * @return {Promise} empty - empty promise
+     * @param addressId - the address id
+     * @return empty promise
      */
     deleteAddress(addressId: string): Promise<void> {
         return Util.callAsync(this.deleteAddress, async () => {
@@ -595,8 +591,8 @@ export default class Member {
     /**
      * Replaces the authenticated member's public profile.
      *
-     * @param {Object} profile - profile to set
-     * @return {Promise} profile - newly-set profile
+     * @param profile - profile to set
+     * @return newly-set profile
      */
     setProfile(profile: Profile): Promise<Profile> {
         return Util.callAsync(this.setProfile, async () => {
@@ -608,8 +604,8 @@ export default class Member {
     /**
      * Gets a member's public profile.
      *
-     * @param {string} id - member id whose profile to get
-     * @return {Promise} profile - profile
+     * @param id - member id whose profile to get
+     * @return profile
      * @throws error if profile not found
      */
     getProfile(id: string): Promise<Profile> {
@@ -622,9 +618,9 @@ export default class Member {
     /**
      * Uploads the authenticated member's public profile.
      *
-     * @param {string} type - MIME type
-     * @param {Buffer} data - data in bytes
-     * @return {Promise} empty - empty promise
+     * @param type - MIME type
+     * @param data - data in bytes
+     * @return empty promise
      */
     setProfilePicture(
         type: string,
@@ -638,9 +634,9 @@ export default class Member {
     /**
      * Gets a member's public profile picture.
      *
-     * @param {string} id - member id whose picture to get
-     * @param {Object} size - desired size category SMALL/MEDIUM/LARGE/ORIGINAL
-     * @return {Object} blob - downloaded blob
+     * @param id - member id whose picture to get
+     * @param size - desired size category SMALL/MEDIUM/LARGE/ORIGINAL
+     * @return downloaded blob
      * @throws error if profile picture not found
      */
     getProfilePicture(
@@ -656,9 +652,9 @@ export default class Member {
     /**
      * Replaces member's receipt contact.
      *
-     * @param {string} type - receipt contact type, can only be EMAIL currently
-     * @param {string} value - receipt contact value for corresponding type
-     * @return {Promise} empty - empty promise
+     * @param type - receipt contact type, can only be EMAIL currently
+     * @param value - receipt contact value for corresponding type
+     * @return empty promise
      */
     setReceiptContact(type: 'EMAIL' = 'EMAIL', value: string): Promise<void> {
         return Util.callAsync(this.setReceiptContact, async () => {
@@ -669,7 +665,7 @@ export default class Member {
     /**
      * Get member's receipt contact.
      *
-     * @return {Object} contact - receipt contact: value + type
+     * @return receipt contact: value + type
      * @throws error if receipt contact not found
      */
     getReceiptContact(): Promise<ReceiptContact> {
@@ -682,8 +678,8 @@ export default class Member {
     /**
      * Adds a Token member to this member's list of trusted beneficiaries.
      *
-     * @param {string} memberId - member ID of the trusted beneficiary to add
-     * @return {Promise} empty - empty promise
+     * @param memberId - member ID of the trusted beneficiary to add
+     * @return empty promise
      */
     addTrustedBeneficiary(memberId: string): Promise<void> {
         return Util.callAsync(this.addTrustedBeneficiary, async () => {
@@ -694,8 +690,8 @@ export default class Member {
     /**
      * Removes a Token member from this member's list of trusted beneficiaries.
      *
-     * @param {string} memberId - member ID of the trusted beneficiary to remove
-     * @return {Promise} empty - empty promise
+     * @param memberId - member ID of the trusted beneficiary to remove
+     * @return empty promise
      */
     removeTrustedBeneficiary(memberId: string): Promise<void> {
         return Util.callAsync(this.removeTrustedBeneficiary, async () => {
@@ -706,7 +702,7 @@ export default class Member {
     /**
      * Get the member's list of trusted beneficiaries.
      *
-     * @returns {Promise} trusted beneficiaries - list of TrustedBeneficiary objects
+     * @return trusted beneficiaries - list of TrustedBeneficiary objects
      */
     getTrustedBeneficiaries(): Promise<Array<TrustedBeneficiary>> {
         return Util.callAsync(this.getTrustedBeneficiaries, async () => {
@@ -718,8 +714,8 @@ export default class Member {
     /**
      * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
      *
-     * @param {Object} tokenRequest - token request to store
-     * @return {Promise} the stored TokenRequest
+     * @param tokenRequest - token request to store
+     * @return the stored TokenRequest
      */
     storeTokenRequest(tokenRequest: TokenRequest): Promise<TokenRequest> {
         return Util.callAsync(this.storeTokenRequest, async () => {
@@ -731,9 +727,9 @@ export default class Member {
     /**
      * Creates a new unendorsed access token.
      *
-     * @param {Object} alias - the alias of the grantee of the Access Token
-     * @param {array} resources - a list of resources to give access to
-     * @return {Promise} token - promise of a created Access Token
+     * @param alias - the alias of the grantee of the Access Token
+     * @param resources - a list of resources to give access to
+     * @return promise of a created Access Token
      */
     createAccessToken(alias: Alias, resources: Array<Resource>): Promise<Token> {
         return Util.callAsync(this.createAccessToken, async () => {
@@ -747,7 +743,7 @@ export default class Member {
     /**
      * Creates a new access token builder, that must be executed.
      *
-     * @return {Promise} token - promise of a created Access Token
+     * @return promise of a created Access Token
      */
     createAccessTokenBuilder(): AccessTokenBuilder {
         return Util.callSync(this.createAccessTokenBuilder, () => {
@@ -758,9 +754,9 @@ export default class Member {
     /**
      * Cancels the existing token and creates a replacement for it.
      *
-     * @param {Object} tokenToCancel - the old token to cancel
-     * @param {Array} newResources - the new resources for this token to grant access to
-     * @return {Promise} operationResult - the result of the operation
+     * @param tokenToCancel - the old token to cancel
+     * @param newResources - the new resources for this token to grant access to
+     * @return the result of the operation
      */
     replaceAccessToken(
         tokenToCancel: Token | string,
@@ -778,9 +774,9 @@ export default class Member {
     /**
      * Cancels the existing token, creates a replacement and endorses it.
      *
-     * @param {Object} tokenToCancel - the old token to cancel
-     * @param {Array} newResources - the new resources for this token to grant access to
-     * @return {Promise} operationResult - the result of the operation
+     * @param tokenToCancel - the old token to cancel
+     * @param newResources - the new resources for this token to grant access to
+     * @return the result of the operation
      */
     replaceAndEndorseAccessToken(
         tokenToCancel: Token | string,
@@ -800,9 +796,9 @@ export default class Member {
      * Creates a transfer token builder, that when executed, will create a transfer token by
      * performing an API call.
      *
-     * @param {double} lifetimeAmount - amount limit on the token
-     * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
-     * @return {TransferTokenBuilder} builder - builder for the token
+     * @param lifetimeAmount - amount limit on the token
+     * @param currency - 3 letter currency code ('EUR', 'USD', etc)
+     * @return builder for the token
      */
     createTransferToken(
         lifetimeAmount: number,
@@ -818,9 +814,9 @@ export default class Member {
      * Creates a transfer token builder, that when executed, will create a transfer token by
      * performing an API call.
      *
-     * @param {double} lifetimeAmount - amount limit on the token
-     * @param {string} currency - 3 letter currency code ('EUR', 'USD', etc)
-     * @return {TransferTokenBuilder} builder - builder for the token
+     * @param lifetimeAmount - amount limit on the token
+     * @param currency - 3 letter currency code ('EUR', 'USD', etc)
+     * @return builder for the token
      */
     createTransferTokenBuilder(
         lifetimeAmount: number,
@@ -834,8 +830,8 @@ export default class Member {
     /**
      * Looks up a token by its Id
      *
-     * @param {string} tokenId - id of the token
-     * @return {Promise} token - token
+     * @param tokenId - id of the token
+     * @return token
      * @throws error if token not found
      */
     getToken(tokenId: string): Promise<Token> {
@@ -849,8 +845,8 @@ export default class Member {
      * Looks up a existing access token where the calling member is the grantor and given member is
      * the grantee.
      *
-     * @param {string} toMemberId - beneficiary of the active access token
-     * @return {Promise} token - access token returned by the server
+     * @param toMemberId - beneficiary of the active access token
+     * @return access token returned by the server
      */
     getActiveAccessToken(toMemberId: string): Promise<Token> {
         return Util.callAsync(this.getActiveAccessToken, async () => {
@@ -862,9 +858,9 @@ export default class Member {
     /**
      * Looks up all transfer tokens
      *
-     * @param {string} offset - where to start looking
-     * @param {int} limit - how many to look for
-     * @return {Promise} tokens - returns a list of Transfer Tokens
+     * @param offset - where to start looking
+     * @param limit - how many to look for
+     * @return returns a list of Transfer Tokens
      */
     getTransferTokens(
         offset: string,
@@ -885,9 +881,9 @@ export default class Member {
     /**
      * Looks up all access tokens
      *
-     * @param {string} offset - where to start looking
-     * @param {int} limit - how many to look for
-     * @return {Promise} access tokens - returns a list of access tokens
+     * @param offset - where to start looking
+     * @param limit - how many to look for
+     * @return access tokens - returns a list of access tokens
      */
     getAccessTokens(
         offset: string,
@@ -911,8 +907,8 @@ export default class Member {
      * MORE_SIGNATURES_NEEDED and the system pushes a notification to
      * the member prompting them to use a higher-privilege key.
      *
-     * @param {Token} token - Transfer token to endorse. Can also be a {string} tokenId
-     * @return {Promise} TokenOperationResult - endorsed token
+     * @param token - Transfer token to endorse. Can also be a tokenId
+     * @return endorsed token
      */
     endorseToken(token: Token | string): Promise<TokenOperationResult> {
         return Util.callAsync(this.endorseToken, async () => {
@@ -930,8 +926,8 @@ export default class Member {
     /**
      * Cancels a token. (Called by the payer or the redeemer)
      *
-     * @param {Token} token - token to cancel. Can also be a {string} tokenId
-     * @return {Promise} TokenOperationResult - cancelled token
+     * @param token - token to cancel. Can also be a tokenId
+     * @return cancelled token
      */
     cancelToken(token: Token | string): Promise<TokenOperationResult> {
         return Util.callAsync(this.cancelToken, async () => {
@@ -949,8 +945,8 @@ export default class Member {
     /**
      * Generates a blocking function to cancel a token. (Called by the payer or the redeemer)
      *
-     * @param {Token} token - token to cancel. Can also be a {string} tokenId
-     * @return {Function} blocking function to cancel the token
+     * @param token - token to cancel. Can also be a tokenId
+     * @return {Promise<function|undefined>} blocking function to cancel the token
      */
     getBlockingCancelTokenFunction(token: Token | string): Promise<?() => void> {
         return Util.callAsync(this.getBlockingCancelTokenFunction, async () => {
@@ -966,16 +962,16 @@ export default class Member {
     /**
      * Redeems a token. (Called by the payee or redeemer)
      *
-     * @param {object} token - token to redeem. Can also be a {string} tokenId
-     * @param {int} amount - amount to redeemer
-     * @param {string} currency - currency to redeem
-     * @param {string} description - optional transfer description
-     * @param {Array} destinations - transfer destinations
-     * @param {string} refId - Id that will be set on created Transfer.
+     * @param token - token to redeem. Can also be a tokenId
+     * @param amount - amount to redeemer
+     * @param currency - currency to redeem
+     * @param description - optional transfer description
+     * @param destinations - transfer destinations
+     * @param refId - Id that will be set on created Transfer.
      *                         Token uses this to detect duplicates.
      *                         Caller might use this to recognize the transfer.
      *                         If param empty, transfer will have random refId.
-     * @return {Promise} transfer - Transfer created as a result of this redeem call
+     * @return Transfer created as a result of this redeem call
      */
     redeemToken(
         token: Token | string,
@@ -989,13 +985,13 @@ export default class Member {
             let finalToken = await this._resolveToken(token);
             finalToken = finalToken.toJSON();
             if (amount === undefined) {
-                amount = finalToken?.payload.transfer.lifetimeAmount;
+                amount = finalToken && finalToken.payload.transfer.lifetimeAmount;
             }
             if (currency === undefined) {
-                currency = finalToken?.payload.transfer.currency;
+                currency = finalToken && finalToken.payload.transfer.currency;
             }
             if (description === undefined) {
-                description = finalToken?.payload.description;
+                description = finalToken && finalToken.payload.description;
             }
             if (Util.countDecimals(amount) > config.decimalPrecision) {
                 throw new Error(
@@ -1021,8 +1017,8 @@ export default class Member {
     /**
      * Looks up a transfer
      *
-     * @param {string} transferId - id to look up
-     * @return {Promise} transfer - transfer if found
+     * @param transferId - id to look up
+     * @return transfer if found
      * @throws error if transfer not found
      */
     getTransfer(transferId: string): Promise<Transfer> {
@@ -1035,10 +1031,10 @@ export default class Member {
     /**
      * Looks up all of the member's transfers
      *
-     * @param {string} tokenId - token to use for lookup
-     * @param {string} offset - where to start looking
-     * @param {int} limit - how many to retrieve
-     * @return {Promise} transfers - Transfers
+     * @param tokenId - token to use for lookup
+     * @param offset - where to start looking
+     * @param limit - how many to retrieve
+     * @return Transfers
      */
     getTransfers(
         tokenId: string,
@@ -1060,9 +1056,9 @@ export default class Member {
     /**
      * Looks up the balance of an account
      *
-     * @param {string} accountId - id of the account
-     * @param {string} keyLevel - key level
-     * @return {Promise} balance - Promise of get balance response object
+     * @param accountId - id of the account
+     * @param keyLevel - key level
+     * @return Promise of get balance response object
      */
     getBalance(
         accountId: string,
@@ -1080,9 +1076,9 @@ export default class Member {
     /**
      * Looks up the balances of an array of accounts
      *
-     * @param {Array} accountIds - array of account ids
-     * @param {string} keyLevel - key level
-     * @return {Promise} balance - Promise of get balances response object
+     * @param accountIds - array of account ids
+     * @param keyLevel - key level
+     * @return Promise of get balances response object
      */
     getBalances(
         accountIds: Array<string>,
@@ -1101,10 +1097,10 @@ export default class Member {
     /**
      * Looks up a transaction
      *
-     * @param {string} accountId - id of the account
-     * @param {string} transactionId - which transaction to look up
-     * @param {string} keyLevel - key level
-     * @return {Promise} transaction - the Transaction
+     * @param accountId - id of the account
+     * @param transactionId - which transaction to look up
+     * @param keyLevel - key level
+     * @return the Transaction
      * @throws error if transaction not found
      */
     getTransaction(
@@ -1121,11 +1117,11 @@ export default class Member {
     /**
      * Looks up all of the member's transactions for an account
      *
-     * @param {string} accountId - id of the account
-     * @param {string} offset - where to start looking
-     * @param {int} limit - how many to retrieve
-     * @param {string} keyLevel - key level
-     * @return {Promise} transactions - Transactions
+     * @param accountId - id of the account
+     * @param offset - where to start looking
+     * @param limit - how many to retrieve
+     * @param keyLevel - key level
+     * @return Transactions
      */
     getTransactions(
         accountId: string,
@@ -1148,11 +1144,11 @@ export default class Member {
     /**
      * Uploads a blob to the server.
      *
-     * @param {string} ownerId - owner of the blob
-     * @param {string} type - MIME type
-     * @param {string} name - name of the file
-     * @param {Buffer} data - data in bytes
-     * @return {Object} attachment - attachment
+     * @param ownerId - owner of the blob
+     * @param type - MIME type
+     * @param name - name of the file
+     * @param data - data in bytes
+     * @return attachment
      */
     createBlob(
         ownerId: string,
@@ -1173,8 +1169,8 @@ export default class Member {
     /**
      * Downloads a blob from the server.
      *
-     * @param {string} blobId - id of the blob
-     * @return {Object} blob - downloaded blob
+     * @param blobId - id of the blob
+     * @return downloaded blob
      * @throws error if blob not found
      */
     getBlob(blobId: string): Promise<Blob> {
@@ -1187,9 +1183,9 @@ export default class Member {
     /**
      * Downloads a blob from the server, that is attached to a token.
      *
-     * @param {string} tokenId - id of the token
-     * @param {string} blobId - id of the blob
-     * @return {Object} blob - downloaded blob
+     * @param tokenId - id of the token
+     * @param blobId - id of the blob
+     * @return downloaded blob
      * @throws error if token blob not found
      */
     getTokenBlob(
@@ -1205,10 +1201,10 @@ export default class Member {
     /**
      * Sign with a Token signature a token request state payload.
      *
-     * @param {string} tokenRequestId - token request id
-     * @param {string} tokenId - token id
-     * @param {string} state - url state
-     * @return {Object} response - response to the api call
+     * @param tokenRequestId - token request id
+     * @param tokenId - token id
+     * @param state - url state
+     * @return response to the api call
      */
     signTokenRequestState(
         tokenRequestId: string,
@@ -1224,7 +1220,7 @@ export default class Member {
     /**
      * Deletes the member.
      *
-     * @return {Object} response - response to the api call
+     * @return response to the api call
      */
     deleteMember(): Promise<void> {
         return Util.callAsync(this.deleteMember, async () => {
@@ -1236,7 +1232,7 @@ export default class Member {
      * Verifies and affiliated TPP.
      *
      * @param memberId - id of the member to verify
-     * @return {Promise} empty - empty promise
+     * @return empty promise
      */
     verifyAffiliate(memberId: string): Promise<void> {
         return Util.callAsync(this.verifyAffiliate, async () => {
@@ -1247,8 +1243,8 @@ export default class Member {
     /**
      * Resolves transfer destinations for the given account ID.
      *
-     * @param {string} accountId - id of account to resolve destinations for
-     * @returns {Promise} response - resolved transfer endpoints
+     * @param accountId - id of account to resolve destinations for
+     * @return resolved transfer endpoints
      */
     resolveTransferDestinations(accountId: string): Promise<TransferEndpoint[]> {
         return Util.callAsync(this.resolveTransferDestinations, async () => {
@@ -1259,9 +1255,9 @@ export default class Member {
     /**
      * Creates a test bank account in a fake bank
      *
-     * @param {double} balance - balance of the account
-     * @param {string} currency - currency of the account
-     * @return {Array} bank authorization to use with linkAccounts
+     * @param balance - balance of the account
+     * @param currency - currency of the account
+     * @return bank authorization to use with linkAccounts
      */
     createTestBankAccount(
         balance: number,
@@ -1277,9 +1273,9 @@ export default class Member {
      * Creates a test bank account in a fake bank
      *
      * @deprecated - use createTestBankAccount
-     * @param {double} balance - balance of the account
-     * @param {string} currency - currency of the account
-     * @return {Array} bank authorization to use with linkAccounts
+     * @param balance - balance of the account
+     * @param currency - currency of the account
+     * @return bank authorization to use with linkAccounts
      */
     createTestBankAccountOauth(
         balance: number,
@@ -1294,9 +1290,9 @@ export default class Member {
     /**
      * Gets test bank notification.
      *
-     * @param {string} subscriberId - id of subscriber
-     * @param {string} notificationId - id of notification
-     * @return {Object} response - response to the API call
+     * @param subscriberId - id of subscriber
+     * @param notificationId - id of notification
+     * @return response to the API call
      */
     getTestBankNotification(
         subscriberId: string,
@@ -1311,8 +1307,8 @@ export default class Member {
     /**
      * Gets test bank notifications.
      *
-     * @param {string} subscriberId - id of subscriber
-     * @return {Object} response - response to the API call
+     * @param subscriberId - id of subscriber
+     * @return response to the API call
      */
     getTestBankNotifications(subscriberId: string): Promise<Array<Notification>> {
         return Util.callAsync(this.getTestBankNotifications, async () => {
