@@ -7,7 +7,7 @@ import Util from '../Util';
  * @param {TokenLib} Token - initialized SDK
  * @param {Member} payee - member that hopes to receive payment
  * @param {Object} payerAlias - alias of potential-payer member
- * @return {Object} NotifyStatus - status
+ * @return {Object} status
  */
 export default async (Token, payee, payerAlias) => {
     // We'll use this as a reference ID. Normally, a payee who

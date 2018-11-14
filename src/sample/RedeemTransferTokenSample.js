@@ -6,7 +6,7 @@ import Util from '../Util';
  *
  * @param {Member} payee - payee member
  * @param {string} tokenId - id of the token to redeem
- * @return {Object} transfer - created transfer
+ * @return {Object} created transfer
  */
 export default async (payee, tokenId) => {
     // We'll use this as a reference ID. Normally, a payee who

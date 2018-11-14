@@ -5,7 +5,7 @@ import Util from '../Util';
  *
  * @param {Member} payer - member that will fund the token
  * @param {Object} payeeAlias - alias of the payee member
- * @return {Object} token - endorsed token
+ * @return {Object} endorsed token
  */
 export default async (payer, payeeAlias) => {
     // We'll use this as a reference ID. Normally, a payer who

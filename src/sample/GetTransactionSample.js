@@ -5,7 +5,7 @@ import config from '../config.json';
  *
  * @param {Member} payer - member
  * @param {Object} transfer - recently-completed transfer
- * @return {Object} transaction - transaction record for that transfer
+ * @return {Object} transaction record for that transfer
  */
 export default async (payer, transfer) => {
     const accounts = await payer.getAccounts();

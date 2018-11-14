@@ -1,6 +1,6 @@
 {
     "name": "token-io",
-    "version": "2.0.0-beta.24",
+    "version": "2.0.0",
     "description": "Token JavaScript SDK",
     "license": "ISC",
     "author": {
@@ -53,6 +53,7 @@
         "cross-env": "^5.2.0",
         "esdoc": "^1.0.3",
         "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+        "esdoc-flow-type-plugin": "^1.1.0",
         "esdoc-standard-plugin": "^1.0.0",
         "eslint": "^5.2.0",
         "eslint-plugin-flowtype": "^2.50.0",

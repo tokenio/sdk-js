@@ -5,7 +5,7 @@ import {Resource} from '..';
  *
  * @param {Member} grantor - member that will give access
  * @param {Object} granteeAlias - alias of the member that will be granted access
- * @return {Object} token - endorsed token
+ * @return {Object} endorsed token
  */
 export default async (grantor, granteeAlias) => {
     // Grantor creates the token with the desired terms

@@ -15,7 +15,7 @@ class TokenRequestUrlSample {
      * @param {string} requestId - request id
      * @param {string} state - original state
      * @param {string} csrfToken - CSRF token
-     * @return {string} tokenRequestUrl - the token request URL
+     * @return {string} the token request URL
      */
     static generateTokenRequestUrl(requestId, state, csrfToken) {
         return Token.generateTokenRequestUrl(requestId, state, csrfToken);
@@ -27,7 +27,7 @@ class TokenRequestUrlSample {
      *
      * @param {string} callbackUrl - callback URL
      * @param {string} csrfToken - CSRF token
-     * @return {Object} result - inner state and token id
+     * @return {Object} inner state and token id
      */
     static async parseTokenRequestCallbackUrl(callbackUrl, csrfToken) {
         return await Token.parseTokenRequestCallbackUrl(callbackUrl, csrfToken);
@@ -40,7 +40,7 @@ class TokenRequestUrlSample {
      * @param {object} grantor - grantor of the token
      * @param {object} grantee - grantee of the token
      * @param {string} tokenRequestUrl - token request URL
-     * @return {Promise} promise - promise of callback URL
+     * @return {Promise} promise of callback URL
      */
     static async getCallbackUrlFromTokenRequestUrl(
         tokenRequestId,
@@ -62,7 +62,7 @@ class TokenRequestUrlSample {
     /**
      * Gets the Token member.
      *
-     * @return {Promise} promise - promise of the token member
+     * @return {Promise} promise of the token member
      */
     static async getTokenMember() {
         return await Token._unauthenticatedClient.getTokenMember();
@@ -72,7 +72,7 @@ class TokenRequestUrlSample {
      * Generate a valid access token for the grantor.
      * @param {Object} grantor - the token grantor
      * @param {Object} grantee - the token grantee
-     * @return {Promise} promise - promise of an access token
+     * @return {Promise} promise of an access token
      */
     static async generateValidAccessToken(grantor, grantee) {
         const granteeAlias = await grantee.firstAlias();

@@ -29,11 +29,7 @@ import type {NotifyStatusEnum} from '../proto';
  * sending notifications, etc, as well as access to other SDK classes.
  */
 export class TokenIO {
-    _env: string;
-    _globalRpcErrorCallback: ?({name: string, message: string}) => void;
-    _developerKey: ?string;
-    _loggingEnabled: ?boolean;
-    _customSdkUrl: ?string;
+    options: Object;
     _unauthenticatedClient: HttpClient;
     KeyLevel: {
         PRIVILEGED?: string,
@@ -51,7 +47,7 @@ export class TokenIO {
     /**
      * Construct the Token SDK object, pointing to the given environment.
      *
-     * @param {Object} options - see below
+     * @param options - see below
      */
     constructor(options: {
         env?: string, // Token environment to target, defaults to production
@@ -63,19 +59,7 @@ export class TokenIO {
         loggingEnabled?: boolean, // enable HTTP error logging if true
         customSdkUrl?: string, // override the default SDK URL
     }): void {
-        const {
-            env,
-            developerKey,
-            keyDir,
-            globalRpcErrorCallback,
-            loggingEnabled,
-            customSdkUrl,
-        } = options;
-        this._env = env || 'prd';
-        this._globalRpcErrorCallback = globalRpcErrorCallback;
-        this._developerKey = developerKey;
-        this._loggingEnabled = loggingEnabled;
-        this._customSdkUrl = customSdkUrl;
+        this.options = options;
         this._unauthenticatedClient = new HttpClient(options);
 
         /* Available security levels for keys */
@@ -96,8 +80,8 @@ export class TokenIO {
         /* Class for using the hardcoded crypto engine */
         this.ManualCryptoEngine = ManualCryptoEngine;
 
-        if (keyDir) {
-            UnsecuredFileCryptoEngine.setDirRoot(keyDir);
+        if (options.keyDir) {
+            UnsecuredFileCryptoEngine.setDirRoot(options.keyDir);
         }
         /* Class for the Unsecured filestore key root */
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
@@ -110,7 +94,7 @@ export class TokenIO {
      * If we're on a token page, sets up an iframe to avoid CORS preflights. All requests in this
      * window will be routed through the iframe.
      *
-     * @param {string} env - which environment (gateway) to use, (e.g. prd)
+     * @param env - which environment (gateway) to use, (e.g. prd)
      */
     static enableIframePassthrough(env: string): void {
         Util.enableIframePassthrough(config.corsDomainSuffix, config.urls[env]);
@@ -126,13 +110,14 @@ export class TokenIO {
     /**
      * Checks if a given alias already exists
      *
-     * @param {Object} alias - alias to check
-     * @return {Promise} result - true if alias exists, false otherwise
+     * @param alias - alias to check
+     * @return true if alias exists, false otherwise
      */
     aliasExists(alias: Alias): Promise<boolean> {
         return Util.callAsync(this.aliasExists, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
-            return !!res.data.member?.id;
+            const ret = res.data && res.data.member && res.data.member.id;
+            return !!ret;
         });
     }
 
@@ -141,7 +126,7 @@ export class TokenIO {
      * you probably won't need to call this as this is automatically called before addAlias()
      *
      * @param alias - alias to normalize
-     * @returns normalized alias
+     * @return normalized alias
      */
     normalizeAlias(alias: Alias): Promise<Alias> {
         return Util.callAsync(this.normalizeAlias, async () => {
@@ -153,8 +138,8 @@ export class TokenIO {
     /**
      * Resolve an alias to a member
      *
-     * @param {Object} alias - alias to lookup
-     * @return {Promise} result - TokenMember protobuf object
+     * @param alias - alias to lookup
+     * @return {Promise<TokenMember|undefined>} TokenMember protobuf object
      */
     resolveAlias(alias: Alias): Promise<?TokenMember> {
         return Util.callAsync(this.resolveAlias, async () => {
@@ -166,12 +151,12 @@ export class TokenIO {
     /**
      * Creates a member with a alias and a keypair, using the provided engine and member type.
      *
-     * @param  {Object} alias - alias to set for member,
+     * @param  alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param  {String} memberType - type of member to create. "PERSONAL" if undefined
-     * @param  {String} tokenRequestId - (optional) token request id if the member is being claimed
-     * @return {Promise} member - Promise of created Member
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @param  memberType - type of member to create. "PERSONAL" if undefined
+     * @param  tokenRequestId - (optional) token request id if the member is being claimed
+     * @return Promise of created Member
      */
     createMember(
         alias: ?Alias,
@@ -193,13 +178,9 @@ export class TokenIO {
                 [pk1, pk2, pk3],
                 engine);
             const member = new Member({
-                env: this._env,
                 memberId: response.data.memberId,
                 cryptoEngine: engine,
-                developerKey: this._developerKey,
-                globalRpcErrorCallback: this._globalRpcErrorCallback,
-                loggingEnabled: this._loggingEnabled,
-                customSdkUrl: this._customSdkUrl,
+                ...this.options,
             });
             alias && await member.addAlias(alias);
             return member;
@@ -209,10 +190,10 @@ export class TokenIO {
     /**
      * Creates a member with a alias and a keypair, using the provided engine
      *
-     * @param  {Object} alias - alias to set for member,
+     * @param  alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @return {Promise} member - Promise of created Member
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @return Promise of created Member
      */
     createBusinessMember(
         alias: ?Alias,
@@ -224,11 +205,11 @@ export class TokenIO {
     /**
      * Creates a claimed member with a alias and a keypair, using the provided engine
      *
-     * @param  {Object} alias - alias to set for member,
+     * @param  alias - alias to set for member,
      *                  falsy value or empty object for a temporary member without an alias
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param  {string} tokenRequestId - token request id
-     * @return {Promise} member - Promise of created Member
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @param  tokenRequestId - token request id
+     * @return Promise of created Member
      */
     createClaimedMember(
         alias: ?Alias,
@@ -243,9 +224,9 @@ export class TokenIO {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys.
      *
-     * @param {string} alias - user to provision the device for
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @return {Promise} deviceInfo - information about the device provisioned
+     * @param alias - user to provision the device for
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @return information about the device provisioned
      */
     provisionDevice(
         alias: Alias,
@@ -272,10 +253,10 @@ export class TokenIO {
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys. This only generates one (LOW) key.
      *
-     * @param {string} alias - user to provision the device for
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param {number} expirationMs - (optional) expiration duration of key in milliseconds
-     * @return {Promise} deviceInfo - information about the device provisioned
+     * @param alias - user to provision the device for
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @param expirationMs - (optional) expiration duration of key in milliseconds
+     * @return information about the device provisioned
      */
     provisionDeviceLow(
         alias: Alias,
@@ -301,9 +282,9 @@ export class TokenIO {
      * Returns 'logged-in' member that uses keys already in the CryptoEngine.
      * If memberId is not provided, the last member to 'log in' will be used.
      *
-     * @param  {Class} CryptoEngine - engine to use for key creation and storage
-     * @param {string} memberId - optional id of the member we want to log in
-     * @return {Promise} member - instantiated member
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @param memberId - optional id of the member we want to log in
+     * @return instantiated member
      */
     getMember(
         CryptoEngine: KeyStoreCryptoEngine,
@@ -315,13 +296,9 @@ export class TokenIO {
             }
             const engine = new CryptoEngine(memberId);
             return new Member({
-                env: this._env,
                 memberId,
                 cryptoEngine: engine,
-                developerKey: this._developerKey,
-                globalRpcErrorCallback: this._globalRpcErrorCallback,
-                loggingEnabled: this._loggingEnabled,
-                customSdkUrl: this._customSdkUrl,
+                ...this.options,
             });
         });
     }
@@ -330,10 +307,10 @@ export class TokenIO {
      * Notifies subscribers that a key should be added and passes the public Key and
      * optional name
      *
-     * @param {Object} alias - alias to notify
-     * @param {Array} keys - token keys to be added
-     * @param {Object} deviceMetadata - device metadata of the keys
-     * @return {Promise} NotifyStatus - status
+     * @param alias - alias to notify
+     * @param keys - token keys to be added
+     * @param deviceMetadata - device metadata of the keys
+     * @return status
      */
     notifyAddKey(
         alias: Alias,
@@ -355,8 +332,8 @@ export class TokenIO {
     /**
      * Sends a notification to a user to request a payment.
      *
-     * @param {Object} tokenPayload - requested transfer token
-     * @return {Promise} NotifyStatus - status
+     * @param tokenPayload - requested transfer token
+     * @return status
      */
     notifyPaymentRequest(tokenPayload: TokenPayload): Promise<NotifyStatusEnum> {
         tokenPayload = tokenPayload.toJSON();
@@ -373,14 +350,14 @@ export class TokenIO {
      * Notifies subscribed devices that a token payload should be endorsed and keys should be
      * added.
      *
-     * @param {Object} tokenPayload - the endorseAndAddKey payload to be sent
-     * @param {Array} keys - token keys to be added
-     * @param {Object} deviceMetadata - device metadata of the keys
-     * @param {string} tokenRequestId - (optional) token request Id
-     * @param {string} bankId - (optional) bank Id
-     * @param {string} state - (optional) token request state for signing
-     * @param {ReceiptContact} receiptContact - (optional) receipt contact
-     * @return {Promise} result - notification Id and notify status
+     * @param tokenPayload - the endorseAndAddKey payload to be sent
+     * @param keys - token keys to be added
+     * @param deviceMetadata - device metadata of the keys
+     * @param tokenRequestId - (optional) token request Id
+     * @param bankId - (optional) bank Id
+     * @param state - (optional) token request state for signing
+     * @param receiptContact - (optional) receipt contact
+     * @return notification Id and notify status
      */
     notifyEndorseAndAddKey(
         tokenPayload: TokenPayload,
@@ -414,8 +391,8 @@ export class TokenIO {
     /**
      * Invalidate a notification.
      *
-     * @param {Object} notificationId - the notification id to invalidate
-     * @return {Promise} NotifyStatus - status
+     * @param notificationId - the notification id to invalidate
+     * @return status
      */
     invalidateNotification(notificationId: string): Promise<NotifyStatusEnum> {
         return Util.callAsync(this.invalidateNotification, async () => {
@@ -427,8 +404,8 @@ export class TokenIO {
     /**
      * Gets a list of available banks for linking
      *
-     * @param {Object} options - optional parameters for getBanks
-     * @return {Promise} banks - list of banks
+     * @param options - optional parameters for getBanks
+     * @return list of banks
      */
     getBanks(
         options?: {
@@ -453,8 +430,8 @@ export class TokenIO {
     /**
      * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
      *
-     * @param {string} requestId - token request id
-     * @return {Promise} TokenRequest - token request
+     * @param requestId - token request id
+     * @return {Promise<TokenRequest|undefined>} token request
      */
     retrieveTokenRequest(requestId: string): Promise<?TokenRequest> {
         return Util.callAsync(this.retrieveTokenRequest, async () => {
@@ -466,10 +443,10 @@ export class TokenIO {
     /**
      * Generate a token request authorization URL.
      *
-     * @param {string} requestId - request id
-     * @param {string} state - original state
-     * @param {string} csrfToken - CSRF token
-     * @return {string} tokenRequestUrl - token request URL
+     * @param requestId - request id
+     * @param state - original state
+     * @param csrfToken - CSRF token
+     * @return token request URL
      */
     generateTokenRequestUrl(
         requestId: string,
@@ -482,7 +459,7 @@ export class TokenIO {
                 innerState: state,
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
-            return `${this._customSdkUrl || config.webAppUrls[this._env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
+            return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
         });
     }
 
@@ -490,9 +467,9 @@ export class TokenIO {
      * Parse a token request callback URL, verify the state and signature,
      * and return the inner state and token id.
      *
-     * @param {string} callbackUrl - callback URL
-     * @param {string} csrfToken - CSRF token
-     * @return {Promise} result - inner state and token id
+     * @param callbackUrl - callback URL
+     * @param csrfToken - CSRF token
+     * @return inner state and token id
      */
     parseTokenRequestCallbackUrl(
         callbackUrl: string,
@@ -530,8 +507,8 @@ export class TokenIO {
     /**
      * Get the token request result based on its token request ID.
      *
-     * @param {string} tokenRequestId - token request id
-     * @return {Promise} tokenId - token id and signature
+     * @param tokenRequestId - token request id
+     * @return token id and signature
      */
     getTokenRequestResult(
         tokenRequestId: string

@@ -7,7 +7,7 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * Creates a access token request and retrieve it.
  *
  * @param {Member} grantee - member that will create the TokenRequest, and receive the funds
- * @return {Object} tokenRequest - retrieved token request
+ * @return {Object} retrieved token request
  */
 export default async grantee => {
     const builder = grantee.createAccessTokenBuilder()

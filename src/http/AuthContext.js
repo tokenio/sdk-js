@@ -44,7 +44,7 @@ class AuthContext {
     /**
      * Gets the currently active memberId
      *
-     * @return {string} onBehalfOf - accessTokenId being used
+     * @return {string} accessTokenId being used
      */
     get onBehalfOf() {
         return this._onBehalfOf;
@@ -53,7 +53,7 @@ class AuthContext {
     /**
      * Gets the key level
      *
-     * @return {string} keyLevel - key level being used
+     * @return {string} key level being used
      */
     get keyLevel() {
         return this._keyLevel;
@@ -62,7 +62,7 @@ class AuthContext {
     /**
      * Gets the customer initiated request flag.
      *
-     * @return {boolean} flag - true if request initiated by customer
+     * @return {boolean} true if request initiated by customer
      */
     get customerInitiated() {
         return this._customerInitiated;

@@ -4,7 +4,7 @@ import {TokenIO, Alias} from '..';
  * Imports and sets up the SDK, and creates a business Token member with the MemoryCryptoEngine
  * (which will store keys in memory).
  *
- * @return {Member} member - created member
+ * @return {Member} created member
  */
 export default async () => {
     // Initialize SDK:

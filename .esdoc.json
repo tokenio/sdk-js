@@ -5,11 +5,19 @@
     "plugins": [
         {
             "name": "esdoc-standard-plugin",
-            "option": {}
+            "option": {
+                "test": {
+                    "source": "./test",
+                    "type": "mocha"
+                }
+            }
         },
         {
             "name": "esdoc-ecmascript-proposal-plugin",
             "option": {"all": true}
+        },
+        {
+            "name": "esdoc-flow-type-plugin"
         }
     ]
 }

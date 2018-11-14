@@ -12,7 +12,7 @@ class PromiseFileSystem {
      * Reads a file from the filesystem (from the given directory)
      *
      * @param {string} filename - file to read
-     * @return {Promise} promise - with data
+     * @return {Promise} with data
      */
     static readFile(filename) {
         if (BROWSER) return Promise.reject('Not available on browser');

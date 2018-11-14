@@ -3,7 +3,7 @@
  *
  * @param {Member} grantor - grantor member
  * @param {string} tokenId - id of the token to cancel
- * @return {Object} result - result of the token operation
+ * @return {Object} result of the token operation
  */
 export default async (grantor, tokenId) => {
     // Grantor gets the token to see details

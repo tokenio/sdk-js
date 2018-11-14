@@ -1,6 +1,14 @@
 // @flow
-import type {Account, AddressRecord, Balance, Transaction, RequestStatusEnum} from '../proto';
+import {
+    Account,
+    AddressRecord,
+    Balance,
+    Transaction,
+} from '../proto';
 import type Member from './Member';
+import type {
+    RequestStatusEnum,
+} from '../proto';
 
 /**
  * Represents the part of a Token member that can be accessed through an access token.
@@ -12,7 +20,7 @@ export default class Representable {
      * Instantiate a representable that acts on behalf of a Token member.
      *
      * @constructor
-     * @param {Member} member - the Token member
+     * @param member - the Token member
      */
     constructor(member: Member) {
         this._member = member;
@@ -21,8 +29,8 @@ export default class Representable {
     /**
      * Looks up an account by the account dd
      *
-     * @param {string} accountId - the id
-     * @return {Promise} account - Promise resolving to the account
+     * @param accountId - the id
+     * @return Promise resolving to the account
      * @throws error if account not found
      */
     getAccount(accountId: string): Promise<Account> {
@@ -32,7 +40,7 @@ export default class Representable {
     /**
      * Looks up linked accounts.
      *
-     * @return {Promise} accounts - Promise resolving to the accounts
+     * @return Promise resolving to the accounts
      */
     getAccounts(): Promise<Array<Account>> {
         return this._member.getAccounts();
@@ -41,9 +49,9 @@ export default class Representable {
     /**
      * Looks up the balance of an account
      *
-     * @param {string} accountId - id of the account
-     * @param {string} keyLevel - key level
-     * @return {Promise} balance - Promise of get balance response object
+     * @param accountId - id of the account
+     * @param keyLevel - key level
+     * @return Promise of get balance response object
      */
     getBalance(
         accountId: string,
@@ -55,9 +63,9 @@ export default class Representable {
     /**
      * Looks up the balances of an array of accounts
      *
-     * @param {Array} accountIds - array of account ids
-     * @param {string} keyLevel - key level
-     * @return {Promise} balance - Promise of get balances response object
+     * @param accountIds - array of account ids
+     * @param keyLevel - key level
+     * @return Promise of get balances response object
      */
     getBalances(
         accountIds: Array<string>,
@@ -69,10 +77,10 @@ export default class Representable {
     /**
      * Looks up a transaction
      *
-     * @param {string} accountId - id of the account
-     * @param {string} transactionId - which transaction to look up
-     * @param {string} keyLevel - key level
-     * @return {Promise} transaction - the Transaction
+     * @param accountId - id of the account
+     * @param transactionId - which transaction to look up
+     * @param keyLevel - key level
+     * @return the Transaction
      * @throws error if transaction not found
      */
     getTransaction(
@@ -86,11 +94,11 @@ export default class Representable {
     /**
      * Looks up all of the member's transactions for an account
      *
-     * @param {string} accountId - id of the account
-     * @param {string} offset - where to start looking
-     * @param {int} limit - how many to retrieve
-     * @param {string} keyLevel - key level
-     * @return {Promise} transactions - Transactions
+     * @param accountId - id of the account
+     * @param offset - where to start looking
+     * @param limit - how many to retrieve
+     * @param keyLevel - key level
+     * @return Transactions
      */
     getTransactions(
         accountId: string,
@@ -104,8 +112,8 @@ export default class Representable {
     /**
      * Gets the member's address
      *
-     * @param {string} addressId - the address id
-     * @return {Promise} address - AddressRecord structure
+     * @param addressId - the address id
+     * @return AddressRecord structure
      * @throws error if address not found
      */
     getAddress(addressId: string): Promise<AddressRecord> {
@@ -115,7 +123,7 @@ export default class Representable {
     /**
      * Gets the member's addresses
      *
-     * @return {Promise} addresses - list of AddressRecord structures
+     * @return list of AddressRecord structures
      */
     getAddresses(): Promise<Array<AddressRecord>> {
         return this._member.getAddresses();
