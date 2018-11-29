@@ -14,14 +14,14 @@ class HttpClient {
      *
      * @param {Object} options
      */
-    constructor(options) {
-        const {
-            env,
-            developerKey,
-            globalRpcErrorCallback,
-            loggingEnabled,
-            customSdkUrl,
-        } = options;
+    constructor({
+        env,
+        developerKey,
+        globalRpcErrorCallback,
+        loggingEnabled,
+        customSdkUrl,
+        customResponseInterceptor,
+    }) {
         if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -32,6 +32,7 @@ class HttpClient {
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
         }
+        Util.setUpCustomResponseInterceptor(this._instance, customResponseInterceptor);
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
