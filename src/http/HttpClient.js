@@ -231,11 +231,34 @@ class HttpClient {
     }
 
     /**
+     * Notifies subscribed devices that a token should be created and endorsed.
+     *
+     * @param tokenRequestId - token request ID
+     * @param addKey - (optional) add key payload
+     * @param receiptContact - (optional) receipt contact
+     * @return {Object} response to the API call
+     */
+    notifyCreateAndEndorseToken(requestId, addKey, receiptContact) {
+        const req = {
+            tokenRequestId: requestId,
+            addKey: addKey,
+            receiptContact: receiptContact,
+        };
+        const request = {
+            method: 'post',
+            url: '/notify/create-and-endorse-token',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Notifies subscribed devices that a token payload should be endorsed and keys should be
      * added.
      *
      * @param {Object} endorseAndAddKey - the endorseAndAddKey payload to be sent
      * @return {Object} response to the API call
+     * @deprecated use notifyCreateAndEndorseToken instead
      */
     notifyEndorseAndAddKey(endorseAndAddKey) {
         const req = {

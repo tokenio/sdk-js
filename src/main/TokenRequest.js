@@ -1,35 +1,31 @@
 import {TokenPayload} from '../proto';
 
+// TODO(RD-1515) remove support for Token payload, options map
 export default class TokenRequest {
     /**
      * Constructs a TokenRequest.
      *
-     * @param {Object} payload - token payload
+     * @param {Object} payload - token request payload
      */
     constructor(payload) {
-        this.payload = payload;
-        this.options = {};
+        if (payload.accessBody || payload.transferBody) {
+            this.requestPayload = payload;
+            this.requestOptions = {};
+            this.requestOptions.from = {};
+        } else {
+            this.payload = TokenPayload.create(payload);
+            this.options = {};
+        }
     }
 
     /**
      * Creates a TokenRequest object
      *
-     * @param {Object} payload - payload of the access or transfer token
+     * @param {Object} payload - token request payload
      * @return {TokenRequest} TokenRequest object
      */
     static create(payload) {
-        return new TokenRequest(TokenPayload.create(payload));
-    }
-
-    /**
-     * Sets a default email for the TokenRequest
-     *
-     * @param {string} email - default email
-     * @return {TokenRequest} token request
-     */
-    setEmail(email) {
-        this.options.email = email;
-        return this;
+        return new TokenRequest(payload);
     }
 
     /**
@@ -39,7 +35,71 @@ export default class TokenRequest {
      * @return {TokenRequest} token request
      */
     setBankId(bankId) {
-        this.options.bankId = bankId;
+        if (this.requestOptions) {
+            this.requestOptions.bankId = bankId;
+        } else {
+            this.options.bankId = bankId;
+        }
+        return this;
+    }
+
+    /**
+     * Sets the member ID of the payer/grantor.
+     *
+     * @param fromMemberId member ID of the payer/grantor
+     * @return {TokenRequest} token request
+     */
+    setFromMemberId(fromMemberId) {
+        this.requestOptions.from.id = fromMemberId;
+        return this;
+    }
+
+    /**
+     * Sets the email address of the payer/grantor.
+     *
+     * @param {string} fromEmail - email of the payer/grantor
+     * @return {TokenRequest} token request
+     */
+    setFromEmail(fromEmail) {
+        this.requestOptions.from.alias = {};
+        this.requestOptions.from.alias.type = 'EMAIL';
+        this.requestOptions.from.alias.value = fromEmail;
+        return this;
+    }
+
+    /**
+     * Sets the source account ID.
+     *
+     * @param accountId source account ID
+     * @returns {TokenRequest} token request
+     */
+    setSourceAccount(accountId) {
+        this.requestOptions.sourceAccountId = accountId;
+        return this;
+    }
+
+    /**
+     * Sets the receiptRequested flag on the TokenRequest.
+     *
+     * @param {boolean} receiptRequested - true if a receipt is requested
+     * @return {TokenRequest} token request
+     */
+    setReceiptRequested(receiptRequested) {
+        this.requestOptions.receiptRequested = receiptRequested;
+        return this;
+    }
+
+    // DEPRECATED SETTERS
+
+    /**
+     * Sets a default email for the TokenRequest
+     *
+     * @param {string} email - default email
+     * @return {TokenRequest} token request
+     * @deprecated use setFromEmail instead
+     */
+    setEmail(email) {
+        this.options.email = email;
         return this;
     }
 
@@ -48,6 +108,7 @@ export default class TokenRequest {
      *
      * @param {string} redirectUrl - redirect URL
      * @return {TokenRequest} token request
+     * @deprecated set this on the Token request payload instead
      */
     setRedirectUrl(redirectUrl) {
         this.options.redirectUrl = redirectUrl;
@@ -59,6 +120,7 @@ export default class TokenRequest {
      *
      * @param {string} userRefId - user ref id
      * @return {TokenRequest} token request
+     * @deprecated set this on the Token request payload instead
      */
     setUserRefId(userRefId) {
         this.userRefId = userRefId;
@@ -70,6 +132,7 @@ export default class TokenRequest {
      *
      * @param {string} destinationCountry - destination country
      * @return {TokenRequest} token request
+     * @deprecated set this on the Token request payload instead
      */
     setDestinationCountry(destinationCountry) {
         this.options.destinationCountry = destinationCountry;

@@ -8,7 +8,7 @@ describe('StoreAndRetrieveAccessTokenRequestSample test', () => {
     it('Should run the sample', async () => {
         const member = await CreateMemberSample();
         const res = await StoreAndRetrieveAccessTokenRequestSample(member);
-        assert.isOk(res.payload);
-        assert.isOk(res.options);
+        assert.isOk(res.requestPayload);
+        assert.isOk(res.requestOptions);
     });
 });

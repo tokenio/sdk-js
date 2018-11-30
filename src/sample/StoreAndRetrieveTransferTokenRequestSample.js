@@ -10,15 +10,20 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * @return {Object} retrieved token request
  */
 export default async payee => {
-    const builder = payee.createTransferTokenBuilder(100.00, 'EUR')
-        .setDescription('Book purchase')
-        .setToMemberId(payee.memberId());
-
-    const tokenRequest = Token.TokenRequest.create(builder.build())
-        .setEmail('payerEmail@gmail.com')
-        .setBankId('iron')
-        .setRedirectUrl('https://token.io/callback');
-
+    const payload = {
+        to: {
+            id: payee.memberId(),
+        },
+        transferBody: {
+            lifetimeAmount: '100.00',
+            currency: 'EUR',
+        },
+        description: 'account and balance access',
+        redirectUrl: 'https://token.io/callback',
+    };
+    const tokenRequest = Token.TokenRequest.create(payload)
+        .setFromEmail('payerEmail@gmail.com')
+        .setBankId('iron');
     const request = await payee.storeTokenRequest(tokenRequest);
 
     return await Token.retrieveTokenRequest(request.id);
