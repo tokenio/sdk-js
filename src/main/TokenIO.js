@@ -420,11 +420,32 @@ export class TokenIO {
         }
     ): Promise<{banks: Array<Bank>, paging: Paging}> {
         return Util.callAsync(this.getBanks, async () => {
-            const res = await this._unauthenticatedClient.getBanks(options);
+            const res = await this._unauthenticatedClient.getBanksOrCountries(options);
             return {
                 banks: res.data.banks ? res.data.banks.map(b => Bank.create(b)) : [],
                 paging: Paging.create(res.data.paging),
             };
+        });
+    }
+
+    /**
+     * Gets a list of available countries for linking
+     *
+     * @param options - optional parameters for getBanksCountries
+     * @return list of countries with linkable banks
+     */
+    getCountries(
+        options?: {
+            ids?: Array<string>,
+            search?: string,
+            country?: string,
+            provider?: string,
+            destinationCountry?: string,
+        }
+    ): Promise<{banks: Array<Bank>, paging: Paging}> {
+        return Util.callAsync(this.getBanks, async () => {
+            const res = await this._unauthenticatedClient.getBanksOrCountries(options, true);
+            return res.data.countries || [];
         });
     }
 

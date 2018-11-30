@@ -268,12 +268,13 @@ class HttpClient {
     }
 
     /**
-     * Gets banks.
+     * Gets banks or countries.
      *
-     * @param {Object} options - optional parameters for getBanks
+     * @param {Object} options - optional parameters
+     * @param {boolean} getCountries - get countries instead of banks if true
      * @return {Object} response to the API call
      */
-    async getBanks(options = {}) {
+    async getBanksOrCountries(options = {}, getCountries) {
         const formattedOptions = Object.assign({}, {
             // Can be at most 1000
             ids: options.ids || [],
@@ -297,7 +298,7 @@ class HttpClient {
             provider,
             destinationCountry,
         } = formattedOptions;
-        let url = '/banks?';
+        let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
             url += `ids=${encodeURIComponent(id)}&`;
         }
