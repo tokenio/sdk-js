@@ -58,6 +58,7 @@ export class TokenIO {
         globalRpcErrorCallback?: ({name: string, message: string}) => void,
         loggingEnabled?: boolean, // enable HTTP error logging if true
         customSdkUrl?: string, // override the default SDK URL
+        customResponseInterceptor?: Object, // custom HTTP response interceptor for axios
     }): void {
         this.options = options;
         this._unauthenticatedClient = new HttpClient(options);

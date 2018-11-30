@@ -59,11 +59,12 @@ export default class Member {
         env: string, // Token environment to target
         memberId: string,
         cryptoEngine: KeyStoreCryptoEngine,
-        developerKey: ?string, // dev key
+        developerKey?: string, // dev key
         // callback to invoke on any cross-cutting RPC
-        globalRpcErrorCallback: ?({name: string, message: string}) => void,
-        loggingEnabled: ?boolean, // enable HTTP error logging if true
-        customSdkUrl: ?string, // override the default SDK URL
+        globalRpcErrorCallback?: ({name: string, message: string}) => void,
+        loggingEnabled?: boolean, // enable HTTP error logging if true
+        customSdkUrl?: string, // override the default SDK URL
+        customResponseInterceptor?: Object, // custom HTTP response interceptor for axios
     }): void {
         const {memberId} = options;
         this._id = memberId;

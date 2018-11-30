@@ -21,16 +21,16 @@ class AuthHttpClient {
      *
      * @param {Object} options
      */
-    constructor(options) {
-        const {
-            env,
-            memberId,
-            cryptoEngine,
-            developerKey,
-            globalRpcErrorCallback,
-            loggingEnabled,
-            customSdkUrl,
-        } = options;
+    constructor({
+        env,
+        memberId,
+        cryptoEngine,
+        developerKey,
+        globalRpcErrorCallback,
+        loggingEnabled,
+        customSdkUrl,
+        customResponseInterceptor,
+    }) {
         if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
                 JSON.stringify(config.urls));
@@ -41,6 +41,7 @@ class AuthHttpClient {
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);
         }
+        Util.setUpCustomResponseInterceptor(this._instance, customResponseInterceptor);
         this._memberId = memberId;
         this._cryptoEngine = cryptoEngine;
 

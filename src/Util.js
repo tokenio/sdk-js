@@ -278,6 +278,10 @@ class Util {
             });
     }
 
+    static setUpCustomResponseInterceptor(instance, cri) {
+        cri && instance.interceptors.response.use(cri.onFulfilled, cri.onRejected);
+    }
+
     static isFirefox() {
         return BROWSER && typeof window.InstallTrigger !== 'undefined';
     }
