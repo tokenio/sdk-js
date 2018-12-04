@@ -5459,6 +5459,83 @@ export const io = $root.io = (() => {
                         return EndorseAndAddKey;
                     })();
 
+                    notification.CreateAndEndorseToken = (function() {
+
+                        function CreateAndEndorseToken(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        CreateAndEndorseToken.prototype.payload = null;
+                        CreateAndEndorseToken.prototype.options = null;
+                        CreateAndEndorseToken.prototype.addKey = null;
+                        CreateAndEndorseToken.prototype.contact = null;
+
+                        CreateAndEndorseToken.create = function create(properties) {
+                            return new CreateAndEndorseToken(properties);
+                        };
+
+                        CreateAndEndorseToken.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.notification.CreateAndEndorseToken)
+                                return d;
+                            var m = new $root.io.token.proto.common.notification.CreateAndEndorseToken();
+                            if (d.payload != null) {
+                                if (typeof d.payload !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.payload: object expected");
+                                m.payload = $root.io.token.proto.common.token.TokenRequestPayload.fromObject(d.payload);
+                            }
+                            if (d.options != null) {
+                                if (typeof d.options !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.options: object expected");
+                                m.options = $root.io.token.proto.common.token.TokenRequestOptions.fromObject(d.options);
+                            }
+                            if (d.addKey != null) {
+                                if (typeof d.addKey !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.addKey: object expected");
+                                m.addKey = $root.io.token.proto.common.notification.AddKey.fromObject(d.addKey);
+                            }
+                            if (d.contact != null) {
+                                if (typeof d.contact !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.contact: object expected");
+                                m.contact = $root.io.token.proto.common.member.ReceiptContact.fromObject(d.contact);
+                            }
+                            return m;
+                        };
+
+                        CreateAndEndorseToken.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.defaults) {
+                                d.payload = null;
+                                d.options = null;
+                                d.addKey = null;
+                                d.contact = null;
+                            }
+                            if (m.payload != null && m.hasOwnProperty("payload")) {
+                                d.payload = $root.io.token.proto.common.token.TokenRequestPayload.toObject(m.payload, o);
+                            }
+                            if (m.options != null && m.hasOwnProperty("options")) {
+                                d.options = $root.io.token.proto.common.token.TokenRequestOptions.toObject(m.options, o);
+                            }
+                            if (m.addKey != null && m.hasOwnProperty("addKey")) {
+                                d.addKey = $root.io.token.proto.common.notification.AddKey.toObject(m.addKey, o);
+                            }
+                            if (m.contact != null && m.hasOwnProperty("contact")) {
+                                d.contact = $root.io.token.proto.common.member.ReceiptContact.toObject(m.contact, o);
+                            }
+                            return d;
+                        };
+
+                        CreateAndEndorseToken.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return CreateAndEndorseToken;
+                    })();
+
                     notification.NotificationInvalidated = (function() {
 
                         function NotificationInvalidated(p) {
@@ -5529,11 +5606,12 @@ export const io = $root.io = (() => {
                         NotifyBody.prototype.endorseAndAddKey = null;
                         NotifyBody.prototype.recoveryCompleted = null;
                         NotifyBody.prototype.notificationInvalidated = null;
+                        NotifyBody.prototype.createAndEndorseToken = null;
 
                         let $oneOfFields;
 
                         Object.defineProperty(NotifyBody.prototype, "body", {
-                            get: $util.oneOfGetter($oneOfFields = ["payerTransferProcessed", "linkAccounts", "stepUp", "addKey", "linkAccountsAndAddKey", "payeeTransferProcessed", "paymentRequest", "payerTransferFailed", "transferProcessed", "transferFailed", "tokenCancelled", "balanceStepUp", "transactionStepUp", "endorseAndAddKey", "recoveryCompleted", "notificationInvalidated"]),
+                            get: $util.oneOfGetter($oneOfFields = ["payerTransferProcessed", "linkAccounts", "stepUp", "addKey", "linkAccountsAndAddKey", "payeeTransferProcessed", "paymentRequest", "payerTransferFailed", "transferProcessed", "transferFailed", "tokenCancelled", "balanceStepUp", "transactionStepUp", "endorseAndAddKey", "recoveryCompleted", "notificationInvalidated", "createAndEndorseToken"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
 
@@ -5625,6 +5703,11 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.notification.NotifyBody.notificationInvalidated: object expected");
                                 m.notificationInvalidated = $root.io.token.proto.common.notification.NotificationInvalidated.fromObject(d.notificationInvalidated);
                             }
+                            if (d.createAndEndorseToken != null) {
+                                if (typeof d.createAndEndorseToken !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.NotifyBody.createAndEndorseToken: object expected");
+                                m.createAndEndorseToken = $root.io.token.proto.common.notification.CreateAndEndorseToken.fromObject(d.createAndEndorseToken);
+                            }
                             return m;
                         };
 
@@ -5711,6 +5794,11 @@ export const io = $root.io = (() => {
                                 d.notificationInvalidated = $root.io.token.proto.common.notification.NotificationInvalidated.toObject(m.notificationInvalidated, o);
                                 if (o.oneofs)
                                     d.body = "notificationInvalidated";
+                            }
+                            if (m.createAndEndorseToken != null && m.hasOwnProperty("createAndEndorseToken")) {
+                                d.createAndEndorseToken = $root.io.token.proto.common.notification.CreateAndEndorseToken.toObject(m.createAndEndorseToken, o);
+                                if (o.oneofs)
+                                    d.body = "createAndEndorseToken";
                             }
                             return d;
                         };
@@ -6058,11 +6146,12 @@ export const io = $root.io = (() => {
                         }
 
                         TokenRequest.prototype.id = "";
+                        TokenRequest.prototype.requestPayload = null;
+                        TokenRequest.prototype.requestOptions = null;
                         TokenRequest.prototype.payload = null;
                         TokenRequest.prototype.options = $util.emptyObject;
                         TokenRequest.prototype.userRefId = "";
                         TokenRequest.prototype.customizationId = "";
-                        TokenRequest.prototype.destinationCountry = "";
 
                         TokenRequest.create = function create(properties) {
                             return new TokenRequest(properties);
@@ -6074,6 +6163,16 @@ export const io = $root.io = (() => {
                             var m = new $root.io.token.proto.common.token.TokenRequest();
                             if (d.id != null) {
                                 m.id = String(d.id);
+                            }
+                            if (d.requestPayload != null) {
+                                if (typeof d.requestPayload !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequest.requestPayload: object expected");
+                                m.requestPayload = $root.io.token.proto.common.token.TokenRequestPayload.fromObject(d.requestPayload);
+                            }
+                            if (d.requestOptions != null) {
+                                if (typeof d.requestOptions !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequest.requestOptions: object expected");
+                                m.requestOptions = $root.io.token.proto.common.token.TokenRequestOptions.fromObject(d.requestOptions);
                             }
                             if (d.payload != null) {
                                 if (typeof d.payload !== "object")
@@ -6094,9 +6193,6 @@ export const io = $root.io = (() => {
                             if (d.customizationId != null) {
                                 m.customizationId = String(d.customizationId);
                             }
-                            if (d.destinationCountry != null) {
-                                m.destinationCountry = String(d.destinationCountry);
-                            }
                             return m;
                         };
 
@@ -6112,7 +6208,8 @@ export const io = $root.io = (() => {
                                 d.payload = null;
                                 d.userRefId = "";
                                 d.customizationId = "";
-                                d.destinationCountry = "";
+                                d.requestPayload = null;
+                                d.requestOptions = null;
                             }
                             if (m.id != null && m.hasOwnProperty("id")) {
                                 d.id = m.id;
@@ -6133,8 +6230,11 @@ export const io = $root.io = (() => {
                             if (m.customizationId != null && m.hasOwnProperty("customizationId")) {
                                 d.customizationId = m.customizationId;
                             }
-                            if (m.destinationCountry != null && m.hasOwnProperty("destinationCountry")) {
-                                d.destinationCountry = m.destinationCountry;
+                            if (m.requestPayload != null && m.hasOwnProperty("requestPayload")) {
+                                d.requestPayload = $root.io.token.proto.common.token.TokenRequestPayload.toObject(m.requestPayload, o);
+                            }
+                            if (m.requestOptions != null && m.hasOwnProperty("requestOptions")) {
+                                d.requestOptions = $root.io.token.proto.common.token.TokenRequestOptions.toObject(m.requestOptions, o);
                             }
                             return d;
                         };
@@ -6144,6 +6244,440 @@ export const io = $root.io = (() => {
                         };
 
                         return TokenRequest;
+                    })();
+
+                    token.TokenRequestOptions = (function() {
+
+                        function TokenRequestOptions(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        TokenRequestOptions.prototype.bankId = "";
+                        TokenRequestOptions.prototype.from = null;
+                        TokenRequestOptions.prototype.sourceAccountId = "";
+                        TokenRequestOptions.prototype.receiptRequested = false;
+
+                        TokenRequestOptions.create = function create(properties) {
+                            return new TokenRequestOptions(properties);
+                        };
+
+                        TokenRequestOptions.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.token.TokenRequestOptions)
+                                return d;
+                            var m = new $root.io.token.proto.common.token.TokenRequestOptions();
+                            if (d.bankId != null) {
+                                m.bankId = String(d.bankId);
+                            }
+                            if (d.from != null) {
+                                if (typeof d.from !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequestOptions.from: object expected");
+                                m.from = $root.io.token.proto.common.token.TokenMember.fromObject(d.from);
+                            }
+                            if (d.sourceAccountId != null) {
+                                m.sourceAccountId = String(d.sourceAccountId);
+                            }
+                            if (d.receiptRequested != null) {
+                                m.receiptRequested = Boolean(d.receiptRequested);
+                            }
+                            return m;
+                        };
+
+                        TokenRequestOptions.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.defaults) {
+                                d.bankId = "";
+                                d.from = null;
+                                d.sourceAccountId = "";
+                                d.receiptRequested = false;
+                            }
+                            if (m.bankId != null && m.hasOwnProperty("bankId")) {
+                                d.bankId = m.bankId;
+                            }
+                            if (m.from != null && m.hasOwnProperty("from")) {
+                                d.from = $root.io.token.proto.common.token.TokenMember.toObject(m.from, o);
+                            }
+                            if (m.sourceAccountId != null && m.hasOwnProperty("sourceAccountId")) {
+                                d.sourceAccountId = m.sourceAccountId;
+                            }
+                            if (m.receiptRequested != null && m.hasOwnProperty("receiptRequested")) {
+                                d.receiptRequested = m.receiptRequested;
+                            }
+                            return d;
+                        };
+
+                        TokenRequestOptions.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return TokenRequestOptions;
+                    })();
+
+                    token.TokenRequestPayload = (function() {
+
+                        function TokenRequestPayload(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        TokenRequestPayload.prototype.userRefId = "";
+                        TokenRequestPayload.prototype.customizationId = "";
+                        TokenRequestPayload.prototype.redirectUrl = "";
+                        TokenRequestPayload.prototype.to = null;
+                        TokenRequestPayload.prototype.actingAs = null;
+                        TokenRequestPayload.prototype.accessBody = null;
+                        TokenRequestPayload.prototype.transferBody = null;
+                        TokenRequestPayload.prototype.description = "";
+                        TokenRequestPayload.prototype.callbackState = "";
+
+                        let $oneOfFields;
+
+                        Object.defineProperty(TokenRequestPayload.prototype, "requestBody", {
+                            get: $util.oneOfGetter($oneOfFields = ["accessBody", "transferBody"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+
+                        TokenRequestPayload.create = function create(properties) {
+                            return new TokenRequestPayload(properties);
+                        };
+
+                        TokenRequestPayload.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.token.TokenRequestPayload)
+                                return d;
+                            var m = new $root.io.token.proto.common.token.TokenRequestPayload();
+                            if (d.userRefId != null) {
+                                m.userRefId = String(d.userRefId);
+                            }
+                            if (d.customizationId != null) {
+                                m.customizationId = String(d.customizationId);
+                            }
+                            if (d.redirectUrl != null) {
+                                m.redirectUrl = String(d.redirectUrl);
+                            }
+                            if (d.to != null) {
+                                if (typeof d.to !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequestPayload.to: object expected");
+                                m.to = $root.io.token.proto.common.token.TokenMember.fromObject(d.to);
+                            }
+                            if (d.actingAs != null) {
+                                if (typeof d.actingAs !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequestPayload.actingAs: object expected");
+                                m.actingAs = $root.io.token.proto.common.token.ActingAs.fromObject(d.actingAs);
+                            }
+                            if (d.accessBody != null) {
+                                if (typeof d.accessBody !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequestPayload.accessBody: object expected");
+                                m.accessBody = $root.io.token.proto.common.token.TokenRequestPayload.AccessBody.fromObject(d.accessBody);
+                            }
+                            if (d.transferBody != null) {
+                                if (typeof d.transferBody !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenRequestPayload.transferBody: object expected");
+                                m.transferBody = $root.io.token.proto.common.token.TokenRequestPayload.TransferBody.fromObject(d.transferBody);
+                            }
+                            if (d.description != null) {
+                                m.description = String(d.description);
+                            }
+                            if (d.callbackState != null) {
+                                m.callbackState = String(d.callbackState);
+                            }
+                            return m;
+                        };
+
+                        TokenRequestPayload.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.defaults) {
+                                d.userRefId = "";
+                                d.customizationId = "";
+                                d.redirectUrl = "";
+                                d.to = null;
+                                d.actingAs = null;
+                                d.description = "";
+                                d.callbackState = "";
+                            }
+                            if (m.userRefId != null && m.hasOwnProperty("userRefId")) {
+                                d.userRefId = m.userRefId;
+                            }
+                            if (m.customizationId != null && m.hasOwnProperty("customizationId")) {
+                                d.customizationId = m.customizationId;
+                            }
+                            if (m.redirectUrl != null && m.hasOwnProperty("redirectUrl")) {
+                                d.redirectUrl = m.redirectUrl;
+                            }
+                            if (m.to != null && m.hasOwnProperty("to")) {
+                                d.to = $root.io.token.proto.common.token.TokenMember.toObject(m.to, o);
+                            }
+                            if (m.actingAs != null && m.hasOwnProperty("actingAs")) {
+                                d.actingAs = $root.io.token.proto.common.token.ActingAs.toObject(m.actingAs, o);
+                            }
+                            if (m.accessBody != null && m.hasOwnProperty("accessBody")) {
+                                d.accessBody = $root.io.token.proto.common.token.TokenRequestPayload.AccessBody.toObject(m.accessBody, o);
+                                if (o.oneofs)
+                                    d.requestBody = "accessBody";
+                            }
+                            if (m.transferBody != null && m.hasOwnProperty("transferBody")) {
+                                d.transferBody = $root.io.token.proto.common.token.TokenRequestPayload.TransferBody.toObject(m.transferBody, o);
+                                if (o.oneofs)
+                                    d.requestBody = "transferBody";
+                            }
+                            if (m.description != null && m.hasOwnProperty("description")) {
+                                d.description = m.description;
+                            }
+                            if (m.callbackState != null && m.hasOwnProperty("callbackState")) {
+                                d.callbackState = m.callbackState;
+                            }
+                            return d;
+                        };
+
+                        TokenRequestPayload.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        TokenRequestPayload.AccessBody = (function() {
+
+                            function AccessBody(p) {
+                                this.type = [];
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            AccessBody.prototype.type = $util.emptyArray;
+
+                            AccessBody.create = function create(properties) {
+                                return new AccessBody(properties);
+                            };
+
+                            AccessBody.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.token.TokenRequestPayload.AccessBody)
+                                    return d;
+                                var m = new $root.io.token.proto.common.token.TokenRequestPayload.AccessBody();
+                                if (d.type) {
+                                    if (!Array.isArray(d.type))
+                                        throw TypeError(".io.token.proto.common.token.TokenRequestPayload.AccessBody.type: array expected");
+                                    m.type = [];
+                                    for (var i = 0; i < d.type.length; ++i) {
+                                        switch (d.type[i]) {
+                                        default:
+                                        case "INVALID":
+                                        case 0:
+                                            m.type[i] = 0;
+                                            break;
+                                        case "ACCOUNTS":
+                                        case 1:
+                                            m.type[i] = 1;
+                                            break;
+                                        case "BALANCES":
+                                        case 2:
+                                            m.type[i] = 2;
+                                            break;
+                                        case "TRANSACTIONS":
+                                        case 3:
+                                            m.type[i] = 3;
+                                            break;
+                                        case "TRANSFER_DESTINATIONS":
+                                        case 4:
+                                            m.type[i] = 4;
+                                            break;
+                                        }
+                                    }
+                                }
+                                return m;
+                            };
+
+                            AccessBody.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.arrays || o.defaults) {
+                                    d.type = [];
+                                }
+                                if (m.type && m.type.length) {
+                                    d.type = [];
+                                    for (var j = 0; j < m.type.length; ++j) {
+                                        d.type[j] = o.enums === String ? $root.io.token.proto.common.token.TokenRequestPayload.AccessBody.ResourceType[m.type[j]] : m.type[j];
+                                    }
+                                }
+                                return d;
+                            };
+
+                            AccessBody.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            AccessBody.ResourceType = (function() {
+                                const valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "INVALID"] = 0;
+                                values[valuesById[1] = "ACCOUNTS"] = 1;
+                                values[valuesById[2] = "BALANCES"] = 2;
+                                values[valuesById[3] = "TRANSACTIONS"] = 3;
+                                values[valuesById[4] = "TRANSFER_DESTINATIONS"] = 4;
+                                return values;
+                            })();
+
+                            return AccessBody;
+                        })();
+
+                        TokenRequestPayload.TransferBody = (function() {
+
+                            function TransferBody(p) {
+                                this.destinations = [];
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            TransferBody.prototype.currency = "";
+                            TransferBody.prototype.amount = "";
+                            TransferBody.prototype.lifetimeAmount = "";
+                            TransferBody.prototype.destinations = $util.emptyArray;
+
+                            TransferBody.create = function create(properties) {
+                                return new TransferBody(properties);
+                            };
+
+                            TransferBody.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.token.TokenRequestPayload.TransferBody)
+                                    return d;
+                                var m = new $root.io.token.proto.common.token.TokenRequestPayload.TransferBody();
+                                if (d.currency != null) {
+                                    m.currency = String(d.currency);
+                                }
+                                if (d.amount != null) {
+                                    m.amount = String(d.amount);
+                                }
+                                if (d.lifetimeAmount != null) {
+                                    m.lifetimeAmount = String(d.lifetimeAmount);
+                                }
+                                if (d.destinations) {
+                                    if (!Array.isArray(d.destinations))
+                                        throw TypeError(".io.token.proto.common.token.TokenRequestPayload.TransferBody.destinations: array expected");
+                                    m.destinations = [];
+                                    for (var i = 0; i < d.destinations.length; ++i) {
+                                        if (typeof d.destinations[i] !== "object")
+                                            throw TypeError(".io.token.proto.common.token.TokenRequestPayload.TransferBody.destinations: object expected");
+                                        m.destinations[i] = $root.io.token.proto.common.transferinstructions.TransferEndpoint.fromObject(d.destinations[i]);
+                                    }
+                                }
+                                return m;
+                            };
+
+                            TransferBody.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.arrays || o.defaults) {
+                                    d.destinations = [];
+                                }
+                                if (o.defaults) {
+                                    d.currency = "";
+                                    d.amount = "";
+                                    d.lifetimeAmount = "";
+                                }
+                                if (m.currency != null && m.hasOwnProperty("currency")) {
+                                    d.currency = m.currency;
+                                }
+                                if (m.amount != null && m.hasOwnProperty("amount")) {
+                                    d.amount = m.amount;
+                                }
+                                if (m.destinations && m.destinations.length) {
+                                    d.destinations = [];
+                                    for (var j = 0; j < m.destinations.length; ++j) {
+                                        d.destinations[j] = $root.io.token.proto.common.transferinstructions.TransferEndpoint.toObject(m.destinations[j], o);
+                                    }
+                                }
+                                if (m.lifetimeAmount != null && m.hasOwnProperty("lifetimeAmount")) {
+                                    d.lifetimeAmount = m.lifetimeAmount;
+                                }
+                                return d;
+                            };
+
+                            TransferBody.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            return TransferBody;
+                        })();
+
+                        return TokenRequestPayload;
+                    })();
+
+                    token.ActingAs = (function() {
+
+                        function ActingAs(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        ActingAs.prototype.displayName = "";
+                        ActingAs.prototype.refId = "";
+                        ActingAs.prototype.logoUrl = "";
+                        ActingAs.prototype.secondaryName = "";
+
+                        ActingAs.create = function create(properties) {
+                            return new ActingAs(properties);
+                        };
+
+                        ActingAs.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.token.ActingAs)
+                                return d;
+                            var m = new $root.io.token.proto.common.token.ActingAs();
+                            if (d.displayName != null) {
+                                m.displayName = String(d.displayName);
+                            }
+                            if (d.refId != null) {
+                                m.refId = String(d.refId);
+                            }
+                            if (d.logoUrl != null) {
+                                m.logoUrl = String(d.logoUrl);
+                            }
+                            if (d.secondaryName != null) {
+                                m.secondaryName = String(d.secondaryName);
+                            }
+                            return m;
+                        };
+
+                        ActingAs.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.defaults) {
+                                d.displayName = "";
+                                d.refId = "";
+                                d.logoUrl = "";
+                                d.secondaryName = "";
+                            }
+                            if (m.displayName != null && m.hasOwnProperty("displayName")) {
+                                d.displayName = m.displayName;
+                            }
+                            if (m.refId != null && m.hasOwnProperty("refId")) {
+                                d.refId = m.refId;
+                            }
+                            if (m.logoUrl != null && m.hasOwnProperty("logoUrl")) {
+                                d.logoUrl = m.logoUrl;
+                            }
+                            if (m.secondaryName != null && m.hasOwnProperty("secondaryName")) {
+                                d.secondaryName = m.secondaryName;
+                            }
+                            return d;
+                        };
+
+                        ActingAs.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return ActingAs;
                     })();
 
                     token.TokenSignature = (function() {
@@ -6297,13 +6831,13 @@ export const io = $root.io = (() => {
                         TokenPayload.prototype.issuer = null;
                         TokenPayload.prototype.from = null;
                         TokenPayload.prototype.to = null;
+                        TokenPayload.prototype.actingAs = null;
                         TokenPayload.prototype.effectiveAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
                         TokenPayload.prototype.expiresAtMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
                         TokenPayload.prototype.endorseUntilMs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
                         TokenPayload.prototype.description = "";
                         TokenPayload.prototype.transfer = null;
                         TokenPayload.prototype.access = null;
-                        TokenPayload.prototype.actingAs = null;
                         TokenPayload.prototype.receiptRequested = false;
 
                         let $oneOfFields;
@@ -6341,6 +6875,11 @@ export const io = $root.io = (() => {
                                 if (typeof d.to !== "object")
                                     throw TypeError(".io.token.proto.common.token.TokenPayload.to: object expected");
                                 m.to = $root.io.token.proto.common.token.TokenMember.fromObject(d.to);
+                            }
+                            if (d.actingAs != null) {
+                                if (typeof d.actingAs !== "object")
+                                    throw TypeError(".io.token.proto.common.token.TokenPayload.actingAs: object expected");
+                                m.actingAs = $root.io.token.proto.common.token.ActingAs.fromObject(d.actingAs);
                             }
                             if (d.effectiveAtMs != null) {
                                 if ($util.Long)
@@ -6384,11 +6923,6 @@ export const io = $root.io = (() => {
                                 if (typeof d.access !== "object")
                                     throw TypeError(".io.token.proto.common.token.TokenPayload.access: object expected");
                                 m.access = $root.io.token.proto.common.token.AccessBody.fromObject(d.access);
-                            }
-                            if (d.actingAs != null) {
-                                if (typeof d.actingAs !== "object")
-                                    throw TypeError(".io.token.proto.common.token.TokenPayload.actingAs: object expected");
-                                m.actingAs = $root.io.token.proto.common.token.TokenPayload.ActingAs.fromObject(d.actingAs);
                             }
                             if (d.receiptRequested != null) {
                                 m.receiptRequested = Boolean(d.receiptRequested);
@@ -6472,7 +7006,7 @@ export const io = $root.io = (() => {
                                     d.endorseUntilMs = o.longs === String ? $util.Long.prototype.toString.call(m.endorseUntilMs) : o.longs === Number ? new $util.LongBits(m.endorseUntilMs.low >>> 0, m.endorseUntilMs.high >>> 0).toNumber() : m.endorseUntilMs;
                             }
                             if (m.actingAs != null && m.hasOwnProperty("actingAs")) {
-                                d.actingAs = $root.io.token.proto.common.token.TokenPayload.ActingAs.toObject(m.actingAs, o);
+                                d.actingAs = $root.io.token.proto.common.token.ActingAs.toObject(m.actingAs, o);
                             }
                             if (m.receiptRequested != null && m.hasOwnProperty("receiptRequested")) {
                                 d.receiptRequested = m.receiptRequested;
@@ -6483,75 +7017,6 @@ export const io = $root.io = (() => {
                         TokenPayload.prototype.toJSON = function toJSON() {
                             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                         };
-
-                        TokenPayload.ActingAs = (function() {
-
-                            function ActingAs(p) {
-                                if (p)
-                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
-                                        if (p[ks[i]] != null)
-                                            this[ks[i]] = p[ks[i]];
-                            }
-
-                            ActingAs.prototype.displayName = "";
-                            ActingAs.prototype.refId = "";
-                            ActingAs.prototype.logoUrl = "";
-                            ActingAs.prototype.secondaryName = "";
-
-                            ActingAs.create = function create(properties) {
-                                return new ActingAs(properties);
-                            };
-
-                            ActingAs.fromObject = function fromObject(d) {
-                                if (d instanceof $root.io.token.proto.common.token.TokenPayload.ActingAs)
-                                    return d;
-                                var m = new $root.io.token.proto.common.token.TokenPayload.ActingAs();
-                                if (d.displayName != null) {
-                                    m.displayName = String(d.displayName);
-                                }
-                                if (d.refId != null) {
-                                    m.refId = String(d.refId);
-                                }
-                                if (d.logoUrl != null) {
-                                    m.logoUrl = String(d.logoUrl);
-                                }
-                                if (d.secondaryName != null) {
-                                    m.secondaryName = String(d.secondaryName);
-                                }
-                                return m;
-                            };
-
-                            ActingAs.toObject = function toObject(m, o) {
-                                if (!o)
-                                    o = {};
-                                var d = {};
-                                if (o.defaults) {
-                                    d.displayName = "";
-                                    d.refId = "";
-                                    d.logoUrl = "";
-                                    d.secondaryName = "";
-                                }
-                                if (m.displayName != null && m.hasOwnProperty("displayName")) {
-                                    d.displayName = m.displayName;
-                                }
-                                if (m.refId != null && m.hasOwnProperty("refId")) {
-                                    d.refId = m.refId;
-                                }
-                                if (m.logoUrl != null && m.hasOwnProperty("logoUrl")) {
-                                    d.logoUrl = m.logoUrl;
-                                }
-                                if (m.secondaryName != null && m.hasOwnProperty("secondaryName")) {
-                                    d.secondaryName = m.secondaryName;
-                                }
-                                return d;
-                            };
-
-                            ActingAs.prototype.toJSON = function toJSON() {
-                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                            };
-
-                            return ActingAs;
-                        })();
 
                         return TokenPayload;
                     })();

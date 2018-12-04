@@ -6,6 +6,7 @@ import HttpClient from '../http/HttpClient';
 import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
 import Representable from './Representable';
 import TokenRequest from './TokenRequest';
+import TokenRequestOptions from './TokenRequest';
 import TransferTokenBuilder from './TransferTokenBuilder';
 import Util from '../Util';
 import {
@@ -722,6 +723,19 @@ export default class Member {
         return Util.callAsync(this.storeTokenRequest, async () => {
             const res = await this._client.storeTokenRequest(tokenRequest);
             return res.data.tokenRequest;
+        });
+    }
+
+    /**
+     * Updates an existing token request.
+     *
+     * @param {string} requestId - token request ID
+     * @param {Object} options - new token request options
+     * @return empty promise
+     */
+    updateTokenRequest(requestId: string, options: TokenRequestOptions): Promise<void> {
+        return Util.callAsync(this.updateTokenRequest, async () => {
+            await this._client.updateTokenRequest(requestId, options);
         });
     }
 

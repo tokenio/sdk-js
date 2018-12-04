@@ -348,6 +348,37 @@ export class TokenIO {
     }
 
     /**
+     * Notifies subscribed devices that a token should be created and endorsed.
+     *
+     * @param tokenRequestId - token request ID
+     * @param keys - (optional) token keys to be added
+     * @param deviceMetadata - device metadata of the keys
+     * @param receiptContact - (optional) receipt contact
+     * @return {Object} response to the API call
+     */
+    notifyCreateAndEndorseToken(
+        tokenRequestId: string,
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
+        receiptContact: ReceiptContact
+    ): Promise<{notificationId: string, status: NotifyStatusEnum}> {
+        const addKey = {
+            keys: keys.map(k => k.toJSON()),
+            deviceMetadata: deviceMetadata.toJSON(),
+        };
+        return Util.callAsync(this.notifyCreateAndEndorseToken, async () => {
+            const res = await this._unauthenticatedClient.notifyCreateAndEndorseToken(
+                tokenRequestId,
+                addKey,
+                receiptContact);
+            return {
+                notificationId: res.data.notificationId,
+                status: NotifyStatus[res.data.status],
+            };
+        });
+    }
+
+    /**
      * Notifies subscribed devices that a token payload should be endorsed and keys should be
      * added.
      *
@@ -359,6 +390,7 @@ export class TokenIO {
      * @param state - (optional) token request state for signing
      * @param receiptContact - (optional) receipt contact
      * @return notification Id and notify status
+     * @deprecated use notifyCreateAndEndorseToken instead
      */
     notifyEndorseAndAddKey(
         tokenPayload: TokenPayload,
