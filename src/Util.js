@@ -271,8 +271,8 @@ class Util {
             (err = {}) => {
                 /* eslint-disable */
                 err.response
-                    ? console.error(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config?.url}]`)
-                    : console.error(`API no response: [${err.config?.url}]`);
+                    ? console.error(`API response error: ${err.response.status} ${err.response.statusText}, ${err.response.data} [${err.response.config && err.response.config.url}]`)
+                    : console.error(`API no response: [${err.config && err.config.url}]`);
                 /* eslint-enable */
                 return Promise.reject(err);
             });
