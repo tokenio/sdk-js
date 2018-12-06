@@ -864,6 +864,34 @@ class AuthHttpClient {
     }
 
     /**
+     * Creates customization.
+     *
+     * @param {Object} logo - logo
+     * @param {Object} colors - colors map of ARGB colors #AARRGGBB
+     * @return {Promise} response to the API call
+     */
+    async createCustomization(logo, colors) {
+        let imageData = logo.data;
+        if (typeof imageData !== 'string') imageData = base64js.fromByteArray(imageData);
+        const logoPayload = {
+            type: logo.type,
+            data: imageData,
+            ownerId: logo.ownerId,
+            name: logo.name,
+            accessMode: logo.accessMode,
+        };
+        const request = {
+            method: 'post',
+            url: '/customization',
+            data: {
+                logo: logoPayload,
+                colors,
+            },
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Creates a transfer token.
      *
      * @param {Object} payload - payload of the token

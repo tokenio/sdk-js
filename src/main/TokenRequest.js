@@ -89,6 +89,21 @@ export default class TokenRequest {
         return this;
     }
 
+    /**
+     * Sets customization id for the TokenRequest
+     *
+     * @param {object} customizationId - customization id
+     * @return {TokenRequest} token request
+     */
+    setCustomizationId(customizationId) {
+        if (this.requestPayload) {
+            this.requestPayload.customizationId = customizationId;
+        } else { // deprecated api
+            this.customizationId = customizationId;
+        }
+        return this;
+    }
+
     // DEPRECATED SETTERS
 
     /**

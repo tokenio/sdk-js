@@ -321,6 +321,13 @@ declare export class TrustedBeneficiary {
     payload: Payload;
     signature: Signature;
 }
+declare export class Customization {
+    colors: {[string]: string};
+    logo: any;
+    customizationId: string;
+    static create({logo: any, colors: {[string]: string}}): Customization;
+    toJSON(): Object;
+}
 declare export class Subscriber {
     id: string;
     handler: string;
