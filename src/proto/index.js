@@ -35,6 +35,7 @@ export const Transaction = prepareClass(common.transaction.Transaction);
 export const Transfer = prepareClass(common.transfer.Transfer);
 export const TransferEndpoint = prepareClass(common.transferinstructions.TransferEndpoint);
 export const TrustedBeneficiary = prepareClass(common.member.TrustedBeneficiary);
+export const Customization = prepareClass(common.member.Customization);
 
 // enums
 

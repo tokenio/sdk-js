@@ -13,6 +13,7 @@ import Util from '../Util';
 import {
     Alias,
     Bank,
+    Blob,
     DeviceMetadata,
     Key,
     NotifyStatus,
@@ -21,6 +22,7 @@ import {
     Signature,
     TokenMember,
     TokenPayload,
+    Customization,
 } from '../proto';
 import type {NotifyStatusEnum} from '../proto';
 
@@ -485,12 +487,18 @@ export class TokenIO {
      * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
      *
      * @param requestId - token request id
-     * @return {Promise<TokenRequest|undefined>} token request
+     * @return information about the tokenRequest
      */
-    retrieveTokenRequest(requestId: string): Promise<?TokenRequest> {
+    retrieveTokenRequest(
+        requestId: string
+    ): Promise<?{tokenRequest: TokenRequest, customization?: Customization}> {
         return Util.callAsync(this.retrieveTokenRequest, async () => {
             const res = await this._unauthenticatedClient.retrieveTokenRequest(requestId);
-            return res.data.tokenRequest;
+            return {
+                tokenRequest: res.data.tokenRequest,
+                customization: res.data.customization &&
+                    Customization.create(res.data.customization),
+            };
         });
     }
 
@@ -514,6 +522,20 @@ export class TokenIO {
             };
             const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
             return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
+        });
+    }
+
+    /**
+     * Downloads a blob from the server.
+     *
+     * @param blobId - id of the blob
+     * @return downloaded blob
+     * @throws error if blob not found
+     */
+    getBlob(blobId: string): Promise<Blob> {
+        return Util.callAsync(this.getBlob, async () => {
+            const res = await this._unauthenticatedClient.getBlob(blobId);
+            return Blob.create(res.data.blob);
         });
     }
 

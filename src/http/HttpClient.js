@@ -111,6 +111,20 @@ class HttpClient {
     }
 
     /**
+     * Gets a blob from the server.
+     *
+     * @param {string} blobId - id of the blob
+     * @return {Object} response to the API call
+     */
+    async getBlob(blobId) {
+        const request = {
+            method: 'get',
+            url: `/blobs/${blobId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Notifies a user.
      *
      * @param {Object} alias - user to notify

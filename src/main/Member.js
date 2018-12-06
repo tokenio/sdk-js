@@ -714,6 +714,29 @@ export default class Member {
     }
 
     /**
+     * Creates a customization.
+     *
+     * @param object logo
+     * @param colors map of ARGB colors #AARRGGBB
+     * @return customization id
+     */
+    createCustomization(
+        logo: {
+            type: string,
+            data: Uint8Array | Array<number>,
+            ownerId: string,
+            name: string,
+            accessMode: string,
+        },
+        colors: ?{[string]: string}
+    ): Promise<string> {
+        return Util.callAsync(this.createCustomization, async () => {
+            const res = await this._client.createCustomization(logo, colors);
+            return res.data.customizationId;
+        });
+    }
+
+    /**
      * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
      *
      * @param tokenRequest - token request to store
