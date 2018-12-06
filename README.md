@@ -53,7 +53,7 @@ We provide typing support for the API through [Flow](https://flow.org/en/).
 If you choose to integrate Flow into your project, you can use the following command as a type checker:
 
 ```sh
-yarn flow check # npm run flow check
+npm run flow check
 ```
 
 ## Testing
@@ -62,36 +62,36 @@ yarn flow check # npm run flow check
 
 ```sh
 # targets dev environment by default
-yarn test
+npm test
 
 # for other envs (local, dev, stg, sandbox, prd)
-ENV=sandbox yarn test
+ENV=sandbox npm test
 ```
 
 #### Browser:
 
 ```sh
 # targets dev environment and Chrome by default
-yarn testBrowser
+npm run testBrowser
 
 # for other envs (local, dev, stg, sandbox, prd) or browsers (Chrome, Firefox, Safari, IE, Edge)
-ENV=sandbox yarn testBrowser --Safari
+ENV=sandbox npm run testBrowser -- --browsers Safari
 ```
 
 ## Building
 
-Make sure you have recent versions of Node and yarn.
+Make sure you have recent versions of Node and npm.
 
 To install dependencies:
 
 ```sh
-yarn
+npm install
 ```
 
 To build:
 
 ```sh
-yarn build # CommonJS and ES6 distributions for both Node and browser
+npm run build # CommonJS and ES6 distributions for both Node and browser
 ```
 
 This SDK uses [Babel](https://babeljs.io/docs/en/next/index.html) for transpiling and [Rollup](https://rollupjs.org/guide/en) for bundling.
