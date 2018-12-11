@@ -15,10 +15,10 @@ export default async payee => {
             id: payee.memberId(),
         },
         transferBody: {
-            lifetimeAmount: '100.00',
+            lifetimeAmount: '10.00',
             currency: 'EUR',
         },
-        description: 'account and balance access',
+        description: 'Book Purchase',
         redirectUrl: 'https://token.io/callback',
     };
     const tokenRequest = Token.TokenRequest.create(payload)
