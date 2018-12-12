@@ -424,6 +424,18 @@ declare export class Money {
     toJSON(): Object;
 }
 
+declare export class SecurityMetadata {
+    ipAddress: string;
+    geoLocation: string;
+    deviceFingerprint: string;
+    static create({
+        ipAddress: string,
+        geoLocation: string,
+        deviceFingerprint: string,
+    }): SecurityMetadata;
+    toJSON(): Object;
+}
+
 // enums
 
 export const AliasType = Object.freeze({

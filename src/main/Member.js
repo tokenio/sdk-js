@@ -26,6 +26,7 @@ import {
     RecoveryRule,
     RequestStatus,
     Resource,
+    SecurityMetadata,
     Signature,
     Subscriber,
     Token,
@@ -128,6 +129,7 @@ export default class Member {
     forAccessToken(accessTokenId: string) {
         const newMember = new Member(this._options);
         newMember._client.useAccessToken(accessTokenId);
+        newMember._client.setSecurityMetadata(this._client.getSecurityMetadata());
         return new Representable(newMember);
     }
 
@@ -155,6 +157,22 @@ export default class Member {
      */
     setCustomerInitiated(): void {
         this._client.setCustomerInitiated();
+    }
+
+    /**
+     * Sets the security metadata to be sent with each request.
+     *
+     * @param securityMetadata
+     */
+    setSecurityMetadata(securityMetadata: SecurityMetadata): void {
+        this._client.setSecurityMetadata(securityMetadata);
+    }
+
+    /**
+     * Clears the security metadata.
+     */
+    clearSecurityMetadata(): void {
+        this._client.clearSecurityMetadata();
     }
 
     /**
