@@ -1,5 +1,5 @@
-import {base64Url} from "../security/Base64UrlCodec";
-import stringify from "fast-json-stable-stringify";
+import {base64Url} from '../security/Base64UrlCodec';
+import stringify from 'fast-json-stable-stringify';
 
 class SecurityMetadataHeader {
     /**
