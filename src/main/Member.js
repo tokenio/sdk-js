@@ -810,6 +810,7 @@ export default class Member {
     }
 
     /**
+     * @deprecated use replaceAccessToken and endorseToken instead
      * Cancels the existing token, creates a replacement and endorses it.
      *
      * @param tokenToCancel - the old token to cancel
