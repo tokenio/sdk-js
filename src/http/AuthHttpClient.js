@@ -9,7 +9,7 @@ import BlockingAdapter from './BlockingAdapter';
 import axios from 'axios';
 import base64js from 'base64-js';
 import stringify from 'fast-json-stable-stringify';
-import SecurityMetadataHeader from "./SecurityMetadataHeader";
+import SecurityMetadataHeader from './SecurityMetadataHeader';
 
 /**
  * Client for making authenticated requests to the Token gateway.
