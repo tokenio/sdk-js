@@ -1587,6 +1587,67 @@ export const io = $root.io = (() => {
                         return SealedMessage;
                     })();
 
+                    security.SecurityMetadata = (function() {
+
+                        function SecurityMetadata(p) {
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        SecurityMetadata.prototype.ipAddress = "";
+                        SecurityMetadata.prototype.geoLocation = "";
+                        SecurityMetadata.prototype.deviceFingerprint = "";
+
+                        SecurityMetadata.create = function create(properties) {
+                            return new SecurityMetadata(properties);
+                        };
+
+                        SecurityMetadata.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.security.SecurityMetadata)
+                                return d;
+                            var m = new $root.io.token.proto.common.security.SecurityMetadata();
+                            if (d.ipAddress != null) {
+                                m.ipAddress = String(d.ipAddress);
+                            }
+                            if (d.geoLocation != null) {
+                                m.geoLocation = String(d.geoLocation);
+                            }
+                            if (d.deviceFingerprint != null) {
+                                m.deviceFingerprint = String(d.deviceFingerprint);
+                            }
+                            return m;
+                        };
+
+                        SecurityMetadata.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.defaults) {
+                                d.ipAddress = "";
+                                d.geoLocation = "";
+                                d.deviceFingerprint = "";
+                            }
+                            if (m.ipAddress != null && m.hasOwnProperty("ipAddress")) {
+                                d.ipAddress = m.ipAddress;
+                            }
+                            if (m.geoLocation != null && m.hasOwnProperty("geoLocation")) {
+                                d.geoLocation = m.geoLocation;
+                            }
+                            if (m.deviceFingerprint != null && m.hasOwnProperty("deviceFingerprint")) {
+                                d.deviceFingerprint = m.deviceFingerprint;
+                            }
+                            return d;
+                        };
+
+                        SecurityMetadata.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return SecurityMetadata;
+                    })();
+
                     return security;
                 })();
 
@@ -5468,8 +5529,7 @@ export const io = $root.io = (() => {
                                         this[ks[i]] = p[ks[i]];
                         }
 
-                        CreateAndEndorseToken.prototype.payload = null;
-                        CreateAndEndorseToken.prototype.options = null;
+                        CreateAndEndorseToken.prototype.tokenRequest = null;
                         CreateAndEndorseToken.prototype.addKey = null;
                         CreateAndEndorseToken.prototype.contact = null;
 
@@ -5481,15 +5541,10 @@ export const io = $root.io = (() => {
                             if (d instanceof $root.io.token.proto.common.notification.CreateAndEndorseToken)
                                 return d;
                             var m = new $root.io.token.proto.common.notification.CreateAndEndorseToken();
-                            if (d.payload != null) {
-                                if (typeof d.payload !== "object")
-                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.payload: object expected");
-                                m.payload = $root.io.token.proto.common.token.TokenRequestPayload.fromObject(d.payload);
-                            }
-                            if (d.options != null) {
-                                if (typeof d.options !== "object")
-                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.options: object expected");
-                                m.options = $root.io.token.proto.common.token.TokenRequestOptions.fromObject(d.options);
+                            if (d.tokenRequest != null) {
+                                if (typeof d.tokenRequest !== "object")
+                                    throw TypeError(".io.token.proto.common.notification.CreateAndEndorseToken.tokenRequest: object expected");
+                                m.tokenRequest = $root.io.token.proto.common.token.TokenRequest.fromObject(d.tokenRequest);
                             }
                             if (d.addKey != null) {
                                 if (typeof d.addKey !== "object")
@@ -5509,16 +5564,12 @@ export const io = $root.io = (() => {
                                 o = {};
                             var d = {};
                             if (o.defaults) {
-                                d.payload = null;
-                                d.options = null;
+                                d.tokenRequest = null;
                                 d.addKey = null;
                                 d.contact = null;
                             }
-                            if (m.payload != null && m.hasOwnProperty("payload")) {
-                                d.payload = $root.io.token.proto.common.token.TokenRequestPayload.toObject(m.payload, o);
-                            }
-                            if (m.options != null && m.hasOwnProperty("options")) {
-                                d.options = $root.io.token.proto.common.token.TokenRequestOptions.toObject(m.options, o);
+                            if (m.tokenRequest != null && m.hasOwnProperty("tokenRequest")) {
+                                d.tokenRequest = $root.io.token.proto.common.token.TokenRequest.toObject(m.tokenRequest, o);
                             }
                             if (m.addKey != null && m.hasOwnProperty("addKey")) {
                                 d.addKey = $root.io.token.proto.common.notification.AddKey.toObject(m.addKey, o);
@@ -6329,12 +6380,14 @@ export const io = $root.io = (() => {
                         TokenRequestPayload.prototype.userRefId = "";
                         TokenRequestPayload.prototype.customizationId = "";
                         TokenRequestPayload.prototype.redirectUrl = "";
+                        TokenRequestPayload.prototype.refId = "";
                         TokenRequestPayload.prototype.to = null;
                         TokenRequestPayload.prototype.actingAs = null;
                         TokenRequestPayload.prototype.accessBody = null;
                         TokenRequestPayload.prototype.transferBody = null;
                         TokenRequestPayload.prototype.description = "";
                         TokenRequestPayload.prototype.callbackState = "";
+                        TokenRequestPayload.prototype.destinationCountry = "";
 
                         let $oneOfFields;
 
@@ -6359,6 +6412,9 @@ export const io = $root.io = (() => {
                             }
                             if (d.redirectUrl != null) {
                                 m.redirectUrl = String(d.redirectUrl);
+                            }
+                            if (d.refId != null) {
+                                m.refId = String(d.refId);
                             }
                             if (d.to != null) {
                                 if (typeof d.to !== "object")
@@ -6386,6 +6442,9 @@ export const io = $root.io = (() => {
                             if (d.callbackState != null) {
                                 m.callbackState = String(d.callbackState);
                             }
+                            if (d.destinationCountry != null) {
+                                m.destinationCountry = String(d.destinationCountry);
+                            }
                             return m;
                         };
 
@@ -6401,6 +6460,8 @@ export const io = $root.io = (() => {
                                 d.actingAs = null;
                                 d.description = "";
                                 d.callbackState = "";
+                                d.destinationCountry = "";
+                                d.refId = "";
                             }
                             if (m.userRefId != null && m.hasOwnProperty("userRefId")) {
                                 d.userRefId = m.userRefId;
@@ -6432,6 +6493,12 @@ export const io = $root.io = (() => {
                             }
                             if (m.callbackState != null && m.hasOwnProperty("callbackState")) {
                                 d.callbackState = m.callbackState;
+                            }
+                            if (m.destinationCountry != null && m.hasOwnProperty("destinationCountry")) {
+                                d.destinationCountry = m.destinationCountry;
+                            }
+                            if (m.refId != null && m.hasOwnProperty("refId")) {
+                                d.refId = m.refId;
                             }
                             return d;
                         };

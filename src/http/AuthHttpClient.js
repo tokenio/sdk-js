@@ -9,6 +9,7 @@ import BlockingAdapter from './BlockingAdapter';
 import axios from 'axios';
 import base64js from 'base64-js';
 import stringify from 'fast-json-stable-stringify';
+import SecurityMetadataHeader from './SecurityMetadataHeader';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -94,10 +95,12 @@ class AuthHttpClient {
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(this._developerKey);
+        const securityMetadataHeader = new SecurityMetadataHeader(this._securityMetadata);
         this._interceptor = this._instance.interceptors.request.use(async request => {
             await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
+            securityMetadataHeader.addSecurityMetadataHeader(request);
             return request;
         });
     }
@@ -137,6 +140,33 @@ class AuthHttpClient {
      */
     setCustomerInitiated() {
         this._context.customerInitiated = true;
+    }
+
+    /**
+     * Sets the security metadata to be sent with each request.
+     *
+     * @param {object} securityMetadata - security metadata
+     */
+    setSecurityMetadata(securityMetadata) {
+        this._securityMetadata = securityMetadata;
+        this._resetRequestInterceptor();
+    }
+
+    /**
+     * Clears the security metadata.
+     */
+    clearSecurityMetadata() {
+        this._securityMetadata = undefined;
+        this._resetRequestInterceptor();
+    }
+
+    /**
+     * Returns the security metadata.
+     *
+     * @returns {object} security metadata
+     */
+    getSecurityMetadata() {
+        return this._securityMetadata;
     }
 
     /**
