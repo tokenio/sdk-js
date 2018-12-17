@@ -2,7 +2,7 @@ import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import RedeemAccessTokenSample from '../../src/sample/RedeemAccessTokenSample';
-import {Resource, TokenOperationResult} from '../../src';
+import {Resource} from '../../src';
 
 const {assert} = require('chai');
 
