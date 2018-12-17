@@ -997,6 +997,7 @@ class AuthHttpClient {
     }
 
     /**
+     * @deprecated use replaceAccessToken and endorseToken instead
      * Replaces an access token with one with updated resources, and endorses it.
      *
      * @param {Object} tokenToCancel - access token to replace

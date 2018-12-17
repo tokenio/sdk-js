@@ -2,7 +2,7 @@ import CreateMemberSample from '../../src/sample/CreateMemberSample';
 import LinkMemberAndBankSample from '../../src/sample/LinkMemberAndBankSample';
 import CreateAndEndorseAccessTokenSample from '../../src/sample/CreateAndEndorseAccessTokenSample';
 import RedeemAccessTokenSample from '../../src/sample/RedeemAccessTokenSample';
-import {Resource} from '../../src';
+import {Resource, TokenOperationResult} from '../../src';
 
 const {assert} = require('chai');
 
@@ -35,7 +35,7 @@ describe('RedeemAccessTokenSample test', () => {
         const balance1 = await RedeemAccessTokenSample.carefullyUse(grantee, token1.id);
         assert.isAtLeast(parseFloat(balance1.value), 1);
 
-        await grantor.replaceAndEndorseAccessToken(
+        const result = await grantor.replaceAccessToken(
             token1,
             [
                 Resource.create({account: {accountId: account1.id}}),
@@ -43,6 +43,7 @@ describe('RedeemAccessTokenSample test', () => {
                 Resource.create({balance: {accountId: account1.id}}),
                 Resource.create({balance: {accountId: account2.id}}),
             ]);
+        await grantor.endorseToken(result.token);
 
         const balance2 = await RedeemAccessTokenSample.carefullyUse(grantee, token1.id);
         assert.isAtLeast(parseFloat(balance2.value), 1);
