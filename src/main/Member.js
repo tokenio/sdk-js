@@ -734,8 +734,9 @@ export default class Member {
     /**
      * Creates a customization.
      *
-     * @param object logo
-     * @param colors map of ARGB colors #AARRGGBB
+     * @param logo - logo
+     * @param colors - map of ARGB colors #AARRGGBB
+     * @param consentText - consent text
      * @return customization id
      */
     createCustomization(
@@ -746,10 +747,11 @@ export default class Member {
             name: string,
             accessMode: string,
         },
-        colors: ?{[string]: string}
+        colors: ?{[string]: string},
+        consentText: string
     ): Promise<string> {
         return Util.callAsync(this.createCustomization, async () => {
-            const res = await this._client.createCustomization(logo, colors);
+            const res = await this._client.createCustomization(logo, colors, consentText);
             return res.data.customizationId;
         });
     }

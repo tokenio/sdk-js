@@ -4532,6 +4532,7 @@ export const io = $root.io = (() => {
                         Customization.prototype.customizationId = "";
                         Customization.prototype.logoBlobId = "";
                         Customization.prototype.colors = $util.emptyObject;
+                        Customization.prototype.consentText = "";
 
                         Customization.create = function create(properties) {
                             return new Customization(properties);
@@ -4555,6 +4556,9 @@ export const io = $root.io = (() => {
                                     m.colors[ks[i]] = String(d.colors[ks[i]]);
                                 }
                             }
+                            if (d.consentText != null) {
+                                m.consentText = String(d.consentText);
+                            }
                             return m;
                         };
 
@@ -4568,6 +4572,7 @@ export const io = $root.io = (() => {
                             if (o.defaults) {
                                 d.customizationId = "";
                                 d.logoBlobId = "";
+                                d.consentText = "";
                             }
                             if (m.customizationId != null && m.hasOwnProperty("customizationId")) {
                                 d.customizationId = m.customizationId;
@@ -4581,6 +4586,9 @@ export const io = $root.io = (() => {
                                 for (var j = 0; j < ks2.length; ++j) {
                                     d.colors[ks2[j]] = m.colors[ks2[j]];
                                 }
+                            }
+                            if (m.consentText != null && m.hasOwnProperty("consentText")) {
+                                d.consentText = m.consentText;
                             }
                             return d;
                         };
