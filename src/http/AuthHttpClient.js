@@ -917,7 +917,7 @@ class AuthHttpClient {
             data: {
                 logo: logoPayload,
                 colors,
-                consentText: consentText,
+                consentText,
             },
         };
         return this._instance(request);
