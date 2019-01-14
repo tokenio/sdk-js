@@ -8,6 +8,7 @@ import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
 import Member from './Member';
 import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
 import TokenRequest from './TokenRequest';
+import TokenRequestOptions from './TokenRequest';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
 import Util from '../Util';
 import {
@@ -480,6 +481,19 @@ export class TokenIO {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanksOrCountries(options, true);
             return res.data.countries || [];
+        });
+    }
+
+    /**
+     * Updates an existing token request.
+     *
+     * @param {string} requestId - token request ID
+     * @param {Object} options - new token request options
+     * @return empty promise
+     */
+    updateTokenRequest(requestId: string, options: TokenRequestOptions): Promise<void> {
+        return Util.callAsync(this.updateTokenRequest, async () => {
+            await this._unauthenticatedClient.updateTokenRequest(requestId, options);
         });
     }
 
