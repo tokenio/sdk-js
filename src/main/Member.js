@@ -770,19 +770,6 @@ export default class Member {
     }
 
     /**
-     * Updates an existing token request.
-     *
-     * @param {string} requestId - token request ID
-     * @param {Object} options - new token request options
-     * @return empty promise
-     */
-    updateTokenRequest(requestId: string, options: TokenRequestOptions): Promise<void> {
-        return Util.callAsync(this.updateTokenRequest, async () => {
-            await this._client.updateTokenRequest(requestId, options);
-        });
-    }
-
-    /**
      * Creates a new unendorsed access token.
      *
      * @param alias - the alias of the grantee of the Access Token

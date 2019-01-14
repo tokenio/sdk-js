@@ -354,6 +354,25 @@ class HttpClient {
     }
 
     /**
+     * Updates an existing token request.
+     *
+     * @param {string} requestId - token request ID
+     * @param {Object} options - new token request options
+     * @return {Promise} response to the API call
+     */
+    async updateTokenRequest(requestId, options) {
+        const request = {
+            method: 'put',
+            url: `/token-requests/${requestId}`,
+            data: {
+                requestId: requestId,
+                requestOptions: options,
+            },
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
      *
      * @param {string} requestId - token request id
