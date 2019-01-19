@@ -58,12 +58,13 @@ export default class TokenRequest {
     /**
      * Sets the alias of the payer/grantor
      *
-     * @param type Type of the alias
-     * @param value Value of the alias
+     * @param alias alias object, or type of alias as a string
+     * @param value optional value of the alias if first param is type
      * @returns {TokenRequest} token request
      */
-    setFromAlias(type, value) {
-        this.requestOptions.from.alias = {type, value};
+    setFromAlias(alias, value) {
+        if (typeof alias === 'string') this.requestOptions.from.alias = {type: alias, value};
+        else this.requestOptions.from.alias = alias;
         return this;
     }
 
