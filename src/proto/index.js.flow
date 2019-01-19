@@ -113,7 +113,7 @@ type TransferBody = {
     redeemer: TokenMember,
     instructions: any,
     currency: string,
-    lifeTimeAmount: string,
+    lifetimeAmount: string,
     amount: string,
     attachments: Array<any>,
     pricing: Pricing,

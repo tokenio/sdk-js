@@ -226,7 +226,7 @@ export default class TokenRequest {
      *
      * @param {string} email - default email
      * @return {TokenRequest} token request
-     * @deprecated use setFromEmail instead
+     * @deprecated use setFromAlias instead
      */
     setEmail(email) {
         this.options.email = email;

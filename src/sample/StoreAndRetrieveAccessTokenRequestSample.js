@@ -10,21 +10,12 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * @return {Object} retrieved token request
  */
 export default async grantee => {
-    // Construct payload
-    const payload = {
-        to: {
-            id: grantee.memberId(),
-        },
-        accessBody: {
-            type: ['ACCOUNTS', 'BALANCES'],
-        },
-        description: 'Account and balance access',
-        redirectUrl: 'https://token.io/callback',
-    };
-
     // Create token request to be stored
-    const tokenRequest = Token.TokenRequest.create(payload)
-        .setFromEmail('grantorEmail@gmail.com')
+    const tokenRequest = Token.createAccessTokenRequest(['ACCOUNTS', 'BALANCES'])
+        .setDescription('Account and balance access')
+        .setRedirectUrl('https://token.io/callback')
+        .setFromAlias('EMAIL', 'grantorEmail@gmail.com')
+        .setToMemberId(grantee.memberId())
         .setBankId('iron');
 
     const request = await grantee.storeTokenRequest(tokenRequest);

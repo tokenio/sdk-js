@@ -12,22 +12,20 @@ describe('TokenRequestUrl test', () => {
         const grantee = await CreateMemberSample();
 
         const requestId = Util.generateNonce();
-        const originalState = Util.generateNonce();
-        const csrfToken = Util.generateNonce();
 
         const requestUrl = TokenRequestUrlSample
-            .generateTokenRequestUrl(requestId, originalState, csrfToken);
+            .generateTokenRequestUrl(requestId);
         const callbackUrl = await TokenRequestUrlSample
             .getCallbackUrlFromTokenRequestUrl(requestId, grantor, grantee, requestUrl);
         const callback = await TokenRequestUrlSample
-            .parseTokenRequestCallbackUrl(callbackUrl, csrfToken);
-        assert.equal(originalState, callback.innerState);
+            .parseTokenRequestCallbackUrl(callbackUrl);
+        assert.equal('', callback.innerState);
         assert.notEqual('', callback.tokenId);
     });
 
     it('Should request a signature', async () => {
         if (BROWSER) return;
-        const state = Util.generateNonce();
+        const state = encodeURIComponent(JSON.stringify({innerState: '', csrfTokenHash: Util.hashString('')}));
         const tokenRequestId = Util.generateNonce();
 
         const grantor = await CreateMemberSample();
