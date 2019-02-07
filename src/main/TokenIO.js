@@ -8,6 +8,7 @@ import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
 import Member from './Member';
 import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
 import TokenRequest from './TokenRequest';
+import TransferTokenRequest from './TransferTokenRequest';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
 import Util from '../Util';
 import {
@@ -22,10 +23,13 @@ import {
     Signature,
     TokenMember,
     TokenPayload,
-    TransferEndpoint,
     Customization,
 } from '../proto';
-import type {NotifyStatusEnum} from '../proto';
+import type {
+    NotifyStatusEnum,
+    ResourceTypeEnum,
+    TokenRequestOptions,
+} from '../proto';
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,
@@ -159,7 +163,7 @@ export class TokenIO {
      * @returns The created TokenRequest
      */
     createAccessTokenRequest(
-        resources: Array<'INVALID' | 'ACCOUNTS' | 'BALANCES' | 'TRANSACTIONS' | 'TRANSFER_DESTINATIONS'>
+        resources: Array<ResourceTypeEnum>
     ): TokenRequest {
         return Util.callSync(this.createAccessTokenRequest, () => {
             const payload = {
@@ -171,30 +175,28 @@ export class TokenIO {
                     innerState: '',
                 },
             };
-            return TokenRequest.create(payload);
+            return new TokenRequest(payload);
         });
     }
 
     /**
      * Create a TokenRequest for a transfer token
      *
-     * @param options - object that specifies currency, amount, and destinations
+     * @param lifetimeAmount - lifetime amount of the token
+     * @param currency - 3 letter currency code for the amount, e.g. 'USD'
      * @returns The created TokenRequest
      */
-    createTransferTokenRequest(options: {
-        currency: string,
+    createTransferTokenRequest(
         lifetimeAmount: number | string,
-        amount: number | string,
-        destinations: Array<TransferEndpoint>,
-    }): TokenRequest {
+        currency: string
+    ): TokenRequest {
         return Util.callSync(this.createTransferTokenRequest, () => {
             const payload = {
                 refId: Util.generateNonce(),
                 transferBody: {
-                    currency: options.currency,
-                    lifetimeAmount: options.lifetimeAmount ? options.lifetimeAmount.toString() : '',
-                    amount: options.amount ? options.amount.toString() : '',
-                    destinations: options.destinations,
+                    currency: currency,
+                    lifetimeAmount: lifetimeAmount.toString(),
+                    destinations: [],
                 },
                 to: {},
                 callbackState: {
@@ -202,7 +204,7 @@ export class TokenIO {
                     innerState: '',
                 },
             };
-            return TokenRequest.create(payload);
+            return new TransferTokenRequest(payload);
         });
     }
 
@@ -545,7 +547,7 @@ export class TokenIO {
      * @param {Object} options - new token request options
      * @return empty promise
      */
-    updateTokenRequest(requestId: string, options: Object): Promise<void> {
+    updateTokenRequest(requestId: string, options: TokenRequestOptions): Promise<void> {
         return Util.callAsync(this.updateTokenRequest, async () => {
             await this._unauthenticatedClient.updateTokenRequest(requestId, options);
         });
@@ -574,12 +576,21 @@ export class TokenIO {
      * Generate a token request authorization URL.
      *
      * @param requestId - request id
+     * @param state - original state
+     * @param csrfToken - CSRF token
      * @return token request URL
      */
-    generateTokenRequestUrl(requestId: string): string {
-        return Util.callSync(this.generateTokenRequestUrl, () => {
-            return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}`; // eslint-disable-line max-len
-        });
+    generateTokenRequestUrl(
+        requestId: string,
+        state?: string = '',
+        csrfToken?: string = ''
+    ): string {
+        const tokenRequestState = {
+            csrfTokenHash: Util.hashString(csrfToken),
+            innerState: state,
+        };
+        const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
+        return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
     }
 
     /**

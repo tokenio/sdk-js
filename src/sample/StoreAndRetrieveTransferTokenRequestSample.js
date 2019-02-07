@@ -10,10 +10,7 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * @return {Object} retrieved token request
  */
 export default async payee => {
-    const tokenRequest = Token.createTransferTokenRequest({
-        lifetimeAmount: '10.00',
-        currency: 'EUR',
-    })
+    const tokenRequest = Token.createTransferTokenRequest('10.00', 'EUR')
         .setToMemberId(payee.memberId())
         .setFromAlias('EMAIL', 'payerEmail@gmail.com')
         .setDescription('Book Purchase')

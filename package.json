@@ -1,6 +1,6 @@
 {
     "name": "token-io",
-    "version": "2.3.7",
+    "version": "2.4.0",
     "description": "Token JavaScript SDK",
     "license": "ISC",
     "author": {
@@ -19,14 +19,14 @@
         "type": "flow check",
         "lint": "eslint .",
         "test": "npm run build && npm run testOnly",
-        "testOnly": "flow check && eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
+        "testOnly": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
         "testBrowser": "flow check && eslint test && TARGET=browser karma start test/karma.config.js",
         "build:cjs": "rollup -c",
         "build:esm": "cross-env FORMAT=esm rollup -c",
         "build:cjs:browser": "cross-env TARGET=browser rollup -c",
         "build:esm:browser": "cross-env FORMAT=esm TARGET=browser rollup -c",
         "build:iife": "cross-env FORMAT=iife TARGET=browser rollup -c",
-        "build": "flow check && eslint src && npm install && npm run proto && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife",
+        "build": "eslint src && npm install && npm run proto && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife",
         "proto": "node protogen.js $npm_package_config_proto",
         "doc": "esdoc"
     },

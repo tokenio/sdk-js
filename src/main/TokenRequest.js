@@ -58,13 +58,12 @@ export default class TokenRequest {
     /**
      * Sets the alias of the payer/grantor
      *
-     * @param alias alias object, or type of alias as a string
-     * @param value optional value of the alias if first param is type
+     * @param {string} type - type of alias
+     * @param {string} value - value of alias
      * @returns {TokenRequest} token request
      */
-    setFromAlias(alias, value) {
-        if (typeof alias === 'string') this.requestOptions.from.alias = {type: alias, value};
-        else this.requestOptions.from.alias = alias;
+    setFromAlias(type, value) {
+        this.requestOptions.from.alias = {type, value};
         return this;
     }
 
@@ -82,11 +81,12 @@ export default class TokenRequest {
     /**
      * Sets the alias of the payee/grantee.
      *
-     * @param {object} toAlias - alias of the payee/grantee
+     * @param {string} type - type of alias
+     * @param {string} value - value of alias
      * @return {TokenRequest} token request
      */
-    setToAlias(toAlias) {
-        if (this.requestPayload) this.requestPayload.to.alias = toAlias;
+    setToAlias(type, value) {
+        if (this.requestPayload) this.requestPayload.to.alias = {type, value};
         return this;
     }
 
@@ -122,22 +122,7 @@ export default class TokenRequest {
         if (this.requestPayload) {
             this.requestPayload.customizationId = customizationId;
         } else { // deprecated api
-            this.options.customizationId = customizationId;
-        }
-        return this;
-    }
-
-    /**
-     * Sets a destination country for the TokenRequest
-     *
-     * @param {string} destinationCountry - destination country
-     * @return {TokenRequest} token request
-     */
-    setDestinationCountry(destinationCountry) {
-        if (this.requestPayload) {
-            this.requestPayload.destinationCountry = destinationCountry;
-        } else { // deprecated api
-            this.options.destinationCountry = destinationCountry;
+            this.customizationId = customizationId;
         }
         return this;
     }
@@ -215,7 +200,7 @@ export default class TokenRequest {
         if (this.requestPayload) {
             this.requestPayload.redirectUrl = redirectUrl;
         } else { // deprecated api
-            this.redirectUrl = redirectUrl;
+            this.options.redirectUrl = redirectUrl;
         }
         return this;
     }
@@ -231,6 +216,17 @@ export default class TokenRequest {
      */
     setEmail(email) {
         this.options.email = email;
+        return this;
+    }
+
+    /**
+     * Sets a destination country for the TokenRequest
+     *
+     * @param {string} destinationCountry - destination country
+     * @return {TokenRequest} token request
+     */
+    setDestinationCountry(destinationCountry) {
+        this.options.destinationCountry = destinationCountry;
         return this;
     }
 }

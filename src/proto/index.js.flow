@@ -524,6 +524,14 @@ export const TransactionType = Object.freeze({
     CREDIT: 2,
 });
 
+export const ResourceType = Object.freeze({
+    INVALID: 0,
+    ACCOUNTS: 1,
+    BALANCES: 2,
+    TRANSACTIONS: 3,
+    TRANSFER_DESTINATIONS: 4,
+});
+
 export type AliasTypeEnum = $Values<typeof AliasType>;
 export type KeyAlgorithmEnum = $Values<typeof KeyAlgorithm>;
 export type KeyLevelEnum = $Values<typeof KeyLevel>;
@@ -535,3 +543,13 @@ export type TokenOperationStatusEnum = $Values<typeof TokenOperationStatus>;
 export type TokenSignatureActionEnum = $Values<typeof TokenSignatureAction>;
 export type TransactionStatusEnum = $Values<typeof TransactionStatus>;
 export type TransactionTypeEnum = $Values<typeof TransactionType>;
+export type ResourceTypeEnum = $Keys<typeof ResourceType>;
+
+// Other
+
+export type TokenRequestOptions = {
+    bankId?: string,
+    from?: TokenMember,
+    sourceAccountId?: string,
+    receiptRequested?: boolean,
+};
