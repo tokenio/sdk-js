@@ -26,7 +26,7 @@
         "build:cjs:browser": "cross-env TARGET=browser rollup -c",
         "build:esm:browser": "cross-env FORMAT=esm TARGET=browser rollup -c",
         "build:iife": "cross-env FORMAT=iife TARGET=browser rollup -c",
-        "build": "flow check && eslint src && npm install && npm run proto && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife",
+        "build": "eslint src && npm install && npm run proto && npm run build:cjs && npm run build:esm && npm run build:cjs:browser && npm run build:esm:browser && npm run build:iife",
         "proto": "node protogen.js $npm_package_config_proto",
         "doc": "esdoc"
     },

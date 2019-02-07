@@ -58,12 +58,13 @@ export default class TokenRequest {
     /**
      * Sets the alias of the payer/grantor
      *
-     * @param {string} type - type of alias
+     * @param {string|Object} type - type of alias or alias object
      * @param {string} value - value of alias
      * @returns {TokenRequest} token request
      */
     setFromAlias(type, value) {
-        this.requestOptions.from.alias = {type, value};
+        if (typeof type === 'string') this.requestOptions.from.alias = {type, value};
+        else this.requestOptions.from.alias = type;
         return this;
     }
 
@@ -81,12 +82,15 @@ export default class TokenRequest {
     /**
      * Sets the alias of the payee/grantee.
      *
-     * @param {string} type - type of alias
+     * @param {string|Object} type - type of alias or alias object
      * @param {string} value - value of alias
      * @return {TokenRequest} token request
      */
     setToAlias(type, value) {
-        if (this.requestPayload) this.requestPayload.to.alias = {type, value};
+        if (this.requestPayload) {
+            if (typeof type === 'string') this.requestPayload.to.alias = {type, value};
+            else this.requestPayload.to.alias = type;
+        }
         return this;
     }
 
