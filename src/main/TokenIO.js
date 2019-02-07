@@ -8,7 +8,7 @@ import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
 import Member from './Member';
 import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
 import TokenRequest from './TokenRequest';
-import TokenRequestOptions from './TokenRequest';
+import TransferTokenRequest from './TransferTokenRequest';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
 import Util from '../Util';
 import {
@@ -25,7 +25,11 @@ import {
     TokenPayload,
     Customization,
 } from '../proto';
-import type {NotifyStatusEnum} from '../proto';
+import type {
+    NotifyStatusEnum,
+    ResourceTypeEnum,
+    TokenRequestOptions,
+} from '../proto';
 
 /**
  * Main entry object. Allows creation of members, provisioning of devices, logging in,
@@ -149,6 +153,58 @@ export class TokenIO {
         return Util.callAsync(this.resolveAlias, async () => {
             const res = await this._unauthenticatedClient.resolveAlias(alias.toJSON());
             return res.data.member && TokenMember.create(res.data.member);
+        });
+    }
+
+    /**
+     * Create a TokenRequest for an access token
+     *
+     * @param resources - resources to request access of
+     * @returns The created TokenRequest
+     */
+    createAccessTokenRequest(
+        resources: Array<ResourceTypeEnum>
+    ): TokenRequest {
+        return Util.callSync(this.createAccessTokenRequest, () => {
+            const payload = {
+                refId: Util.generateNonce(),
+                accessBody: {type: resources},
+                to: {},
+                callbackState: {
+                    csrfTokenHash: Util.hashString(''),
+                    innerState: '',
+                },
+            };
+            return new TokenRequest(payload);
+        });
+    }
+
+    /**
+     * Create a TokenRequest for a transfer token
+     *
+     * @param lifetimeAmount - lifetime amount of the token
+     * @param currency - 3 letter currency code for the amount, e.g. 'USD'
+     * @returns The created TokenRequest
+     */
+    createTransferTokenRequest(
+        lifetimeAmount: number | string,
+        currency: string
+    ): TokenRequest {
+        return Util.callSync(this.createTransferTokenRequest, () => {
+            const payload = {
+                refId: Util.generateNonce(),
+                transferBody: {
+                    currency: currency,
+                    lifetimeAmount: lifetimeAmount.toString(),
+                    destinations: [],
+                },
+                to: {},
+                callbackState: {
+                    csrfTokenHash: Util.hashString(''),
+                    innerState: '',
+                },
+            };
+            return new TransferTokenRequest(payload);
         });
     }
 
@@ -529,14 +585,12 @@ export class TokenIO {
         state?: string = '',
         csrfToken?: string = ''
     ): string {
-        return Util.callSync(this.generateTokenRequestUrl, () => {
-            const tokenRequestState = {
-                csrfTokenHash: Util.hashString(csrfToken),
-                innerState: state,
-            };
-            const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
-            return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
-        });
+        const tokenRequestState = {
+            csrfTokenHash: Util.hashString(csrfToken),
+            innerState: state,
+        };
+        const serializedState = encodeURIComponent(JSON.stringify(tokenRequestState));
+        return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}?state=${serializedState}`; // eslint-disable-line max-len
     }
 
     /**

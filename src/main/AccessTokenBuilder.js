@@ -53,7 +53,7 @@ export default class AccessTokenBuilder {
     }
 
     /**
-     * Adds a resource for one adress.
+     * Adds a resource for one address.
      * @param {String} addressId - id of the address
      * @return {AccessTokenBuilder} returns back the builder object
      */

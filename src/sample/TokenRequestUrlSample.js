@@ -13,12 +13,10 @@ class TokenRequestUrlSample {
      * Generate a token request authorization URL.
      *
      * @param {string} requestId - request id
-     * @param {string} state - original state
-     * @param {string} csrfToken - CSRF token
      * @return {string} the token request URL
      */
-    static generateTokenRequestUrl(requestId, state, csrfToken) {
-        return Token.generateTokenRequestUrl(requestId, state, csrfToken);
+    static generateTokenRequestUrl(requestId) {
+        return Token.generateTokenRequestUrl(requestId);
     }
 
     /**
@@ -47,11 +45,10 @@ class TokenRequestUrlSample {
         grantor,
         grantee,
         tokenRequestUrl) {
-        const urlParams = Util.parseParamsFromUrl(tokenRequestUrl);
-        const state = encodeURIComponent(urlParams.state);
 
+        // assume empty state, retrieved from the token request
+        const state = encodeURIComponent(JSON.stringify({innerState: '', csrfTokenHash: Util.hashString('')}));
         const token = await this.generateValidAccessToken(grantor, grantee);
-
         const signature = await grantor.signTokenRequestState(tokenRequestId, token.id, state);
         const callbackUrl = `http://localhost/path?tokenId=${token.id}` +
             `&state=${state}&signature=${encodeURIComponent(JSON.stringify(signature))}`;

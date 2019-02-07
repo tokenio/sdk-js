@@ -252,11 +252,11 @@ class HttpClient {
      * @param receiptContact - (optional) receipt contact
      * @return {Object} response to the API call
      */
-    notifyCreateAndEndorseToken(requestId, addKey, receiptContact) {
+    notifyCreateAndEndorseToken(tokenRequestId, addKey, receiptContact) {
         const req = {
-            tokenRequestId: requestId,
+            tokenRequestId: tokenRequestId,
             addKey: addKey,
-            receiptContact: receiptContact,
+            contact: receiptContact,
         };
         const request = {
             method: 'post',

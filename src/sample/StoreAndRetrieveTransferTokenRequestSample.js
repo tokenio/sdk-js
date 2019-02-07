@@ -10,19 +10,11 @@ const Token = new TokenIO({env: TEST_ENV, developerKey: devKey, keyDir: './keys'
  * @return {Object} retrieved token request
  */
 export default async payee => {
-    const payload = {
-        to: {
-            id: payee.memberId(),
-        },
-        transferBody: {
-            lifetimeAmount: '10.00',
-            currency: 'EUR',
-        },
-        description: 'Book Purchase',
-        redirectUrl: 'https://token.io/callback',
-    };
-    const tokenRequest = Token.TokenRequest.create(payload)
-        .setFromEmail('payerEmail@gmail.com')
+    const tokenRequest = Token.createTransferTokenRequest('10.00', 'EUR')
+        .setToMemberId(payee.memberId())
+        .setFromAlias('EMAIL', 'payerEmail@gmail.com')
+        .setDescription('Book Purchase')
+        .setRedirectUrl('https://token.io/callback')
         .setBankId('iron');
     const request = await payee.storeTokenRequest(tokenRequest);
 

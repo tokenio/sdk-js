@@ -1,4 +1,5 @@
 import {TokenPayload} from '../proto';
+import Util from '../Util';
 
 // TODO(RD-1515) remove support for Token payload, options map
 export default class TokenRequest {
@@ -55,15 +56,41 @@ export default class TokenRequest {
     }
 
     /**
-     * Sets the email address of the payer/grantor.
+     * Sets the alias of the payer/grantor
      *
-     * @param {string} fromEmail - email of the payer/grantor
+     * @param {string|Object} type - type of alias or alias object
+     * @param {string} value - value of alias
+     * @returns {TokenRequest} token request
+     */
+    setFromAlias(type, value) {
+        if (typeof type === 'string') this.requestOptions.from.alias = {type, value};
+        else this.requestOptions.from.alias = type;
+        return this;
+    }
+
+    /**
+     * Sets the member ID of the payee/grantee.
+     *
+     * @param toMemberId member ID of the payee/grantee
      * @return {TokenRequest} token request
      */
-    setFromEmail(fromEmail) {
-        this.requestOptions.from.alias = {};
-        this.requestOptions.from.alias.type = 'EMAIL';
-        this.requestOptions.from.alias.value = fromEmail;
+    setToMemberId(toMemberId) {
+        if (this.requestPayload) this.requestPayload.to.id = toMemberId;
+        return this;
+    }
+
+    /**
+     * Sets the alias of the payee/grantee.
+     *
+     * @param {string|Object} type - type of alias or alias object
+     * @param {string} value - value of alias
+     * @return {TokenRequest} token request
+     */
+    setToAlias(type, value) {
+        if (this.requestPayload) {
+            if (typeof type === 'string') this.requestPayload.to.alias = {type, value};
+            else this.requestPayload.to.alias = type;
+        }
         return this;
     }
 
@@ -104,29 +131,51 @@ export default class TokenRequest {
         return this;
     }
 
-    // DEPRECATED SETTERS
-
     /**
-     * Sets a default email for the TokenRequest
+     * Sets acting as on the token.
      *
-     * @param {string} email - default email
+     * @param {Object} actingAs - entity the redeemer is acting on behalf of
      * @return {TokenRequest} token request
-     * @deprecated use setFromEmail instead
      */
-    setEmail(email) {
-        this.options.email = email;
+    setActingAs(actingAs) {
+        if (this.requestPayload) this.requestPayload.actingAs = actingAs;
         return this;
     }
 
     /**
-     * Sets a redirect URL for the TokenRequest
+     * Sets the description of the token.
      *
-     * @param {string} redirectUrl - redirect URL
+     * @param {string} description - description
      * @return {TokenRequest} token request
-     * @deprecated set this on the Token request payload instead
      */
-    setRedirectUrl(redirectUrl) {
-        this.options.redirectUrl = redirectUrl;
+    setDescription(description) {
+        if (this.requestPayload) this.requestPayload.description = description;
+        return this;
+    }
+
+    /**
+     * Sets the callback state
+     *
+     * @param {Object|string} state - arbitrary JS object or string
+     * @return {TokenRequest} token request
+     */
+    setCallbackState(state) {
+        if (this.requestPayload) {
+            this.requestPayload.callbackState.innerState = state;
+        }
+        return this;
+    }
+
+    /**
+     * Sets the CSRF token
+     *
+     * @param {string} csrf - CSRF token
+     * @return {TokenRequest} token request
+     */
+    setCSRFToken(csrf) {
+        if (this.requestPayload) {
+            this.requestPayload.callbackState.csrfTokenHash = Util.hashString(csrf);
+        }
         return this;
     }
 
@@ -135,10 +184,42 @@ export default class TokenRequest {
      *
      * @param {string} userRefId - user ref id
      * @return {TokenRequest} token request
-     * @deprecated set this on the Token request payload instead
      */
     setUserRefId(userRefId) {
-        this.userRefId = userRefId;
+        if (this.requestPayload) {
+            this.requestPayload.userRefId = userRefId;
+        } else { // deprecated api
+            this.userRefId = userRefId;
+        }
+        return this;
+    }
+
+    /**
+     * Sets a redirect URL for the TokenRequest
+     *
+     * @param {string} redirectUrl - redirect URL
+     * @return {TokenRequest} token request
+     */
+    setRedirectUrl(redirectUrl) {
+        if (this.requestPayload) {
+            this.requestPayload.redirectUrl = redirectUrl;
+        } else { // deprecated api
+            this.options.redirectUrl = redirectUrl;
+        }
+        return this;
+    }
+
+    // DEPRECATED SETTERS
+
+    /**
+     * Sets a default email for the TokenRequest
+     *
+     * @param {string} email - default email
+     * @return {TokenRequest} token request
+     * @deprecated use setFromAlias instead
+     */
+    setEmail(email) {
+        this.options.email = email;
         return this;
     }
 
@@ -147,7 +228,6 @@ export default class TokenRequest {
      *
      * @param {string} destinationCountry - destination country
      * @return {TokenRequest} token request
-     * @deprecated set this on the Token request payload instead
      */
     setDestinationCountry(destinationCountry) {
         this.options.destinationCountry = destinationCountry;
