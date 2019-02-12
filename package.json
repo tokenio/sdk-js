@@ -1,6 +1,6 @@
 {
     "name": "token-io",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "description": "Token JavaScript SDK",
     "license": "ISC",
     "author": {
@@ -13,7 +13,7 @@
         "url": "git://github.com/tokenio/sdk-js.git"
     },
     "config": {
-        "proto": "1.1.55"
+        "proto": "1.1.60"
     },
     "scripts": {
         "type": "flow check",

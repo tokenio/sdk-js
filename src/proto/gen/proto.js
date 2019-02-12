@@ -3634,11 +3634,12 @@ export const io = $root.io = (() => {
                         }
 
                         MemberOperationMetadata.prototype.addAliasMetadata = null;
+                        MemberOperationMetadata.prototype.addKeyMetadata = null;
 
                         let $oneOfFields;
 
                         Object.defineProperty(MemberOperationMetadata.prototype, "type", {
-                            get: $util.oneOfGetter($oneOfFields = ["addAliasMetadata"]),
+                            get: $util.oneOfGetter($oneOfFields = ["addAliasMetadata", "addKeyMetadata"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
 
@@ -3655,6 +3656,11 @@ export const io = $root.io = (() => {
                                     throw TypeError(".io.token.proto.common.member.MemberOperationMetadata.addAliasMetadata: object expected");
                                 m.addAliasMetadata = $root.io.token.proto.common.member.MemberOperationMetadata.AddAliasMetadata.fromObject(d.addAliasMetadata);
                             }
+                            if (d.addKeyMetadata != null) {
+                                if (typeof d.addKeyMetadata !== "object")
+                                    throw TypeError(".io.token.proto.common.member.MemberOperationMetadata.addKeyMetadata: object expected");
+                                m.addKeyMetadata = $root.io.token.proto.common.member.MemberOperationMetadata.AddKeyMetadata.fromObject(d.addKeyMetadata);
+                            }
                             return m;
                         };
 
@@ -3666,6 +3672,11 @@ export const io = $root.io = (() => {
                                 d.addAliasMetadata = $root.io.token.proto.common.member.MemberOperationMetadata.AddAliasMetadata.toObject(m.addAliasMetadata, o);
                                 if (o.oneofs)
                                     d.type = "addAliasMetadata";
+                            }
+                            if (m.addKeyMetadata != null && m.hasOwnProperty("addKeyMetadata")) {
+                                d.addKeyMetadata = $root.io.token.proto.common.member.MemberOperationMetadata.AddKeyMetadata.toObject(m.addKeyMetadata, o);
+                                if (o.oneofs)
+                                    d.type = "addKeyMetadata";
                             }
                             return d;
                         };
@@ -3727,6 +3738,51 @@ export const io = $root.io = (() => {
                             };
 
                             return AddAliasMetadata;
+                        })();
+
+                        MemberOperationMetadata.AddKeyMetadata = (function() {
+
+                            function AddKeyMetadata(p) {
+                                if (p)
+                                    for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                        if (p[ks[i]] != null)
+                                            this[ks[i]] = p[ks[i]];
+                            }
+
+                            AddKeyMetadata.prototype.keychainId = "";
+
+                            AddKeyMetadata.create = function create(properties) {
+                                return new AddKeyMetadata(properties);
+                            };
+
+                            AddKeyMetadata.fromObject = function fromObject(d) {
+                                if (d instanceof $root.io.token.proto.common.member.MemberOperationMetadata.AddKeyMetadata)
+                                    return d;
+                                var m = new $root.io.token.proto.common.member.MemberOperationMetadata.AddKeyMetadata();
+                                if (d.keychainId != null) {
+                                    m.keychainId = String(d.keychainId);
+                                }
+                                return m;
+                            };
+
+                            AddKeyMetadata.toObject = function toObject(m, o) {
+                                if (!o)
+                                    o = {};
+                                var d = {};
+                                if (o.defaults) {
+                                    d.keychainId = "";
+                                }
+                                if (m.keychainId != null && m.hasOwnProperty("keychainId")) {
+                                    d.keychainId = m.keychainId;
+                                }
+                                return d;
+                            };
+
+                            AddKeyMetadata.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+
+                            return AddKeyMetadata;
                         })();
 
                         return MemberOperationMetadata;
@@ -4530,9 +4586,11 @@ export const io = $root.io = (() => {
                         }
 
                         Customization.prototype.customizationId = "";
+                        Customization.prototype.name = "";
                         Customization.prototype.logoBlobId = "";
                         Customization.prototype.colors = $util.emptyObject;
                         Customization.prototype.consentText = "";
+                        Customization.prototype.appName = "";
 
                         Customization.create = function create(properties) {
                             return new Customization(properties);
@@ -4544,6 +4602,9 @@ export const io = $root.io = (() => {
                             var m = new $root.io.token.proto.common.member.Customization();
                             if (d.customizationId != null) {
                                 m.customizationId = String(d.customizationId);
+                            }
+                            if (d.name != null) {
+                                m.name = String(d.name);
                             }
                             if (d.logoBlobId != null) {
                                 m.logoBlobId = String(d.logoBlobId);
@@ -4559,6 +4620,9 @@ export const io = $root.io = (() => {
                             if (d.consentText != null) {
                                 m.consentText = String(d.consentText);
                             }
+                            if (d.appName != null) {
+                                m.appName = String(d.appName);
+                            }
                             return m;
                         };
 
@@ -4573,6 +4637,8 @@ export const io = $root.io = (() => {
                                 d.customizationId = "";
                                 d.logoBlobId = "";
                                 d.consentText = "";
+                                d.name = "";
+                                d.appName = "";
                             }
                             if (m.customizationId != null && m.hasOwnProperty("customizationId")) {
                                 d.customizationId = m.customizationId;
@@ -4590,6 +4656,12 @@ export const io = $root.io = (() => {
                             if (m.consentText != null && m.hasOwnProperty("consentText")) {
                                 d.consentText = m.consentText;
                             }
+                            if (m.name != null && m.hasOwnProperty("name")) {
+                                d.name = m.name;
+                            }
+                            if (m.appName != null && m.hasOwnProperty("appName")) {
+                                d.appName = m.appName;
+                            }
                             return d;
                         };
 
@@ -4598,6 +4670,80 @@ export const io = $root.io = (() => {
                         };
 
                         return Customization;
+                    })();
+
+                    member.Keychain = (function() {
+
+                        function Keychain(p) {
+                            this.keys = [];
+                            if (p)
+                                for (var ks = Object.keys(p), i = 0; i < ks.length; ++i)
+                                    if (p[ks[i]] != null)
+                                        this[ks[i]] = p[ks[i]];
+                        }
+
+                        Keychain.prototype.keychainId = "";
+                        Keychain.prototype.name = "";
+                        Keychain.prototype.keys = $util.emptyArray;
+
+                        Keychain.create = function create(properties) {
+                            return new Keychain(properties);
+                        };
+
+                        Keychain.fromObject = function fromObject(d) {
+                            if (d instanceof $root.io.token.proto.common.member.Keychain)
+                                return d;
+                            var m = new $root.io.token.proto.common.member.Keychain();
+                            if (d.keychainId != null) {
+                                m.keychainId = String(d.keychainId);
+                            }
+                            if (d.name != null) {
+                                m.name = String(d.name);
+                            }
+                            if (d.keys) {
+                                if (!Array.isArray(d.keys))
+                                    throw TypeError(".io.token.proto.common.member.Keychain.keys: array expected");
+                                m.keys = [];
+                                for (var i = 0; i < d.keys.length; ++i) {
+                                    if (typeof d.keys[i] !== "object")
+                                        throw TypeError(".io.token.proto.common.member.Keychain.keys: object expected");
+                                    m.keys[i] = $root.io.token.proto.common.security.Key.fromObject(d.keys[i]);
+                                }
+                            }
+                            return m;
+                        };
+
+                        Keychain.toObject = function toObject(m, o) {
+                            if (!o)
+                                o = {};
+                            var d = {};
+                            if (o.arrays || o.defaults) {
+                                d.keys = [];
+                            }
+                            if (o.defaults) {
+                                d.keychainId = "";
+                                d.name = "";
+                            }
+                            if (m.keychainId != null && m.hasOwnProperty("keychainId")) {
+                                d.keychainId = m.keychainId;
+                            }
+                            if (m.name != null && m.hasOwnProperty("name")) {
+                                d.name = m.name;
+                            }
+                            if (m.keys && m.keys.length) {
+                                d.keys = [];
+                                for (var j = 0; j < m.keys.length; ++j) {
+                                    d.keys[j] = $root.io.token.proto.common.security.Key.toObject(m.keys[j], o);
+                                }
+                            }
+                            return d;
+                        };
+
+                        Keychain.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+
+                        return Keychain;
                     })();
 
                     return member;

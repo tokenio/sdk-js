@@ -880,9 +880,11 @@ class AuthHttpClient {
      * @param {Object} logo - logo
      * @param {Object} colors - colors map of ARGB colors #AARRGGBB
      * @param {string} consentText - consent text
+     * @param {string} name - display name
+     * @param {string} appName - corresponding app name
      * @return {Promise} response to the API call
      */
-    async createCustomization(logo, colors, consentText) {
+    async createCustomization(logo, colors, consentText, name, appName) {
         let imageData = logo.data;
         if (typeof imageData !== 'string') imageData = base64js.fromByteArray(imageData);
         const logoPayload = {
@@ -899,6 +901,8 @@ class AuthHttpClient {
                 logo: logoPayload,
                 colors,
                 consentText,
+                name,
+                appName,
             },
         };
         return this._instance(request);
