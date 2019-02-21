@@ -7,7 +7,6 @@ module.exports = {
         mocha: true,
     },
     globals: {
-        BROWSER: true,
         TEST_ENV: true,
         TOKEN_VERSION: true,
     },
@@ -16,5 +15,13 @@ module.exports = {
     ],
     rules: {
         'flowtype/delimiter-dangle': ['error', 'always-multiline'],
+        'flowtype/require-return-type': ['error', 'always', {excludeArrowFunctions: true}],
+        'flowtype/object-type-delimiter': ['error', 'comma'],
+        'flowtype/semi': ['error', 'always'],
+    },
+    settings: {
+        flowtype: {
+            onlyFilesWithFlowAnnotation: true,
+        },
     },
 };

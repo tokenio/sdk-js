@@ -1,0 +1,37 @@
+{
+    "name": "@token-io/core",
+    "version": "1.0.0-beta.0",
+    "description": "Token JavaScript Core SDK",
+    "license": "ISC",
+    "author": {
+        "name": "Token",
+        "url": "https://token.io"
+    },
+    "homepage": "https://github.com/tokenio/sdk-js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tokenio/sdk-js.git"
+    },
+    "scripts": {
+        "lint": "eslint ."
+    },
+    "main": "src/index.js",
+    "devDependencies": {
+        "@token-io/eslint-config": "^1.0.3",
+        "babel-eslint": "^10.0.1",
+        "eslint": "^5.13.0",
+        "eslint-plugin-flowtype": "^3.4.1",
+        "eslint-plugin-import": "^2.16.0",
+        "eslint-plugin-react": "^7.12.4",
+        "flow-bin": "^0.93.0"
+    },
+    "dependencies": {
+        "axios": "^0.18.0",
+        "base64-js": "^1.3.0",
+        "bs58": "4.0.0",
+        "buffer": "^5.2.1",
+        "fast-json-stable-stringify": "^2.0.0",
+        "fast-sha256": "^1.1.0",
+        "tweetnacl": "^1.0.1"
+    }
+}
