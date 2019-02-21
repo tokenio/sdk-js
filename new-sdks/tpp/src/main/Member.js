@@ -150,15 +150,24 @@ export default class Member extends CoreMember {
      * @param logo - logo
      * @param colors - map of ARGB colors #AARRGGBB
      * @param consentText - consent text
+     * @param name - display name
+     * @param appName - corresponding app name
      * @return customization ID
      */
     createCustomization(
         logo: BlobPayload,
         colors: ?{[string]: string},
-        consentText: ?string
+        consentText: ?string,
+        name: string,
+        appName: string
     ): Promise<string> {
         return Util.callAsync(this.createCustomization, async () => {
-            const res = await this._client.createCustomization(logo, colors, consentText);
+            const res = await this._client.createCustomization(
+                logo,
+                colors,
+                consentText,
+                name,
+                appName);
             return res.data.customizationId;
         });
     }

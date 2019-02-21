@@ -6,6 +6,7 @@ import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
 import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
 import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
 import Util from '../Util';
+import type Member from './Member';
 import type {
     Alias,
     Bank,

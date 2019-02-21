@@ -15,8 +15,8 @@ export class KeyStoreCryptoEngine {
 
     constructor(
         memberId: string,
-        keystore: Object,
-        crypto: Object = Crypto
+        keystore?: Object,
+        crypto?: Object = Crypto
     ) {
         if (!memberId) {
             throw new Error('Invalid memberId');
