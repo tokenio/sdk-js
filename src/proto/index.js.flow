@@ -1,0 +1,555 @@
+// @flow
+
+// classes
+
+declare export class Blob {
+    id: string;
+    payload: any;
+    static create({id: string, payload: any}): Blob;
+    toJSON(): Object; // plain JS object of the same structure
+}
+declare export class Alias {
+    type: AliasTypeEnum;
+    value: string;
+    realm: string;
+    static create({type: AliasTypeEnum | string, value: string, realm?: string}): Alias;
+    toJSON(): Object;
+}
+declare export class Pricing {
+    sourceQuote: any;
+    destinationQuote: any;
+    instructions: any;
+    static create({sourceQuote: any, destinationQuote: any, instructions: any}): Pricing;
+    toJSON(): Object;
+}
+declare export class Key {
+    id: string;
+    publicKey: string; // base64url encoded
+    level: KeyLevelEnum;
+    algorithm: KeyAlgorithmEnum;
+    expiresAtMs: string;
+    static create({
+        id: string,
+        publicKey: string,
+        level: KeyLevelEnum | string,
+        algorithm: KeyAlgorithmEnum | string,
+        expiresAtMs?: string | number,
+    }): Key;
+    toJSON(): Object;
+}
+declare export class Signature {
+    memberId: string;
+    keyId: string;
+    signature: string;
+    static create({memberId: string, keyId: string, signature: string}): Signature;
+    toJSON(): Object;
+}
+declare export class Address {
+    houseNumber: string;
+    houseName: string;
+    flats: string;
+    conscriptionNumber: string;
+    street: string;
+    place: string;
+    postCode: string;
+    city: string;
+    country: string; // ISO alpha-2 code
+    full: string;
+    hamlet: string;
+    suburb: string;
+    subdistrict: string;
+    district: string;
+    province: string;
+    state: string;
+    static create({
+        houseNumber?: string,
+        houseName?: string,
+        flats?: string,
+        conscriptionNumber?: string,
+        street?: string,
+        place?: string,
+        postCode?: string,
+        city?: string,
+        country?: string,
+        full?: string,
+        hamlet?: string,
+        suburb?: string,
+        subdistrict?: string,
+        district?: string,
+        province?: string,
+        state?: string,
+    }): Address;
+    toJSON(): Object;
+}
+type AccountDetails = {
+    identifier: string;
+    type: 'INVALID' | 'OTHER' | 'CHECKING' | 'SAVINGS' | 'LOAN';
+    status: string;
+    metadata: Object;
+}
+declare export class Account {
+    id: string;
+    name: string;
+    bankId: string;
+    isLocked: boolean;
+    accountFeatures: any;
+    lastCacheUpdateMs: string;
+    nextCacheUpdateMs: string;
+    accountDetails: ?AccountDetails;
+    static create({
+        id: string,
+        name: string,
+        bankId: string,
+        tags: Array<any>,
+        isLocked: boolean,
+        accountFeatures: any,
+        lastCacheUpdateMs: string,
+        nextCacheUpdateMs: string,
+        accountDetails?: AccountDetails,
+    }): Account;
+    toJSON(): Object;
+}
+type TransferBody = {
+    redeemer: TokenMember,
+    instructions: any,
+    currency: string,
+    lifetimeAmount: string,
+    amount: string,
+    attachments: Array<any>,
+    pricing: Pricing,
+};
+type AccessBody = {
+    resources: Array<Resource>;
+}
+declare export class TokenPayload {
+    version: string;
+    refId: string;
+    issuer: TokenMember;
+    from: TokenMember;
+    to: TokenMember;
+    effectiveAtMs: string;
+    expiresAtMs: string;
+    endorseUntilMs: string;
+    description: string;
+    transfer: TransferBody;
+    access: AccessBody;
+    actingAs: any;
+    receiptRequested: boolean;
+    static create({
+        version: string,
+        refId: string,
+        issuer: any,
+        from: any,
+        to: any,
+        effectiveAtMs: string,
+        expiresAtMs: string,
+        endorseUntilMs: string,
+        description: string,
+        transfer?: TransferBody, // one of transfer or access
+        access?: AccessBody,     // one of transfer or access
+        actingAs: any,
+        receiptRequested: boolean,
+    }): TokenPayload;
+    toJSON(): Object;
+}
+declare export class TokenMember {
+    id: string;
+    username: string;
+    alias: Alias;
+    static create({id: string, username: string, alias: Alias}): TokenMember;
+    toJSON(): Object;
+}
+declare export class Token {
+    id: string;
+    payload: TokenPayload;
+    payloadSignatures: Array<TokenSignature>;
+    replaceByTokenId: string;
+    tokenRequestId: string;
+    static create({
+        id: string,
+        payload: TokenPayload,
+        payloadSignatures: Array<TokenSignature>,
+        replaceByTokenId: string,
+        tokenRequestId: string,
+    }): Token;
+    toJSON(): Object;
+}
+declare export class TokenOperationResult {
+    token: Token;
+    status: TokenOperationStatusEnum;
+    static create({token: Token, status: TokenOperationStatusEnum | string}): TokenOperationResult;
+    toJSON(): Object;
+}
+declare export class TokenSignature {
+    action: TokenSignatureActionEnum;
+    signature: Signature;
+    static create({action: TokenSignatureActionEnum | string, signature: Signature}): TokenSignature;
+    toJSON(): Object;
+}
+type ResourceTypes = {
+    a: {|allAddresses: {||}|},
+    b: {|allAccounts: {||}|},
+    c: {|allTransactions: {||}|},
+    d: {|allBalances: {||}|},
+    e: {|address: {|addressId: string|}|},
+    f: {|account: {|accountId: string|}|},
+    g: {|transactions: {|accountId: string|}|},
+    h: {|balance: {|accountId: string|}|},
+    i: {|allAccountsAtBank: {|bankId: string|}|},
+    j: {|allTransactionsAtBank: {|bankId: string|}|},
+    k: {|allBalancesAtBank: {|bankId: string|}|},
+};
+declare export class Resource {
+    resource: $Values<ResourceTypes>;
+    static create({resource: $Values<ResourceTypes>}): Resource;
+    toJSON(): Object;
+}
+declare export class Notification {
+    id: string;
+    subscriberId: string;
+    content: any;
+    status: NotificationStatusEnum;
+    static create({
+        id: string,
+        subscriberId: string,
+        content: any,
+        status: NotificationStatusEnum | string,
+    }): Notification;
+    toJSON(): Object;
+}
+declare export class DeviceMetadata {
+    application: string;
+    applicationVersion: string;
+    device: string;
+    longitude: number;
+    latitude: number;
+    static create({
+        application: string;
+        applicationVersion: string;
+        device: string;
+        longitude: number;
+        latitude: number;
+    }): DeviceMetadata;
+    toJSON(): Object;
+}
+declare export class Bank {
+    id: string;
+    name: string;
+    logoUri: string;
+    fullLogoUri: string;
+    supportsAppless: boolean;
+    supportsInformation: boolean;
+    requiresExternalAuth: boolean;
+    supportsSendPayment: boolean;
+    supportsReceivePayment: boolean;
+    provider: string;
+    country: string;
+    identifier: string;
+    static create({
+        id: string,
+        name: string,
+        logoUri: string,
+        fullLogoUri: string,
+        supportsAppless: boolean,
+        supportsInformation: boolean,
+        requiresExternalAuth: boolean,
+        supportsSendPayment: boolean,
+        supportsReceivePayment: boolean,
+        provider: string,
+        country: string,
+        identifier: string,
+    }): Bank;
+    toJSON(): Object;
+}
+declare export class BankInfo {
+    linkingUri: string; // deprecated
+    redirectUriRegex: string;
+    bankLinkingUri: string;
+    static create({linkingUri: string, redirectUriRegex: string, bankLinkingUri: string}): BankInfo;
+    toJSON(): Object;
+}
+declare export class Paging {
+    page: number;
+    perPage: number;
+    pageCount: number;
+    totalCount: number;
+    static create({page: number, perPage: number, pageCount: number, totalCount: number}): Paging;
+    toJSON(): Object;
+}
+declare export class AddressRecord{
+    id: string;
+    name: string;
+    address: Address;
+    addressSignature: Signature;
+    static create({id: string, name: string, address: Address, addressSignature: Signature}): AddressRecord;
+    toJSON(): Object;
+}
+declare export class RecoveryRule {
+    primaryAgent: string;
+    secondaryAgents: Array<string>;
+    static create({primaryAgent: string, secondaryAgents: Array<string>}): RecoveryRule;
+    toJSON(): Object;
+}
+declare export class ReceiptContact {
+    value: string;
+    type: ReceiptContactTypeEnum;
+    static create({value: string, type: ReceiptContactTypeEnum | string}): ReceiptContact;
+    toJSON(): Object;
+}
+declare export class Profile {
+    displayNameFirst: string;
+    displayNameLast: string;
+    originalPictureId: string;
+    smallPictureId: string;
+    mediumPictureId: string;
+    largePictureId: string;
+    static create({
+        displayNameFirst: string,
+        displayNameLast: string,
+        originalPictureId: string,
+        smallPictureId: string,
+        mediumPictureId: string,
+        largePictureId: string,
+    }): Profile;
+    toJSON(): Object;
+}
+type Payload = {
+    memberId: string;
+    nonce: string;
+}
+declare export class TrustedBeneficiary {
+    payload: Payload;
+    signature: Signature;
+}
+declare export class Customization {
+    colors: {[string]: string};
+    logo: any;
+    customizationId: string;
+    static create({logo: any, colors: {[string]: string}}): Customization;
+    toJSON(): Object;
+}
+declare export class Subscriber {
+    id: string;
+    handler: string;
+    handlerInstructions: any;
+    static create({id: string, handler: string, handlerInstructions: any}): Subscriber;
+    toJSON(): Object;
+}
+declare export class TransferEndpoint {
+    account: any;
+    customerData: CustomerData;
+    static create({account: any, customerData?: CustomerData}): TransferEndpoint;
+    toJSON(): Object;
+}
+declare export class CustomerData {
+    legalNames: Array<string>;
+    address: Address;
+    static create({legalNames: Array<string>, address?: Address}): CustomerData;
+    toJSON(): Object;
+}
+declare export class Transfer {
+    id: string;
+    transactionId: string;
+    createdAtMs: string;
+    payload: any;
+    payloadSignatures: Array<Signature>;
+    status: TransactionStatusEnum;
+    orderId: string;
+    method: string;
+    static create({
+        id: string,
+        transactionId: string,
+        createdAtMs: string,
+        payload: any,
+        payloadSignatures: Array<Signature>,
+        status: TransactionStatusEnum | string,
+        orderId: string,
+        method: string,
+    }): Transfer;
+    toJSON(): Object;
+}
+declare export class Balance {
+    accountId: string;
+    current: Money;
+    available: Money;
+    updatedAtMs: number;
+    typedBalances: Array<TypedBalance>;
+    static create({
+        accountId: string,
+        current: Money,
+        available: Money,
+        updatedAtMs: number,
+        typedBalances: Array<TypedBalance>,
+    }): Balance;
+    toJSON(): Object;
+}
+type TypedBalance = {
+    type: string,
+    amount: Money,
+    updatedAtMs: number,
+};
+declare export class Transaction {
+    id: string;
+    type: TransactionTypeEnum;
+    status: TransactionStatusEnum;
+    amount: Money;
+    description: string;
+    tokenId: string;
+    tokenTransferId: string;
+    createdAtMs: string;
+    metadata: any;
+    static create({
+        id: string;
+        type: TransactionTypeEnum | string;
+        status: TransactionStatusEnum | string;
+        amount: Money;
+        description: string;
+        tokenId: string;
+        tokenTransferId: string;
+        createdAtMs: string;
+        metadata: any;
+    }): Transaction;
+    toJSON(): Object;
+}
+declare export class OauthBankAuthorization {
+    bankId: string;
+    accessToken: string;
+    static create({bankId: string, accessToken: string}): OauthBankAuthorization;
+    toJSON(): Object;
+}
+declare export class Money {
+    currency: string;
+    value: string;
+    static create({currency: string, value: string}): Money;
+    toJSON(): Object;
+}
+
+declare export class SecurityMetadata {
+    ipAddress: string;
+    geoLocation: string;
+    deviceFingerprint: string;
+    static create({
+        ipAddress: string,
+        geoLocation: string,
+        deviceFingerprint: string,
+    }): SecurityMetadata;
+    toJSON(): Object;
+}
+
+// enums
+
+export const AliasType = Object.freeze({
+    INVALID: 0,
+    UNKNOWN: 1,
+    EMAIL: 2,    // email address, e.g. sandy@example.com
+    PHONE: 3,    // unused
+    DOMAIN: 4,   // unused
+    USERNAME: 5, // deprecated
+    BANK: 6,     // for banks only
+});
+
+export const KeyAlgorithm = Object.freeze({
+    INVALID_ALGORITHM: 0,
+    ED25519: 1,
+    ECDSA_SHA256: 2,
+    RSA: 3,
+});
+
+export const KeyLevel = Object.freeze({
+    INVALID_LEVEL: 0,
+    PRIVILEGED: 1,
+    STANDARD: 2,
+    LOW: 3,
+});
+
+export const NotificationStatus = Object.freeze({
+    INVALID: 0,
+    PENDING: 1,
+    DELIVERED: 2,
+    COMPLETED: 3,
+    INVALIDATED: 4,
+});
+
+export const NotifyStatus = Object.freeze({
+    INVALID: 0,
+    ACCEPTED: 1,
+    NO_SUBSCRIBERS: 2,
+});
+
+export const ReceiptContactType = Object.freeze({
+    INVALID: 0,
+    EMAIL: 1,
+});
+
+export const RequestStatus = Object.freeze({
+    INVALID: 0,
+    SUCCESSFUL_REQUEST: 1,
+    MORE_SIGNATURES_NEEDED: 2,
+});
+
+export const TokenOperationStatus = Object.freeze({
+    INVALID: 0,
+    SUCCESS: 1,
+    MORE_SIGNATURES_NEEDED: 2,
+});
+
+export const TokenSignatureAction = Object.freeze({
+    INVALID: 0,
+    ENDORSED: 1,
+    CANCELLED: 2,
+});
+
+export const TransactionStatus = Object.freeze({
+    INVALID_STATUS: 0,                   // invalid status
+    PENDING: 1,                          // the transaction is pending submission
+    PROCESSING: 7,                       // the transaction is being processed
+    SUCCESS: 2,                          // the transaction has been successful
+    PENDING_EXTERNAL_AUTHORIZATION: 15,  // the transaction requires authorization by the user to complete
+    FAILURE_CANCELED: 10,                // the transaction has been canceled, rolled back
+    FAILURE_INSUFFICIENT_FUNDS: 3,       // the transaction has failed due to insufficient funds
+    FAILURE_INVALID_CURRENCY: 4,         // the transaction has failed due to currency mismatch
+    FAILURE_PERMISSION_DENIED: 6,        // the transaction has failed due to access violation
+    FAILURE_QUOTE_EXPIRED: 11,           // the transaction has failed because the quote has expired
+    FAILURE_INVALID_AMOUNT: 12,          // the transaction has failed due to invalid amount
+    FAILURE_INVALID_QUOTE: 13,           // the transaction has failed due to invalid quote (wrong fx rate)
+    FAILURE_EXPIRED: 14,                 // the transaction has failed to complete within allotted time
+    FAILURE_GENERIC: 5,                  // the transaction has failed due to other reasons
+    SENT: 16,                            // legacy transfers only: the transaction has been sent but has not been acknowledged by the bank
+    INITIATED: 17,                       // the transaction has been initiated but the status is unknown
+});
+
+export const TransactionType = Object.freeze({
+    INVALID_TYPE: 0,
+    DEBIT: 1,
+    CREDIT: 2,
+});
+
+export const ResourceType = Object.freeze({
+    INVALID: 0,
+    ACCOUNTS: 1,
+    BALANCES: 2,
+    TRANSACTIONS: 3,
+    TRANSFER_DESTINATIONS: 4,
+});
+
+export type AliasTypeEnum = $Values<typeof AliasType>;
+export type KeyAlgorithmEnum = $Values<typeof KeyAlgorithm>;
+export type KeyLevelEnum = $Values<typeof KeyLevel>;
+export type NotificationStatusEnum = $Values<typeof NotificationStatus>;
+export type NotifyStatusEnum = $Values<typeof NotifyStatus>;
+export type ReceiptContactTypeEnum = $Values<typeof ReceiptContactType>;
+export type RequestStatusEnum = $Values<typeof RequestStatus>;
+export type TokenOperationStatusEnum = $Values<typeof TokenOperationStatus>;
+export type TokenSignatureActionEnum = $Values<typeof TokenSignatureAction>;
+export type TransactionStatusEnum = $Values<typeof TransactionStatus>;
+export type TransactionTypeEnum = $Values<typeof TransactionType>;
+export type ResourceTypeEnum = $Keys<typeof ResourceType>;
+
+// Other
+
+export type TokenRequestOptions = {
+    bankId?: string,
+    from?: TokenMember,
+    sourceAccountId?: string,
+    receiptRequested?: boolean,
+};
