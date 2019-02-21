@@ -1,0 +1,38 @@
+{
+    "signatureScheme": "Token-Ed25519-SHA512",
+    "urls": {
+        "local": "http://localhost:8000",
+        "dev": "https://api.dev.token.io",
+        "stg": "https://api.stg.token.io",
+        "sandbox": "https://api.sandbox.token.io",
+        "int": "https://api.int.token.io",
+        "prd": "https://api.token.io"
+    },
+    "webAppUrls": {
+        "local": "http://localhost:5000",
+        "dev": "https://web-app.dev.token.io",
+        "stg": "https://web-app.stg.token.io",
+        "sandbox": "https://web-app.sandbox.token.io",
+        "int": "https://web-app.int.token.io",
+        "prd": "https://web-app.token.io"
+    },
+    "transferTokenVersion": "1.0",
+    "accessTokenVersion": "1.0",
+    "defaultCurrency": "EUR",
+    "decimalPrecision": 4,
+    "corsDomainSuffix": ".token.io",
+    "KeyLevel": {
+        "PRIVILEGED": "PRIVILEGED",
+        "STANDARD": "STANDARD",
+        "LOW": "LOW"
+    },
+    "lowKeyExpiration": 1209600000,
+    "devKey": {
+        "local": "f3982819-5d8d-4123-9601-886df2780f42",
+        "dev": "f3982819-5d8d-4123-9601-886df2780f42",
+        "stg": "f3982819-5d8d-4123-9601-886df2780f42",
+        "sandbox": "f3982819-5d8d-4123-9601-886df2780f42",
+        "int": "f3982819-5d8d-4123-9601-886df2780f42",
+        "prd": "f3982819-5d8d-4123-9601-886df2780f42"
+    }
+}
