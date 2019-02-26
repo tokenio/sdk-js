@@ -22,7 +22,13 @@ export class Util {
      *
      * @return {Object} alias protobuf
      */
-    static randomAlias() {
+    static randomAlias(type = 'EMAIL') {
+        if (type === 'DOMAIN') {
+            return {
+                type,
+                value: Util.generateNonce() + '.com.noveirfy',
+            };
+        }
         return {
             type: 'EMAIL',
             value: 'test-' + Util.generateNonce() + '+noverify@example.com',

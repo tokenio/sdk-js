@@ -68,10 +68,10 @@ export default class Member extends CoreMember {
                     throw new Error('Cannot link accounts. Must send bankAuthorization retrieved' +
                         ' through push notification');
                 }
-                return res.data.accounts && res.data.accounts.map(a => new Account(a, this));
+                return res.data.accounts && res.data.accounts.map(a => new Account(a, this)) || [];
             }
             const res = await this._client.linkAccounts(authorization);
-            return res.data.accounts && res.data.accounts.map(a => new Account(a, this));
+            return res.data.accounts && res.data.accounts.map(a => new Account(a, this)) || [];
         });
     }
 
@@ -108,7 +108,7 @@ export default class Member extends CoreMember {
     getAccounts(): Promise<Array<Account>> {
         return Util.callAsync(this.getAccounts, async () => {
             const res = await this._client.getAccounts();
-            return res.data.accounts && res.data.accounts.map(a => new Account(a, this));
+            return res.data.accounts && res.data.accounts.map(a => new Account(a, this)) || [];
         });
     }
 
@@ -188,7 +188,7 @@ export default class Member extends CoreMember {
     getSubscribers(): Promise<Array<Subscriber>> {
         return Util.callAsync(this.getSubscribers, async () => {
             const res = await this._client.getSubscribers();
-            return res.data.subscribers;
+            return res.data.subscribers || [];
         });
     }
 

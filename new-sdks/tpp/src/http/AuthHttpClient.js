@@ -98,32 +98,6 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     * Uploads a blob to the server.
-     *
-     * @param {string} ownerId - owner of the blob
-     * @param {string} type - MIME type
-     * @param {string} name - name of the file
-     * @param {Buffer} data - data in bytes
-     * @return {Object} response to the API call
-     */
-    async createBlob(ownerId, type, name, data) {
-        const req = {
-            payload: {
-                ownerId,
-                type,
-                name,
-                data: base64js.fromByteArray(data),
-            },
-        };
-        const request = {
-            method: 'post',
-            url: '/blobs',
-            data: req,
-        };
-        return this._instance(request);
-    }
-
-    /**
      * Gets a blob from the server.
      *
      * @param {string} blobId - ID of the blob

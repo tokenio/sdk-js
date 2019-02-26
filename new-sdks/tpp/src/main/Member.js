@@ -66,7 +66,7 @@ export default class Member extends CoreMember {
     getAccounts(): Promise<Array<Account>> {
         return Util.callAsync(this.getAccounts, async () => {
             const res = await this._client.getAccounts();
-            return res.data.accounts && res.data.accounts.map(a => new Account(a, this));
+            return res.data.accounts && res.data.accounts.map(a => new Account(a, this)) || [];
         });
     }
 
@@ -347,27 +347,6 @@ export default class Member extends CoreMember {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             return res.data;
-        });
-    }
-
-    /**
-     * Uploads a blob to the server.
-     *
-     * @param ownerId - owner of the blob
-     * @param type - MIME type
-     * @param name - name of the file
-     * @param data - data in bytes
-     * @return blob ID
-     */
-    createBlob(
-        ownerId: string,
-        type: string,
-        name: string,
-        data: ArrayBuffer
-    ): Promise<string> {
-        return Util.callAsync(this.createBlob, async () => {
-            const res = await this._client.createBlob(ownerId, type, name, data);
-            return res.data.blobId;
         });
     }
 

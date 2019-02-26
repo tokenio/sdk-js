@@ -15,6 +15,7 @@ import type {
     SecurityMetadata,
     Transaction,
     TransferEndpoint,
+    Notification,
 } from '..';
 
 /**
@@ -77,7 +78,7 @@ export class Member {
     aliases(): Promise<Array<Alias>> {
         return Util.callAsync(this.aliases, async () => {
             const res = await this._client.getAliases();
-            return res.data.aliases;
+            return res.data.aliases || [];
         });
     }
 
@@ -101,7 +102,7 @@ export class Member {
     keys(): Promise<Array<Key>> {
         return Util.callAsync(this.keys, async () => {
             const member = await this._getMember();
-            return member.keys;
+            return member.keys || [];
         });
     }
 
@@ -401,6 +402,36 @@ export class Member {
             const res = await this._client.createTestBankAccount(balance, currency);
             const res2 = await this._client.linkAccountsOauth(res.data.authorization);
             return res2.data.accounts && new Account(res2.data.accounts[0], this);
+        });
+    }
+
+    /**
+     * Gets test bank notification.
+     *
+     * @param subscriberId - ID of subscriber
+     * @param notificationId - ID of notification
+     * @return response to the API call
+     */
+    getTestBankNotification(
+        subscriberId: string,
+        notificationId: string
+    ): Promise<Notification> {
+        return Util.callAsync(this.getTestBankNotification, async () => {
+            const res = await this._client.getTestBankNotification(subscriberId, notificationId);
+            return res.data.notification;
+        });
+    }
+
+    /**
+     * Gets test bank notifications.
+     *
+     * @param subscriberId - ID of subscriber
+     * @return response to the API call
+     */
+    getTestBankNotifications(subscriberId: string): Promise<Array<Notification>> {
+        return Util.callAsync(this.getTestBankNotifications, async () => {
+            const res = await this._client.getTestBankNotifications(subscriberId);
+            return res.data.notifications || [];
         });
     }
 

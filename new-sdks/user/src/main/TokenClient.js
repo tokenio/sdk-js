@@ -39,7 +39,6 @@ export class TokenClient extends Core {
         customResponseInterceptor?: Object,
     }) {
         super(options);
-        this.options = options;
         this._unauthenticatedClient = new HttpClient(options);
         this.BrowserCryptoEngine = BrowserCryptoEngine;
     }

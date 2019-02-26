@@ -38,7 +38,7 @@ export class TokenClient extends Core {
         customResponseInterceptor?: Object,
     }) {
         super(options);
-        this.options = options;
+        this.options.keyDir = options.keyDir;
         this._unauthenticatedClient = new HttpClient(options);
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
         options.keyDir && this.UnsecuredFileCryptoEngine.setDirRoot(options.keyDir);
@@ -153,6 +153,7 @@ export class TokenClient extends Core {
     ): Promise<{tokenId: string, innerState: string}> {
         return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
             const urlParams = Util.parseParamsFromUrl(callbackUrl);
+            if (urlParams.error) throw new Error(`Error at bank: ${urlParams.error}`);
             return await this.processTokenRequestCallback(urlParams, csrfToken);
         });
     }

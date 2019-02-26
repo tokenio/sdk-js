@@ -64,6 +64,42 @@ export class Account {
     }
 
     /**
+     * Looks up if this account supports retrieval of information such as balance.
+     *
+     * @return whether this account supports info
+     */
+    supportsInformation(): boolean {
+        return this.account.accountFeatures.supportsInformation;
+    }
+
+    /**
+     * Looks up if this account supports sending payment.
+     *
+     * @return whether this account supports sending payment
+     */
+    supportsSendPayment(): boolean {
+        return this.account.accountFeatures.supportsSendPayment;
+    }
+
+    /**
+     * Looks up if this account supports receiving payment.
+     *
+     * @return whether this account supports receiving payment
+     */
+    supportsReceivePayment(): boolean {
+        return this.account.accountFeatures.supportsReceivePayment;
+    }
+
+    /**
+     * Looks up if this account requires external authorization for creating transfers.
+     *
+     * @return whether this account requires external auth
+     */
+    requiresExternalAuth(): boolean {
+        return this.account.accountFeatures.requiresExternalAuth;
+    }
+
+    /**
      * Fetches the raw account object.
      *
      * @return the account object

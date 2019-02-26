@@ -503,6 +503,35 @@ export class AuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Gets test bank notification.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @param {string} notificationId - id of notification
+     * @return {Object} response to the API call
+     */
+    async getTestBankNotification(subscriberId, notificationId) {
+        const request = {
+            method: 'get',
+            url: `/test/subscribers/${subscriberId}/notifications/${notificationId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Gets test bank notifications.
+     *
+     * @param {string} subscriberId - id of subscriber
+     * @return {Object} response to the API call
+     */
+    async getTestBankNotifications(subscriberId) {
+        const request = {
+            method: 'get',
+            url: `/test/subscribers/${subscriberId}/notifications`,
+        };
+        return this._instance(request);
+    }
+
     async _memberUpdate(update, prevHash, metadata) {
         if (prevHash !== '') {
             update.prevHash = prevHash;

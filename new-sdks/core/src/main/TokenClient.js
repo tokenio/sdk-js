@@ -41,6 +41,7 @@ export class TokenClient {
         customResponseInterceptor?: Object,
     } = {}) {
         this.options = options;
+        this.options.developerKey = this.options.developerKey || config.devKey.default;
         this.KeyLevel = config.KeyLevel;
         this.Crypto = Crypto;
         this.MemoryCryptoEngine = MemoryCryptoEngine;
