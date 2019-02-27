@@ -504,7 +504,7 @@ export const TransactionStatus = Object.freeze({
     PENDING: 1,                          // the transaction is pending submission
     PROCESSING: 7,                       // the transaction is being processed
     SUCCESS: 2,                          // the transaction has been successful
-    PENDING_EXTERNAL_AUTHORIZATION: 15,  // the transaction requires authorization by the app to complete
+    PENDING_EXTERNAL_AUTHORIZATION: 15,  // the transaction requires authorization by the user to complete
     FAILURE_CANCELED: 10,                // the transaction has been canceled, rolled back
     FAILURE_INSUFFICIENT_FUNDS: 3,       // the transaction has failed due to insufficient funds
     FAILURE_INVALID_CURRENCY: 4,         // the transaction has failed due to currency mismatch

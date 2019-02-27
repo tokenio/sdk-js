@@ -23,9 +23,9 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
-     * Notifies a app.
+     * Notifies a user.
      *
-     * @param {Object} alias - app to notify
+     * @param {Object} alias - user to notify
      * @param {Object} body - body of the notification
      * @return {Object} response to the API call
      */
@@ -43,7 +43,7 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
-     * Sends a notification to a app to request a payment.
+     * Sends a notification to a user to request a payment.
      *
      * @param {Object} tokenPayload - requested transfer token
      * @return {Object} response to the API call
@@ -120,7 +120,7 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
-     * Retrieves a request for a token. Called by the web(app) or by a TPP, to get request details.
+     * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
      *
      * @param {string} requestId - token request ID
      * @return {Promise} response to the API call

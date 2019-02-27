@@ -860,7 +860,7 @@ class AuthHttpClient {
     //
 
     /**
-     * Stores a request for a token. Called by a merchant or a TPP that wants access from a app.
+     * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
      *
      * @param {Object} tokenRequest - token request to store
      * @return {Promise} response to the API call

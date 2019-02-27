@@ -28,7 +28,7 @@ export default async developerKey => {
         alias,
         Token.UnsecuredFileCryptoEngine);
 
-    // let app recover member by verifying email if they lose keys
+    // let user recover member by verifying email if they lose keys
     await member.useDefaultRecoveryRule();
     return member;
 };

@@ -511,7 +511,7 @@ export default class Member {
     }
 
     /**
-     * Triggers a token step up notification on the app's app
+     * Triggers a token step up notification on the user's app
      *
      * @param tokenId - token ID
      * @return notification status
@@ -524,7 +524,7 @@ export default class Member {
     }
 
     /**
-     * Triggers a balance step up notification on the app's app
+     * Triggers a balance step up notification on the user's app
      * @param accountIds - array of account ids
      * @return notification status
      */
@@ -536,7 +536,7 @@ export default class Member {
     }
 
     /**
-     * Triggers a transaction step up notification on the app's app
+     * Triggers a transaction step up notification on the user's app
      * @param accountId - account id
      * @param transactionId - transaction id
      * @return notification status
@@ -761,7 +761,7 @@ export default class Member {
     }
 
     /**
-     * Stores a request for a token. Called by a merchant or a TPP that wants access from a app.
+     * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
      *
      * @param tokenRequest - token request to store
      * @return the stored TokenRequest

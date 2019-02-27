@@ -81,7 +81,7 @@ export type Token = {
 };
 
 export type ActingAs = {
-    // shown to app
+    // shown to user
     displayName: string,
     logoUrl: string,
     refId?: string,

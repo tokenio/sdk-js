@@ -180,9 +180,9 @@ export default class TokenRequest {
     }
 
     /**
-     * Sets a app ref ID for the TokenRequest
+     * Sets a user ref ID for the TokenRequest
      *
-     * @param {string} userRefId - app ref id
+     * @param {string} userRefId - user ref id
      * @return {TokenRequest} token request
      */
     setUserRefId(userRefId) {
