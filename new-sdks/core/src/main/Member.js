@@ -343,7 +343,10 @@ export class Member {
             const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
             if (res.data.status !== 'SUCCESSFUL_REQUEST')
                 throw new Error('Transaction step up required');
-            return res.data;
+            return {
+                transactions: res.data.transactions || [],
+                offset: res.data.offset,
+            };
         });
     }
 

@@ -52,6 +52,6 @@ export default class Util extends CoreUtil {
     }
 
     static isEdge() {
-        return /Edge/.test(window.navigator.userAgent);
+        return window.navigator && /Edge/.test(window.navigator.userAgent);
     }
 }

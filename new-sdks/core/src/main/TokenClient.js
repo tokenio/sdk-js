@@ -148,7 +148,10 @@ export class TokenClient {
     ): Promise<{banks: Array<Bank>, paging: Paging}> {
         return Util.callAsync(this.getBanks, async () => {
             const res = await this._unauthenticatedClient.getBanksOrCountries(options);
-            return res.data;
+            return {
+                banks: res.data.banks || [],
+                paging: res.data.paging,
+            };
         });
     }
 

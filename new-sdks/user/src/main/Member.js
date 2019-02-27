@@ -218,7 +218,10 @@ export default class Member extends CoreMember {
     ): Promise<{notifications: Array<Notification>, offset: string}>  {
         return Util.callAsync(this.getNotifications, async () => {
             const res = await this._client.getNotifications(offset, limit);
-            return res.data;
+            return {
+                notifications: res.data.notifications || [],
+                offset: res.data.offset,
+            };
         });
     }
 
@@ -417,7 +420,10 @@ export default class Member extends CoreMember {
     ): Promise<{tokens: Array<Token>, offset: string}> {
         return Util.callAsync(this.getTransferTokens, async () => {
             const res = await this._client.getTokens('TRANSFER', offset, limit);
-            return res.data;
+            return {
+                tokens: res.data.tokens || [],
+                offset: res.data.offset,
+            };
         });
     }
 
@@ -434,7 +440,10 @@ export default class Member extends CoreMember {
     ): Promise<{tokens: Array<Token>, offset: string}> {
         return Util.callAsync(this.getAccessTokens, async () => {
             const res = await this._client.getTokens('ACCESS', offset, limit);
-            return res.data;
+            return {
+                tokens: res.data.tokens || [],
+                offset: res.data.offset,
+            };
         });
     }
 
@@ -557,7 +566,10 @@ export default class Member extends CoreMember {
     ): Promise<{transfers: Array<Transfer>, offset: string}> {
         return Util.callAsync(this.getTransfers, async () => {
             const res = await this._client.getTransfers(tokenId, offset, limit);
-            return res.data;
+            return {
+                transfers: res.data.transfers || [],
+                offset: res.data.offset,
+            };
         });
     }
 

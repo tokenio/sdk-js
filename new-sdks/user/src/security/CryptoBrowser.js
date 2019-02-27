@@ -9,7 +9,7 @@ const ECDSA = 'ECDSA_SHA256';
 const RSA = 'RS256';
 
 // default to ECDSA and fallback to RSA
-let algorithm = Util.isFirefox || Util.isEdge()
+let algorithm = Util.isFirefox() || Util.isEdge()
     ? RSA
     : ECDSA;
 
