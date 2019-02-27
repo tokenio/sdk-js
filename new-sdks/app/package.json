@@ -1,7 +1,7 @@
 {
-    "name": "@token-io/user",
+    "name": "@token-io/app",
     "version": "1.0.0-beta.0",
-    "description": "Token JavaScript User SDK",
+    "description": "Token JavaScript App SDK",
     "license": "ISC",
     "author": {
         "name": "Token",
