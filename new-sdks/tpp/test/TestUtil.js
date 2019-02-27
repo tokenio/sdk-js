@@ -1,5 +1,5 @@
-import {TokenClient} from '../../user';
-import config from '../../user/src/config.json';
+import {TokenClient} from '../../app';
+import config from '../../app/src/config.json';
 
 const Token = new TokenClient({env: TEST_ENV, developerKey: config.devKey[TEST_ENV]});
 

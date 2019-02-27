@@ -26,7 +26,7 @@ let dirRootSet = null;
 class UnsecuredFileCryptoEngine extends KeyStoreCryptoEngine {
     /**
      * Set the dir in which we'll store key-files.
-     * When an sdk user calls
+     * When an sdk app calls
      * const Token = new TokenIO({env: 'sandbox', developerKey: devKey, keyDir: './keys'});
      * that calls UnsecuredFileCryptoEngine.setDirRoot('./keys')
      *

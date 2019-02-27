@@ -77,11 +77,11 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Provisions a new device for an existing user. The call generates a set
+     * Provisions a new device for an existing app. The call generates a set
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys.
      *
-     * @param alias - user to provision the device for
+     * @param alias - app to provision the device for
      * @param CryptoEngine - engine to use for key creation and storage
      * @return information about the device provisioned
      */
@@ -106,11 +106,11 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Provisions a new device for an existing user. The call generates a set
+     * Provisions a new device for an existing app. The call generates a set
      * of keys that are returned back. The keys need to be approved by an
      * existing device/keys. This only generates one (LOW) key.
      *
-     * @param alias - user to provision the device for
+     * @param alias - app to provision the device for
      * @param  CryptoEngine - engine to use for key creation and storage
      * @param expirationMs - (optional) expiration duration of key in milliseconds
      * @return information about the device provisioned
@@ -161,7 +161,7 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Sends a notification to a user to request a payment.
+     * Sends a notification to a app to request a payment.
      *
      * @param tokenPayload - requested transfer token
      * @return status
@@ -231,7 +231,7 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Retrieves a request for a token. Called by the web (user) or by a TPP to get request details.
+     * Retrieves a request for a token. Called by the web (app) or by a TPP to get request details.
      *
      * @param requestId - token request ID
      * @return information about the tokenRequest

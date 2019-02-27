@@ -16,7 +16,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * Uses the given access token.
      *
      * @param {string} accessTokenId - Id of the access token
-     * @param {boolean} customerInitiated - whether the user initiated this session / request
+     * @param {boolean} customerInitiated - whether the app initiated this session / request
      */
     useAccessToken(accessTokenId, customerInitiated = false) {
         this._context.customerInitiated = customerInitiated;
@@ -112,7 +112,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
+     * Stores a request for a token. Called by a merchant or a TPP that wants access from a app.
      *
      * @param {Object} tokenRequest - token request to store
      * @return {Promise} response to the API call

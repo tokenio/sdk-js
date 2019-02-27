@@ -9,7 +9,7 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
-     * Retrieves a request for a token. Called by the web(user) or by a TPP, to get request details.
+     * Retrieves a request for a token. Called by the web(app) or by a TPP, to get request details.
      *
      * @param {string} requestId - token request ID
      * @return {Promise} response to the API call

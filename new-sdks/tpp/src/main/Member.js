@@ -173,7 +173,7 @@ export default class Member extends CoreMember {
     }
 
     /**
-     * Stores a request for a token. Called by a merchant or a TPP that wants access from a user.
+     * Stores a request for a token. Called by a merchant or a TPP that wants access from a app.
      *
      * @param tokenRequest - token request to store
      * @return the stored TokenRequestBuilder

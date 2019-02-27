@@ -76,7 +76,7 @@ class TokenRequestUrlSample {
         const token = await grantor.createAccessToken(
             granteeAlias,
             [
-                Resource.create({allAccounts: {}}), // user can call getAccounts
+                Resource.create({allAccounts: {}}), // app can call getAccounts
                 Resource.create({allBalances: {}}), // for each account, can getBalance
             ]
         );
