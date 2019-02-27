@@ -154,23 +154,23 @@ export class TokenClient extends Core {
         return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
             const urlParams = Util.parseParamsFromUrl(callbackUrl);
             if (urlParams.error) throw new Error(`Error at bank: ${urlParams.error}`);
-            return await this.processTokenRequestCallback(urlParams, csrfToken);
+            return await this.parseTokenRequestCallbackParams(urlParams, csrfToken);
         });
     }
 
     /**
-     * Processes a token request callback object and verifies the state and signature.
+     * Parses a token request callback object and verifies the state and signature.
      * This is similar to parseTokenRequestCallbackUrl
      * but used in the popup flow instead of redirect.
      *
      * @param callback
      * @param csrfToken
      */
-    processTokenRequestCallback(
+    parseTokenRequestCallbackParams(
         callback: {tokenId: string, signature: string, state: string},
         csrfToken?: string
     ): Promise<{tokenId: string, innerState: string}> {
-        return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
+        return Util.callAsync(this.parseTokenRequestCallbackParams, async () => {
             const tokenMember = await this._unauthenticatedClient.getTokenMember();
             const params = {
                 tokenId: decodeURIComponent(callback.tokenId),
