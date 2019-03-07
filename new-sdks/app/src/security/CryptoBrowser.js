@@ -2,16 +2,11 @@ import {base64Url} from '@token-io/core';
 import Util from '../Util';
 import stringify from 'fast-json-stable-stringify';
 
-const crypto = window.crypto;
+let crypto, algorithm;
 
 // supported algorithms
 const ECDSA = 'ECDSA_SHA256';
 const RSA = 'RS256';
-
-// default to ECDSA and fallback to RSA
-let algorithm = Util.isFirefox() || Util.isEdge()
-    ? RSA
-    : ECDSA;
 
 /**
  * Class providing static crypto primitives for the browser using Web Cryptography API.
@@ -243,6 +238,15 @@ class CryptoBrowser {
         const p1363Sig = `${r}${s}`;
         return new Uint8Array(p1363Sig.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
     }
+
+    static setup() {
+        crypto = window.crypto;
+        algorithm = Util.isFirefox() || Util.isEdge()
+            ? RSA
+            : ECDSA;
+    }
 }
+
+if (typeof window !== 'undefined') CryptoBrowser.setup();
 
 export default CryptoBrowser;

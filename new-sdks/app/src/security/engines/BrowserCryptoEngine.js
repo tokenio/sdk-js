@@ -32,6 +32,9 @@ class BrowserCryptoEngine extends KeyStoreCryptoEngine {
      * @param {string} memberId - memberId of the member we want to create the engine for
      */
     constructor(memberId) {
+        if (typeof window === 'undefined') {
+            throw new Error('BrowserCryptoEngine is only available in the browser environment');
+        }
         super(memberId, globalKeyStore, !Util.isIE11() && CryptoBrowser);
     }
 

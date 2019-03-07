@@ -83,6 +83,26 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
+     * Notifies subscribed devices that a token payload should be endorsed and keys should be
+     * added.
+     *
+     * @param {Object} endorseAndAddKey - the endorseAndAddKey payload to be sent
+     * @return {Object} response to the API call
+     * @deprecated use notifyCreateAndEndorseToken instead
+     */
+    notifyEndorseAndAddKey(endorseAndAddKey) {
+        const req = {
+            endorseAndAddKey,
+        };
+        const request = {
+            method: 'post',
+            url: '/notify/endorse-and-add-key',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Invalidate a notification.
      *
      * @param {Object} notificationId - the notification ID to invalidate
