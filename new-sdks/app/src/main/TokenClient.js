@@ -219,7 +219,7 @@ export class TokenClient extends Core {
      * @deprecated use notifyCreateAndEndorseToken instead
      */
     notifyEndorseAndAddKey(
-        tokenPayload: TokenPayload,
+        tokenPayload: Object,
         keys: Array<Key>,
         deviceMetadata: DeviceMetadata,
         tokenRequestId: string,

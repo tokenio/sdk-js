@@ -3,7 +3,7 @@
 The JavaScript SDK for interacting with [TokenOS](https://developer.token.io/).
 
 ```sh
-npm install @token-io/tpp
+$ npm install @token-io/tpp
 ```
 
 ## Usage
