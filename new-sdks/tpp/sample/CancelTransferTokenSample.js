@@ -6,9 +6,9 @@
  * @return {Object} result of the token operation
  */
 export default async (payee, tokenId) => {
-    // Payer gets the token to see details
+    // Payee gets the token to see details
     const transferToken = await payee.getToken(tokenId);
 
-    // Payer cancels the token
+    // Payee cancels the token
     return await payee.cancelToken(transferToken);
 };
