@@ -15,8 +15,8 @@
     "scripts": {
         "lint": "eslint .",
         "test": "npm run build && npm run testOnly",
-        "testOnly": "mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
-        "build": "npm run lint && flow check && FORMAT=cjs rollup -c && FORMAT=esm rollup -c",
+        "testOnly": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
+        "build": "eslint src && flow check && rollup -c && FORMAT=esm rollup -c",
         "doc": "esdoc"
     },
     "main": "dist/tokenio.js",
