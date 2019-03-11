@@ -183,7 +183,7 @@ export class HttpClient {
                     addKey: {
                         key: {
                             id: key.id,
-                            publicKey: key.publicKey,
+                            publicKey: Util.strKey(key.publicKey),
                             level: key.level,
                             algorithm: key.algorithm,
                             ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
@@ -224,7 +224,7 @@ export class HttpClient {
                 addKey: {
                     key: {
                         id: key.id,
-                        publicKey: key.publicKey,
+                        publicKey: Util.strKey(key.publicKey),
                         level: key.level,
                         algorithm: key.algorithm,
                         ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
