@@ -1,7 +1,6 @@
-import {TokenClient} from '../../app';
-import config from '../../app/src/config.json';
+import {TokenClient} from '@token-io/app';
 
-const Token = new TokenClient({env: TEST_ENV, developerKey: config.devKey[TEST_ENV]});
+const Token = new TokenClient({env: TEST_ENV});
 
 export default class TestUtil {
     /**

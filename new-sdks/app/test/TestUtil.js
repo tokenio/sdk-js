@@ -1,7 +1,6 @@
-import {TokenClient} from '../../tpp';
-import config from '../src/config';
+import {TokenClient} from '@token-io/tpp';
 
-const Token = new TokenClient({env: TEST_ENV, developerKey: config.devKey[TEST_ENV]});
+const Token = new TokenClient({env: TEST_ENV});
 
 export default class TestUtil {
     /**
