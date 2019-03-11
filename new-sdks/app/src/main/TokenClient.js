@@ -205,6 +205,46 @@ export class TokenClient extends Core {
     }
 
     /**
+     * Notifies subscribed devices that a token payload should be endorsed and keys should be
+     * added.
+     *
+     * @param tokenPayload - the endorseAndAddKey payload to be sent
+     * @param keys - token keys to be added
+     * @param deviceMetadata - device metadata of the keys
+     * @param tokenRequestId - (optional) token request Id
+     * @param bankId - (optional) bank Id
+     * @param state - (optional) token request state for signing
+     * @param receiptContact - (optional) receipt contact
+     * @return notification Id and notify status
+     * @deprecated use notifyCreateAndEndorseToken instead
+     */
+    notifyEndorseAndAddKey(
+        tokenPayload: Object,
+        keys: Array<Key>,
+        deviceMetadata: DeviceMetadata,
+        tokenRequestId: string,
+        bankId: string,
+        state: string,
+        receiptContact: ReceiptContact,
+    ): Promise<{notificationId: string, status: NotifyStatus}> {
+        const endorseAndAddKey = {
+            payload: tokenPayload,
+            addKey: {
+                keys,
+                deviceMetadata,
+            },
+            tokenRequestId: tokenRequestId,
+            bankId: bankId,
+            state: state,
+            contact: receiptContact,
+        };
+        return Util.callAsync(this.notifyEndorseAndAddKey, async () => {
+            const res = await this._unauthenticatedClient.notifyEndorseAndAddKey(endorseAndAddKey);
+            return res.data;
+        });
+    }
+
+    /**
      * Invalidates a notification.
      *
      * @param notificationId - the notification ID to invalidate

@@ -6,9 +6,9 @@
  * @return {Object} result of the token operation
  */
 export default async (grantee, tokenId) => {
-    // Grantor gets the token to see details
+    // Grantee gets the token to see details
     const accessToken = await grantee.getToken(tokenId);
 
-    // Grantor cancels the token
+    // Grantee cancels the token
     return await grantee.cancelToken(accessToken);
 };

@@ -54,7 +54,7 @@ export type TokenRequestOptions = {
 export type Key = {
     id: string,
     // base64-encoded byte array
-    publicKey: string,
+    publicKey: string | ArrayBuffer,
     level: KeyLevel,
     algorithm: KeyAlgorithm,
     expiresAtMs: string,

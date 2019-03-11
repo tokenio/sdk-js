@@ -488,7 +488,7 @@ export default class Member extends CoreMember {
      * Redeems a token.
      *
      * @param token - token to redeem. Can also be a tokenId
-     * @param amount - amount to redeemer
+     * @param amount - amount to redeem
      * @param currency - currency to redeem
      * @param description - optional transfer description
      * @param destinations - transfer destinations
