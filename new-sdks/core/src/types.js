@@ -2,13 +2,17 @@
 export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE';
 export type KeyAlgorithm = 'ED25519' | 'ECDSA_SHA256' | 'RSA';
 export type KeyLevel = 'LOW' | 'STANDARD' | 'PRIVILEGED';
-export type ResourceType = 'ACCOUNTS' | 'BALANCES' | 'TRANSACTIONS' | 'TRANSFER_DESTINATIONS';
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'COMPLETED' | 'INVALIDATED';
 export type NotifyStatus = 'ACCEPTED' | 'NO_SUBSCRIBERS';
 export type TokenOperationStatus = 'SUCCESS' | 'MORE_SIGNATURES_NEEDED';
 export type TokenSignatureAction = 'ENDORSED' | 'CANCELLED';
 export type TransactionType = 'DEBIT' | 'CREDIT';
 export type ProfilePictureSize = 'SMALL' | 'MEDIUM' | 'LARGE' | 'ORIGINAL';
+export type ResourceType = 'ACCOUNTS'
+    | 'BALANCES'
+    | 'TRANSACTIONS'
+    | 'TRANSFER_DESTINATIONS'
+    | 'FUNDS_CONFIRMATIONS';
 export type PurposeOfPayment = 'PERSONAL_EXPENSES'
     | 'PURCHASE_OF_SHARES'
     | 'TRANSFER_TO_YOUR_OWN_ACCOUNT'

@@ -135,6 +135,36 @@ export default class AccessTokenBuilder extends TokenBuilder {
     }
 
     /**
+     * Grants access to confirming if an account has enough balance for a purchase.
+     *
+     * @param accountId
+     * @return AccessTokenBuilder
+     */
+    forAccountFundsConfirmation(accountId: string): AccessTokenBuilder {
+        this.tokenPayload.access.resources.push({
+            fundsConfirmation: {
+                accountId,
+            },
+        });
+        return this;
+    }
+
+    /**
+     * Grants access to confirming if various accounts have enough balance for a purchase.
+     *
+     * @param accountIds
+     * @return AccessTokenBuilder
+     */
+    forAccountFundsConfirmations(accountIds: Array<string>): AccessTokenBuilder {
+        accountIds.forEach(id => this.tokenPayload.access.resources.push({
+            fundsConfirmation: {
+                accountId: id,
+            },
+        }));
+        return this;
+    }
+
+    /**
      * Creates the token.
      *
      * @return the created access token
