@@ -46,7 +46,6 @@ export class TokenClient {
         this.Crypto = Crypto;
         this.MemoryCryptoEngine = MemoryCryptoEngine;
         this.ManualCryptoEngine = ManualCryptoEngine;
-        this.Util = Util;
     }
 
     /**

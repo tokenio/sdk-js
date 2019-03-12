@@ -42,6 +42,7 @@ export class TokenClient extends Core {
         this._unauthenticatedClient = new HttpClient(options);
         this.UnsecuredFileCryptoEngine = UnsecuredFileCryptoEngine;
         options.keyDir && this.UnsecuredFileCryptoEngine.setDirRoot(options.keyDir);
+        this.Util = Util;
     }
 
     /**

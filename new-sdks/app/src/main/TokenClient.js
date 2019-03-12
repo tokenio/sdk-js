@@ -41,6 +41,7 @@ export class TokenClient extends Core {
         super(options);
         this._unauthenticatedClient = new HttpClient(options);
         this.BrowserCryptoEngine = BrowserCryptoEngine;
+        this.Util = Util;
     }
 
     /**
