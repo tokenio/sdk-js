@@ -297,6 +297,26 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Confirms if an account has sufficient funds for a purchase.
+     *
+     * @param {string} accountId
+     * @param {string} amount
+     * @param {string} currency
+     * @return {boolean} true if account has sufficient funds
+     */
+    async confirmFunds(accountId, amount, currency) {
+        const request = {
+            method: 'put',
+            url: `/accounts/${accountId}/funds-confirmation`,
+            data: {
+                currency,
+                value: amount.toString(),
+            },
+        };
+        return this._instance(request);
+    }
+
     async _tokenOperation(token, operation, suffix) {
         const tokenId = token.id;
         const request = {

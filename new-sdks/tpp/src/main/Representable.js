@@ -100,4 +100,20 @@ export default class Representable {
     ): Promise<{transactions: Array<Transaction>, offset: string}> {
         return this._member.getTransactions(accountId, offset, limit, keyLevel);
     }
+
+    /**
+     * Confirms if an account has sufficient funds for a purchase.
+     *
+     * @param accountId
+     * @param amount
+     * @param currency
+     * @return true if account has sufficient funds
+     */
+    confirmFunds(
+        accountId: string,
+        amount: number | string,
+        currency: string
+    ): Promise<boolean> {
+        return this._member.confirmFunds(accountId, amount, currency);
+    }
 }
