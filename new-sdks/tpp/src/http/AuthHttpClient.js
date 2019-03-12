@@ -306,13 +306,17 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @return {boolean} true if account has sufficient funds
      */
     async confirmFunds(accountId, amount, currency) {
-        const request = {
-            method: 'put',
-            url: `/accounts/${accountId}/funds-confirmation`,
-            data: {
+        const req = {
+            accountId,
+            amount: {
                 currency,
                 value: amount.toString(),
             },
+        };
+        const request = {
+            method: 'put',
+            url: `/accounts/${accountId}/funds-confirmation`,
+            data: req,
         };
         return this._instance(request);
     }
