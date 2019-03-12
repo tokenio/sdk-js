@@ -155,7 +155,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
      * @param accountIds
      * @return AccessTokenBuilder
      */
-    forAccountFundsConfirmations(accountIds: Array<string>): AccessTokenBuilder {
+    forAccountsFundsConfirmations(accountIds: Array<string>): AccessTokenBuilder {
         accountIds.forEach(id => this.tokenPayload.access.resources.push({
             fundsConfirmation: {
                 accountId: id,
