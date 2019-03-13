@@ -216,6 +216,30 @@ export class AuthHttpClient {
     }
 
     /**
+     * Confirms if an account has sufficient funds for a purchase.
+     *
+     * @param {string} accountId
+     * @param {string} amount
+     * @param {string} currency
+     * @return {boolean} true if account has sufficient funds
+     */
+    async confirmFunds(accountId, amount, currency) {
+        const req = {
+            accountId,
+            amount: {
+                currency,
+                value: amount.toString(),
+            },
+        };
+        const request = {
+            method: 'put',
+            url: `/accounts/${accountId}/funds-confirmation`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets info about a bank.
      *
      * @param {string} bankId - ID of the bank to lookup

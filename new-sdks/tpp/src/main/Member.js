@@ -360,25 +360,6 @@ export default class Member extends CoreMember {
     }
 
     /**
-     * Confirms if an account has sufficient funds for a purchase.
-     *
-     * @param accountId
-     * @param amount
-     * @param currency
-     * @return true if account has sufficient funds
-     */
-    confirmFunds(
-        accountId: string,
-        amount: number | string,
-        currency: string
-    ): Promise<boolean> {
-        return Util.callAsync(this.confirmFunds, async () => {
-            const res = await this._client.confirmFunds(accountId, amount, currency);
-            return res.data.fundsAvailable;
-        });
-    }
-
-    /**
      * Downloads a blob from the server.
      *
      * @param blobId - ID of the blob
