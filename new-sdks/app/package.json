@@ -19,7 +19,8 @@
         "build:cjs": "rollup -c",
         "build:esm": "FORMAT=esm rollup -c",
         "build:iife": "FORMAT=iife rollup -c",
-        "build": "eslint src && flow check && npm run build:cjs && npm run build:esm && npm run build:iife"
+        "build": "eslint src && flow check && npm run build:cjs && npm run build:esm && npm run build:iife",
+        "doc": "esdoc"
     },
     "main": "dist/tokenio.js",
     "module": "dist/tokenio.esm.js",
