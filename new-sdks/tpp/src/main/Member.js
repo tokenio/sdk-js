@@ -181,7 +181,7 @@ export default class Member extends CoreMember {
     storeTokenRequest(tokenRequest: TokenRequestBuilder): Promise<TokenRequest> {
         return Util.callAsync(this.storeTokenRequest, async () => {
             tokenRequest.requestPayload.callbackState =
-                JSON.stringify(tokenRequest.requestPayload.callbackState);
+                encodeURIComponent(JSON.stringify(tokenRequest.requestPayload.callbackState));
             const res = await this._client.storeTokenRequest(tokenRequest);
             return res.data.tokenRequest;
         });
