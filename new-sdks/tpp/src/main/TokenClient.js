@@ -174,9 +174,9 @@ export class TokenClient extends Core {
         return Util.callAsync(this.parseTokenRequestCallbackParams, async () => {
             const tokenMember = await this._unauthenticatedClient.getTokenMember();
             const params = {
-                tokenId: decodeURIComponent(callback.tokenId),
+                tokenId: callback.tokenId,
                 state: JSON.parse(decodeURIComponent(callback.state)),
-                signature: JSON.parse(decodeURIComponent(callback.signature)),
+                signature: JSON.parse(callback.signature),
             };
 
             if (csrfToken &&
@@ -186,7 +186,7 @@ export class TokenClient extends Core {
             const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
             await this.Crypto.verifyJson(
                 {
-                    state: encodeURIComponent(JSON.stringify(params.state)),
+                    state: callback.state,
                     tokenId: params.tokenId,
                 },
                 params.signature.signature,
