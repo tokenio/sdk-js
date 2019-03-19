@@ -39,7 +39,7 @@ class TokenRequestUrlSample {
         const state = encodeURIComponent(JSON.stringify({innerState: 'state'}));
         const signature = await grantor.signTokenRequestState(tokenRequestId, token.id, state);
         return `http://localhost/path?tokenId=${token.id}` +
-            `&state=${state}&signature=${encodeURIComponent(JSON.stringify(signature))}`;
+            `&state=${encodeURIComponent(state)}&signature=${encodeURIComponent(JSON.stringify(signature))}`;
     }
 
     /**
