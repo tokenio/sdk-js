@@ -3,14 +3,12 @@ import {TokenClient} from '../src';
 /**
  * Imports and sets up the SDK, and creates a Token member with the MemoryCryptoEngine
  * (which will store keys in memory).
- * @param {string} developerKey - developer key
  * @return {Member} created member
  */
-export default async developerKey => {
+export default async () => {
     // Initialize SDK:
     const Token = new TokenClient({
         env: 'sandbox',
-        developerKey,
         keyDir: './keys',
     });
 
