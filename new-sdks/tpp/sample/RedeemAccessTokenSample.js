@@ -14,19 +14,19 @@ class RedeemAccessTokenSample {
      */
     static async use(grantee, tokenId) {
         // Use the access token, now making API calls
-        // on behalf of the grantor, and get accounts
+        // on behalf of the grantor (as a representative), and get accounts
         // forAccessToken snippet begin
-        const grantor = grantee.forAccessToken(tokenId);
+        const representative = grantee.forAccessToken(tokenId);
         let accounts;
         try {
-            accounts = await grantor.getAccounts();
+            accounts = await representative.getAccounts();
         } catch (e) {
             // no access (e.g. grantor unlinked accounts or revoked access)
             return {};
         }
 
         // Get information we want:
-        const balance0 = await grantor.getBalance(accounts[0].id(), config.KeyLevel.LOW);
+        const balance0 = await representative.getBalance(accounts[0].id(), config.KeyLevel.LOW);
         // forAccessToken snippet end
 
         return balance0.current;
