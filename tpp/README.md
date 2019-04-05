@@ -1,4 +1,4 @@
-Token TPP SDK
+### Token TPP SDK
 ```sh
 $ npm install @token-io/tpp
 ```
