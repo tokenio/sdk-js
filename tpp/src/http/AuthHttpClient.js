@@ -237,21 +237,6 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     * Looks up a existing access token where the calling member is the grantor and given member is
-     * the grantee.
-     *
-     * @param {string} toMemberId - beneficiary of the active access token
-     * @return {Object} response to the API call
-     */
-    async getActiveAccessToken(toMemberId) {
-        const request = {
-            method: 'get',
-            url: `/tokens/active-access-token/${toMemberId}`,
-        };
-        return this._instance(request);
-    }
-
-    /**
      * Gets all tokens of the member, of a certain type.
      *
      * @param {string} type - type of tokens to get
