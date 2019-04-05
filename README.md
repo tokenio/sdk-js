@@ -2,6 +2,10 @@
 
 The JavaScript SDK for interacting with [TokenOS](https://developer.token.io/).
 
+For the legacy SDK, see [here](https://github.com/tokenio/sdk-js/tree/v2.4.1).
+
+[![npm version](https://badge.fury.io/js/token-io.svg)](https://www.npmjs.com/package/@token-io/tpp)
+
 ```sh
 $ npm install @token-io/tpp
 ```
