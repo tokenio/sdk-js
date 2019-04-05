@@ -35,7 +35,7 @@ const config = {
             runtimeHelpers: true,
         }),
         replace({
-            TOKEN_VERSION: JSON.stringify('1.0.0'),
+            TOKEN_VERSION: JSON.stringify(pkg.version),
         }),
         filesize(),
     ],

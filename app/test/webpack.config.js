@@ -7,7 +7,7 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             TEST_ENV: JSON.stringify(TEST_ENV),
-            TOKEN_VERSION: JSON.stringify('1.0.0'),
+            TOKEN_VERSION: JSON.stringify(require('../package.json').version),
         }),
     ],
     resolve: {

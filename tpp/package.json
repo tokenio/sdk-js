@@ -1,6 +1,6 @@
 {
     "name": "@token-io/tpp",
-    "version": "1.0.0-beta.6",
+    "version": "1.0.0",
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {
@@ -59,7 +59,7 @@
     },
     "dependencies": {
         "@babel/runtime-corejs2": "^7.3.1",
-        "@token-io/core": "^1.0.0-beta.0",
+        "@token-io/core": "^1.0.0-beta.3",
         "axios": "^0.18.0",
         "base64-js": "^1.3.0",
         "bs58": "4.0.0",
