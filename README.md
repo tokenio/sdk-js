@@ -10,11 +10,11 @@ $ npm install @token-io/tpp
 
 Ensure Node 8:
 
-```javascript
+```js
 const {TokenClient} = require('@token-io/tpp');
 const Token = new TokenClient({env: 'sandbox'});
 ```
 
-See [SDK docs](https://developer.token.io/sdk/?javascript#) and [API reference](https://developer.token.io/sdk/esdoc/).
+See API reference for [TPP SDK](https://developer.token.io/sdk/esdoc-tpp/) and [Core SDK](https://developer.token.io/sdk/esdoc-core/).
 
-There are also [samples](https://github.com/tokenio/sdk-js/tree/master/src/sample) and [sample tests](https://github.com/tokenio/sdk-js/tree/master/test/sample) in the source code for reference.
+There are also [samples](https://github.com/tokenio/sdk-js/tree/master/tpp/sample) and [sample tests](https://github.com/tokenio/sdk-js/tree/master/tpp/test/sample) in the source code for reference.
