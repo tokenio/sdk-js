@@ -381,7 +381,7 @@ export default class Member extends CoreMember {
     }
 
     /**
-     * Prepares a token for creation, retrieves policy.
+     * Prepares a token for creation, retrieves policy, and resolves payload.
      *
      * @param tokenPayload - token payload to prepare
      * @returns a policy and the resolved payload

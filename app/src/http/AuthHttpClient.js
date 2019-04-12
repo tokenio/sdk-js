@@ -301,7 +301,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     * Prepares a token for creation, retrieves policy.
+     * Prepares a token for creation, retrieves policy, and resolves payload.
      *
      * @param {Object} tokenPayload - token payload
      * @returns {Promise} policy and resolved payload
