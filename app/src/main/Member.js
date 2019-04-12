@@ -381,6 +381,38 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Prepares a token for creation, retrieves policy.
+     *
+     * @param tokenPayload - token payload to prepare
+     * @returns a policy and the resolved payload
+     */
+    prepareToken(tokenPayload: Object): Promise<Object> {
+        return Util.callAsync(this.prepareToken, async () => {
+            const res = await this._client.prepareToken(tokenPayload);
+            return res.data;
+        });
+    }
+
+    /**
+     * Creates a token, potentially after prepareToken.
+     *
+     * @param payload - token payload
+     * @param signatures - required signatures
+     * @param tokenRequestId - associated token request ID
+     * @returns the created token
+     */
+    createToken(
+        payload: Object,
+        signatures: Array<Signature>,
+        tokenRequestId: string
+    ): Promise<Token> {
+        return Util.callAsync(this.createToken, async () => {
+            const res = await this._client.createToken(payload, signatures, tokenRequestId);
+            return res.data.token;
+        });
+    }
+
+    /**
      * Looks up a token by its ID.
      *
      * @param tokenId - ID of the token
