@@ -1,7 +1,7 @@
 {
     "signatureScheme": "Token-Ed25519-SHA512",
     "urls": {
-        "local": "http://192.168.1.188:8000",
+        "local": "http://localhost:8000",
         "dev": "https://api.dev.token.io",
         "stg": "https://api.stg.token.io",
         "sandbox": "https://api.sandbox.token.io",
