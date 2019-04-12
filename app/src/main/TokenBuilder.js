@@ -108,4 +108,13 @@ export default class TokenBuilder {
         this.tokenRequestId = tokenRequestId;
         return this;
     }
+
+    /**
+     * Returns the token payload.
+     *
+     * @returns TokenPayload
+     */
+    buildPayload(): Object {
+        return this.tokenPayload;
+    }
 }

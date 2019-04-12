@@ -301,6 +301,41 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Prepares a token for creation, retrieves policy, and resolves payload.
+     *
+     * @param {Object} tokenPayload - token payload
+     * @returns {Promise} policy and resolved payload
+     */
+    async prepareToken(tokenPayload) {
+        const request = {
+            method: 'post',
+            url: '/tokens/prepare',
+            data: {
+                payload: tokenPayload,
+            },
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Creates a token.
+     *
+     * @param payload - token payload
+     * @param signatures - signatures
+     * @param tokenRequestId - token request ID
+     * @returns {Promise} the created token
+     */
+    async createToken(payload, signatures, tokenRequestId) {
+        const req = {payload, signatures, tokenRequestId};
+        const request = {
+            method: 'post',
+            url: '/tokens',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Creates a transfer token.
      *
      * @param {Object} payload - payload of the token

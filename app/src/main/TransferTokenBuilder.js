@@ -40,6 +40,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      *
      * @param bankId
      * @return TransferTokenBuilder
+     * @deprecated use setSourceAccountGuest instead
      */
     setSourceAccountBank(bankId: string): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.source = {
@@ -65,6 +66,23 @@ export default class TransferTokenBuilder extends TokenBuilder{
                 custom: {
                     bankId,
                     payload: authorization,
+                },
+            },
+        };
+        return this;
+    }
+
+    /**
+     * Sets the source bank for guest flows.
+     *
+     * @param bankId - source bank ID
+     * @returns TransferTokenBuilder
+     */
+    setSourceAccountGuest(bankId: string): TransferTokenBuilder {
+        this.tokenPayload.transfer.instructions.source = {
+            account: {
+                guest: {
+                    bankId,
                 },
             },
         };
@@ -156,6 +174,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      * Creates the token.
      *
      * @return the created transfer token
+     * @deprecated - use Member::createToken
      */
     async execute(): Promise<Token> {
         return Util.callAsync(this.execute, async () => {
