@@ -174,6 +174,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      * Creates the token.
      *
      * @return the created transfer token
+     * @deprecated - use Member::createToken
      */
     async execute(): Promise<Token> {
         return Util.callAsync(this.execute, async () => {

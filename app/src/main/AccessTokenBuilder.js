@@ -168,6 +168,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
      * Creates the token.
      *
      * @return the created access token
+     * @deprecated - use Member::createToken
      */
     async execute(): Promise<Token> {
         return Util.callAsync(this.execute, async () => {
