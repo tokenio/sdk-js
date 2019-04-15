@@ -18,7 +18,8 @@ Ensure Node 8:
 const {TokenClient} = require('@token-io/tpp');
 const Token = new TokenClient({env: 'sandbox'});
 ```
+Please consult our [developer docs](https://developer.token.io/docs/#overview-of-token).
 
-See API reference for [TPP SDK](https://developer.token.io/sdk/esdoc-tpp/) and [Core SDK](https://developer.token.io/sdk/esdoc-core/).
+See also the API reference for [TPP (Third Party Provider) SDK](https://developer.token.io/sdk/esdoc-tpp/) and [Core SDK](https://developer.token.io/sdk/esdoc-core/).
 
 There are also [samples](https://github.com/tokenio/sdk-js/tree/master/tpp/sample) and [sample tests](https://github.com/tokenio/sdk-js/tree/master/tpp/test/sample) in the source code for reference.
