@@ -1,1 +1,1 @@
-App SDK for apps.
+SDK for apps.
