@@ -50,7 +50,7 @@ export default class TokenBuilder {
      */
     setToAlias(alias: Alias | string, value: string): TokenBuilder {
         if (typeof alias === 'string') this.tokenPayload.to.alias = {type: alias, value};
-        this.tokenPayload.to.alias = alias;
+        else this.tokenPayload.to.alias = alias;
         return this;
     }
 

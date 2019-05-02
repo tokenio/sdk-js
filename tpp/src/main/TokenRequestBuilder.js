@@ -87,7 +87,7 @@ export default class TokenRequestBuilder {
      */
     setToAlias(alias: Alias | string, value: string): TokenRequestBuilder {
         if (typeof alias === 'string') this.requestPayload.to.alias = {type: alias, value};
-        this.requestPayload.to.alias = alias;
+        else this.requestPayload.to.alias = alias;
         return this;
     }
 
