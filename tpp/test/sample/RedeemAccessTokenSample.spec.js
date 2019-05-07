@@ -34,10 +34,7 @@ describe('RedeemAccessTokenSample test', () => {
         assert.isAtLeast(parseFloat(balance2.value), 1);
 
         await grantor.unlinkAccounts([account2.id()]);
-        try {
-            await RedeemAccessTokenSample.use(grantee, token1.id);
-        } catch (e) {
-            assert.include(e.message, 'not active');
-        }
+        const accounts = await grantee.getAccounts();
+        assert.isEmpty(accounts);
     });
 });

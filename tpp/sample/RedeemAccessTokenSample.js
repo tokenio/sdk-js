@@ -17,13 +17,8 @@ class RedeemAccessTokenSample {
         // on behalf of the grantor (as a representative), and get accounts
         // forAccessToken snippet begin
         const representative = grantee.forAccessToken(tokenId);
-        let accounts;
-        try {
-            accounts = await representative.getAccounts();
-        } catch (e) {
-            // no access (e.g. grantor unlinked accounts or revoked access)
-            return {};
-        }
+        const accounts = await representative.getAccounts();
+        if (!accounts) return;
 
         // Get information we want:
         const balance0 = await representative.getBalance(accounts[0].id(), config.KeyLevel.LOW);
