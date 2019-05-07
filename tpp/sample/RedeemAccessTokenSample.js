@@ -18,7 +18,6 @@ class RedeemAccessTokenSample {
         // forAccessToken snippet begin
         const representative = grantee.forAccessToken(tokenId);
         const accounts = await representative.getAccounts();
-        console.log(accounts);
         if (!accounts) return;
 
         // Get information we want:
