@@ -410,7 +410,7 @@ export class AuthHttpClient {
             operations: aliases.map(alias => ({
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
-                    realm: alias.realm || 'token',
+                    realm: alias.realm,
                 },
             })),
         };
@@ -449,6 +449,7 @@ export class AuthHttpClient {
             operations: aliases.map(alias => ({
                 removeAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
+                    realm: alias.realm
                 },
             })),
         };
