@@ -3,7 +3,6 @@ import Util from '../Util';
 import config from '../config.json';
 import BlockingAdapter from './BlockingAdapter';
 import base64js from 'base64-js';
-import stringify from 'fast-json-stable-stringify';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -602,17 +601,10 @@ class AuthHttpClient extends CoreAuthHttpClient {
     async _tokenOperationRequest(token, suffix) {
         return {
             tokenId: token.id,
-            signature: await this._tokenOperationSignature(token.payload, suffix),
-        };
-    }
-
-    async _tokenOperationSignature(tokenPayload, suffix) {
-        const payload = stringify(tokenPayload) + `.${suffix}`;
-        const signer = await this.getSigner(config.KeyLevel.STANDARD);
-        return {
-            memberId: this._memberId,
-            keyId: signer.getKeyId(),
-            signature: await signer.sign(payload),
+            signature: await this.tokenOperationSignature(
+                token.payload,
+                suffix,
+                config.KeyLevel.STANDARD),
         };
     }
 }

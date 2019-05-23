@@ -16,6 +16,7 @@ import type {
     Transaction,
     TransferEndpoint,
     Notification,
+    Signature,
 } from '..';
 
 /**
@@ -366,6 +367,22 @@ export class Member {
         return Util.callAsync(this.confirmFunds, async () => {
             const res = await this._client.confirmFunds(accountId, amount, currency);
             return res.data.fundsAvailable;
+        });
+    }
+
+    /**
+     * Signs a token payload with specified level of keys.
+     *
+     * @param tokenPayload
+     * @param keyLevel
+     * @returns the proto signature
+     */
+    signTokenPayload(
+        tokenPayload: Object,
+        keyLevel: KeyLevel,
+    ): Promise<Signature> {
+        return Util.callAsync(this.signTokenPayload, async () => {
+            return await this._client.tokenOperationSignature(tokenPayload, 'endorsed', keyLevel);
         });
     }
 

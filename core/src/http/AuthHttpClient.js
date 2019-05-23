@@ -6,6 +6,7 @@ import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
+import stringify from 'fast-json-stable-stringify';
 import SecurityMetadataHeader from './SecurityMetadataHeader';
 
 /**
@@ -555,6 +556,24 @@ export class AuthHttpClient {
             url: `/test/subscribers/${subscriberId}/notifications`,
         };
         return this._instance(request);
+    }
+
+    /**
+     * Signs a token payload with given key level and action.
+     *
+     * @param tokenPayload
+     * @param suffix
+     * @param keyLevel
+     * @returns {Object} token proto signature object
+     */
+    async tokenOperationSignature(tokenPayload, suffix, keyLevel) {
+        const payload = stringify(tokenPayload) + `.${suffix}`;
+        const signer = await this.getSigner(keyLevel);
+        return {
+            memberId: this._memberId,
+            keyId: signer.getKeyId(),
+            signature: await signer.sign(payload),
+        };
     }
 
     async _memberUpdate(update, prevHash, metadata) {
