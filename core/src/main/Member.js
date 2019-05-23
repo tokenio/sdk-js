@@ -15,7 +15,8 @@ import type {
     SecurityMetadata,
     Transaction,
     TransferEndpoint,
-    Notification, Signature,
+    Notification,
+    Signature,
 } from '..';
 
 /**
