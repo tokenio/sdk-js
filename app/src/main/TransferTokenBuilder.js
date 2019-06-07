@@ -129,6 +129,19 @@ export default class TransferTokenBuilder extends TokenBuilder{
     /**
      * Adds a transfer destination to the token.
      *
+     * @param destination
+     * @return TransferTokenBuilder
+     */
+    addTransferDestination(destination: Object): TransferTokenBuilder {
+        this.tokenPayload.transfer.instructions.transferDestinations.push(destination);
+        return this;
+    }
+
+    /**
+     * @deprecated Use addTransferDestination instead.
+     *
+     * Adds a transfer destination to the token.
+     *
      * @param endpoint
      * @return TransferTokenBuilder
      */
@@ -138,7 +151,20 @@ export default class TransferTokenBuilder extends TokenBuilder{
     }
 
     /**
-     * Adds multiple transfer destination to the token.
+     * Adds multiple transfer destinations to the token.
+     *
+     * @param destinations
+     * @return TransferTokenBuilder
+     */
+    addTransferDestinations(destinations: Array<Object>): TransferTokenBuilder {
+        this.tokenPayload.transfer.instructions.transferDestinations.push(...destinations);
+        return this;
+    }
+
+    /**
+     * @deprecated Use addTransferDestinations instead.
+     *
+     * Adds multiple transfer destinations to the token.
      *
      * @param endpoints
      * @return TransferTokenBuilder

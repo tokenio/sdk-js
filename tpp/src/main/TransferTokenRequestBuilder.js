@@ -28,12 +28,38 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @param destination
      * @return TransferTokenRequestBuilder
      */
+    addTransferDestination(destination: Object): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.instructions.transferDestinations.push(destination);
+        return this;
+    }
+
+    /**
+     * Adds multiple transfer destinations to a transfer token request.
+     *
+     * @param destinations
+     * @return TransferTokenRequestBuilder
+     */
+    addTransferDestinations(destinations: Array<Object>): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.instructions.transferDestinations.push(...destinations);
+        return this;
+    }
+
+    /**
+     * @deprecated Use addTransferDestination instead.
+     *
+     * Adds a transfer destination to a transfer token request.
+     *
+     * @param destination
+     * @return TransferTokenRequestBuilder
+     */
     addDestination(destination: TransferEndpoint): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.destinations.push(destination);
         return this;
     }
 
     /**
+     * @deprecated Use addTransferDestinations instead.
+     *
      * Adds multiple transfer destinations to a transfer token request.
      *
      * @param destinations
