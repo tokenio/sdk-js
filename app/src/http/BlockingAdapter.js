@@ -1,7 +1,8 @@
 import utils from 'axios/lib/utils';
 import buildURL from 'axios/lib/helpers/buildURL';
 import isURLSameOrigin from 'axios/lib/helpers/isURLSameOrigin';
-const btoa = (typeof window !== 'undefined' && window.btoa) || require('axios/lib/helpers/btoa');
+const btoa = (typeof window !== 'undefined' && window.btoa)
+    || (str => Buffer.from(str).toString('base64'));
 
 /**
  * Axios adapter to create a blocking XMLHttpRequest
