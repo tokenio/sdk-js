@@ -351,6 +351,7 @@ export default class Member extends CoreMember {
                     currency,
                     instructions: {
                         destinations: [],
+                        transferDestinations: [],
                         metadata: {},
                     },
                 },

@@ -1,7 +1,7 @@
 import utils from 'axios/lib/utils';
 import buildURL from 'axios/lib/helpers/buildURL';
 import isURLSameOrigin from 'axios/lib/helpers/isURLSameOrigin';
-const btoa = (typeof window !== 'undefined' && window.btoa) || require('axios/lib/helpers/btoa');
+import Util from '../Util';
 
 /**
  * Axios adapter to create a blocking XMLHttpRequest
@@ -45,7 +45,7 @@ export default function BlockingAdapter(config) {
     if (config.auth) {
         const username = config.auth.username || '';
         const password = config.auth.password || '';
-        requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+        requestHeaders.Authorization = 'Basic ' + Util.btoa(username + ':' + password);
     }
 
     request.open(config.method.toUpperCase(),
@@ -107,8 +107,7 @@ export default function BlockingAdapter(config) {
             data: {
                 dispatchRequest: function dispatchRequest() {
                     // Send the request
-                    const res = request.send(requestData);
-                    return res;
+                    return request.send(requestData);
                 },
             },
         });

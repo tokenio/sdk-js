@@ -1,6 +1,6 @@
 // @flow
 import TokenRequestBuilder from './TokenRequestBuilder';
-import type {TransferEndpoint} from '@token-io/core';
+import type {TransferEndpoint, TransferDestination} from '@token-io/core';
 
 export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
     /**
@@ -8,7 +8,6 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      */
     constructor(payload: Object) {
         super(payload);
-        this.requestPayload.transferBody.destinations = [];
     }
 
     /**
@@ -28,7 +27,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @param destination
      * @return TransferTokenRequestBuilder
      */
-    addTransferDestination(destination: Object): TransferTokenRequestBuilder {
+    addTransferDestination(destination: TransferDestination): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.instructions.transferDestinations.push(destination);
         return this;
     }
@@ -39,7 +38,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @param destinations
      * @return TransferTokenRequestBuilder
      */
-    addTransferDestinations(destinations: Array<Object>): TransferTokenRequestBuilder {
+    addTransferDestinations(destinations: Array<TransferDestination>): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.instructions.transferDestinations.push(...destinations);
         return this;
     }

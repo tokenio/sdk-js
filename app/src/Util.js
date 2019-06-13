@@ -1,5 +1,6 @@
 import {Util as CoreUtil} from '@token-io/core';
 import config from './config.json';
+import {Buffer} from 'buffer';
 
 export default class Util extends CoreUtil {
     static enableIframePassthrough(env) {
@@ -53,5 +54,9 @@ export default class Util extends CoreUtil {
 
     static isEdge() {
         return window.navigator && /Edge/.test(window.navigator.userAgent);
+    }
+
+    static btoa(s) {
+        return Buffer.from(s).toString('base64');
     }
 }

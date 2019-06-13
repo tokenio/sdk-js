@@ -2,7 +2,12 @@
 import TokenBuilder from './TokenBuilder';
 import config from '../config.json';
 import Util from '../Util';
-import type {Token, TransferEndpoint, PurposeOfPayment} from '@token-io/core';
+import type {
+    Token,
+    TransferEndpoint,
+    PurposeOfPayment,
+    TransferDestination,
+} from '@token-io/core';
 
 export default class TransferTokenBuilder extends TokenBuilder{
     client: Object;
@@ -132,7 +137,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      * @param destination
      * @return TransferTokenBuilder
      */
-    addTransferDestination(destination: Object): TransferTokenBuilder {
+    addTransferDestination(destination: TransferDestination): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.transferDestinations.push(destination);
         return this;
     }
@@ -156,7 +161,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      * @param destinations
      * @return TransferTokenBuilder
      */
-    addTransferDestinations(destinations: Array<Object>): TransferTokenBuilder {
+    addTransferDestinations(destinations: Array<TransferDestination>): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.transferDestinations.push(...destinations);
         return this;
     }
