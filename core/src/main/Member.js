@@ -14,9 +14,9 @@ import type {
     RecoveryRule,
     SecurityMetadata,
     Transaction,
-    TransferEndpoint,
     Notification,
     Signature,
+    TransferDestination,
 } from '..';
 
 /**
@@ -403,7 +403,7 @@ export class Member {
      * @param accountId - ID of account to resolve destinations for
      * @return resolved transfer destinations
      */
-    resolveTransferDestinations(accountId: string): Promise<Object> {
+    resolveTransferDestinations(accountId: string): Promise<TransferDestination> {
         return Util.callAsync(this.resolveTransferDestinations, async () => {
             const res = await this._client.resolveTransferDestinations(accountId);
             return res.transferDestinations;

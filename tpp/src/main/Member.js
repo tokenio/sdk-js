@@ -16,6 +16,7 @@ import type {
     TokenOperationResult,
     Transfer,
     KeyStoreCryptoEngine,
+    TransferDestination,
 } from '@token-io/core';
 
 /**
@@ -275,7 +276,7 @@ export default class Member extends CoreMember {
         amount?: number,
         currency?: string,
         description?: string,
-        destinations?: Array<Object> = [],
+        destinations?: Array<TransferDestination> = [],
         refId?: string
     ): Promise<Transfer> {
         return Util.callAsync(this.redeemToken, async () => {
