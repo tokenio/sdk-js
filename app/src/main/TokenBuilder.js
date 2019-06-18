@@ -106,6 +106,7 @@ export default class TokenBuilder {
      */
     setTokenRequestId(tokenRequestId: string): TokenBuilder {
         this.tokenRequestId = tokenRequestId;
+        this.tokenPayload.tokenRequestId = tokenRequestId;
         return this;
     }
 
