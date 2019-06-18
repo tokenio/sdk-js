@@ -4,7 +4,7 @@ import GetTransactionsSample from '../../sample/GetTransactionsSample';
 import TestUtil from '../TestUtil';
 const {assert} = require('chai');
 
-describe('GetTransactionSample test', () => {
+describe('GetTransactionsSample test', () => {
     it('Should run the sample', async () => {
         const tppMember = await CreateMemberSample();
         const userMember = await TestUtil.createUserMember();

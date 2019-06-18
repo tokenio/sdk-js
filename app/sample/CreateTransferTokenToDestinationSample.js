@@ -12,11 +12,9 @@ export default async (payer, payeeAlias) => {
     const token = await payer.createTransferTokenBuilder(100.00, 'EUR')
         .setAccountId(accounts[0].id())
         .setToAlias(payeeAlias)
-        .addDestination({
-            account: {
-                sepa: {
-                    iban: 'DE89 3704 0044 0532 0130 00',
-                },
+        .addTransferDestination({
+            sepa: {
+                iban: 'DE89 3704 0044 0532 0130 00',
             },
         })
         .execute();

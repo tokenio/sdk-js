@@ -14,9 +14,9 @@ import type {
     RecoveryRule,
     SecurityMetadata,
     Transaction,
-    TransferEndpoint,
     Notification,
     Signature,
+    TransferDestination,
 } from '..';
 
 /**
@@ -401,11 +401,12 @@ export class Member {
      * Resolves transfer destinations for the given account ID.
      *
      * @param accountId - ID of account to resolve destinations for
-     * @return resolved transfer endpoints
+     * @return resolved transfer destinations
      */
-    resolveTransferDestinations(accountId: string): Promise<TransferEndpoint> {
+    resolveTransferDestinations(accountId: string): Promise<TransferDestination> {
         return Util.callAsync(this.resolveTransferDestinations, async () => {
-            await this._client.resolveTransferDestinations(accountId);
+            const res = await this._client.resolveTransferDestinations(accountId);
+            return res.transferDestinations;
         });
     }
 

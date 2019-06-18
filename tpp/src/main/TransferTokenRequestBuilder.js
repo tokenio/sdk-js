@@ -1,6 +1,6 @@
 // @flow
 import TokenRequestBuilder from './TokenRequestBuilder';
-import type {TransferEndpoint} from '@token-io/core';
+import type {TransferEndpoint, TransferDestination} from '@token-io/core';
 
 export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
     /**
@@ -8,7 +8,6 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      */
     constructor(payload: Object) {
         super(payload);
-        this.requestPayload.transferBody.destinations = [];
     }
 
     /**
@@ -28,12 +27,38 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @param destination
      * @return TransferTokenRequestBuilder
      */
+    addTransferDestination(destination: TransferDestination): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.instructions.transferDestinations.push(destination);
+        return this;
+    }
+
+    /**
+     * Adds multiple transfer destinations to a transfer token request.
+     *
+     * @param destinations
+     * @return TransferTokenRequestBuilder
+     */
+    addTransferDestinations(destinations: Array<TransferDestination>): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.instructions.transferDestinations.push(...destinations);
+        return this;
+    }
+
+    /**
+     * @deprecated Use addTransferDestination instead.
+     *
+     * Adds a transfer destination to a transfer token request.
+     *
+     * @param destination
+     * @return TransferTokenRequestBuilder
+     */
     addDestination(destination: TransferEndpoint): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.destinations.push(destination);
         return this;
     }
 
     /**
+     * @deprecated Use addTransferDestinations instead.
+     *
      * Adds multiple transfer destinations to a transfer token request.
      *
      * @param destinations

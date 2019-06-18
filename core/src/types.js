@@ -190,6 +190,10 @@ export type Subscriber = {
     handlerInstructions: Object,
 };
 
+// eslint-disable-next-line
+// https://developer.token.io/sdk/pbdoc/io_token_proto_common_transferinstructions.html#TransferDestination
+export type TransferDestination = Object;
+
 export type TransferEndpoint = {
     // consult developer docs
     account: Object,

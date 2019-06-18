@@ -15,7 +15,7 @@ describe('NotificationsSample test', () => {
         const token = await payer.createTransferTokenBuilder(100.00, 'EUR')
             .setAccountId(accounts[0].id())
             .setToAlias(await payee.firstAlias())
-            .addDestination({account: {token: {memberId: payee.memberId()}}})
+            .addDestination({token: {memberId: payee.memberId()}})
             .execute();
         await payer.endorseToken(token);
         await payee.redeemToken(token, 100.00, 'EUR', 'transfer notify sample');

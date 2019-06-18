@@ -466,7 +466,11 @@ class AuthHttpClient extends CoreAuthHttpClient {
         }
 
         if (destinations !== undefined && destinations.length > 0) {
-            payload.destinations = destinations;
+            if (destinations[0].account !== undefined) { // for backwards compatibility
+                payload.destinations = destinations;
+            } else {
+                payload.transferDestinations = destinations;
+            }
         }
 
         const signer = await this.getSigner(config.KeyLevel.LOW);
