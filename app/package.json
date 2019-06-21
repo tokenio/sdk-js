@@ -1,6 +1,6 @@
 {
     "name": "@token-io/app",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "Token JavaScript App SDK",
     "license": "ISC",
     "author": {
@@ -33,7 +33,7 @@
         "@babel/preset-env": "^7.3.1",
         "@babel/preset-flow": "^7.0.0",
         "@token-io/eslint-config": "^1.0.3",
-        "@token-io/tpp": "^1.0.3",
+        "@token-io/tpp": "^1.0.4",
         "babel-eslint": "^10.0.1",
         "babel-loader": "^8.0.5",
         "chai": "^4.2.0",
