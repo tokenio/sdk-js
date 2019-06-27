@@ -107,10 +107,6 @@ export class TokenClient extends Core {
                 transferBody: {
                     currency: currency,
                     lifetimeAmount: lifetimeAmount.toString(),
-                    destinations: [],
-                    instructions: {
-                        transferDestinations: [],
-                    },
                 },
             };
             return new TransferTokenRequestBuilder(payload);

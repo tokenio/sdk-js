@@ -28,6 +28,11 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     addTransferDestination(destination: TransferDestination): TransferTokenRequestBuilder {
+        if (!this.requestPayload.transferBody.instructions) {
+            this.requestPayload.transferBody.instructions = {
+                transferDestinations: [],
+            };
+        }
         this.requestPayload.transferBody.instructions.transferDestinations.push(destination);
         return this;
     }
@@ -39,6 +44,11 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     addTransferDestinations(destinations: Array<TransferDestination>): TransferTokenRequestBuilder {
+        if (!this.requestPayload.transferBody.instructions) {
+            this.requestPayload.transferBody.instructions = {
+                transferDestinations: [],
+            };
+        }
         this.requestPayload.transferBody.instructions.transferDestinations.push(...destinations);
         return this;
     }
@@ -52,6 +62,9 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     addDestination(destination: TransferEndpoint): TransferTokenRequestBuilder {
+        if (!this.requestPayload.transferBody.destinations) {
+            this.requestPayload.transferBody.destinations = [];
+        }
         this.requestPayload.transferBody.destinations.push(destination);
         return this;
     }
@@ -65,6 +78,9 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     addDestinations(destinations: Array<TransferEndpoint>): TransferTokenRequestBuilder {
+        if (!this.requestPayload.transferBody.destinations) {
+            this.requestPayload.transferBody.destinations = [];
+        }
         this.requestPayload.transferBody.destinations.push(...destinations);
         return this;
     }
