@@ -15,6 +15,7 @@ import type {
     TokenRequest,
     TokenOperationResult,
     Transfer,
+    RecurringTransfer,
     KeyStoreCryptoEngine,
     TransferDestination,
 } from '@token-io/core';
@@ -340,6 +341,109 @@ export default class Member extends CoreMember {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             return {
                 transfers: res.data.transfers || [],
+                offset: res.data.offset,
+            };
+        });
+    }
+
+    /**
+     * Redeems a recurring transfer token.
+     *
+     * @param token - token to redeem. Can also be a tokenId
+     * @param amount - amount to redeem
+     * @param currency - currency to redeem
+     * @param description - optional transfer description
+     * @param destinations - transfer destinations
+     * @param refId - ID that will be set on created Recurring Transfer
+     *                Token uses this to detect duplicates
+     *                caller might use this to recognize the transfer
+     *                if param empty, transfer will have random refId
+     * @return Recurring Transfer created as a result of this redeem call
+     */
+    redeemRecurringToken(
+        token: Token | string,
+        amount?: number,
+        frequency?: string,
+        startDate?: string,
+        endDate?: string,
+        currency?: string,
+        description?: string,
+        destinations?: Array<TransferDestination> = [],
+        refId?: string
+    ): Promise<RecurringTransfer> {
+        return Util.callAsync(this.redeemRecurringToken, async () => {
+            const finalToken = await this._resolveToken(token);
+            if (!amount) {
+                amount = finalToken.payload.recurringTransfer.amount;
+            }
+            if (!currency) {
+                currency = finalToken.payload.recurringTransfer.currency;
+            }
+            if (!description) {
+                description = finalToken.payload.description;
+            }
+            if (!frequency) {
+                frequency = finalToken.payload.frequency;
+            }
+            if (!startDate) {
+                startDate = finalToken.payload.startDate;
+            }
+            if (!endDate) {
+                endDate = finalToken.payload.endDate;
+            }
+            if (Util.countDecimals(amount) > config.decimalPrecision) {
+                throw new Error(
+                    `Number of decimals in amount should be at most ${config.decimalPrecision}`);
+            }
+            const res = await this._client.redeemRecurringToken(
+                finalToken,
+                amount,
+                frequency,
+                startDate,
+                endDate,
+                currency,
+                description,
+                destinations,
+                refId);
+            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
+                const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
+                error.authorizationDetails = res.data.authorizationDetails;
+                throw error;
+            }
+            return res.data.transfer;
+        });
+    }
+
+    /**
+     * Looks up a recurring transfer.
+     *
+     * @param recurringTransferId - ID to look up
+     * @return recurring transfer if found
+     */
+    getRecurringTransfer(recurringTransferId: string): Promise<RecurringTransfer> {
+        return Util.callAsync(this.getRecurringTransfer, async () => {
+            const res = await this._client.getRecurringTransfer(recurringTransferId);
+            return res.data.recurringTransfer;
+        });
+    }
+
+    /**
+     * Looks up all of the member's recurring transfers.
+     *
+     * @param tokenId - token to use for lookup
+     * @param offset - where to start looking
+     * @param limit - how many to retrieve
+     * @return Recurring transfers
+     */
+    getRecurringTransfers(
+        tokenId: string,
+        offset: string,
+        limit: number
+    ): Promise<{recurringTransfers: Array<RecurringTransfer>, offset: string}> {
+        return Util.callAsync(this.getRecurringTransfers, async () => {
+            const res = await this._client.getRecurringTransfers(tokenId, offset, limit);
+            return {
+                recurringTransfers: res.data.recurringTransfers || [],
                 offset: res.data.offset,
             };
         });

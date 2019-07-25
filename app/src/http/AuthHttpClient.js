@@ -354,6 +354,25 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Creates a recurring transfer token.
+     *
+     * @param {Object} payload - payload of the token
+     * @param {string} tokenRequestId - token request ID
+     * @return {Object} response to the API call
+     */
+    async createRecurringTransferToken(payload, tokenRequestId) {
+        const request = {
+            method: 'post',
+            url: '/tokens?type=recurringTransfer',
+            data: {
+                payload,
+                tokenRequestId,
+            },
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Creates an access token.
      *
      * @param {Object} payload - access token payload

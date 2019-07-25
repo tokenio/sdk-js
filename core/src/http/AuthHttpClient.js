@@ -576,6 +576,43 @@ export class AuthHttpClient {
         };
     }
 
+    /**
+     * get information about a particular standing order
+     *
+     * @param {*} accountId
+     * @param {*} standingOrderId
+     * @param {*} keyLevel
+     * @returns
+     * @memberof AuthHttpClient
+     */
+    async getStandingOrder(accountId, standingOrderId, keyLevel) {
+        this.useKeyLevel(keyLevel);
+        const request = {
+            method: 'get',
+            url: `/accounts/${accountId}/standing-orders/${standingOrderId}`,
+        };
+        return this._instance(request); 
+    }
+
+    /**
+     * get information about several standing orders
+     *
+     * @param {*} accountId
+     * @param {*} offset
+     * @param {*} limit
+     * @param {*} keyLevel
+     * @returns
+     * @memberof AuthHttpClient
+     */
+    async getStandingOrders(accountId, offset, limit, keyLevel) {
+        this.useKeyLevel(keyLevel);
+        const request = {
+            method: 'get',
+            url: `/accounts/${accountId}/standing-orders?offset=${offset}&limit=${limit}`,
+        };
+        return this._instance(request);
+    }
+
     async _memberUpdate(update, prevHash, metadata) {
         if (prevHash !== '') {
             update.prevHash = prevHash;

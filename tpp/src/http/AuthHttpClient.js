@@ -281,6 +281,36 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Gets a recurring transfer by ID.
+     *
+     * @param {string} recurringTransferId - ID of the transfer
+     * @return {Object} response to the API call
+     */
+    async getRecurringTransfer(recurringTransferId) {
+        const request = {
+            method: 'get',
+            url: `/recurring-transfers/${recurringTransferId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Gets all recurring transfers on a token.
+     *
+     * @param {string} tokenId - ID of the token
+     * @param {string} offset - where to start
+     * @param {Number} limit - how many to get
+     * @return {Object} response to the API call
+     */
+    async getRecurringTransfers(tokenId, offset, limit) {
+        const request = {
+            method: 'get',
+            url: `/recurring-transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`,
+        };
+        return this._instance(request);
+    }
+
     async _tokenOperation(token, operation, suffix) {
         const tokenId = token.id;
         const request = {

@@ -228,8 +228,7 @@ export type Transfer = {
     payload: Object,
     payloadSignatures: Array<Signature>,
     status: string,
-    orderId: string,
-    method: 'DEFAULT' | 'INSTANT',
+    executionDate: string,
 };
 
 export type OauthBankAuthorization = {
@@ -251,4 +250,21 @@ export type SecurityMetadata = {
     ipAddress: string,
     geoLocation: string,
     deviceFingerprint: string,
+};
+
+export type StandingOrder = {
+    id: string,
+    status: string,
+    tokenId: string,
+    recurringTransferId: string,
+    createdAtMs: string,
+};
+
+export type RecurringTransfer = {
+    id: string,
+    standingOrderId: string,
+    tokenId: string,
+    createdAtMs: string,
+    recurringTransferBody: Object,
+    status: string,
 };

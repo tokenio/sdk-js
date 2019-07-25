@@ -1,7 +1,7 @@
 // @flow
 import Util from '../Util';
 import type Member from './Member';
-import type {Balance, Transaction, KeyLevel} from '..';
+import type {Balance, Transaction, KeyLevel, StandingOrder} from '..';
 
 /**
  * Represents a bank account.
@@ -136,7 +136,7 @@ export class Account {
         return Util.callAsync(this.getTransaction, async () => {
             const res = await this.accountMember._client
                 .getTransaction(this.account.id, transactionId, keyLevel);
-            if (res.data.status !== 'SUfCCESSFUL_REQUEST')
+            if (res.data.status !== 'SUCCESSFUL_REQUEST')
                 throw new Error('Transaction step up required');
             return res.data.transaction;
         });
@@ -166,6 +166,52 @@ export class Account {
             };
         });
     }
-}
 
+    /**
+     * Looks up an existing standing account order for a given account.
+     *
+     * @param standingOrderId 
+     * @param keyLevel 
+     * @return standing order record
+     */
+    getStandingOrder(
+        standingOrderId: string,
+        keyLevel: KeyLevel,
+    ): Promise<StandingOrder> {
+        return Util.callAsync(this.getStandingOrder, async () => {
+            const res = await this.accountMember._client
+                .getStandingOrder(this.account.id, standingOrderId, keyLevel);
+                if (res.data.status !== 'SUCCESSFUL_REQUEST')
+                    throw new Error('Standing order step up required');
+                return res.data.standingOrder;
+        });
+    }
+
+
+    /**
+     *Looks up all of the member's standing orders on the account
+     *
+     * @param {string} offset
+     * @param {number} limit
+     * @param {KeyLevel} keyLevel
+     * @returns {Promise<{standingOrders: Array<StandingOrder>, offset: string}>}
+     * @memberof Account
+     */
+    getStandingOrders(
+        offset: string,
+        limit: number,
+        keyLevel: KeyLevel,
+    ): Promise<{standingOrders: Array<StandingOrder>, offset: string}> {
+        return Util.callAsync(this.getStandingOrders, async () => {
+            const res = await this.accountMember._client
+                .getStandingOrders(this.account.id, offset, limit, keyLevel);
+            if (res.data.status !== 'SUCCESSFUL_REQUEST')
+                throw new Error('Standing order step up required');
+            return {
+                standingOrders: res.data.standingOrders || [],
+                offset: res.data.offset,
+            };
+        });
+    }
+}
 export default Account;

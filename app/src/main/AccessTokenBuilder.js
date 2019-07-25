@@ -75,6 +75,39 @@ export default class AccessTokenBuilder extends TokenBuilder {
     }
 
     /**
+     *Grants access to an account's standing order.
+     *
+     * @param {string} accountId
+     * @returns {AccessTokenBuilder}
+     * @memberof AccessTokenBuilder
+     */
+    forAccountStandingOrder(accountId: string): AccessTokenBuilder {
+        this.tokenPayload.access.resources.push({
+            standingOrder: {
+                accountId,
+            }
+        });
+        return this;
+    }
+
+    
+    /**
+     *Grants access to a multiple account's standing orders.
+     *
+     * @param {Array<string>} accountIds
+     * @returns {AccessTokenBuilder}
+     * @memberof AccessTokenBuilder
+     */
+    forAccountStandingOrders(accountIds: Array<string>): AccessTokenBuilder {
+        accountIds.forEach(id => this.tokenPayload.access.resources.push({
+            standingOrder: {
+                accountId: id
+            },
+        }));
+        return this;
+    }
+
+    /**
      * Grants access to an account's transactions.
      *
      * @param accountId

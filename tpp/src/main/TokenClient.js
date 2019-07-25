@@ -7,6 +7,7 @@ import Util from '../Util';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
 import TransferTokenRequestBuilder from './TransferTokenRequestBuilder';
 import AccessTokenRequestBuilder from './AccessTokenRequestBuilder';
+import RecurringTransferTokenRequestBuilder from './RecurringTransferTokenRequestBuilder';
 import type {
     Alias,
     ResourceType,
@@ -110,6 +111,39 @@ export class TokenClient extends Core {
                 },
             };
             return new TransferTokenRequestBuilder(payload);
+        });
+    }
+
+    
+    /**
+     *Creates a RecurringTokenRequestBuilder for a recurring transfer token.
+     *
+     * @param {(number | string)} amount
+     * @param {string} currency
+     * @param {string} frequency
+     * @param {string} startDate
+     * @param {string} endDate
+     * @returns {TransferTokenRequestBuilder}
+     * @memberof TokenClient
+     */
+    createRecurringTransferTokenRequest(
+        amount: number | string,
+        currency: string,
+        frequency: string,
+        startDate: string,
+        endDate: string,
+    ): TransferTokenRequestBuilder {
+        return Util.callSync(this.createRecurringTransferTokenRequest, () => {
+            const payload = {
+                recurringTransferBody: {
+                    amount: amount.toString(),
+                    currency,
+                    frequency,
+                    startDate,
+                    endDate,
+                },
+            };
+            return new RecurringTransferTokenRequestBuilder(payload);
         });
     }
 

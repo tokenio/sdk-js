@@ -5,6 +5,7 @@ import type {
     Balance,
     KeyLevel,
     Transaction,
+    StandingOrder,
 } from '@token-io/core';
 
 /**
@@ -68,7 +69,7 @@ export default class Representable {
     }
 
     /**
-     * Looks up a transaction.
+     * Looks up an existing transaction for a given account.
      *
      * @param accountId - ID of the account
      * @param transactionId - which transaction to look up
@@ -84,7 +85,7 @@ export default class Representable {
     }
 
     /**
-     * Looks up all of the member's transactions for an account.
+     * Looks up transactions for a given account.
      *
      * @param accountId - ID of the account
      * @param offset - where to start looking
@@ -115,5 +116,42 @@ export default class Representable {
         currency: string
     ): Promise<boolean> {
         return this._member.confirmFunds(accountId, amount, currency);
+    }
+
+    /**
+     *Looks up an existing standing order for a given account.
+     *
+     * @param {string} accountId
+     * @param {string} standingOrderId
+     * @param {KeyLevel} keyLevel
+     * @returns {Promise<StandingOrder>}
+     * @memberof Representable
+     */
+    getStandingOrder(
+        accountId: string,
+        standingOrderId: string,
+        keyLevel: KeyLevel,
+    ): Promise<StandingOrder> {
+        return this._member.getStandingOrder(accountId, standingOrderId, keyLevel);
+    }
+
+
+    /**
+     *Looks up standing orders for a given account.
+     *
+     * @param {string} accountId
+     * @param {string} offset
+     * @param {number} limit
+     * @param {KeyLevel} keyLevel
+     * @returns {Promise<{standingOrders: Array<StandingOrder>, offset: string}>}
+     * @memberof Representable
+     */
+    getStandingOrders(
+        accountId: string,
+        offset: string,
+        limit: number,
+        keyLevel: KeyLevel,
+    ): Promise<{standingOrders: Array<StandingOrder>, offset: string}> {
+        return this._member.getStandingOrders(accountId, offset, limit, keyLevel);
     }
 }

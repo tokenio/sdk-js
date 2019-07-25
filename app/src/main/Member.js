@@ -362,6 +362,44 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Creates a new recurring transfer token builder. Defines a recurring payment
+     * for a fixed time span.
+     *
+     * @param {(number | string)} amount
+     * @param {string} currency code, e.g. "USD"
+     * @param {string} frequency ISO 20022 code for the frequency of the recurring payment:
+     *                           DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR
+     * @param {string} startDate ISO 8601 YYYY-MM-DD or YYYYMMDD
+     * @param {string} endDate ISO 8601 YYYY-MM-DD or YYYYMMDD
+     * @returns {RecurringTransferTokenBuilder}
+     * @memberof Member
+     */
+    createRecurringTransferTokenBuilder(
+        amount: number | string,
+        currency: string,
+        frequency: string,
+        startDate: string,
+        endDate: string
+    ): RecurringTransferTokenBuilder {
+        return Util.callSync(this.createRecurringTransferTokenBuilder, () => {
+            const payload = {
+                recurringTransfer: {
+                    amount: amount.toString(),
+                    currency,
+                    frequency,
+                    startDate,
+                    endDate,
+                    instructions: {
+                        transferDestinations: [],
+                        metadata: {},
+                    },
+                }
+            };
+            return new RecurringTransferTokenBuilder(payload, this._id, this._client);
+        });
+    }
+
+    /**
      * Cancels the existing token and creates a replacement for it.
      *
      * @param tokenToCancel - the old token to cancel
