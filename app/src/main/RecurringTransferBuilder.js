@@ -3,13 +3,12 @@ import TokenBuilder from './TokenBuilder';
 import config from '../config.json';
 import Util from '../Util';
 import type {
-    TokenBuilder, 
     TransferEndpoint,
     TransferDestination,
     PurposeOfPayment,
 } from '@token-io/core';
 
-export default class RecurringTransferBuilder extends TokenBuilder{
+export default class RecurringTransferBuilder extends TokenBuilder {
     client: Object;
     memberId: string;
 
@@ -34,24 +33,6 @@ export default class RecurringTransferBuilder extends TokenBuilder{
                 token: {
                     memberId: this.memberId,
                     accountId,
-                },
-            },
-        };
-        return this;
-    }
-
-    /**
-     * Sets the source bank if account is managed by a coop bank.
-     *
-     * @param bankId
-     * @return RecurringTransferTokenBuilder
-     * @deprecated use setSourceAccountGuest instead
-     */
-    setSourceAccountBank(bankId: string): RecurringTransferTokenBuilder {
-        this.tokenPayload.recurringTransfer.instructions.source = {
-            account: {
-                bank: {
-                    bankId,
                 },
             },
         };
@@ -102,21 +83,6 @@ export default class RecurringTransferBuilder extends TokenBuilder{
      */
     setSource(source: TransferEndpoint): RecurringTransferTokenBuilder {
         this.tokenPayload.recurringTransfer.instructions.source = source;
-        return this;
-    }
-
-    /**
-     * Sets the amount per charge amount of the recurring payment.
-     *
-     * @param amount
-     * @return RecurringTransferTokenBuilder
-     */
-    setAmount(amount: number | string): RecurringTransferTokenBuilder {
-        if (Util.countDecimals(parseFloat(amount)) > config.decimalPrecision) {
-            throw new Error(
-                `Number of decimals in amount should be at most ${config.decimalPrecision}`);
-        }
-        this.tokenPayload.recurringTransfer.amount = amount.toString();
         return this;
     }
 

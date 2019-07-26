@@ -266,30 +266,30 @@ export default class Member extends CoreMember {
      * @param currency - currency to redeem
      * @param description - optional transfer description
      * @param destinations - transfer destinations
-     * @param refId - ID that will be set on created Transfer
-     *                Token uses this to detect duplicates
-     *                caller might use this to recognize the transfer
-     *                if param empty, transfer will have random refId
+     * @param refId - ID that will be set on created Transfer.
+     *                Token uses this to detect duplicates.
+     *                Caller might use this to recognize the transfer.
+     *                If param empty, transfer will have random refId.
      * @return Transfer created as a result of this redeem call
      */
     redeemToken(
         token: Token | string,
-        amount?: number,
-        currency?: string,
-        description?: string,
-        destinations?: Array<TransferDestination> = [],
+        amount: ?number,
+        currency: ?string,
+        description: ?string,
+        destinations: Array<TransferDestination> = [],
         refId?: string
     ): Promise<Transfer> {
         return Util.callAsync(this.redeemToken, async () => {
             const finalToken = await this._resolveToken(token);
             if (!amount) {
-                amount = finalToken.payload.transfer.lifetimeAmount;
+                amount = finalToken && finalToken.payload.transfer.lifetimeAmount;
             }
             if (!currency) {
-                currency = finalToken.payload.transfer.currency;
+                currency = finalToken && finalToken.payload.transfer.currency;
             }
             if (!description) {
-                description = finalToken.payload.description;
+                description = finalToken && finalToken.payload.description;
             }
             if (Util.countDecimals(amount) > config.decimalPrecision) {
                 throw new Error(
@@ -350,61 +350,13 @@ export default class Member extends CoreMember {
      * Redeems a recurring transfer token.
      *
      * @param token - token to redeem. Can also be a tokenId
-     * @param amount - amount to redeem
-     * @param currency - currency to redeem
-     * @param description - optional transfer description
-     * @param destinations - transfer destinations
-     * @param refId - ID that will be set on created Recurring Transfer
-     *                Token uses this to detect duplicates
-     *                caller might use this to recognize the transfer
-     *                if param empty, transfer will have random refId
      * @return Recurring Transfer created as a result of this redeem call
      */
-    redeemRecurringToken(
+    redeemRecurringTransferToken(
         token: Token | string,
-        amount?: number,
-        frequency?: string,
-        startDate?: string,
-        endDate?: string,
-        currency?: string,
-        description?: string,
-        destinations?: Array<TransferDestination> = [],
-        refId?: string
     ): Promise<RecurringTransfer> {
         return Util.callAsync(this.redeemRecurringToken, async () => {
-            const finalToken = await this._resolveToken(token);
-            if (!amount) {
-                amount = finalToken.payload.recurringTransfer.amount;
-            }
-            if (!currency) {
-                currency = finalToken.payload.recurringTransfer.currency;
-            }
-            if (!description) {
-                description = finalToken.payload.description;
-            }
-            if (!frequency) {
-                frequency = finalToken.payload.frequency;
-            }
-            if (!startDate) {
-                startDate = finalToken.payload.startDate;
-            }
-            if (!endDate) {
-                endDate = finalToken.payload.endDate;
-            }
-            if (Util.countDecimals(amount) > config.decimalPrecision) {
-                throw new Error(
-                    `Number of decimals in amount should be at most ${config.decimalPrecision}`);
-            }
-            const res = await this._client.redeemRecurringToken(
-                finalToken,
-                amount,
-                frequency,
-                startDate,
-                endDate,
-                currency,
-                description,
-                destinations,
-                refId);
+            const res = await this._client.redeemRecurringTransferToken(token);
             if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
                 const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
                 error.authorizationDetails = res.data.authorizationDetails;

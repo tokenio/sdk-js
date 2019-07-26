@@ -3,6 +3,7 @@ import Util from '../Util';
 import config from '../config.json';
 import BlockingAdapter from './BlockingAdapter';
 import base64js from 'base64-js';
+import { deprecate } from 'util';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -319,9 +320,9 @@ class AuthHttpClient extends CoreAuthHttpClient {
     /**
      * Creates a token.
      *
-     * @param payload - token payload
-     * @param signatures - signatures
-     * @param tokenRequestId - token request ID
+     * @param {Object} payload - token payload
+     * @param {array} signatures - signatures
+     * @param {string} tokenRequestId - token request ID
      * @returns {Promise} the created token
      */
     async createToken(payload, signatures, tokenRequestId) {
@@ -335,6 +336,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * @deprecated
      * Creates a transfer token.
      *
      * @param {Object} payload - payload of the token
@@ -354,6 +356,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * @deprecated
      * Creates a recurring transfer token.
      *
      * @param {Object} payload - payload of the token
@@ -373,6 +376,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * @deprecated
      * Creates an access token.
      *
      * @param {Object} payload - access token payload

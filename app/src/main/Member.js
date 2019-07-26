@@ -382,6 +382,10 @@ export default class Member extends CoreMember {
         endDate: string
     ): RecurringTransferTokenBuilder {
         return Util.callSync(this.createRecurringTransferTokenBuilder, () => {
+            if (Util.countDecimals(parseFloat(amount)) > config.decimalPrecision) {
+                throw new Error(
+                    `Number of decimals in amount should be at most ${config.decimalPrecision}`);
+            }
             const payload = {
                 recurringTransfer: {
                     amount: amount.toString(),
@@ -393,7 +397,7 @@ export default class Member extends CoreMember {
                         transferDestinations: [],
                         metadata: {},
                     },
-                }
+                },
             };
             return new RecurringTransferTokenBuilder(payload, this._id, this._client);
         });

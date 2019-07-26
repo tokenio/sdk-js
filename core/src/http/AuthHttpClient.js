@@ -450,7 +450,7 @@ export class AuthHttpClient {
             operations: aliases.map(alias => ({
                 removeAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
-                    realm: alias.realm
+                    realm: alias.realm,
                 },
             })),
         };
@@ -559,29 +559,11 @@ export class AuthHttpClient {
     }
 
     /**
-     * Signs a token payload with given key level and action.
+     * Gets information about a particular standing order.
      *
-     * @param tokenPayload
-     * @param suffix
-     * @param keyLevel
-     * @returns {Object} token proto signature object
-     */
-    async tokenOperationSignature(tokenPayload, suffix, keyLevel) {
-        const payload = stringify(tokenPayload) + `.${suffix}`;
-        const signer = await this.getSigner(keyLevel);
-        return {
-            memberId: this._memberId,
-            keyId: signer.getKeyId(),
-            signature: await signer.sign(payload),
-        };
-    }
-
-    /**
-     * get information about a particular standing order
-     *
-     * @param {*} accountId
-     * @param {*} standingOrderId
-     * @param {*} keyLevel
+     * @param {string} accountId
+     * @param {string} standingOrderId
+     * @param {string} keyLevel
      * @returns
      * @memberof AuthHttpClient
      */
@@ -591,16 +573,16 @@ export class AuthHttpClient {
             method: 'get',
             url: `/accounts/${accountId}/standing-orders/${standingOrderId}`,
         };
-        return this._instance(request); 
+        return this._instance(request);
     }
 
     /**
-     * get information about several standing orders
+     * Gets information about several standing orders.
      *
-     * @param {*} accountId
-     * @param {*} offset
-     * @param {*} limit
-     * @param {*} keyLevel
+     * @param {string} accountId
+     * @param {string} offset
+     * @param {int} limit
+     * @param {string} keyLevel
      * @returns
      * @memberof AuthHttpClient
      */
@@ -611,6 +593,24 @@ export class AuthHttpClient {
             url: `/accounts/${accountId}/standing-orders?offset=${offset}&limit=${limit}`,
         };
         return this._instance(request);
+    }
+
+    /**
+     * Signs a token payload with given key level and action.
+     *
+     * @param {Object} tokenPayload
+     * @param {string} suffix
+     * @param {KeyLevel} keyLevel
+     * @returns {Object} token proto signature object
+     */
+    async tokenOperationSignature(tokenPayload, suffix, keyLevel) {
+        const payload = stringify(tokenPayload) + `.${suffix}`;
+        const signer = await this.getSigner(keyLevel);
+        return {
+            memberId: this._memberId,
+            keyId: signer.getKeyId(),
+            signature: await signer.sign(payload),
+        };
     }
 
     async _memberUpdate(update, prevHash, metadata) {

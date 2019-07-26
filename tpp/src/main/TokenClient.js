@@ -114,17 +114,15 @@ export class TokenClient extends Core {
         });
     }
 
-    
     /**
-     *Creates a RecurringTokenRequestBuilder for a recurring transfer token.
+     * Creates a RecurringTokenRequestBuilder for a recurring transfer token.
      *
-     * @param {(number | string)} amount
-     * @param {string} currency
-     * @param {string} frequency
-     * @param {string} startDate
-     * @param {string} endDate
-     * @returns {TransferTokenRequestBuilder}
-     * @memberof TokenClient
+     * @param amount
+     * @param currency
+     * @param frequency
+     * @param startDate
+     * @param endDate
+     * @returns The created RecurringTokenRequestBuilder
      */
     createRecurringTransferTokenRequest(
         amount: number | string,

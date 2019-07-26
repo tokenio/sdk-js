@@ -74,7 +74,7 @@ export default class Representable {
      * @param accountId - ID of the account
      * @param transactionId - which transaction to look up
      * @param keyLevel - key level
-     * @return the Transaction
+     * @return Transaction
      */
     getTransaction(
         accountId: string,
@@ -119,13 +119,12 @@ export default class Representable {
     }
 
     /**
-     *Looks up an existing standing order for a given account.
+     * Looks up an existing standing order for a given account.
      *
-     * @param {string} accountId
-     * @param {string} standingOrderId
-     * @param {KeyLevel} keyLevel
-     * @returns {Promise<StandingOrder>}
-     * @memberof Representable
+     * @param accountId
+     * @param standingOrderId
+     * @param keyLevel
+     * @returns standing order
      */
     getStandingOrder(
         accountId: string,
@@ -135,16 +134,14 @@ export default class Representable {
         return this._member.getStandingOrder(accountId, standingOrderId, keyLevel);
     }
 
-
     /**
      *Looks up standing orders for a given account.
      *
-     * @param {string} accountId
-     * @param {string} offset
-     * @param {number} limit
-     * @param {KeyLevel} keyLevel
-     * @returns {Promise<{standingOrders: Array<StandingOrder>, offset: string}>}
-     * @memberof Representable
+     * @param accountId
+     * @param offset
+     * @param limit
+     * @param keyLevel
+     * @returns standing orders
      */
     getStandingOrders(
         accountId: string,
