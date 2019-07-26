@@ -135,7 +135,7 @@ export default class Representable {
     }
 
     /**
-     *Looks up standing orders for a given account.
+     * Looks up standing orders for a given account.
      *
      * @param accountId
      * @param offset
