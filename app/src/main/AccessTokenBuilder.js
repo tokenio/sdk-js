@@ -75,7 +75,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
     }
 
     /**
-     * Grants access to an account's standing order.
+     * Grants access to an account's standing orders.
      *
      * @param accountId
      * @return AccessTokenBuilder
@@ -90,7 +90,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
     }
 
     /**
-     * Grants access to a multiple account's standing orders.
+     * Grants access to multiple account's standing orders.
      *
      * @param accountIds
      * @returns AccessTokenBuilder

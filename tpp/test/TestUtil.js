@@ -58,4 +58,15 @@ export default class TestUtil {
         const endorsed = await payer.endorseToken(transferToken);
         return endorsed.token;
     }
+
+    static async createStandingOrderToken(payer, payeeAlias) {
+        const accountId = (await payer.getAccounts())[0].id();
+        const standingOrderToken = await payer.createStandingOrderTokenBuilder(100, 'EUR', 'MNTH', '2018-02-15', '2019-02-15')
+            .setAccountId(accountId)
+            .setToAlias(payeeAlias)
+            .setDescription('Music Subscription')
+            .execute();
+            const endorsed = await payer.endorseToken(standingOrderToken);
+            return endorsed.token;
+    }
 }

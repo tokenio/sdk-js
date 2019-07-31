@@ -222,6 +222,24 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Redeems a standing order token.
+     *
+     * @param {Object} token - token to redeem
+     * @return {Object} response to the API call
+     */
+    async redeemStandingOrderToken(token) {
+        const req = {
+            token,
+        };
+        const request = {
+            method: 'post',
+            url: '/standing-order-submissions',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets a token by its ID.
      *
      * @param {string} tokenId - ID of the token to get
@@ -282,31 +300,30 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     * Gets a recurring transfer by ID.
+     * Gets information about one standing order submission.
      *
-     * @param {string} recurringTransferId - ID of the transfer
+     * @param {string} submissionId - ID of the transfer
      * @return {Object} response to the API call
      */
-    async getRecurringTransfer(recurringTransferId) {
+    async getStandingOrderSubmission(submissionId) {
         const request = {
             method: 'get',
-            url: `/recurring-transfers/${recurringTransferId}`,
+            url: `/standing-order-submissions/${submissionId}`,
         };
         return this._instance(request);
     }
 
     /**
-     * Gets all recurring transfers on a token.
+     * Gets a list of the auth'd member's standing order submissions.
      *
-     * @param {string} tokenId - ID of the token
      * @param {string} offset - where to start
      * @param {Number} limit - how many to get
      * @return {Object} response to the API call
      */
-    async getRecurringTransfers(tokenId, offset, limit) {
+    async getStandingOrderSubmissions(offset, limit) {
         const request = {
             method: 'get',
-            url: `/recurring-transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`,
+            url: `/standing-order-submissions&offset=${offset}&limit=${limit}`,
         };
         return this._instance(request);
     }

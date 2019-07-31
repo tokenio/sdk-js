@@ -15,7 +15,7 @@ import type {
     TokenRequest,
     TokenOperationResult,
     Transfer,
-    RecurringTransfer,
+    StandingOrderSubmission,
     KeyStoreCryptoEngine,
     TransferDestination,
 } from '@token-io/core';
@@ -347,55 +347,50 @@ export default class Member extends CoreMember {
     }
 
     /**
-     * Redeems a recurring transfer token.
+     * Redeems a standing order token.
      *
      * @param token - token to redeem. Can also be a tokenId
-     * @return Recurring Transfer created as a result of this redeem call
+     * @return standing order submission created as a result of this redeem call
      */
-    redeemRecurringTransferToken(
+    redeemStandingOrderToken(
         token: Token | string,
-    ): Promise<RecurringTransfer> {
-        return Util.callAsync(this.redeemRecurringToken, async () => {
-            const res = await this._client.redeemRecurringTransferToken(token);
+    ): Promise<StandingOrderSubmission> {
+        return Util.callAsync(this.redeemStandingOrderToken, async () => {
+            const res = await this._client.redeemStandingOrderToken(token);
             if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
                 const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
-            return res.data.transfer;
+            return res.data.submission;
         });
     }
 
     /**
-     * Looks up a recurring transfer.
+     * Looks up an existing Token standing order submission.
      *
-     * @param recurringTransferId - ID to look up
-     * @return recurring transfer if found
+     * @param submissionId - ID of the standing order submission
+     * @return standing order submission
      */
-    getRecurringTransfer(recurringTransferId: string): Promise<RecurringTransfer> {
-        return Util.callAsync(this.getRecurringTransfer, async () => {
-            const res = await this._client.getRecurringTransfer(recurringTransferId);
-            return res.data.recurringTransfer;
+    getStandingOrderSubmission(submissionId: string): Promise<StandingOrderSubmission> {
+        return Util.callAsync(this.getStandingOrderSubmission, async () => {
+            const res = await this._client.getStandingOrderSubmission(submissionId);
+            return res.data.submission;
         });
     }
 
     /**
-     * Looks up all of the member's recurring transfers.
+     * Looks up existing Token standing order submissions.
      *
-     * @param tokenId - token to use for lookup
-     * @param offset - where to start looking
+     * @param offset - optional where to start looking
      * @param limit - how many to retrieve
-     * @return Recurring transfers
+     * @return standing order submissions
      */
-    getRecurringTransfers(
-        tokenId: string,
-        offset: string,
-        limit: number
-    ): Promise<{recurringTransfers: Array<RecurringTransfer>, offset: string}> {
-        return Util.callAsync(this.getRecurringTransfers, async () => {
-            const res = await this._client.getRecurringTransfers(tokenId, offset, limit);
+    getStandingOrderSubmissions(offset, limit): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
+        return Util.callAsync(this.getStandingOrderSubmissions, async () => {
+            const res = await this._client.getStandingOrderSubmissions(offset, limit);
             return {
-                recurringTransfers: res.data.recurringTransfers || [],
+                submissions: res.data.submissions || [],
                 offset: res.data.offset,
             };
         });

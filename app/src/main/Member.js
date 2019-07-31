@@ -5,6 +5,7 @@ import AuthHttpClient from '../http/AuthHttpClient';
 import config from '../config.json';
 import HttpClient from '../http/HttpClient';
 import TransferTokenBuilder from './TransferTokenBuilder';
+import StandingOrderTokenBuilder from './StandingOrderTokenBuilder';
 import Util from '../Util';
 import Account from './Account';
 import type {
@@ -23,6 +24,7 @@ import type {
     Transfer,
     KeyStoreCryptoEngine,
     TransferDestination,
+    StandingOrderSubmission,
 } from '@token-io/core';
 
 /**
@@ -362,32 +364,32 @@ export default class Member extends CoreMember {
     }
 
     /**
-     * Creates a new recurring transfer token builder. Defines a recurring payment
+     * Creates a new standing order token builder. Defines a standing order
      * for a fixed time span.
      *
-     * @param {(number | string)} amount
+     * @param {(number | string)} amount individual transfer amount
      * @param {string} currency code, e.g. "USD"
-     * @param {string} frequency ISO 20022 code for the frequency of the recurring payment:
+     * @param {string} frequency ISO 20022 code for the frequency of the payment:
      *                           DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR
      * @param {string} startDate ISO 8601 YYYY-MM-DD or YYYYMMDD
      * @param {string} endDate ISO 8601 YYYY-MM-DD or YYYYMMDD
-     * @returns {RecurringTransferTokenBuilder}
+     * @returns {StandingOrderTokenBuilder}
      * @memberof Member
      */
-    createRecurringTransferTokenBuilder(
+    createStandingOrderTokenBuilder(
         amount: number | string,
         currency: string,
         frequency: string,
         startDate: string,
         endDate: string
-    ): RecurringTransferTokenBuilder {
-        return Util.callSync(this.createRecurringTransferTokenBuilder, () => {
+    ): StandingOrderTokenBuilder {
+        return Util.callSync(this.createStandingOrderTokenBuilder, () => {
             if (Util.countDecimals(parseFloat(amount)) > config.decimalPrecision) {
                 throw new Error(
                     `Number of decimals in amount should be at most ${config.decimalPrecision}`);
             }
             const payload = {
-                recurringTransfer: {
+                standingOrderSubmission: {
                     amount: amount.toString(),
                     currency,
                     frequency,
@@ -399,7 +401,7 @@ export default class Member extends CoreMember {
                     },
                 },
             };
-            return new RecurringTransferTokenBuilder(payload, this._id, this._client);
+            return new StandingOrderTokenBuilder(payload, this._id, this._client);
         });
     }
 
@@ -643,6 +645,56 @@ export default class Member extends CoreMember {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             return {
                 transfers: res.data.transfers || [],
+                offset: res.data.offset,
+            };
+        });
+    }
+
+    /**
+     * Redeems a standing order token.
+     *
+     * @param token - token to redeem. Can also be a tokenId
+     * @return standing order submission created as a result of this redeem call
+     */
+    redeemStandingOrderToken(
+        token: Token | string,
+    ): Promise<StandingOrderSubmission> {
+        return Util.callAsync(this.redeemStandingOrderToken, async () => {
+            const res = await this._client.redeemStandingOrderToken(token);
+            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
+                const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
+                error.authorizationDetails = res.data.authorizationDetails;
+                throw error;
+            }
+            return res.data.submission;
+        });
+    }
+
+    /**
+     * Looks up an existing Token standing order submission.
+     *
+     * @param submissionId - ID of the standing order submission
+     * @return standing order submission
+     */
+    getStandingOrderSubmission(submissionId: string): Promise<StandingOrderSubmission> {
+        return Util.callAsync(this.getStandingOrderSubmission, async () => {
+            const res = await this._client.getStandingOrderSubmission(submissionId);
+            return res.data.submission;
+        });
+    }
+
+    /**
+     * Looks up existing Token standing order submissions.
+     *
+     * @param offset - optional where to start looking
+     * @param limit - how many to retrieve
+     * @return standing order submissions
+     */
+    getStandingOrderSubmissions(offset, limit): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
+        return Util.callAsync(this.getStandingOrderSubmissions, async () => {
+            const res = await this._client.getStandingOrderSubmissions(offset, limit);
+            return {
+                submissions: res.data.submissions || [],
                 offset: res.data.offset,
             };
         });

@@ -20,6 +20,13 @@ export type PurposeOfPayment = 'PERSONAL_EXPENSES'
     | 'FAMILY_MAINTENANCE'
     | 'SAVINGS'
     | 'OTHER';
+export type Method = 'DEFAULT' | 'INSTANT';
+export type SubmissionStatus = 'INVALID' 
+    | 'PENDING' 
+    | 'PROCESSING'
+    | 'SUCCESS'
+    | 'FAILED'
+    | 'INITIATED';
 
 export type Alias = {
     type: AliasType,
@@ -228,7 +235,8 @@ export type Transfer = {
     payload: Object,
     payloadSignatures: Array<Signature>,
     status: string,
-    executionDate: string,
+    orderId: string,
+    method: Method,
 };
 
 export type OauthBankAuthorization = {
@@ -256,15 +264,15 @@ export type StandingOrder = {
     id: string,
     status: string,
     tokenId: string,
-    recurringTransferId: string,
+    standingOrderSubmissionId: string,
     createdAtMs: string,
 };
 
-export type RecurringTransfer = {
+export type StandingOrderSubmission = {
     id: string,
     standingOrderId: string,
     tokenId: string,
     createdAtMs: string,
-    recurringTransferBody: Object,
-    status: string,
+    standingOrderBody: Object,
+    status: SubmissionStatus,
 };

@@ -7,7 +7,7 @@ import Util from '../Util';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
 import TransferTokenRequestBuilder from './TransferTokenRequestBuilder';
 import AccessTokenRequestBuilder from './AccessTokenRequestBuilder';
-import RecurringTransferTokenRequestBuilder from './RecurringTransferTokenRequestBuilder';
+import StandingOrderTokenRequestBuilder from './StandingOrderTokenRequestBuilder';
 import type {
     Alias,
     ResourceType,
@@ -115,33 +115,37 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Creates a RecurringTokenRequestBuilder for a recurring transfer token.
+     * Creates a StandingOrderTokenRequestBuilder for a standing order submission token.
      *
      * @param amount
      * @param currency
      * @param frequency
      * @param startDate
      * @param endDate
-     * @returns The created RecurringTokenRequestBuilder
+     * @returns The created StandingOrderTokenRequestBuilder
      */
-    createRecurringTransferTokenRequest(
+    createStandingOrderTokenRequest(
         amount: number | string,
         currency: string,
         frequency: string,
         startDate: string,
         endDate: string,
-    ): TransferTokenRequestBuilder {
-        return Util.callSync(this.createRecurringTransferTokenRequest, () => {
+    ): StandingOrderTokenRequestBuilder {
+        return Util.callSync(this.createStandingOrderTokenRequest, () => {
             const payload = {
-                recurringTransferBody: {
+                standingOrderBody: {
                     amount: amount.toString(),
                     currency,
                     frequency,
                     startDate,
                     endDate,
+                    instructions: {
+                        transferDestinations: [],
+                        metadata: {},
+                    },
                 },
             };
-            return new RecurringTransferTokenRequestBuilder(payload);
+            return new StandingOrderTokenRequestBuilder(payload);
         });
     }
 
