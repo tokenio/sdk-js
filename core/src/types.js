@@ -160,6 +160,7 @@ export type BankInfo = {
     linkingUri: string,
     redirectUriRegex: string,
     bankLinkingUri: string,
+    aliasTypes: Array<string>,
     // optional
     realm?: Array<string>,
 };

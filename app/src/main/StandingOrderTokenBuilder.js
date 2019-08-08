@@ -6,6 +6,7 @@ import type {
     TransferEndpoint,
     TransferDestination,
     PurposeOfPayment,
+    Token,
 } from '@token-io/core';
 
 export default class StandingOrderTokenBuilder extends TokenBuilder {
@@ -28,7 +29,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @return StandingOrderTokenBuilder
      */
     setAccountId(accountId: string): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.source = {
+        this.tokenPayload.standingOrder.instructions.source = {
             account: {
                 token: {
                     memberId: this.memberId,
@@ -47,7 +48,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @return StandingOrderTokenBuilder
      */
     setCustomAuthorization(bankId: string, authorization: string): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.source = {
+        this.tokenPayload.standingOrder.instructions.source = {
             account: {
                 custom: {
                     bankId,
@@ -65,7 +66,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @returns StandingOrderTokenBuilder
      */
     setSourceAccountGuest(bankId: string): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.source = {
+        this.tokenPayload.standingOrder.instructions.source = {
             account: {
                 guest: {
                     bankId,
@@ -82,7 +83,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @return StandingOrderTokenBuilder
      */
     setSource(source: TransferEndpoint): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.source = source;
+        this.tokenPayload.standingOrder.instructions.source = source;
         return this;
     }
 
@@ -93,7 +94,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @return StandingOrderTokenBuilder
      */
     addTransferDestination(destination: TransferDestination): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.transferDestinations.push(destination);
+        this.tokenPayload.standingOrder.instructions.transferDestinations.push(destination);
         return this;
     }
 
@@ -104,7 +105,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @return StandingOrderTokenBuilder
      */
     setProviderTransferMetadata(metadata: Object): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.metadata = metadata;
+        this.tokenPayload.standingOrder.instructions.metadata = metadata;
         return this;
     }
 
@@ -115,7 +116,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @return StandingOrderTokenBuilder
      */
     setPurposeOfPayment(purposeOfPayment: PurposeOfPayment): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrderBody.instructions.metadata.transferPurpose = purposeOfPayment;
+        this.tokenPayload.standingOrder.instructions.metadata.transferPurpose = purposeOfPayment;
         return this;
     }
 
@@ -138,17 +139,17 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      */
     async execute(): Promise<Token> {
         return Util.callAsync(this.execute, async () => {
-            if (!this.tokenPayload.standingOrderBody.instructions.source || (
-                !this.tokenPayload.standingOrderBody.instructions.source.account.token &&
-                !this.tokenPayload.standingOrderBody.instructions.source.account.bank &&
-                !this.tokenPayload.standingOrderBody.instructions.source.account.custom)) {
+            if (!this.tokenPayload.standingOrder.instructions.source || (
+                !this.tokenPayload.standingOrder.instructions.source.account.token &&
+                !this.tokenPayload.standingOrder.instructions.source.account.bank &&
+                !this.tokenPayload.standingOrder.instructions.source.account.custom)) {
                 throw new Error('No source on token');
             }
             if (!this.tokenPayload.to
                 || (!this.tokenPayload.to.alias && !this.tokenPayload.to.id)) {
                 throw new Error('No redeemer on token');
             }
-            const res = await this.client.createstandingOrderToken(
+            const res = await this.client.createStandingOrderToken(
                 this.tokenPayload,
                 this.tokenRequestId);
             if (res.data.status === 'FAILURE_EXTERNAL_AUTHORIZATION_REQUIRED') {

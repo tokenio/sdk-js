@@ -516,12 +516,12 @@ class AuthHttpClient extends CoreAuthHttpClient {
     /**
      * Redeems a standing order token.
      *
-     * @param {Object} token - token to redeem
+     * @param {String} tokenId - token to redeem
      * @return {Object} response to the API call
      */
-    async redeemStandingOrderToken(token) {
+    async redeemStandingOrderToken(tokenId) {
         const req = {
-            token,
+            tokenId,
         };
         const request = {
             method: 'post',

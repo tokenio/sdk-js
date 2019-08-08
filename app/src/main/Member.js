@@ -389,16 +389,17 @@ export default class Member extends CoreMember {
                     `Number of decimals in amount should be at most ${config.decimalPrecision}`);
             }
             const payload = {
-                standingOrderSubmission: {
-                    amount: amount.toString(),
-                    currency,
-                    frequency,
+                standingOrder: {
+                    instructions: {
+                        source: {},
+                        metadata: {},
+                        transferDestinations: [],
+                    },
                     startDate,
                     endDate,
-                    instructions: {
-                        transferDestinations: [],
-                        metadata: {},
-                    },
+                    frequency,
+                    amount: amount.toString(),
+                    currency,
                 },
             };
             return new StandingOrderTokenBuilder(payload, this._id, this._client);
@@ -690,7 +691,7 @@ export default class Member extends CoreMember {
      * @param limit - how many to retrieve
      * @return standing order submissions
      */
-    getStandingOrderSubmissions(offset, limit): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
+    getStandingOrderSubmissions(offset: string, limit: string): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
         return Util.callAsync(this.getStandingOrderSubmissions, async () => {
             const res = await this._client.getStandingOrderSubmissions(offset, limit);
             return {

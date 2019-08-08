@@ -210,6 +210,7 @@ export class Account {
     /**
      * Looks up all of the member's standing orders on the account
      *
+     * @param accountId
      * @param offset
      * @param limit
      * @param keyLevel
@@ -221,6 +222,7 @@ export class Account {
         keyLevel: KeyLevel,
     ): Promise<{standingOrders: Array<StandingOrder>, offset: string}> {
         return Util.callAsync(this.getStandingOrders, async () => {
+            console.log('here')
             const res = await this.accountMember._client
                 .getStandingOrders(this.account.id, offset, limit, keyLevel);
             switch (res.data.status) {

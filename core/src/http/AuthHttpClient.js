@@ -590,7 +590,7 @@ export class AuthHttpClient {
         this.useKeyLevel(keyLevel);
         const request = {
             method: 'get',
-            url: `/accounts/${accountId}/standing-orders?offset=${offset}&limit=${limit}`,
+            url: `/accounts/${accountId}/standing-orders?page.offset=${offset}&page.limit=${limit}`,
         };
         return this._instance(request);
     }
