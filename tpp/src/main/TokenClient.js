@@ -119,9 +119,10 @@ export class TokenClient extends Core {
      *
      * @param amount
      * @param currency
-     * @param frequency
-     * @param startDate
-     * @param endDate
+     * @param frequency Sets the frequency of the standing order. ISO 20022: DAIL, WEEK, TOWK,
+                        MNTH, TOMN, QUTR, SEMI, YEAR
+     * @param startDate ISO 8601: YYYY-MM-DD or YYYYMMDD.
+     * @param endDate   ISO 8601: YYYY-MM-DD or YYYYMMDD. If not specified, the standing order will occur indefinitely.
      * @returns The created StandingOrderTokenRequestBuilder
      */
     createStandingOrderTokenRequest(

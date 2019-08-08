@@ -7,13 +7,13 @@ import config from '../src/config.json';
  * @param {Object} standingOrder - recently-completed standing order
  * @return {Object} standing order record
  */
-export default async (payer, transfer) => {
+export default async (payer, standingOrder) => {
     const accounts = await payer.getAccounts();
     const accountId = accounts[0].id();
 
-    const transactionId = transfer.transactionId;
-    return await payer.getTransaction(
+    const standingOrderId = standingOrder.standingOrderId;
+    return await payer.getStandingOrder(
         accountId,
-        transactionId,
+        standingOrderId,
         config.KeyLevel.STANDARD);
 };
