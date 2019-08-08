@@ -57,7 +57,7 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
     /**
      * Sets the end date of the standing order token request. ISO 8601: YYYY-MM-DD or YYYYMMDD.
      * If not specified, the standing order will occur indefinitely.
-     * 
+     *
      * @param endDate
      * @return StandingOrderTokenRequestBuilder
      */

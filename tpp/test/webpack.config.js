@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const {resolve, dirname} = require('path');
+const axios = require('axios');
 
 const {ENV: TEST_ENV = 'dev'} = process.env;
 

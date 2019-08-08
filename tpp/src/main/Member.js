@@ -353,12 +353,12 @@ export default class Member extends CoreMember {
      * @return standing order submission created as a result of this redeem call
      */
     redeemStandingOrderToken(
-        token: Token | string,
+        tokenId: string,
     ): Promise<StandingOrderSubmission> {
         return Util.callAsync(this.redeemStandingOrderToken, async () => {
-            const res = await this._client.redeemStandingOrderToken(token);
-            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
-                const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
+            const res = await this._client.redeemStandingOrderToken(tokenId);
+            if (res.data.submission.status === 'FAILED') {
+                const error: Object = new Error('FAILED');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
             }
@@ -386,7 +386,7 @@ export default class Member extends CoreMember {
      * @param limit - how many to retrieve
      * @return standing order submissions
      */
-    getStandingOrderSubmissions(offset, limit): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
+    getStandingOrderSubmissions(offset: string, limit: string): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
         return Util.callAsync(this.getStandingOrderSubmissions, async () => {
             const res = await this._client.getStandingOrderSubmissions(offset, limit);
             return {
