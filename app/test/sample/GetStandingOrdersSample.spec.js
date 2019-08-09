@@ -19,3 +19,4 @@ describe('GetStandingOrdersSample test', () => {
         assert.equal(standingOrders.length, 1);
     });
 });
+

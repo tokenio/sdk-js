@@ -8,6 +8,5 @@
  */
 export default async (payer, offset, limit) => {
     const pagedResult = await payer.getStandingOrderSubmissions(offset, limit);
-    console.log('res', pagedResult)
     return pagedResult.submissions;
 };

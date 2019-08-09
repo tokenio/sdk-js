@@ -19,3 +19,4 @@ describe('GetStandingOrderSubmissionsSample test', () => {
         assert.typeOf(standingOrderSubmissions, 'array', 'submissions is an array');
     });
 });
+

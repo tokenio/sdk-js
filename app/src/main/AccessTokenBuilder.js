@@ -80,7 +80,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
      * @param accountId
      * @return AccessTokenBuilder
      */
-    forAccountStandingOrder(accountId: string): AccessTokenBuilder {
+    forAccountStandingOrders(accountId: string): AccessTokenBuilder {
         this.tokenPayload.access.resources.push({
             standingOrder: {
                 accountId,
@@ -95,7 +95,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
      * @param accountIds
      * @returns AccessTokenBuilder
      */
-    forAccountStandingOrders(accountIds: Array<string>): AccessTokenBuilder {
+    forAccountsStandingOrders(accountIds: Array<string>): AccessTokenBuilder {
         accountIds.forEach(id => this.tokenPayload.access.resources.push({
             standingOrder: {
                 accountId: id,

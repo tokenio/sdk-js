@@ -274,10 +274,10 @@ export default class Member extends CoreMember {
      */
     redeemToken(
         token: Token | string,
-        amount: ?number,
-        currency: ?string,
-        description: ?string,
-        destinations: Array<TransferDestination> = [],
+        amount?: number,
+        currency?: string,
+        description?: string,
+        destinations?: Array<TransferDestination> = [],
         refId?: string
     ): Promise<Transfer> {
         return Util.callAsync(this.redeemToken, async () => {

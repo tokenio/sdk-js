@@ -367,14 +367,13 @@ export default class Member extends CoreMember {
      * Creates a new standing order token builder. Defines a standing order
      * for a fixed time span.
      *
-     * @param {(number | string)} amount individual transfer amount
-     * @param {string} currency code, e.g. "USD"
-     * @param {string} frequency ISO 20022 code for the frequency of the payment:
+     * @param amount individual transfer amount
+     * @param currency code, e.g. "USD"
+     * @param frequency ISO 20022 code for the frequency of the payment:
      *                           DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR
-     * @param {string} startDate ISO 8601 YYYY-MM-DD or YYYYMMDD
-     * @param {string} endDate ISO 8601 YYYY-MM-DD or YYYYMMDD
-     * @returns {StandingOrderTokenBuilder}
-     * @memberof Member
+     * @param startDate ISO 8601 YYYY-MM-DD or YYYYMMDD
+     * @param endDate ISO 8601 YYYY-MM-DD or YYYYMMDD
+     * @returns builder of standing order token
      */
     createStandingOrderTokenBuilder(
         amount: number | string,

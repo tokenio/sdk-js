@@ -3,7 +3,6 @@ import Util from '../Util';
 import config from '../config.json';
 import BlockingAdapter from './BlockingAdapter';
 import base64js from 'base64-js';
-import { deprecate } from 'util';
 
 /**
  * Client for making authenticated requests to the Token gateway.
