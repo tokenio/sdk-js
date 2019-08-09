@@ -15,7 +15,7 @@
     "scripts": {
         "lint": "eslint .",
         "test": "npm run build && npm run testOnly",
-        "testOnly": "mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/sample/GetStandingOrdersSample.spec.js\" && rimraf keys",
+        "testOnly": "mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/sample/RedeemStandingOrderTokenSample.spec.js\" && rimraf keys",
         "build": "eslint src && flow check && rollup -c && FORMAT=esm rollup -c",
         "doc": "esdoc"
     },

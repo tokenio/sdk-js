@@ -630,7 +630,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     async getStandingOrderSubmissions(offset, limit) {
         const request = {
             method: 'get',
-            url: `/standing-order-submissions&offset=${offset}&limit=${limit}`,
+            url: `/standing-order-submissions?page.offset=${offset}&page.limit=${limit}`,
         };
         return this._instance(request);
     }

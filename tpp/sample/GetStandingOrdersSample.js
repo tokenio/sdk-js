@@ -10,7 +10,7 @@ export default async payer => {
     const accounts = await payer.getAccounts();
     const accountId = accounts[0].id();
     console.log('payer', accountId);
-    const pagedResult = await payer.getStandingOrders(
+    const pagedResult = await payer.getStandingOrders(  // payer is core -> Member.js
         accountId,
         '',
         10,

@@ -539,7 +539,6 @@ export class Member {
         keyLevel: KeyLevel,
     ): Promise<{standingOrders: Array<StandingOrder>, offset: string}> {
         return Util.callAsync(this.getStandingOrders, async () => {
-            console.log('hi')
             const res = await this._client
                 .getStandingOrders(accountId, offset, limit, keyLevel);
             switch (res.data.status) {

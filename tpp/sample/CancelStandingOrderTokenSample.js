@@ -8,7 +8,6 @@
 export default async (payee, tokenId) => {
     // Payee gets the token to see details
     const standingOrderToken = await payee.getToken(tokenId);
-    console.log('hi', standingOrderToken);
     // Payee cancels the token
     return await payee.cancelToken(standingOrderToken);
 };
