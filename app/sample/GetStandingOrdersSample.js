@@ -7,7 +7,7 @@ import config from '../src/config.json';
  * @param {Object} standingOrderToken - standingOrderToken
  * @return {Object} standing order record
  */
-export default async (payer) => {
+export default async payer => {
     const accounts = await payer.getAccounts();
     const accountId = accounts[0].id();
 

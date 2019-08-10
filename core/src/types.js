@@ -21,8 +21,8 @@ export type PurposeOfPayment = 'PERSONAL_EXPENSES'
     | 'SAVINGS'
     | 'OTHER';
 export type Method = 'DEFAULT' | 'INSTANT';
-export type SubmissionStatus = 'INVALID' 
-    | 'PENDING' 
+export type SubmissionStatus = 'INVALID'
+    | 'PENDING'
     | 'PROCESSING'
     | 'SUCCESS'
     | 'FAILED'

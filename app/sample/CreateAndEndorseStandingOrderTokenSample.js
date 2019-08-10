@@ -15,7 +15,7 @@ export default async (payer, payeeAlias) => {
     const purchaseId = Util.generateNonce();
 
     const accounts = await payer.getAccounts();
-    
+
     const destination = {
         sepa: {
             iban: '123',
@@ -30,9 +30,9 @@ export default async (payer, payeeAlias) => {
         .setRefId(purchaseId)
         .addTransferDestination(destination)
         .buildPayload();
-    
+
     const {resolvedPayload, policy} = await payer.prepareToken(standingOrderTokenBuilder);
-    const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)]
+    const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)];
     const standingOrderToken = await payer.createToken(resolvedPayload, signature);
     // Payer endorses the token, creating a digital signature on it
     const endorsed = await payer.endorseToken(standingOrderToken);
