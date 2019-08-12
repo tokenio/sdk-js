@@ -171,7 +171,7 @@ export class AuthHttpClient {
      */
     async getBalances(accountIds, keyLevel) {
         this.useKeyLevel(keyLevel);
-        const url = '/accounts/balance?' +
+        const url = '/account-balance?' +
             accountIds.map(accountId => 'account_id=' + accountId).join('&');
 
         const request = {
