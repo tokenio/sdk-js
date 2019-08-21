@@ -17,6 +17,7 @@ import type {
     Notification,
     Signature,
     TransferDestination,
+    StandingOrder,
 } from '..';
 
 /**
@@ -277,9 +278,14 @@ export class Member {
     ): Promise<Balance> {
         return Util.callAsync(this.getBalance, async () => {
             const res = await this._client.getBalance(accountId, keyLevel);
-            if (res.data.status !== 'SUCCESSFUL_REQUEST')
+            switch (res.data.status){
+            case 'SUCCESSFUL_REQUEST':
+                return res.data.balance;
+            case 'MORE_SIGNATURES_NEEDED':
                 throw new Error('Balance step up required');
-            return res.data.balance;
+            default:
+                throw new Error(res.data.status);
+            }
         });
     }
 
@@ -297,9 +303,14 @@ export class Member {
         return Util.callAsync(this.getBalances, async () => {
             const res = await this._client.getBalances(accountIds, keyLevel);
             return res.data.response && res.data.response.map(b => {
-                if (b.status !== 'SUCCESSFUL_REQUEST')
+                switch (b.status) {
+                case 'SUCCESSFUL_REQUEST':
+                    return b.balance;
+                case 'MORE_SIGNATURES_NEEDED':
                     throw new Error('Balance step up required');
-                return b.balance;
+                default:
+                    throw new Error(b.status);
+                }
             });
         });
     }
@@ -319,9 +330,14 @@ export class Member {
     ): Promise<Transaction> {
         return Util.callAsync(this.getTransaction, async () => {
             const res = await this._client.getTransaction(accountId, transactionId, keyLevel);
-            if (res.data.status !== 'SUCCESSFUL_REQUEST')
+            switch (res.data.status){
+            case 'SUCCESSFUL_REQUEST':
+                return res.data.transaction;
+            case 'MORE_SIGNATURES_NEEDED':
                 throw new Error('Transaction step up required');
-            return res.data.transaction;
+            default:
+                throw new Error(res.data.status);
+            }
         });
     }
 
@@ -342,12 +358,17 @@ export class Member {
     ): Promise<{transactions: Array<Transaction>, offset: string}> {
         return Util.callAsync(this.getTransactions, async () => {
             const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
-            if (res.data.status !== 'SUCCESSFUL_REQUEST')
-                throw new Error('Transaction step up required');
-            return {
-                transactions: res.data.transactions || [],
-                offset: res.data.offset,
-            };
+            switch (res.data.status){
+            case 'SUCCESSFUL_REQUEST':
+                return {
+                    transactions: res.data.transactions || [],
+                    offset: res.data.offset,
+                };
+            case 'MORE_SIGNATURES_NEEDED':
+                throw new Error('Transactions step up required');
+            default:
+                throw new Error(res.data.status);
+            }
         });
     }
 
@@ -472,6 +493,65 @@ export class Member {
         return Util.callAsync(this.getTestBankNotifications, async () => {
             const res = await this._client.getTestBankNotifications(subscriberId);
             return res.data.notifications || [];
+        });
+    }
+
+    /**
+     * Looks up an existing standing order for a given account.
+     *
+     * @param accountId
+     * @param standingOrderId
+     * @param keyLevel
+     * @returns standing order
+     */
+    getStandingOrder(
+        accountId: string,
+        standingOrderId: string,
+        keyLevel: KeyLevel,
+    ): Promise<StandingOrder> {
+        return Util.callAsync(this.getStandingOrder, async () => {
+            const res = await this._client
+                .getStandingOrder(accountId, standingOrderId, keyLevel);
+            switch (res.data.status) {
+            case 'SUCCESSFUL_REQUEST':
+                return res.data.standingOrder;
+            case 'MORE_SIGNATURES_NEEDED':
+                throw new Error('Standing order step up required');
+            default:
+                throw new Error(res.data.status);
+            }
+        });
+    }
+
+    /**
+     * Looks up standing orders for a given account.
+     *
+     * @param accountId
+     * @param offset
+     * @param limit
+     * @param keyLevel
+     * @returns standing orders
+     */
+    getStandingOrders(
+        accountId: string,
+        offset: string,
+        limit: number,
+        keyLevel: KeyLevel,
+    ): Promise<{standingOrders: Array<StandingOrder>, offset: string}> {
+        return Util.callAsync(this.getStandingOrders, async () => {
+            const res = await this._client
+                .getStandingOrders(accountId, offset, limit, keyLevel);
+            switch (res.data.status) {
+            case 'SUCCESSFUL_REQUEST':
+                return {
+                    standingOrders: res.data.standingOrders || [],
+                    offset: res.data.offset,
+                };
+            case 'MORE_SIGNATURES_NEEDED':
+                throw new Error('Standing order step up required');
+            default:
+                throw new Error(res.data.status);
+            }
         });
     }
 

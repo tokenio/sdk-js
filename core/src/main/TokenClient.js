@@ -12,6 +12,7 @@ import type {
     Bank,
     Paging,
     TokenMember,
+    StandingOrder,
 } from '..';
 
 /**

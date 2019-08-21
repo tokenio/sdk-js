@@ -58,4 +58,23 @@ export default class TestUtil {
         const endorsed = await payer.endorseToken(transferToken);
         return endorsed.token;
     }
+
+    static async createStandingOrderToken(payer, payeeAlias) {
+        const accountId = (await payer.getAccounts())[0].id();
+        const destination = {
+            sepa: {
+                iban: '123',
+            },
+        };
+        const standingOrderTokenBuilder = await payer.createStandingOrderTokenBuilder(100, 'EUR', 'MNTH', '2018-02-15', '2019-02-15')
+            .setAccountId(accountId)
+            .setToAlias(payeeAlias)
+            .addTransferDestination(destination)
+            .buildPayload();
+        const {resolvedPayload, policy} = await payer.prepareToken(standingOrderTokenBuilder);
+        const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)];
+        const standingOrderToken = await payer.createToken(resolvedPayload, signature);
+        const endorsed = await payer.endorseToken(standingOrderToken);
+        return endorsed.token;
+    }
 }

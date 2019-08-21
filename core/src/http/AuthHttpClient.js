@@ -450,7 +450,7 @@ export class AuthHttpClient {
             operations: aliases.map(alias => ({
                 removeAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
-                    realm: alias.realm
+                    realm: alias.realm,
                 },
             })),
         };
@@ -559,11 +559,48 @@ export class AuthHttpClient {
     }
 
     /**
+     * Gets information about a particular standing order.
+     *
+     * @param {string} accountId
+     * @param {string} standingOrderId
+     * @param {string} keyLevel
+     * @returns
+     * @memberof AuthHttpClient
+     */
+    async getStandingOrder(accountId, standingOrderId, keyLevel) {
+        this.useKeyLevel(keyLevel);
+        const request = {
+            method: 'get',
+            url: `/accounts/${accountId}/standing-orders/${standingOrderId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Gets information about several standing orders.
+     *
+     * @param {string} accountId
+     * @param {string} offset
+     * @param {int} limit
+     * @param {string} keyLevel
+     * @returns
+     * @memberof AuthHttpClient
+     */
+    async getStandingOrders(accountId, offset, limit, keyLevel) {
+        this.useKeyLevel(keyLevel);
+        const request = {
+            method: 'get',
+            url: `/accounts/${accountId}/standing-orders?page.offset=${offset}&page.limit=${limit}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Signs a token payload with given key level and action.
      *
-     * @param tokenPayload
-     * @param suffix
-     * @param keyLevel
+     * @param {Object} tokenPayload
+     * @param {string} suffix
+     * @param {KeyLevel} keyLevel
      * @returns {Object} token proto signature object
      */
     async tokenOperationSignature(tokenPayload, suffix, keyLevel) {

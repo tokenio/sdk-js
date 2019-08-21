@@ -96,4 +96,14 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
         this.requestPayload.destinationCountry = destinationCountry;
         return this;
     }
+
+    setExecutionDate(executionDate: string): TransferTokenRequestBuilder {
+        this.requestPayload.executionDate = executionDate;
+        return this;
+    }
+
+    setProviderTransferMetadata(metadata: Object): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.instructions.metadata = metadata;
+        return this;
+    }
 }

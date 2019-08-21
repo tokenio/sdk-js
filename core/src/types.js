@@ -20,6 +20,13 @@ export type PurposeOfPayment = 'PERSONAL_EXPENSES'
     | 'FAMILY_MAINTENANCE'
     | 'SAVINGS'
     | 'OTHER';
+export type Method = 'DEFAULT' | 'INSTANT';
+export type SubmissionStatus = 'INVALID'
+    | 'PENDING'
+    | 'PROCESSING'
+    | 'SUCCESS'
+    | 'FAILED'
+    | 'INITIATED';
 
 export type Alias = {
     type: AliasType,
@@ -153,6 +160,7 @@ export type BankInfo = {
     linkingUri: string,
     redirectUriRegex: string,
     bankLinkingUri: string,
+    aliasTypes: Array<string>,
     // optional
     realm?: Array<string>,
 };
@@ -229,7 +237,7 @@ export type Transfer = {
     payloadSignatures: Array<Signature>,
     status: string,
     orderId: string,
-    method: 'DEFAULT' | 'INSTANT',
+    method: Method,
 };
 
 export type OauthBankAuthorization = {
@@ -251,4 +259,21 @@ export type SecurityMetadata = {
     ipAddress: string,
     geoLocation: string,
     deviceFingerprint: string,
+};
+
+export type StandingOrder = {
+    id: string,
+    status: string,
+    tokenId: string,
+    standingOrderSubmissionId: string,
+    createdAtMs: string,
+};
+
+export type StandingOrderSubmission = {
+    id: string,
+    standingOrderId: string,
+    tokenId: string,
+    createdAtMs: string,
+    standingOrderBody: Object,
+    status: SubmissionStatus,
 };

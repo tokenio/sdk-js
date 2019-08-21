@@ -7,7 +7,7 @@ export default class TokenBuilder {
     tokenRequestId: string;
 
     /**
-     * Use Member::createAccessTokenBuilder or Member::createTransferTokenBuilder.
+     * Use Member::createAccessTokenBuilder or Member::createTransferTokenBuilder or Member::createStandingOrderTokenBuilder.
      */
     constructor(payload: Object, fromMemberId: string) {
         this.tokenPayload = {

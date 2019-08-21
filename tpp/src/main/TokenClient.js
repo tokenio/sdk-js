@@ -7,6 +7,7 @@ import Util from '../Util';
 import UnsecuredFileCryptoEngine from '../security/engines/UnsecuredFileCryptoEngine';
 import TransferTokenRequestBuilder from './TransferTokenRequestBuilder';
 import AccessTokenRequestBuilder from './AccessTokenRequestBuilder';
+import StandingOrderTokenRequestBuilder from './StandingOrderTokenRequestBuilder';
 import type {
     Alias,
     ResourceType,
@@ -110,6 +111,42 @@ export class TokenClient extends Core {
                 },
             };
             return new TransferTokenRequestBuilder(payload);
+        });
+    }
+
+    /**
+     * Creates a StandingOrderTokenRequestBuilder for a standing order submission token.
+     *
+     * @param amount
+     * @param currency
+     * @param frequency Sets the frequency of the standing order. ISO 20022: DAIL, WEEK, TOWK,
+                        MNTH, TOMN, QUTR, SEMI, YEAR
+     * @param startDate ISO 8601: YYYY-MM-DD or YYYYMMDD.
+     * @param endDate   ISO 8601: YYYY-MM-DD or YYYYMMDD. If not specified, the standing order will occur indefinitely.
+     * @returns The created StandingOrderTokenRequestBuilder
+     */
+    createStandingOrderTokenRequest(
+        amount: number | string,
+        currency: string,
+        frequency: string,
+        startDate: string,
+        endDate: string,
+    ): StandingOrderTokenRequestBuilder {
+        return Util.callSync(this.createStandingOrderTokenRequest, () => {
+            const payload = {
+                standingOrderBody: {
+                    amount: amount.toString(),
+                    currency,
+                    frequency,
+                    startDate,
+                    endDate,
+                    instructions: {
+                        transferDestinations: [],
+                        metadata: {},
+                    },
+                },
+            };
+            return new StandingOrderTokenRequestBuilder(payload);
         });
     }
 

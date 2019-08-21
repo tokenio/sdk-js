@@ -23,3 +23,19 @@ Please consult our [developer docs](https://developer.token.io/docs/#overview-of
 See also the API reference for [TPP (Third Party Provider) SDK](https://developer.token.io/sdk/esdoc-tpp/) and [Core SDK](https://developer.token.io/sdk/esdoc-core/).
 
 There are also [samples](https://github.com/tokenio/sdk-js/tree/master/tpp/sample) and [sample tests](https://github.com/tokenio/sdk-js/tree/master/tpp/test/sample) in the source code for reference.
+
+## Scripts
+
+```sh
+$ npm install
+```
+
+Recursively installs all sub-project dependencies.
+
+```sh
+$ npm devSetup
+```
+
+Recursively create symlinks of all sub-projects to facilitate development between projects.
+
+Note: To undo these changes, simply run `npm install`

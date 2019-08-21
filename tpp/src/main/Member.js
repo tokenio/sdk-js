@@ -15,6 +15,7 @@ import type {
     TokenRequest,
     TokenOperationResult,
     Transfer,
+    StandingOrderSubmission,
     KeyStoreCryptoEngine,
     TransferDestination,
 } from '@token-io/core';
@@ -265,10 +266,10 @@ export default class Member extends CoreMember {
      * @param currency - currency to redeem
      * @param description - optional transfer description
      * @param destinations - transfer destinations
-     * @param refId - ID that will be set on created Transfer
-     *                Token uses this to detect duplicates
-     *                caller might use this to recognize the transfer
-     *                if param empty, transfer will have random refId
+     * @param refId - ID that will be set on created Transfer.
+     *                Token uses this to detect duplicates.
+     *                Caller might use this to recognize the transfer.
+     *                If param empty, transfer will have random refId.
      * @return Transfer created as a result of this redeem call
      */
     redeemToken(
@@ -343,6 +344,56 @@ export default class Member extends CoreMember {
             const res = await this._client.getTransfers(tokenId, offset, limit);
             return {
                 transfers: res.data.transfers || [],
+                offset: res.data.offset,
+            };
+        });
+    }
+
+    /**
+     * Redeems a standing order token.
+     *
+     * @param token - token to redeem. Can also be a tokenId
+     * @return standing order submission created as a result of this redeem call
+     */
+    redeemStandingOrderToken(
+        tokenId: string,
+    ): Promise<StandingOrderSubmission> {
+        return Util.callAsync(this.redeemStandingOrderToken, async () => {
+            const res = await this._client.redeemStandingOrderToken(tokenId);
+            if (res.data.submission.status === 'FAILED') {
+                const error: Object = new Error('FAILED');
+                error.authorizationDetails = res.data.authorizationDetails;
+                throw error;
+            }
+            return res.data.submission;
+        });
+    }
+
+    /**
+     * Looks up an existing Token standing order submission.
+     *
+     * @param submissionId - ID of the standing order submission
+     * @return standing order submission
+     */
+    getStandingOrderSubmission(submissionId: string): Promise<StandingOrderSubmission> {
+        return Util.callAsync(this.getStandingOrderSubmission, async () => {
+            const res = await this._client.getStandingOrderSubmission(submissionId);
+            return res.data.submission;
+        });
+    }
+
+    /**
+     * Looks up existing Token standing order submissions.
+     *
+     * @param offset - optional where to start looking
+     * @param limit - how many to retrieve
+     * @return standing order submissions
+     */
+    getStandingOrderSubmissions(offset: string, limit: string): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
+        return Util.callAsync(this.getStandingOrderSubmissions, async () => {
+            const res = await this._client.getStandingOrderSubmissions(offset, limit);
+            return {
+                submissions: res.data.submissions || [],
                 offset: res.data.offset,
             };
         });

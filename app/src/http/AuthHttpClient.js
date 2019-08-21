@@ -319,9 +319,9 @@ class AuthHttpClient extends CoreAuthHttpClient {
     /**
      * Creates a token.
      *
-     * @param payload - token payload
-     * @param signatures - signatures
-     * @param tokenRequestId - token request ID
+     * @param {Object} payload - token payload
+     * @param {array} signatures - signatures
+     * @param {string} tokenRequestId - token request ID
      * @returns {Promise} the created token
      */
     async createToken(payload, signatures, tokenRequestId) {
@@ -335,6 +335,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * @deprecated
      * Creates a transfer token.
      *
      * @param {Object} payload - payload of the token
@@ -354,6 +355,27 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * @deprecated
+     * Creates a recurring transfer token.
+     *
+     * @param {Object} payload - payload of the token
+     * @param {string} tokenRequestId - token request ID
+     * @return {Object} response to the API call
+     */
+    async createRecurringTransferToken(payload, tokenRequestId) {
+        const request = {
+            method: 'post',
+            url: '/tokens?type=recurringTransfer',
+            data: {
+                payload,
+                tokenRequestId,
+            },
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * @deprecated
      * Creates an access token.
      *
      * @param {Object} payload - access token payload
@@ -491,6 +513,24 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Redeems a standing order token.
+     *
+     * @param {String} tokenId - token to redeem
+     * @return {Object} response to the API call
+     */
+    async redeemStandingOrderToken(tokenId) {
+        const req = {
+            tokenId,
+        };
+        const request = {
+            method: 'post',
+            url: '/standing-order-submissions',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Looks up a existing access token where the calling member is the grantor and given member is
      * the grantee.
      *
@@ -561,6 +601,35 @@ class AuthHttpClient extends CoreAuthHttpClient {
         const request = {
             method: 'get',
             url: `/transfers?tokenId=${tokenId}&offset=${offset}&limit=${limit}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Gets information about one standing order submission.
+     *
+     * @param {string} submissionId - ID of the transfer
+     * @return {Object} response to the API call
+     */
+    async getStandingOrderSubmission(submissionId) {
+        const request = {
+            method: 'get',
+            url: `/standing-order-submissions/${submissionId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Gets a list of the auth'd member's standing order submissions.
+     *
+     * @param {string} offset - where to start
+     * @param {Number} limit - how many to get
+     * @return {Object} response to the API call
+     */
+    async getStandingOrderSubmissions(offset, limit) {
+        const request = {
+            method: 'get',
+            url: `/standing-order-submissions?page.offset=${offset}&page.limit=${limit}`,
         };
         return this._instance(request);
     }

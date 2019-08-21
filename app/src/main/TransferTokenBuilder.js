@@ -191,6 +191,17 @@ export default class TransferTokenBuilder extends TokenBuilder{
     }
 
     /**
+     * Sets the execution date of the transfer. Used for future-dated payments.
+     *
+     * @param executionDate execution date
+     * @return builder
+     */
+    setExecutionDate(executionDate: string): TransferTokenBuilder {
+        this.tokenPayload.executionDate = executionDate;
+        return this;
+    }
+
+    /**
      *  Sets the flag indicating whether a receipt is requested.
      *
      * @param receiptRequested
