@@ -588,6 +588,9 @@ export default class Member extends CoreMember {
             if (!amount) {
                 amount = finalToken && finalToken.payload.transfer.lifetimeAmount;
             }
+            if (!refId) {
+                refId = finalToken.payload.refId;
+            }
             if (!currency) {
                 currency = finalToken && finalToken.payload.transfer.currency;
             }
