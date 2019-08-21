@@ -283,13 +283,13 @@ export default class Member extends CoreMember {
         return Util.callAsync(this.redeemToken, async () => {
             const finalToken = await this._resolveToken(token);
             if (!amount) {
-                amount = finalToken && finalToken.payload.transfer.lifetimeAmount;
+                amount = finalToken.payload.transfer.lifetimeAmount;
             }
             if (!currency) {
-                currency = finalToken && finalToken.payload.transfer.currency;
+                currency = finalToken.payload.transfer.currency;
             }
             if (!description) {
-                description = finalToken && finalToken.payload.description;
+                description = finalToken.payload.description;
             }
             if (Util.countDecimals(amount) > config.decimalPrecision) {
                 throw new Error(
