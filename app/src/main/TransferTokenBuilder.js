@@ -197,7 +197,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      * @return builder
      */
     setExecutionDate(executionDate: string): TransferTokenBuilder {
-        this.tokenPayload.executionDate = executionDate;
+        this.tokenPayload.transfer.executionDate = executionDate;
         return this;
     }
 
