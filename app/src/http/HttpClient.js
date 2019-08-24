@@ -1,4 +1,5 @@
 import {HttpClient as CoreHttpClient} from '@token-io/core';
+import BlockingAdapter from './BlockingAdapter';
 
 /**
  * Client for making unauthenticated requests to the Token gateway.
@@ -106,9 +107,10 @@ class HttpClient extends CoreHttpClient{
      * Invalidate a notification.
      *
      * @param {Object} notificationId - the notification ID to invalidate
+     * @param {Object} blocking - create a blocking request
      * @return {Object} response to the API call
      */
-    async invalidateNotification(notificationId) {
+    async invalidateNotification(notificationId, blocking) {
         const req = {
             notificationId,
         };
@@ -117,6 +119,7 @@ class HttpClient extends CoreHttpClient{
             url: '/notify/invalidate-notification',
             data: req,
         };
+        if (blocking) request.adapter = BlockingAdapter;
         return this._instance(request);
     }
 
