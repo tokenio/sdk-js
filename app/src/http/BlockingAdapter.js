@@ -1,7 +1,6 @@
 import utils from 'axios/lib/utils';
 import buildURL from 'axios/lib/helpers/buildURL';
 import isURLSameOrigin from 'axios/lib/helpers/isURLSameOrigin';
-import Util from '../Util';
 
 /**
  * Axios adapter to create a blocking XMLHttpRequest
@@ -45,7 +44,7 @@ export default function BlockingAdapter(config) {
     if (config.auth) {
         const username = config.auth.username || '';
         const password = config.auth.password || '';
-        requestHeaders.Authorization = 'Basic ' + Util.btoa(username + ':' + password);
+        requestHeaders.Authorization = 'Basic ' + window.btoa(username + ':' + password);
     }
 
     request.open(config.method.toUpperCase(),
