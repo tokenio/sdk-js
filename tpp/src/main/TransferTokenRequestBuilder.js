@@ -98,7 +98,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
     }
 
     setExecutionDate(executionDate: string): TransferTokenRequestBuilder {
-        this.requestPayload.executionDate = executionDate;
+        this.requestPayload.transferBody.executionDate = executionDate;
         return this;
     }
 
