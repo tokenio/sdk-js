@@ -99,6 +99,17 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
     }
 
     /**
+     * Adds multiple transfer destinations to the token.
+     *
+     * @param destinations
+     * @return StandingOrderTokenBuilder
+     */
+    addTransferDestinations(destinations: Array<TransferDestination>): StandingOrderTokenBuilder {
+        this.tokenPayload.standingOrder.instructions.transferDestinations.push(...destinations);
+        return this;
+    }
+
+    /**
      * Sets the provider transfer meta data.
      *
      * @param metadata
