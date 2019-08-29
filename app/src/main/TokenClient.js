@@ -259,6 +259,25 @@ export class TokenClient extends Core {
     }
 
     /**
+     * Generates a blocking function to invalidate a notification.
+     *
+     * @param notificationId - the notification ID to invalidate
+     * @return {Promise<function|undefined>} blocking function to invalidate the notification
+     */
+    getBlockingInvalidateNotificationFunction(notificationId: string): Promise<?() => void> {
+        return Util.callAsync(this.getBlockingInvalidateNotificationFunction, async () => {
+            const res = await this._unauthenticatedClient.invalidateNotification(
+                notificationId,
+                true
+            );
+            if (res && res.data &&
+                typeof res.data.dispatchRequest === 'function') {
+                return res.data.dispatchRequest;
+            }
+        });
+    }
+
+    /**
      * Updates an existing token request.
      *
      * @param requestId - token request ID
