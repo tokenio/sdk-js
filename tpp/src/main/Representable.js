@@ -1,5 +1,5 @@
 // @flow
-import Util, {Account} from '@token-io/core';
+import {Account} from '@token-io/core';
 import type Member from './Member';
 import type {
     Balance,
@@ -160,7 +160,6 @@ export default class Representable {
      * @return resolved transfer destinations
      */
     resolveTransferDestinations(accountId: string): Promise<TransferDestination> {
-        const res = this._member.resolveTransferDestinations(accountId);
-        return res.transferDestinations;
+        return this._member.resolveTransferDestinations(accountId);
     }
 }
