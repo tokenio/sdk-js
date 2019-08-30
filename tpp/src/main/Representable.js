@@ -5,7 +5,8 @@ import type {
     Balance,
     KeyLevel,
     Transaction,
-    StandingOrder, TransferDestination,
+    StandingOrder,
+    TransferDestination,
 } from '@token-io/core';
 
 /**
