@@ -9,6 +9,7 @@ module.exports = {
     globals: {
         TEST_ENV: true,
         TOKEN_VERSION: true,
+        TOKEN_MEMBER: true,
     },
     plugins: [
         'flowtype',
