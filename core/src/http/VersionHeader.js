@@ -8,7 +8,7 @@ class VersionHeader {
      * @param {Object} config - config of the request
      */
     addVersionHeader(config) {
-        config.headers['token-sdk'] = 'js';
+        config.headers['token-sdk'] = TOKEN_MEMBER;
         config.headers['token-sdk-version'] = TOKEN_VERSION;
     }
 }

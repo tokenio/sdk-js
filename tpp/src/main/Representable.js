@@ -1,11 +1,12 @@
 // @flow
-import {Account} from '@token-io/core';
+import Util, {Account} from '@token-io/core';
 import type Member from './Member';
 import type {
     Balance,
     KeyLevel,
     Transaction,
     StandingOrder,
+    TransferDestination,
 } from '@token-io/core';
 
 /**
@@ -150,5 +151,16 @@ export default class Representable {
         keyLevel: KeyLevel,
     ): Promise<{standingOrders: Array<StandingOrder>, offset: string}> {
         return this._member.getStandingOrders(accountId, offset, limit, keyLevel);
+    }
+
+    /**
+     * Resolves transfer destinations for the given account ID.
+     *
+     * @param accountId - ID of account to resolve destinations for
+     * @return resolved transfer destinations
+     */
+    resolveTransferDestinations(accountId: string): Promise<TransferDestination> {
+        const res = this._member.resolveTransferDestinations(accountId);
+        return res.transferDestinations;
     }
 }

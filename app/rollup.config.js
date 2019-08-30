@@ -36,6 +36,7 @@ const config = {
         }),
         replace({
             TOKEN_VERSION: JSON.stringify(pkg.version),
+            TOKEN_MEMBER: 'sdk-user',
         }),
         filesize(),
     ],
