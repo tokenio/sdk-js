@@ -30,7 +30,7 @@ const config = {
         }),
         replace({
             TOKEN_VERSION: JSON.stringify(pkg.version),
-            TOKEN_MEMBER: JSON.stringify('sdk-tpp'),
+            TOKEN_MEMBER: JSON.stringify('js-tpp'),
         }),
         resolve({preferBuiltins: false}),
         filesize(),

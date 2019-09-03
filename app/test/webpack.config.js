@@ -8,7 +8,7 @@ module.exports = {
         new webpack.DefinePlugin({
             TEST_ENV: JSON.stringify(TEST_ENV),
             TOKEN_VERSION: JSON.stringify(require('../package.json').version),
-            TOKEN_MEMBER: JSON.stringify('sdk-user'),
+            TOKEN_MEMBER: JSON.stringify('js-user'),
         }),
     ],
     resolve: {
