@@ -4,6 +4,8 @@ import filesize from 'rollup-plugin-filesize';
 import json from 'rollup-plugin-json';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
+import builtins from 'rollup-plugin-node-builtins';
+import globals from 'rollup-plugin-node-globals';
 import {uglify} from 'rollup-plugin-uglify';
 const path = require('path');
 
@@ -23,10 +25,14 @@ const dest = {
 
 const config = {
     input: 'src/index.js',
+    external: ['buffer'],
     output: {
         format: FORMAT,
         file: dest[FORMAT],
         indent: false,
+        globals: {
+            'buffer': 'buffer',
+        },
     },
     plugins: [
         json(),
@@ -56,11 +62,11 @@ if (isModule) {
                 moduleDirectory: path.resolve(__dirname, 'node_modules'),
             },
         }),
+        globals(),
+        builtins(),
         commonjs(),
         uglify({
-            compress: {
-                warnings: false,
-            },
+            warnings: false,
         }));
 }
 
