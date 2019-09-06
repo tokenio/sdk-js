@@ -12,7 +12,8 @@ export type ResourceType = 'ACCOUNTS'
     | 'BALANCES'
     | 'TRANSACTIONS'
     | 'TRANSFER_DESTINATIONS'
-    | 'FUNDS_CONFIRMATIONS';
+    | 'FUNDS_CONFIRMATIONS'
+    | 'STANDING_ORDERS';
 export type PurposeOfPayment = 'PERSONAL_EXPENSES'
     | 'PURCHASE_OF_SHARES'
     | 'TRANSFER_TO_YOUR_OWN_ACCOUNT'

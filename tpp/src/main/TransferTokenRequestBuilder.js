@@ -97,13 +97,35 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
         return this;
     }
 
+    /**
+     * Sets the execution date of the transfer. Used for future-dated payments.
+     *
+     * @param executionDate execution date
+     * @return TransferTokenRequestBuilder
+     */
     setExecutionDate(executionDate: string): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.executionDate = executionDate;
         return this;
     }
 
+    /**
+     * Adds metadata for a specific provider.
+     *
+     * @param metadata provider-specific metadata
+     * @return TransferTokenRequestBuilder
+     */
     setProviderTransferMetadata(metadata: Object): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.instructions.metadata = metadata;
         return this;
+    }
+
+    /**
+     * Sets whether CAF should be attempted before transfer
+     *
+     * @param confirmFunds - whether to attempt CAF before transfer
+     * @return TransferTokenRequestBuilder
+     */
+    setConfirmFunds(confirmFunds: boolean): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.confirmFunds = confirmFunds;
     }
 }
