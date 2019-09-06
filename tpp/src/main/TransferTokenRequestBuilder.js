@@ -127,5 +127,6 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      */
     setConfirmFunds(confirmFunds: boolean): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.confirmFunds = confirmFunds;
+        return this;
     }
 }

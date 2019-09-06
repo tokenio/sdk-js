@@ -213,6 +213,17 @@ export default class TransferTokenBuilder extends TokenBuilder{
     }
 
     /**
+     * Sets whether CAF should be attempted before transfer
+     *
+     * @param confirmFunds - whether to attempt CAF before transfer
+     * @return TransferTokenBuilder
+     */
+    setConfirmFunds(confirmFunds: boolean): TransferTokenBuilder {
+        this.tokenPayload.transfer.confirmFunds = confirmFunds;
+        return this;
+    }
+
+    /**
      * Creates the token.
      *
      * @return the created transfer token
