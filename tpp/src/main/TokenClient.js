@@ -79,7 +79,7 @@ export class TokenClient extends Core {
     /**
      * Creates a TokenRequestBuilder for an access token.
      *
-     * @param resources - resources to request access of, either resourceTypeList or AccountResourceList
+     * @param resources - resources to request access of, either an array of either ResourceType or AccountResourceType
      * @return The created TokenRequestBuilder
      */
     createAccessTokenRequest(
