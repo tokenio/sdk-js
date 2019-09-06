@@ -40,7 +40,7 @@ describe('Unauthenticated', () => {
         // Override sdk version to force version mismatch error.
         unauthenticatedClient._instance.interceptors.request.eject(0);
         unauthenticatedClient._instance.interceptors.request.use(config => {
-            config.headers['token-sdk'] = 'js';
+            config.headers['token-sdk'] = 'js-tpp';
             config.headers['token-sdk-version'] = '0.0.1';
             return config;
         });
