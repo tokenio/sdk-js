@@ -11,6 +11,7 @@ import StandingOrderTokenRequestBuilder from './StandingOrderTokenRequestBuilder
 import type {
     Alias,
     ResourceType,
+    AccountResourceType,
     Signature,
     TokenRequest,
     KeyStoreCryptoEngine,
@@ -82,7 +83,7 @@ export class TokenClient extends Core {
      * @return The created TokenRequestBuilder
      */
     createAccessTokenRequest(
-        resources: Array
+        resources: Object
     ): AccessTokenRequestBuilder {
         return Util.callSync(this.createAccessTokenRequest, () => {
             const payload = {
