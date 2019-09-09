@@ -138,35 +138,6 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Creates a funds confirmation request.
-     *
-     * @param bankId - bank ID
-     * @param account - user's account
-     * @param customerData - optional customer data
-     * @return The created funds confirmation request builder
-     */
-    createFundsConfirmationRequest(
-        bankId: string,
-        account: Object,
-        customerData?: Object,
-    ): AccessTokenRequestBuilder {
-        return Util.callSync(this.createFundsConfirmationRequest, () => {
-            const payload = {
-                accessBody: {
-                    accountResourceList: {
-                        resources: [{
-                            type: 'ACCOUNT_FUNDS_CONFIRMATION',
-                            bankAccount: account,
-                            customerData: customerData,
-                        }],
-                    },
-                },
-            };
-            return new AccessTokenRequestBuilder(payload).setBankId(bankId);
-        });
-    }
-
-    /**
      * Creates a TokenRequestBuilder for a transfer token.
      *
      * @param lifetimeAmount - lifetime amount of the token
