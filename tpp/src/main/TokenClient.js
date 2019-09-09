@@ -11,6 +11,7 @@ import StandingOrderTokenRequestBuilder from './StandingOrderTokenRequestBuilder
 import type {
     Alias,
     ResourceType,
+    AccountResources,
     Signature,
     TokenRequest,
     KeyStoreCryptoEngine,
@@ -78,17 +79,48 @@ export class TokenClient extends Core {
     /**
      * Creates a TokenRequestBuilder for an access token.
      *
-     * @param resources - resources to request access of
+     * @param resources - resources to request access of, either an array of either ResourceType or AccountResourceType
      * @return The created TokenRequestBuilder
      */
     createAccessTokenRequest(
-        resources: Array<ResourceType>
+        resources: Array<ResourceType> | Array<AccountResources>
     ): AccessTokenRequestBuilder {
         return Util.callSync(this.createAccessTokenRequest, () => {
             const payload = {
-                accessBody: {type: resources},
+                accessBody: {
+                    resources,
+                },
             };
             return new AccessTokenRequestBuilder(payload);
+        });
+    }
+
+    /**
+     * Creates a funds confirmation request.
+     *
+     * @param bankId - bank ID
+     * @param account - user's account
+     * @param customerData - optional customer data
+     * @return The created funds confirmation request builder
+     */
+    createFundsConfirmationRequest(
+        bankId: string,
+        account: Object,
+        customerData?: Object,
+    ): AccessTokenRequestBuilder {
+        return Util.callSync(this.createFundsConfirmationRequest, () => {
+            const payload = {
+                accessBody: {
+                    accountResourceList: {
+                        resources: [{
+                            type: 'ACCOUNT_FUNDS_CONFIRMATION',
+                            bankAccount: account,
+                            customerData: customerData,
+                        }],
+                    },
+                },
+            };
+            return new AccessTokenRequestBuilder(payload).setBankId(bankId);
         });
     }
 
