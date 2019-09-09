@@ -83,15 +83,57 @@ export class TokenClient extends Core {
      * @return The created TokenRequestBuilder
      */
     createAccessTokenRequest(
-        resources: Array<ResourceType> | Array<AccountResources>
+        resources: Array<AccountResources> | Array<ResourceType>
     ): AccessTokenRequestBuilder {
         return Util.callSync(this.createAccessTokenRequest, () => {
+            let payload;
+            if (typeof resources[0] === 'string') {
+                payload = {
+                    accessBody: {
+                        resourceTypeList: {
+                            resources,
+                        },
+                    },
+                };
+            } else {
+                payload = {
+                    accessBody: {
+                        accountResourceList: {
+                            resources,
+                        },
+                    },
+                };
+            }
+            return new AccessTokenRequestBuilder(payload);
+        });
+    }
+
+    /**
+     * Creates a funds confirmation request.
+     *
+     * @param bankId - bank ID
+     * @param account - user's account
+     * @param customerData - optional customer data
+     * @return The created funds confirmation request builder
+     */
+    createFundsConfirmationRequest(
+        bankId: string,
+        account: Object,
+        customerData?: Object,
+    ): AccessTokenRequestBuilder {
+        return Util.callSync(this.createFundsConfirmationRequest, () => {
             const payload = {
                 accessBody: {
-                    resources,
+                    accountResourceList: {
+                        resources: [{
+                            type: 'ACCOUNT_FUNDS_CONFIRMATION',
+                            bankAccount: account,
+                            customerData: customerData,
+                        }],
+                    },
                 },
             };
-            return new AccessTokenRequestBuilder(payload);
+            return new AccessTokenRequestBuilder(payload).setBankId(bankId);
         });
     }
 
