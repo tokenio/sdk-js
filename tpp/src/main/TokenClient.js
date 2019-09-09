@@ -83,14 +83,27 @@ export class TokenClient extends Core {
      * @return The created TokenRequestBuilder
      */
     createAccessTokenRequest(
-        resources: Array<ResourceType> | Array<AccountResources>
+        resources: Array<AccountResources> | Array<ResourceType>
     ): AccessTokenRequestBuilder {
         return Util.callSync(this.createAccessTokenRequest, () => {
-            const payload = {
-                accessBody: {
-                    resources,
-                },
-            };
+            let payload;
+            if (typeof resources[0] === 'string') {
+                payload = {
+                    accessBody: {
+                        resourceTypeList: {
+                            resources,
+                        },
+                    },
+                };
+            } else {
+                payload = {
+                    accessBody: {
+                        accountResourceList: {
+                            resources,
+                        },
+                    },
+                };
+            }
             return new AccessTokenRequestBuilder(payload);
         });
     }
