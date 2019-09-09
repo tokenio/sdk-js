@@ -20,6 +20,11 @@ export type AccountResourceType = 'ACCOUNT_INFO'
     | 'ACCOUNT_TRANSFER_DESTINATIONS'
     | 'ACCOUNT_FUNDS_CONFIRMATION'
     | 'ACCOUNT_STANDING_ORDERS';
+export type AccountResources = [{
+    type: AccountResourceType,
+    bankAccount: Object,
+    customerData: Object,
+}];
 export type PurposeOfPayment = 'PERSONAL_EXPENSES'
     | 'PURCHASE_OF_SHARES'
     | 'TRANSFER_TO_YOUR_OWN_ACCOUNT'
