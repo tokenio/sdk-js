@@ -139,7 +139,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
         };
         const request = {
             method: 'put',
-            url: `/token-requests/set/transfer-destinations/${tokenRequestId}`,
+            url: `/token-requests/${tokenRequestId}/transfer-destinations`,
             data: req,
         };
         return this._instance(request);
