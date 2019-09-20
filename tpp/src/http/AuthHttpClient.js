@@ -126,6 +126,26 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Sets destination account for once if it has'nt been set.
+     *
+     * @param {string} tokenRequestId - tokenRequestId
+     * @param {Array} transferDestinations - transferDestinations
+     * @return {Promise} response to the API call
+     */
+    async setTokenRequestTransferDestinations(tokenRequestId, transferDestinations) {
+        const req = {
+            tokenRequestId,
+            transferDestinations,
+        };
+        const request = {
+            method: 'put',
+            url: `/token-requests/set/transfer-destinations/${tokenRequestId}`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Creates customization.
      *
      * @param {Object} logo - logo

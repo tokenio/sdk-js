@@ -205,12 +205,17 @@ export class Util {
         return Util.wrapBuffer(base64UrlToBuffer(key));
     }
 
-    static parseParamsFromUrl(url) {
+    static parseParamsFromUrl = url => {
         const query = url.split('?')[1];
         const result = {};
+        const supportedTypes = [];
         query.split('&').forEach(function(part) {
             const item = part.split('=');
-            result[item[0]] = decodeURIComponent(item[1]);
+            if (item[0] === 'supportedTransferDestinationType') { // for parsing set transfer destinations url callback parameters
+                supportedTypes.push(decodeURIComponent(item[1]))
+                result[item[0]] = supportedTypes;
+            }
+            else result[item[0]] = decodeURIComponent(item[1]);
         });
         return result;
     }

@@ -400,6 +400,19 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Sets destination account for once if it hasn't been set.
+     *
+     * @param tokenRequestId token request Id
+     * @param transferDestinations destination account
+     * @return observable that completes when request handled
+     */
+    setTokenRequestTransferDestinations(tokenRequestId: string, transferDestinations: Array): Promise<{}> {
+        return Util.callAsync(this.setTokenRequestTransferDestinations, async () => {
+            return await this._client.setTokenRequestTransferDestinations(tokenRequestId, transferDestinations);
+        });
+    }
+
+    /**
      * Downloads a blob from the server.
      *
      * @param blobId - ID of the blob

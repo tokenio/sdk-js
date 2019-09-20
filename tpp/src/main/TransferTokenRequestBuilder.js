@@ -129,4 +129,17 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
         this.requestPayload.transferBody.confirmFunds = confirmFunds;
         return this;
     }
+
+    /**
+     * Optional. In the scenario where TPP wishes to know the user's selection of country and
+     * bank, TPP should provide this url so that Token can make a call with relevant
+     * information as parameters. TPP can use that information to set transfer destination.
+     *
+     * @param url - URL
+     * @return TransferTokenRequestBuilder
+     */
+    setSetTransferDestinationsUrl(url: string): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.setTransferDestinationsUrl = url;
+        return this;
+    }
 }
