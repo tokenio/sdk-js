@@ -295,3 +295,13 @@ export type BulkTransferBody = {
     totalAmount: string,    // Total amount irrespective of currency. Used for redundancy check.
     source: TransferEndpoint,
 };
+
+export type BulkTransfer = {
+    id: string,                           // Token ID computed as the hash of the token payload
+    tokenid: string,
+    createdAtMs: string,
+    transactions: Array<Object>,  // Transactions for which the bank provides IDs and/or statuses.
+                                      // Might not be populated right away.
+    totalAmount: string,             // Total amount irrespective of currency. Used for redundancy check.
+    source: TransferEndpoint,
+};

@@ -531,6 +531,24 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     *  Redeem a bulk transfer token, creating a bulk transfer submission.
+     *
+     * @param {String} tokenId - token to redeem
+     * @return {Object} response to the API call
+     */
+    async createBulkTransfer(tokenId) {
+        const req = {
+            tokenId,
+        };
+        const request = {
+            method: 'post',
+            url: '/bulk-transfers',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Looks up a existing access token where the calling member is the grantor and given member is
      * the grantee.
      *
