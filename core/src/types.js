@@ -291,7 +291,7 @@ export type StandingOrderSubmission = {
 };
 
 export type BulkTransferBody = {
-    transfers: Array<Object>, // Array of type Transfer, consult proto
+    transfers: Array<BulkTransferBodyTransfers>, // Array of type Transfer, consult proto
     totalAmount: string,    // Total amount irrespective of currency. Used for redundancy check.
     source: TransferEndpoint,
 };
@@ -304,4 +304,13 @@ export type BulkTransfer = {
                                       // Might not be populated right away.
     totalAmount: string,             // Total amount irrespective of currency. Used for redundancy check.
     source: TransferEndpoint,
+};
+
+export type BulkTransferBodyTransfers = {
+    amount: string,
+    currency: string,
+    refId: string,
+    description: string,
+    destination: TransferDestination,
+    metadata: Object,
 };

@@ -549,6 +549,20 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     *  Get information about one bulk transfer.
+     *
+     * @param {String} bulkTransferId
+     * @return {Object} response to the API call
+     */
+    async getBulkTransfer(bulkTransferId) {
+        const request = {
+            method: 'get',
+            url: `/bulk-transfers/${bulkTransferId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Looks up a existing access token where the calling member is the grantor and given member is
      * the grantee.
      *

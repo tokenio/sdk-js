@@ -383,6 +383,18 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Looks up an existing bulk transfer.
+     *
+     * @param bulkTransferId
+     * @return bulk transfer record
+     */
+    getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.getBulkTransfer, async () => {
+            return await this._client.getBulkTransfer(bulkTransferId).transactions;
+        });
+    }
+
+    /**
      * Looks up an existing Token standing order submission.
      *
      * @param submissionId - ID of the standing order submission

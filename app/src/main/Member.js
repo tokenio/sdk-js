@@ -6,6 +6,7 @@ import config from '../config.json';
 import HttpClient from '../http/HttpClient';
 import TransferTokenBuilder from './TransferTokenBuilder';
 import StandingOrderTokenBuilder from './StandingOrderTokenBuilder';
+import BulkTransferTokenBuilder from './BulkTransferTokenBuilder';
 import Util from '../Util';
 import Account from './Account';
 import type {
@@ -25,6 +26,9 @@ import type {
     KeyStoreCryptoEngine,
     TransferDestination,
     StandingOrderSubmission,
+    BulkTransfer,
+    BulkTransferBodyTransfers,
+    TransferEndpoint,
 } from '@token-io/core';
 
 /**
@@ -406,6 +410,29 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Creates a bulk transfer token builder.
+     *
+     * @param transfers - list of transfers
+     * @param totalAmount - total amount irrespective of currency. Used for redundancy check
+     * @param source - source account for all transfers
+     * @return builder for the token
+     */
+    createBulkTransferTokenBuilder(transfers: Array<BulkTransferBodyTransfers>,  // Array of type BulkTransferBody.transfers
+        totalAmount: string | number,
+        source: TransferEndpoint): BulkTransferTokenBuilder {
+        return Util.callSync(this.createTransferTokenBuilder, () => {
+            const payload = {
+                bulkTransfer: {
+                    transfers,
+                    totalAmount,
+                    source,
+                },
+            };
+            return new BulkTransferTokenBuilder(payload, this._id, this._client);
+        });
+    }
+
+    /**
      * Cancels the existing token and creates a replacement for it.
      *
      * @param tokenToCancel - the old token to cancel
@@ -433,6 +460,19 @@ export default class Member extends CoreMember {
      */
     prepareToken(tokenPayload: Object): Promise<Object> {
         return Util.callAsync(this.prepareToken, async () => {
+            const res = await this._client.prepareToken(tokenPayload);
+            return res.data;
+        });
+    }
+
+    /**
+     * Prepares a bulk transfer token, retrieves policy, and resolves payload.
+     *
+     * @param tokenPayload - token payload to prepare
+     * @returns a policy and the resolved payload
+     */
+    prepareBulkTransferToken(tokenPayload: Object): Promise<Object> {
+        return Util.callAsync(this.prepareBulkTransferToken, async () => {
             const res = await this._client.prepareToken(tokenPayload);
             return res.data;
         });
@@ -700,6 +740,30 @@ export default class Member extends CoreMember {
                 submissions: res.data.submissions || [],
                 offset: res.data.offset,
             };
+        });
+    }
+
+    /**
+     * Redeems a bulk transfer token.
+     *
+     * @param tokenId ID of token to redeem
+     * @return bulk transfer record
+     */
+    redeemBulkTransferToken(tokenId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.redeemBulkTransferToken, async () => {
+            return await this._client.createBulkTransfer(tokenId).data.transfer;
+        });
+    }
+
+    /**
+     * Looks up an existing bulk transfer.
+     *
+     * @param bulkTransferId
+     * @return bulk transfer record
+     */
+    getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.getBulkTransfer, async () => {
+            return await this._client.getBulkTransfer(bulkTransferId).transactions;
         });
     }
 

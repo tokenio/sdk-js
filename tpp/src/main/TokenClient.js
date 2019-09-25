@@ -16,7 +16,7 @@ import type {
     TokenRequest,
     KeyStoreCryptoEngine,
     TransferEndpoint,
-    BulkTransferBody,
+    BulkTransferBodyTransfers,
 } from '@token-io/core';
 import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 
@@ -207,8 +207,8 @@ export class TokenClient extends Core {
      * @returns Builder instance
      */
     createBulkTransferTokenRequest(
-        transfers: Array<BulkTransferBody.transfers>,
-        totalAmount: number | string,
+        transfers: Array<BulkTransferBodyTransfers>,
+        totalAmount: string | number,
         source: TransferEndpoint
     ): BulkTransferTokenRequestBuilder {
         return Util.callSync(this.createBulkTransferTokenRequest, () => {
