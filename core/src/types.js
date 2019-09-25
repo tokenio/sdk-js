@@ -289,3 +289,9 @@ export type StandingOrderSubmission = {
     standingOrderBody: Object,
     status: SubmissionStatus,
 };
+
+export type BulkTransferBody = {
+    transfers: Array<Object>, // Array of type Transfer, consult proto
+    totalAmount: string,    // Total amount irrespective of currency. Used for redundancy check.
+    source: TransferEndpoint,
+};

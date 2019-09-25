@@ -15,7 +15,10 @@ import type {
     Signature,
     TokenRequest,
     KeyStoreCryptoEngine,
+    TransferEndpoint,
+    BulkTransferBody,
 } from '@token-io/core';
+import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 
 /**
  * Token SDK entry point.
@@ -192,6 +195,31 @@ export class TokenClient extends Core {
                 },
             };
             return new StandingOrderTokenRequestBuilder(payload);
+        });
+    }
+
+    /**
+     * Creates a createBulkTransferTokenRequestBuilder for a bulk transfer token request.
+     *
+     * @param transfers List of transfers
+     * @param totalAmount Total amount irrespective of currency. Used for redundancy check.
+     * @param source Source account for all transfer
+     * @returns Builder instance
+     */
+    createBulkTransferTokenRequest(
+        transfers: Array<BulkTransferBody.transfers>,
+        totalAmount: number | string,
+        source: TransferEndpoint
+    ): BulkTransferTokenRequestBuilder {
+        return Util.callSync(this.createBulkTransferTokenRequest, () => {
+            const payload = {
+                bulkTransferBody: {
+                    transfers,
+                    totalAmount: totalAmount.toString(),
+                    source,
+                },
+            };
+            return new BulkTransferTokenRequestBuilder(payload);
         });
     }
 
