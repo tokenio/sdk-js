@@ -77,4 +77,62 @@ export default class TestUtil {
         const endorsed = await payer.endorseToken(standingOrderToken);
         return endorsed.token;
     }
+
+    static async createBulkTransferToken(payer, payeeAlias) {
+        const accountId = (await payer.getAccounts())[0].id();
+        const transfers = [
+            {
+                amount: '20',
+                currency: 'USD',
+                refId: '1234a',
+                description: 'order1',
+                destination: {
+                    sepa: {
+                        iban: '123',
+                    }},
+            },
+            {
+                amount: '20',
+                currency: 'USD',
+                refId: '1234b',
+                description: 'order2',
+                destination: {
+                    sepa: {
+                        iban: '123',
+                    },
+                },
+            },
+            {
+                amount: '30',
+                currency: 'USD',
+                refId: '1234c',
+                description: 'order1',
+                destination: {
+                    sepa: {
+                        iban: '123',
+                    },
+                },
+            },
+        ];
+        const source = {
+            account: {
+                token: {
+                    memberId: payer._id,
+                    accountId,
+                },
+            },
+            customerData: {
+                legalNames: ['Southside'],
+            },
+        };
+        const bulkTransferTokenBuilder = await payer.createBulkTransferTokenBuilder(transfers, '70', source)
+            .setToAlias(payeeAlias)
+            .setRefId('123123')
+            .buildPayload();
+        const {resolvedPayload, policy} = await payer.prepareBulkTransferToken(bulkTransferTokenBuilder);
+        const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)];
+        const bulkTransferToken = await payer.createToken(resolvedPayload, signature);
+        const endorsed = await payer.endorseToken(bulkTransferToken);
+        return endorsed.token;
+    }
 }

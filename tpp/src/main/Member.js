@@ -378,7 +378,8 @@ export default class Member extends CoreMember {
      */
     redeemBulkTransferToken(tokenId: string): Promise<BulkTransfer> {
         return Util.callAsync(this.redeemBulkTransferToken, async () => {
-            return await this._client.createBulkTransfer(tokenId).data.transfer;
+            const res =  await this._client.createBulkTransfer(tokenId);
+            return res.data.transfer;
         });
     }
 
@@ -390,7 +391,8 @@ export default class Member extends CoreMember {
      */
     getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
         return Util.callAsync(this.getBulkTransfer, async () => {
-            return await this._client.getBulkTransfer(bulkTransferId).transactions;
+            const res = await this._client.getBulkTransfer(bulkTransferId);
+            return res.data.bulkTransfer;
         });
     }
 
