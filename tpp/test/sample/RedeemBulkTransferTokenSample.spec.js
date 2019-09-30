@@ -3,7 +3,7 @@ import RedeemBulkTransferTokenSample from '../../sample/RedeemBulkTransferTokenS
 import TestUtil from '../TestUtil';
 const {assert} = require('chai');
 
-describe('RedeemStandingOrderTokenSample test', () => {
+describe('RedeemBulkTransferTokenSample test', () => {
     it('Should run the sample', async () => {
         const userMember = await TestUtil.createUserMember();
         const tppMember = await CreateMemberSample();
