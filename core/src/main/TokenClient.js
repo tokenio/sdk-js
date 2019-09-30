@@ -70,6 +70,7 @@ export class TokenClient {
      * @param Member - Member class for creation
      * @param memberType - type of member to create. "PERSONAL" if undefined
      * @param tokenRequestId - (optional) token request ID if the member is being claimed
+     * @param realmId - (optional) member id of the Member to which this new member will belong
      * @return Promise of created Member
      */
     createMemberCore(
@@ -77,12 +78,14 @@ export class TokenClient {
         CryptoEngine: Class<KeyStoreCryptoEngine>,
         Member: Class<Member>,
         memberType?: string,
-        tokenRequestId?: string
+        tokenRequestId?: string,
+        realmId?: string
     ): Promise<Object> {
         return Util.callAsync(this.createMemberCore, async () => {
             const response = await this._unauthenticatedClient.createMemberId(
                 memberType,
-                tokenRequestId
+                tokenRequestId,
+                realmId
             );
             const engine = new CryptoEngine(response.data.memberId);
             const pk1 = await engine.generateKey('PRIVILEGED');

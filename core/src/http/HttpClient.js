@@ -145,9 +145,10 @@ export class HttpClient {
      *
      * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
      * @param  {string} tokenRequestId - (optional) token request ID if the member is being claimed
+     * @param  {string} realmId - (optional) member id of the Member to which this new member will belong
      * @return {Object} response to the API call
      */
-    async createMemberId(memberType, tokenRequestId) {
+    async createMemberId(memberType, tokenRequestId, realmId) {
         if (memberType === undefined) {
             memberType = 'PERSONAL';
         }
@@ -157,6 +158,7 @@ export class HttpClient {
         const req = {
             memberType,
             tokenRequestId,
+            realmId
         };
         const request = {
             method: 'post',
