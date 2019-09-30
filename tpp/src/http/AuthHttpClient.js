@@ -318,6 +318,26 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+    * Verifies eIDAS certificate.
+    *
+    * @param payload payload containing member id, eIDAS alias and the certificate
+    * @param signature payload signed with the private key corresponding to the certificate
+    * @return result of the verification operation, returned by the server
+    */
+    async verifyEidas(payload, signature) {
+        const req = {
+            payload,
+            signature,
+        };
+        const request = {
+            method: 'put',
+            url: '/verifications/eidas',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets a list of the auth'd member's standing order submissions.
      *
      * @param {string} offset - where to start
