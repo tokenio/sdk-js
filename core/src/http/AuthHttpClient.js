@@ -412,6 +412,7 @@ export class AuthHttpClient {
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
                     realm: alias.realm,
+                    realmId: alias.realmId
                 },
             })),
         };

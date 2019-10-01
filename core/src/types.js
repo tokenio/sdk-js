@@ -1,5 +1,5 @@
 // @flow
-export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE';
+export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE' | 'EIDAS';
 export type KeyAlgorithm = 'ED25519' | 'ECDSA_SHA256' | 'RSA';
 export type KeyLevel = 'LOW' | 'STANDARD' | 'PRIVILEGED';
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'COMPLETED' | 'INVALIDATED';
@@ -45,6 +45,7 @@ export type Alias = {
     value: string,
     // optional
     realm?: string,
+    realmId?: string
 };
 
 export type Blob = {
