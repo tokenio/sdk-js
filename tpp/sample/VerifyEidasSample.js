@@ -17,6 +17,8 @@ export default async () => {
     const bankId = 'iron';
     const privateKey = '';
 
+    //const signer = Token.Crypto.createSignerFromKeyPair(keyPair);
+
 
     // resolve memberId of the bank TPP is trying to get access to
     const bankMember = await Token.resolveAlias({
@@ -32,9 +34,18 @@ export default async () => {
     };
 
     // create a member under realm of the bank with eIDAS alias
-    const member = await Token.createMember(
+    const tpp = await Token.createMember(
         eidasAlias,
         Token.MemoryCryptoEngine,
         realmId
     );
+    // construct a payload with all the required data
+    const payload = {
+        memberId: tpp.memberId(),
+        alias: eidasAlias,
+        certificate: certificate,
+        algorithm: 'RS256',
+    }
+    // verify eIDAS
+    await tpp.verifyEidas(payload, Token.Util.generateNonce());//await signer.signJson(payload),)
 };
