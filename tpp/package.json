@@ -1,6 +1,6 @@
 {
     "name": "@token-io/tpp",
-    "version": "1.0.16",
+    "version": "1.0.17",
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {
@@ -15,7 +15,7 @@
     "scripts": {
         "lint": "eslint .",
         "test": "npm run build && npm run testOnly",
-        "testOnly": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/sample/VerifyEidasSample.spec.js\" && rimraf keys",
+        "testOnly": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
         "build": "eslint src && flow check && rollup -c && FORMAT=esm rollup -c",
         "doc": "esdoc"
     },
