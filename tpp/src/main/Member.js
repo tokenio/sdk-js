@@ -441,7 +441,7 @@ export default class Member extends CoreMember {
     */
     verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {
         return Util.callAsync(this.verifyEidas, async () => {
-            return await this._client.verifyEidas(payload, signature);
+            await this._client.verifyEidas(payload, signature);
         });
     }
 }

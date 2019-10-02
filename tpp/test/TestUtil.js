@@ -1,4 +1,5 @@
 import {TokenClient} from '@token-io/app';
+import forge from 'node-forge';
 
 const Token = new TokenClient({env: TEST_ENV});
 
@@ -76,5 +77,104 @@ export default class TestUtil {
         const standingOrderToken = await payer.createToken(resolvedPayload, signature);
         const endorsed = await payer.endorseToken(standingOrderToken);
         return endorsed.token;
+    }
+
+    static async generateEidasCertificate(keyPair, tppAuthNumber) {
+        const pki = forge.pki;
+        const cert = pki.createCertificate();
+        cert.publicKey = keyPair.publicKey;
+        //        const attrs = [{x
+        //            name: 'commonName',
+        //            value: 'example.org',
+        //        }
+        //        , {
+        //            name: '2.5.4.97',
+        //            value: tppAuthNumber,
+        //            type: 'organizationIdentifier',
+        //        },
+        //        ];
+
+        // cert.setSubject(attrs);
+
+        ///////////////
+        cert.serialNumber = '01';
+        cert.validity.notBefore = new Date();
+        cert.validity.notAfter = new Date();
+        cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1);
+        const attrs = [{
+            name: 'commonName',
+            value: 'Token.io',
+        },
+        {
+            name: '2.5.4.97',
+            value: tppAuthNumber,
+            type: 'organizationIdentifier',
+        },
+        //        {
+        //            name: 'countryName',
+        //            value: 'US',
+        //        }, {
+        //            shortName: 'ST',
+        //            value: 'Virginia',
+        //        }, {
+        //            name: 'localityName',
+        //            value: 'Blacksburg',
+        //        }, {
+        //            name: 'organizationName',
+        //            value: 'Test',
+        //        }, {
+        //            shortName: 'OU',
+        //            value: 'Test',
+        //        }
+        ];
+        cert.setSubject(attrs);
+        cert.setIssuer(attrs);
+        cert.setExtensions([{
+            name: 'basicConstraints',
+            cA: true,
+        },
+        //         {
+        //            name: 'keyUsage',
+        //            keyCertSign: true,
+        //            digitalSignature: true,
+        //            nonRepudiation: true,
+        //            keyEncipherment: true,
+        //            dataEncipherment: true,
+        //        }, {
+        //            name: 'extKeyUsage',
+        //            serverAuth: true,
+        //            clientAuth: true,
+        //            codeSigning: true,
+        //            emailProtection: true,
+        //            timeStamping: true,
+        //        }, {
+        //            name: 'nsCertType',
+        //            client: true,
+        //            server: true,
+        //            email: true,
+        //            objsign: true,
+        //            sslCA: true,
+        //            emailCA: true,
+        //            objCA: true,
+        //        }, {
+        //            name: 'subjectAltName',
+        //            altNames: [{
+        //                type: 6, // URI
+        //                value: 'http://example.org/webid#me',
+        //            }, {
+        //                type: 7, // IP
+        //                ip: '127.0.0.1',
+        //            }],
+        //        }, {
+        //            name: 'subjectKeyIdentifier',
+        //        }
+        ]);
+
+        // self-sign certificate
+        cert.sign(keyPair.privateKey, forge.md.sha256.create());
+        // convert a Forge certificate to PEM
+        const certificate = forge.util.encode64(forge.asn1.toDer(pki.certificateToAsn1(cert)).getBytes());
+
+        return certificate;
     }
 }

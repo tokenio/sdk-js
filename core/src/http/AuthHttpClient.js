@@ -412,7 +412,7 @@ export class AuthHttpClient {
                 addAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
                     realm: alias.realm,
-                    realmId: alias.realmId
+                    realmId: alias.realmId,
                 },
             })),
         };
@@ -452,6 +452,7 @@ export class AuthHttpClient {
                 removeAlias: {
                     aliasHash: Util.hashAndSerializeAlias(alias),
                     realm: alias.realm,
+                    realmId: alias.realmId,
                 },
             })),
         };
