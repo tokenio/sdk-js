@@ -412,8 +412,7 @@ export default class Member extends CoreMember {
     /**
      * Creates a bulk transfer token builder.
      *
-     * @param transfers - list of transfers,
-     * Array of type BulkTransferBody.transfers see here: https://github.com/tokenio/lib-proto/blob/f8c541512180bbb0cc90e6c731564fcf83852595/common/src/main/proto/token.proto#L243
+     * @param transfers - list of transfers, Array of type BulkTransferBody.Transfer
      * @param totalAmount - total amount irrespective of currency. Used for redundancy check
      * @param source - source account for all transfers
      * @return builder for the token
@@ -747,7 +746,7 @@ export default class Member extends CoreMember {
     /**
      * Looks up an existing bulk transfer.
      *
-     * @param bulkTransferId tokenId ID of token to redeem
+     * @param bulkTransferId bulk transfer ID
      * @return bulk transfer record
      */
     getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
