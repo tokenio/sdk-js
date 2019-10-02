@@ -63,8 +63,9 @@ export default async (payer, payeeAlias) => {
     };
 
     // Payer creates the token with the desired terms
-    const bulkTransferTokenBuilder = await payer.createBulkTransferTokenBuilder(transfers, '70', source)
+    const bulkTransferTokenBuilder = await payer.createBulkTransferTokenBuilder(transfers, '70')
         .setToAlias(payeeAlias)
+        .setSource(source)
         // if not explicitly set, will get random refId:
         .setRefId(purchaseId)
         .buildPayload();

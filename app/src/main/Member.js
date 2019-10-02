@@ -414,18 +414,17 @@ export default class Member extends CoreMember {
      *
      * @param transfers - list of transfers, Array of type BulkTransferBody.Transfer
      * @param totalAmount - total amount irrespective of currency. Used for redundancy check
-     * @param source - source account for all transfers
      * @return builder for the token
      */
-    createBulkTransferTokenBuilder(transfers: Array<BulkTransferBodyTransfers>,
+    createBulkTransferTokenBuilder(
+        transfers: Array<BulkTransferBodyTransfers>,
         totalAmount: string | number,
-        source: TransferEndpoint): BulkTransferTokenBuilder {
+    ): BulkTransferTokenBuilder {
         return Util.callSync(this.createBulkTransferTokenBuilder, () => {
             const payload = {
                 bulkTransfer: {
                     transfers,
                     totalAmount,
-                    source,
                 },
             };
             return new BulkTransferTokenBuilder(payload, this._id, this._client);

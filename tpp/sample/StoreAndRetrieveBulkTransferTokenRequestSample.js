@@ -56,8 +56,9 @@ export default async grantee => {
             legalNames: ['Southside'],
         },
     };
-    const tokenRequest = await Token.createBulkTransferTokenRequest(transfers, '70', source)
+    const tokenRequest = await Token.createBulkTransferTokenRequest(transfers, '70')
         .setRedirectUrl('https://token.io/callback')
+        .setSource(source)
         .setFromAlias('EMAIL', 'grantorEmail@gmail.com')
         .setToMemberId(grantee.memberId())
         .setBankId('iron');

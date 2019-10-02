@@ -125,8 +125,9 @@ export default class TestUtil {
                 legalNames: ['Southside'],
             },
         };
-        const bulkTransferTokenBuilder = await payer.createBulkTransferTokenBuilder(transfers, '70', source)
+        const bulkTransferTokenBuilder = await payer.createBulkTransferTokenBuilder(transfers, '70')
             .setToAlias(payeeAlias)
+            .setSource(source)
             .setRefId('123123')
             .buildPayload();
         const {resolvedPayload, policy} = await payer.prepareToken(bulkTransferTokenBuilder);
