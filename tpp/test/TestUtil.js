@@ -132,7 +132,6 @@ export default class TestUtil {
         const {resolvedPayload, policy} = await payer.prepareBulkTransferToken(bulkTransferTokenBuilder);
         const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)];
         const bulkTransferToken = await payer.createToken(resolvedPayload, signature);
-        const endorsed = await payer.endorseToken(bulkTransferToken);
-        return endorsed.token;
+        return bulkTransferToken;
     }
 }

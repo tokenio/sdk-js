@@ -72,7 +72,5 @@ export default async (payer, payeeAlias) => {
     const {resolvedPayload, policy} = await payer.prepareToken(bulkTransferTokenBuilder);
     const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)];
     const bulkTransferToken = await payer.createToken(resolvedPayload, signature);
-    // Payer endorses the token, creating a digital signature on it
-    const endorsed = await payer.endorseToken(bulkTransferToken);
-    return endorsed.token;
+    return bulkTransferToken;
 };

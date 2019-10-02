@@ -333,7 +333,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     *  Redeem a bulk transfer token, creating a bulk transfer submission.
+     *  Redeem a bulk transfer token, creating a bulk transfer.
      *
      * @param {String} tokenId - token to redeem
      * @return {Object} response to the API call

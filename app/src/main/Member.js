@@ -412,12 +412,13 @@ export default class Member extends CoreMember {
     /**
      * Creates a bulk transfer token builder.
      *
-     * @param transfers - list of transfers
+     * @param transfers - list of transfers,
+     * Array of type BulkTransferBody.transfers see here: https://github.com/tokenio/lib-proto/blob/f8c541512180bbb0cc90e6c731564fcf83852595/common/src/main/proto/token.proto#L243
      * @param totalAmount - total amount irrespective of currency. Used for redundancy check
      * @param source - source account for all transfers
      * @return builder for the token
      */
-    createBulkTransferTokenBuilder(transfers: Array<BulkTransferBodyTransfers>,  // Array of type BulkTransferBody.transfers
+    createBulkTransferTokenBuilder(transfers: Array<BulkTransferBodyTransfers>,
         totalAmount: string | number,
         source: TransferEndpoint): BulkTransferTokenBuilder {
         return Util.callSync(this.createBulkTransferTokenBuilder, () => {
@@ -759,7 +760,7 @@ export default class Member extends CoreMember {
     /**
      * Looks up an existing bulk transfer.
      *
-     * @param bulkTransferId
+     * @param bulkTransferId tokenId ID of token to redeem
      * @return bulk transfer record
      */
     getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {

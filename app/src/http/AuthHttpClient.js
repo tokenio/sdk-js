@@ -531,7 +531,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     *  Redeem a bulk transfer token, creating a bulk transfer submission.
+     *  Redeem a bulk transfer token, creating a bulk transfer.
      *
      * @param {String} tokenId - token to redeem
      * @return {Object} response to the API call
@@ -551,7 +551,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     /**
      *  Get information about one bulk transfer.
      *
-     * @param {String} bulkTransferId
+     * @param {String} bulkTransferId - bulk transfer ID
      * @return {Object} response to the API call
      */
     async getBulkTransfer(bulkTransferId) {
