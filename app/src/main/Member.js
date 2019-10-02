@@ -467,19 +467,6 @@ export default class Member extends CoreMember {
     }
 
     /**
-     * Prepares a bulk transfer token, retrieves policy, and resolves payload.
-     *
-     * @param tokenPayload - token payload to prepare
-     * @returns a policy and the resolved payload
-     */
-    prepareBulkTransferToken(tokenPayload: Object): Promise<Object> {
-        return Util.callAsync(this.prepareBulkTransferToken, async () => {
-            const res = await this._client.prepareToken(tokenPayload);
-            return res.data;
-        });
-    }
-
-    /**
      * Creates a token, potentially after prepareToken.
      *
      * @param payload - token payload

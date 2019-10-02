@@ -129,7 +129,7 @@ export default class TestUtil {
             .setToAlias(payeeAlias)
             .setRefId('123123')
             .buildPayload();
-        const {resolvedPayload, policy} = await payer.prepareBulkTransferToken(bulkTransferTokenBuilder);
+        const {resolvedPayload, policy} = await payer.prepareToken(bulkTransferTokenBuilder);
         const signature = [await payer.signTokenPayload(resolvedPayload, policy.singleSignature.signer.keyLevel)];
         const bulkTransferToken = await payer.createToken(resolvedPayload, signature);
         return bulkTransferToken;
