@@ -18,6 +18,7 @@ import type {
     StandingOrderSubmission,
     KeyStoreCryptoEngine,
     TransferDestination,
+    BulkTransfer,
 } from '@token-io/core';
 
 /**
@@ -366,6 +367,32 @@ export default class Member extends CoreMember {
                 throw error;
             }
             return res.data.submission;
+        });
+    }
+
+    /**
+     * Redeems a bulk transfer token.
+     *
+     * @param tokenId ID of token to redeem
+     * @return bulk transfer record
+     */
+    redeemBulkTransferToken(tokenId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.redeemBulkTransferToken, async () => {
+            const res =  await this._client.createBulkTransfer(tokenId);
+            return res.data.transfer;
+        });
+    }
+
+    /**
+     * Looks up an existing bulk transfer.
+     *
+     * @param bulkTransferId
+     * @return bulk transfer record
+     */
+    getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.getBulkTransfer, async () => {
+            const res = await this._client.getBulkTransfer(bulkTransferId);
+            return res.data.bulkTransfer;
         });
     }
 
