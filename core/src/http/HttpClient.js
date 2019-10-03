@@ -168,7 +168,7 @@ export class HttpClient {
         const req = {
             memberType,
             tokenRequestId,
-            realmId
+            realmId,
         };
         const request = {
             method: 'post',

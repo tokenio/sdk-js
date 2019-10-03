@@ -49,7 +49,7 @@ export type Alias = {
     value: string,
     // optional
     realm?: string,
-    realmId?: string
+    realmId?: string,
 };
 
 export type Blob = {
