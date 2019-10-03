@@ -6,7 +6,7 @@ class VerifyEidasSample {
     /**
     * Create and verify member with eIDAS certificate.
      *
-     * @param {string} certificate - base64 encoded eIDAS certificate
+     * @param {string} certificate - base64 encoded eIDAS certificate (with RSA key in this sample)
      * @param {string} tppAuthNumber authNumber of the TPP
      * @param {string} bankId ID of the bank the TPP trying to get access to
      * @param {Object} privateKey - private key corresponding to the public key in the certificate
