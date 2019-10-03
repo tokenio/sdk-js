@@ -1,7 +1,11 @@
 // @flow
-export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE';
+export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE' | 'EIDAS';
 export type KeyAlgorithm = 'ED25519' | 'ECDSA_SHA256' | 'RSA';
 export type KeyLevel = 'LOW' | 'STANDARD' | 'PRIVILEGED';
+export type KonsentusVerificationStatus = 'INVALID'
+    | 'SUCCESS'
+    | 'FAILURE_EIDAS_INVALID'
+    | 'FAILURE_ERROR_RESPONSE';
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'COMPLETED' | 'INVALIDATED';
 export type NotifyStatus = 'ACCEPTED' | 'NO_SUBSCRIBERS';
 export type TokenOperationStatus = 'SUCCESS' | 'MORE_SIGNATURES_NEEDED';
@@ -45,6 +49,7 @@ export type Alias = {
     value: string,
     // optional
     realm?: string,
+    realmId?: string,
 };
 
 export type Blob = {
@@ -313,4 +318,16 @@ export type BulkTransferBodyTransfers = {
     description: string,
     destination: TransferDestination,
     metadata: Object,
+};
+
+export type VerifyEidasPayload = {
+    memberId: string,
+    alias: Alias,
+    certificate: string,
+    algorithm: KeyAlgorithm,
+};
+
+export type VerifyEidasResponse = {
+  status: KonsentusVerificationStatus,
+  statusDetails: string,
 };

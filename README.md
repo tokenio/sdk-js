@@ -33,7 +33,7 @@ $ npm install
 Recursively installs all sub-project dependencies.
 
 ```sh
-$ npm devSetup
+$ npm run devSetup
 ```
 
 Recursively create symlinks of all sub-projects to facilitate development between projects.

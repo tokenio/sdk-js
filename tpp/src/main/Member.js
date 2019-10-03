@@ -19,6 +19,8 @@ import type {
     KeyStoreCryptoEngine,
     TransferDestination,
     BulkTransfer,
+    VerifyEidasPayload,
+    VerifyEidasResponse,
 } from '@token-io/core';
 
 /**
@@ -448,6 +450,25 @@ export default class Member extends CoreMember {
                 // token is already in JSON representation
                 resolve(token);
             }
+        });
+    }
+
+    /**
+    * Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
+    * of the alias. Before making this call make sure that:<ul>
+    *     <li>The member is under the realm of a bank (the one tpp tries to gain access to)</li>
+    *     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
+    *     to the member</li>
+    *     <li>The realmId of the alias is equal to the member's realmId</li>
+    *</ul>
+    *
+    * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
+    * @param signature - the payload signed with a private key corresponding to the certificate
+    * @return a result of the verification process
+    */
+    verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {
+        return Util.callAsync(this.verifyEidas, async () => {
+            await this._client.verifyEidas(payload, signature);
         });
     }
 }

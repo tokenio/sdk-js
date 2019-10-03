@@ -574,6 +574,9 @@ export class Member {
                 }
                 normalized.realm = partnerId;
             }
+            if (alias.realmId) {
+                normalized.realmId = alias.realmId;
+            }
             return normalized;
         });
     }
