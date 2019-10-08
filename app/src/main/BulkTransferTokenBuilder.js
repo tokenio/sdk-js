@@ -49,7 +49,7 @@ export default class BulkTransferTokenBuilder extends TokenBuilder {
      * Sets the source bank for guest flows.
      *
      * @param bankId - source bank ID
-     * @returns StandingOrderTokenBuilder
+     * @returns BulkTransferTokenBuilder
      */
     setSourceAccountGuest(bankId: string): BulkTransferTokenBuilder {
         this.tokenPayload.bulkTransfer.source = {
