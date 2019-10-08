@@ -46,6 +46,22 @@ export default class BulkTransferTokenBuilder extends TokenBuilder {
     }
 
     /**
+     * Sets the source bank for guest flows.
+     *
+     * @param bankId - source bank ID
+     * @returns BulkTransferTokenBuilder
+     */
+    setSourceAccountGuest(bankId: string): BulkTransferTokenBuilder {
+        this.tokenPayload.bulkTransfer.source = {
+            account: {
+                guest: {
+                    bankId,
+                },
+            },
+        };
+        return this;
+    }
+    /**
      *  Sets the flag indicating whether a receipt is requested.
      *
      * @param receiptRequested
