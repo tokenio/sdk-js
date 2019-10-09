@@ -471,9 +471,6 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @return {Object} response to the API call
      */
     async redeemToken(transferToken, amount, currency, description, destinations, refId) {
-        if (!refId) {
-            refId = Util.generateNonce();
-        }
         const payload = {
             refId: refId,
             tokenId: transferToken.id,
