@@ -16,7 +16,10 @@ import type {
     TokenRequest,
     KeyStoreCryptoEngine,
     TokenRequestTransferDestinationsCallbackParameters,
+    TransferEndpoint,
+    BulkTransferBodyTransfers,
 } from '@token-io/core';
+import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 
 /**
  * Token SDK entry point.
@@ -53,13 +56,15 @@ export class TokenClient extends Core {
      *
      * @param  alias - alias for the member
      * @param  CryptoEngine - engine to use for key creation and storage
+     * @param  realmId - (optional) member id of the Member to which this new member will belong
      * @return Promise of created Member
      */
     createMember(
         alias: ?Alias,
-        CryptoEngine: Class<KeyStoreCryptoEngine>
+        CryptoEngine: Class<KeyStoreCryptoEngine>,
+        realmId?: string
     ): Promise<Member> {
-        return super.createMemberCore(alias, CryptoEngine, Member, 'BUSINESS');
+        return super.createMemberCore(alias, CryptoEngine, Member, 'BUSINESS', undefined, realmId);
     }
 
     /**
@@ -193,6 +198,28 @@ export class TokenClient extends Core {
                 },
             };
             return new StandingOrderTokenRequestBuilder(payload);
+        });
+    }
+
+    /**
+     * Creates a createBulkTransferTokenRequestBuilder for a bulk transfer token request.
+     *
+     * @param transfers List of transfers
+     * @param totalAmount Total amount irrespective of currency. Used for redundancy check.
+     * @returns Builder instance
+     */
+    createBulkTransferTokenRequest(
+        transfers: Array<BulkTransferBodyTransfers>,
+        totalAmount: string | number,
+    ): BulkTransferTokenRequestBuilder {
+        return Util.callSync(this.createBulkTransferTokenRequest, () => {
+            const payload = {
+                bulkTransferBody: {
+                    transfers,
+                    totalAmount: totalAmount.toString(),
+                },
+            };
+            return new BulkTransferTokenRequestBuilder(payload);
         });
     }
 

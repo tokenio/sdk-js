@@ -100,6 +100,10 @@ export class HttpClient {
             provider: options.provider || '',
             // Optional destination country
             destinationCountry: options.destinationCountry || '',
+            // (Optional) Filter for banks that support or don't support certain features. See Bank for the feature keys we support.
+            // Set "true" for banks that support the feature or "false" for banks that don't support the feature.
+            // e.g. ["supports_linking_uri": "true"] means only banks who supports the linking uri feature.
+            bankFeatures: options.bankFeatures || '',
         });
         const {
             ids,
@@ -109,6 +113,7 @@ export class HttpClient {
             perPage,
             provider,
             destinationCountry,
+            bankFeatures,
         } = formattedOptions;
         let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
@@ -121,6 +126,11 @@ export class HttpClient {
         if (provider) url += `provider=${encodeURIComponent(provider)}&`;
         if (destinationCountry)
             url += `destinationCountry=${encodeURIComponent(destinationCountry)}&`;
+        if (bankFeatures) {
+            for (const key in bankFeatures) {
+                url += `${key}=${encodeURIComponent(bankFeatures[key])}&`;
+            }
+        }
         const request = {
             method: 'get',
             url: url,
@@ -145,9 +155,10 @@ export class HttpClient {
      *
      * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
      * @param  {string} tokenRequestId - (optional) token request ID if the member is being claimed
+     * @param  {string} realmId - (optional) member id of the Member to which this new member will belong
      * @return {Object} response to the API call
      */
-    async createMemberId(memberType, tokenRequestId) {
+    async createMemberId(memberType, tokenRequestId, realmId) {
         if (memberType === undefined) {
             memberType = 'PERSONAL';
         }
@@ -157,6 +168,7 @@ export class HttpClient {
         const req = {
             memberType,
             tokenRequestId,
+            realmId,
         };
         const request = {
             method: 'post',

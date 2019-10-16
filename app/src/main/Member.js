@@ -6,6 +6,7 @@ import config from '../config.json';
 import HttpClient from '../http/HttpClient';
 import TransferTokenBuilder from './TransferTokenBuilder';
 import StandingOrderTokenBuilder from './StandingOrderTokenBuilder';
+import BulkTransferTokenBuilder from './BulkTransferTokenBuilder';
 import Util from '../Util';
 import Account from './Account';
 import type {
@@ -25,6 +26,9 @@ import type {
     KeyStoreCryptoEngine,
     TransferDestination,
     StandingOrderSubmission,
+    BulkTransfer,
+    BulkTransferBodyTransfers,
+    TransferEndpoint,
 } from '@token-io/core';
 
 /**
@@ -406,6 +410,28 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Creates a bulk transfer token builder.
+     *
+     * @param transfers - list of transfers, Array of type BulkTransferBody.Transfer
+     * @param totalAmount - total amount irrespective of currency. Used for redundancy check
+     * @return builder for the token
+     */
+    createBulkTransferTokenBuilder(
+        transfers: Array<BulkTransferBodyTransfers>,
+        totalAmount: string | number,
+    ): BulkTransferTokenBuilder {
+        return Util.callSync(this.createBulkTransferTokenBuilder, () => {
+            const payload = {
+                bulkTransfer: {
+                    transfers,
+                    totalAmount,
+                },
+            };
+            return new BulkTransferTokenBuilder(payload, this._id, this._client);
+        });
+    }
+
+    /**
      * Cancels the existing token and creates a replacement for it.
      *
      * @param tokenToCancel - the old token to cancel
@@ -589,7 +615,11 @@ export default class Member extends CoreMember {
                 amount = finalToken && finalToken.payload.transfer.lifetimeAmount;
             }
             if (!refId) {
-                refId = finalToken.payload.refId;
+                if (amount === finalToken.payload.transfer.lifetimeAmount) {
+                    refId = finalToken.payload.refId;
+                } else {
+                    refId = Util.generateNonce();
+                }
             }
             if (!currency) {
                 currency = finalToken && finalToken.payload.transfer.currency;
@@ -700,6 +730,32 @@ export default class Member extends CoreMember {
                 submissions: res.data.submissions || [],
                 offset: res.data.offset,
             };
+        });
+    }
+
+    /**
+     * Redeems a bulk transfer token.
+     *
+     * @param tokenId ID of token to redeem
+     * @return bulk transfer record
+     */
+    redeemBulkTransferToken(tokenId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.redeemBulkTransferToken, async () => {
+            const res = await this._client.createBulkTransfer(tokenId);
+            return res.data.transfer;
+        });
+    }
+
+    /**
+     * Looks up an existing bulk transfer.
+     *
+     * @param bulkTransferId bulk transfer ID
+     * @return bulk transfer record
+     */
+    getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.getBulkTransfer, async () => {
+            const res = await this._client.getBulkTransfer(bulkTransferId);
+            return res.data.bulkTransfer;
         });
     }
 

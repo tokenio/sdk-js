@@ -204,9 +204,6 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @return {Object} response to the API call
      */
     async redeemToken(transferToken, amount, currency, description, destinations, refId) {
-        if (!refId) {
-            refId = Util.generateNonce();
-        }
         const payload = {
             refId: refId,
             tokenId: transferToken.id,
@@ -338,6 +335,26 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+    * Verifies eIDAS certificate.
+    *
+    * @param payload payload containing member id, eIDAS alias and the certificate
+    * @param signature payload signed with the private key corresponding to the certificate
+    * @return result of the verification operation, returned by the server
+    */
+    async verifyEidas(payload, signature) {
+        const req = {
+            payload,
+            signature,
+        };
+        const request = {
+            method: 'put',
+            url: '/verifications/eidas',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets a list of the auth'd member's standing order submissions.
      *
      * @param {string} offset - where to start
@@ -348,6 +365,38 @@ class AuthHttpClient extends CoreAuthHttpClient {
         const request = {
             method: 'get',
             url: `/standing-order-submissions&offset=${offset}&limit=${limit}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     *  Redeem a bulk transfer token, creating a bulk transfer.
+     *
+     * @param {String} tokenId - token to redeem
+     * @return {Object} response to the API call
+     */
+    async createBulkTransfer(tokenId) {
+        const req = {
+            tokenId,
+        };
+        const request = {
+            method: 'post',
+            url: '/bulk-transfers',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     *  Get information about one bulk transfer.
+     *
+     * @param {String} bulkTransferId
+     * @return {Object} response to the API call
+     */
+    async getBulkTransfer(bulkTransferId) {
+        const request = {
+            method: 'get',
+            url: `/bulk-transfers/${bulkTransferId}`,
         };
         return this._instance(request);
     }

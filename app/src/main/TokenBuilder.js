@@ -77,6 +77,17 @@ export default class TokenBuilder {
     }
 
     /**
+     * Sets the expiration date of the token in ms.
+     *
+     * @param expiresAtMs - expiration time in milliseconds
+     * @return TokenBuilder
+     */
+    setExpiresAtMs(expiresAtMs: number | string): TokenBuilder {
+        this.tokenPayload.expiresAtMs = expiresAtMs.toString();
+        return this;
+    }
+
+    /**
      * Sets the endorse token timeout.
      *
      * @param endorseUntilMs - time at which no more endorsements can be made
