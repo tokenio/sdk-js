@@ -1,7 +1,11 @@
 // @flow
-export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE';
+export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE' | 'EIDAS';
 export type KeyAlgorithm = 'ED25519' | 'ECDSA_SHA256' | 'RSA';
 export type KeyLevel = 'LOW' | 'STANDARD' | 'PRIVILEGED';
+export type KonsentusVerificationStatus = 'INVALID'
+    | 'SUCCESS'
+    | 'FAILURE_EIDAS_INVALID'
+    | 'FAILURE_ERROR_RESPONSE';
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'COMPLETED' | 'INVALIDATED';
 export type NotifyStatus = 'ACCEPTED' | 'NO_SUBSCRIBERS';
 export type TokenOperationStatus = 'SUCCESS' | 'MORE_SIGNATURES_NEEDED';
@@ -45,6 +49,7 @@ export type Alias = {
     value: string,
     // optional
     realm?: string,
+    realmId?: string,
 };
 
 export type Blob = {
@@ -295,4 +300,41 @@ export type TokenRequestTransferDestinationsCallbackParameters = {
     supportedTransferDestinationTypes: Array<string>,
     bankName: string,
     country: string,
+};
+
+export type BulkTransferBody = {
+    transfers: Array<BulkTransferBodyTransfers>, // Array of type Transfer, consult proto
+    totalAmount: string,    // Total amount irrespective of currency. Used for redundancy check.
+    source: TransferEndpoint,
+};
+
+export type BulkTransfer = {
+    id: string,                           // Token ID computed as the hash of the token payload
+    tokenid: string,
+    createdAtMs: string,
+    transactions: Array<Object>,  // Transactions for which the bank provides IDs and/or statuses.
+                                      // Might not be populated right away.
+    totalAmount: string,             // Total amount irrespective of currency. Used for redundancy check.
+    source: TransferEndpoint,
+};
+
+export type BulkTransferBodyTransfers = {
+    amount: string,
+    currency: string,
+    refId: string,
+    description: string,
+    destination: TransferDestination,
+    metadata: Object,
+};
+
+export type VerifyEidasPayload = {
+    memberId: string,
+    alias: Alias,
+    certificate: string,
+    algorithm: KeyAlgorithm,
+};
+
+export type VerifyEidasResponse = {
+  status: KonsentusVerificationStatus,
+  statusDetails: string,
 };

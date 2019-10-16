@@ -471,9 +471,6 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @return {Object} response to the API call
      */
     async redeemToken(transferToken, amount, currency, description, destinations, refId) {
-        if (!refId) {
-            refId = Util.generateNonce();
-        }
         const payload = {
             refId: refId,
             tokenId: transferToken.id,
@@ -526,6 +523,38 @@ class AuthHttpClient extends CoreAuthHttpClient {
             method: 'post',
             url: '/standing-order-submissions',
             data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     *  Redeem a bulk transfer token, creating a bulk transfer.
+     *
+     * @param {String} tokenId - token to redeem
+     * @return {Object} response to the API call
+     */
+    async createBulkTransfer(tokenId) {
+        const req = {
+            tokenId,
+        };
+        const request = {
+            method: 'post',
+            url: '/bulk-transfers',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     *  Get information about one bulk transfer.
+     *
+     * @param {String} bulkTransferId - bulk transfer ID
+     * @return {Object} response to the API call
+     */
+    async getBulkTransfer(bulkTransferId) {
+        const request = {
+            method: 'get',
+            url: `/bulk-transfers/${bulkTransferId}`,
         };
         return this._instance(request);
     }

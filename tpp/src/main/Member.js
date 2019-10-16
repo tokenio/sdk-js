@@ -18,6 +18,9 @@ import type {
     StandingOrderSubmission,
     KeyStoreCryptoEngine,
     TransferDestination,
+    BulkTransfer,
+    VerifyEidasPayload,
+    VerifyEidasResponse,
 } from '@token-io/core';
 
 /**
@@ -289,7 +292,11 @@ export default class Member extends CoreMember {
                 currency = finalToken.payload.transfer.currency;
             }
             if (!refId) {
-                refId = finalToken.payload.refId;
+                if (amount === finalToken.payload.transfer.lifetimeAmount) {
+                    refId = finalToken.payload.refId;
+                } else {
+                    refId = Util.generateNonce();
+                }
             }
             if (!description) {
                 description = finalToken.payload.description;
@@ -370,6 +377,32 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Redeems a bulk transfer token.
+     *
+     * @param tokenId ID of token to redeem
+     * @return bulk transfer record
+     */
+    redeemBulkTransferToken(tokenId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.redeemBulkTransferToken, async () => {
+            const res =  await this._client.createBulkTransfer(tokenId);
+            return res.data.transfer;
+        });
+    }
+
+    /**
+     * Looks up an existing bulk transfer.
+     *
+     * @param bulkTransferId
+     * @return bulk transfer record
+     */
+    getBulkTransfer(bulkTransferId: string): Promise<BulkTransfer> {
+        return Util.callAsync(this.getBulkTransfer, async () => {
+            const res = await this._client.getBulkTransfer(bulkTransferId);
+            return res.data.bulkTransfer;
+        });
+    }
+
+    /**
      * Looks up an existing Token standing order submission.
      *
      * @param submissionId - ID of the standing order submission
@@ -434,6 +467,25 @@ export default class Member extends CoreMember {
                 // token is already in JSON representation
                 resolve(token);
             }
+        });
+    }
+
+    /**
+    * Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
+    * of the alias. Before making this call make sure that:<ul>
+    *     <li>The member is under the realm of a bank (the one tpp tries to gain access to)</li>
+    *     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
+    *     to the member</li>
+    *     <li>The realmId of the alias is equal to the member's realmId</li>
+    *</ul>
+    *
+    * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
+    * @param signature - the payload signed with a private key corresponding to the certificate
+    * @return a result of the verification process
+    */
+    verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {
+        return Util.callAsync(this.verifyEidas, async () => {
+            await this._client.verifyEidas(payload, signature);
         });
     }
 }
