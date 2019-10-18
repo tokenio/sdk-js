@@ -10,7 +10,7 @@ The following new features and enhancements are introduced:
   >   - Creates a new transaction payload in `tokenRequest`
   >   - PSU confirms "Approve Standing Order" based on the standing order payload content displayed
   > - **Future-dated Payment**
-  >   - Creates the same transaction payload as a standing order but with a specific execution date
+  >   - Creates the same transaction payload as a standing order but with a specific `executionDate` in `TransferBody` 
   >   - PSU confirms future-dated payment initiation based on the standing order payload content displayed
    
 - **Compulsory eIDAS Validation**
@@ -24,4 +24,44 @@ The following new features and enhancements are introduced:
   > CAF checks that an account (debit/credit) has sufficient funds available to make a payment. The method for invoking Token's CAF feature differs somewhat between CBPIIs and PISPs.
   > - **Card-based Payment Instrument Issuer (CBPII)** — call the `confirmFunds()` function, specifying the relevant account, amount and currency to receive a boolean indication that sufficient funds are in fact available.
   > - **Payment Information Service Provider (PISP)** — create a standard `TransferTokenRequest` using the `setConfirmFunds()`  before executing the transfer request. Banks that do not support CAF will ignore `setConfirmFunds()`. 
+  
+- **Augmented permissions (consent) list with support for new endpoints**
+  > Additional PSU consent granularity is now implemented via the SDK:
+  > - **Account Info**: `ReadAccountsBasic`, `ReadAccountsDetail`
+  > - **Balances**: `ReadBalances'
+  > - **Beneficiaries**: `ReadBeneficiariesBasic`, `ReadBeneficiariesDetail`
+  > - **Direct Debits**: `ReadDirectDebits`
+  > - **Offers**: `ReadOffers`
+  > - **Party**: `ReadParty`
+  > - **Products**: `ReadProducts`
+  > - **Scheduled Payments**: `ReadScheduledPaymentsBasic`, `ReadScheduledPaymentsDetail`
+  > - **Standing Orders**: `ReadStandingOrdersBasic`, `ReadStandingOrdersDetail`
+  > - **Statements**: `ReadStatements Basic`, `ReadStatementsDetail`
+  > - **Transactions**: `ReadTransactionsBasic`, `ReadTransactionsCredits`, `ReadTransactionsDebits`, `ReadTransactionsDetail`
+  
+- **TRUSTED_PARTY signature type removed from the directory service**
+  > No longer needed because a new `User_And_Realm` type allows an electronic signature from both the user and the realm owner (determined by `realmId`)
+    
+- **Added `getBanks` filtering to UI customization**
+  > By specifying the `bankId` of the PSU-selected bank when creating the token request, you can now filter the banks available to the user and control the bank selection UI. Each bank returned specifies the additional properties it supports:
+  >  - `supports_information` – allows retrieval of account information
+  >  - `supports_send_payment` – allows payment initiation
+  >  - `supports_receive_payment` – allows payments to be received
+  >  - `provider` – underlying connectivity type (e.g., Yodlee FinAPI Token)
+  >  - `country` – ISO 3166-1 alpha-2 two-letter country code in uppercase
+  
+## Bug Fixes
+The following reported issues are resolved in this release:
+
+  - `resolveTransferDestinations` method needed for `Representable`; includes changes to `versionHeaders`
+  - On `redeemToken`,  `amount == lifetimeAmount` should be treated as `amount == null`
+  - `redeemToken` (access token) fails when transaction permissions are removed via Token App
+  - Transfer `refID` needs to default to token `refID` when redeeming tokens
+  
+## Deprecations
+The
+  
+## Other Changes
+The following other changes have been incorporated into this release:
+  - Visual design fixes to Nav header and footer – corrected font sizes/styles, logo size/color, etc.
   
