@@ -439,7 +439,7 @@ export default class Member extends CoreMember {
      * @param transferDestinations destination account
      * @return observable that completes when request handled
      */
-    setTokenRequestTransferDestinations(tokenRequestId: string, transferDestinations: Array): Promise<{}> {
+    setTokenRequestTransferDestinations(tokenRequestId: string, transferDestinations: Array<TransferDestination>): Promise<{}> {
         return Util.callAsync(this.setTokenRequestTransferDestinations, async () => {
             return await this._client.setTokenRequestTransferDestinations(tokenRequestId, transferDestinations);
         });
