@@ -60,7 +60,7 @@ export class HttpClient {
     async resolveAlias(alias) {
         const request = {
             method: 'get',
-            url: `/resolve-alias?value=${alias.value}&type=${alias.type}&realm=${alias.realm || ''}`, // eslint-disable-line max-len
+            url: `/resolve-alias?alias.value=${alias.value}&alias.type=${alias.type}&alias.realm=${alias.realm || ''}&alias.realmId=${alias.realmId || ''}`, // eslint-disable-line max-len
         };
         return this._instance(request);
     }
