@@ -171,6 +171,7 @@ export type Bank = {
     provider: string,
     country: string,
     identifier: string,
+    supportedTransferDestinationTypes: Array<string>, // A list of Transfer Destination Types, like SEPA, ELIXIR, supported by the bank.
 };
 
 export type BankInfo = {
@@ -293,6 +294,12 @@ export type StandingOrderSubmission = {
     createdAtMs: string,
     standingOrderBody: Object,
     status: SubmissionStatus,
+};
+
+export type TokenRequestTransferDestinationsCallbackParameters = {
+    supportedTransferDestinationTypes: Array<string>,
+    bankName: string,
+    country: string,
 };
 
 export type BulkTransferBody = {

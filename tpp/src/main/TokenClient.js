@@ -15,6 +15,7 @@ import type {
     Signature,
     TokenRequest,
     KeyStoreCryptoEngine,
+    TokenRequestTransferDestinationsCallbackParameters,
     TransferEndpoint,
     BulkTransferBodyTransfers,
 } from '@token-io/core';
@@ -246,6 +247,18 @@ export class TokenClient extends Core {
     generateTokenRequestUrl(requestId: string): string {
         return Util.callSync(this.generateTokenRequestUrl, () => {
             return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}`; // eslint-disable-line max-len
+        });
+    }
+
+    /**
+     * Parses the Set Transfer Destinations URL callback parameters to extract supported types, bank and country.
+     *
+     * @param url - setSetTransferDestinations URL
+     * @return TokenRequestTransferDestinationsCallbackParameters - Object
+     */
+    parseSetTransferDestinationsUrl(url: string): TokenRequestTransferDestinationsCallbackParameters {
+        return Util.callSync(this.parseSetTransferDestinationsUrl, () => {
+            return Util.parseParamsFromUrl(url);
         });
     }
 
