@@ -59,7 +59,7 @@ The following reported issues are resolved in this release:
   - Transfer `refID` needs to default to token `refID` when redeeming tokens
   
 ## Deprecations
-The
+Insert the complete list of deprecations.
   
 ## Other Changes
 The following other changes have been incorporated into this release:
