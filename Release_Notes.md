@@ -7,14 +7,14 @@ The following new features and enhancements are introduced:
 - **Support for Future-dated Payments and Standing Orders (recurring payments)**
   > Via the SDK, Token's Connect service now provides the mechanism for PSU's to initiate instructions for a series of payments of a specified amount to a designated payee on a number of future dates or at regularly scheduled intervals (daily, weekly, twice-weekly, monthly, twice-monthly, quarterly, semiannually, or yearly). Standing orders and future-dated payments implement the same workflow with the following highlights:
   > - **Standing Order**
-  >   - Creates a new transaction payload in `tokenRequest`
+  >   - Creates a new transaction payload in `tokenRequest` that includes `frequency`, `startDate` and `endDate`
   >   - PSU confirms "Approve Standing Order" based on the standing order payload content displayed
   > - **Future-dated Payment**
-  >   - Creates the same transaction payload as a standing order but with a specific `executionDate` in `TransferBody` 
-  >   - PSU confirms future-dated payment initiation based on the standing order payload content displayed
+  >   - Creates the transaction payload as a standard payment, but adds a specific `executionDate` in the future 
+  >   - PSU confirms future-dated payment initiation based on the payload content displayed
    
 - **Compulsory eIDAS Validation**
-  > Effective 24 Spetember 2019, Token is required under PSD2 rules to validate third-party providers (TPPs) and their service requests on behalf of its PSD2-enabled banks. An initial vaidation check is performed during TTP onboarding to ensure that the TPP is in compliance with respective host-nation business licensing requirements for the TPP's planned service geography and that the TPP is using a legitimate eIDAS certificate issued by a qualified trust service provider (QTSP). Successful validation is required before Token can promote a TPP to production. Thereafter, automated validation checks are performed no less than 4 times per business day (GMT 0700-1800). Validation failure will suspend any subsequent service requests attempted by the TPP until the TPP's certificate or license issue is resolved.
+  > Effective 14 Spetember 2019, Token is required under PSD2 rules to validate third-party providers (TPPs) and their service requests on behalf of its PSD2-enabled banks. An initial vaidation check is performed during TTP onboarding to ensure that the TPP is in compliance with respective host-nation business licensing requirements for the TPP's planned service geography and that the TPP is using a legitimate eIDAS certificate issued by a qualified trust service provider (QTSP). Successful validation is required before Token can promote a TPP to production. Thereafter, automated validation checks are performed no less than 4 times per business day (GMT 0700-1800). Validation failure will suspend any subsequent service requests attempted by the TPP until the TPP's certificate or license issue is resolved.
   
 - **Support for Bulk Transfers**
   > A bulk transfer is a convenient way for PSUs to make payments to multiple payees at the same time based on a defined payment group specifying all of the pertinent details. The PSU-defined group of payments is then made to multiple creditor accounts from the same debtor account on the same date with the same currency according to the same payment scheme.
@@ -40,7 +40,7 @@ The following new features and enhancements are introduced:
   > - **Transactions**: `ReadTransactionsBasic`, `ReadTransactionsCredits`, `ReadTransactionsDebits`, `ReadTransactionsDetail`
   
 - **TRUSTED_PARTY signature type removed from the directory service**
-  > No longer needed because a new `User_And_Realm` type allows an electronic signature from both the user and the realm owner (determined by `realmId`)
+  > Replaced by a new `User_And_Realm` signature type that allows an electronic signature from both the user and the the realm owner
     
 - **Added `getBanks` filtering to UI customization**
   > By specifying the `bankId` of the PSU-selected bank when creating the token request, you can now filter the banks available to the user and control the bank selection UI. Each bank returned specifies the additional properties it supports:
@@ -50,18 +50,10 @@ The following new features and enhancements are introduced:
   >  - `provider` – underlying connectivity type (e.g., Yodlee FinAPI Token)
   >  - `country` – ISO 3166-1 alpha-2 two-letter country code in uppercase
   
-## Bug Fixes
-The following reported issues are resolved in this release:
-
-  - `resolveTransferDestinations` method needed for `Representable`; includes changes to `versionHeaders`
-  - On `redeemToken`,  `amount == lifetimeAmount` should be treated as `amount == null`
-  - `redeemToken` (access token) fails when transaction permissions are removed via Token App
-  - Transfer `refID` needs to default to token `refID` when redeeming tokens
-  
 ## Deprecations
 Insert the complete list of deprecations.
   
 ## Other Changes
-The following other changes have been incorporated into this release:
+The following additional changes have been incorporated into this release:
   - Visual design fixes to Nav header and footer – corrected font sizes/styles, logo size/color, etc.
   
