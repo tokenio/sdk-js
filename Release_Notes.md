@@ -1,7 +1,11 @@
-# Release 1.0.21
-  > What's new in the JavaScript SDK from version 1.0.4 thru 1.0.21 is included in these release notes.
+# *JavaScript SDK Release Notes*
 
-## New Features/Enhancements
+> If you're upgrading to the latest version of the SDK, here's what's new.
+
+# Release 1.0.21
+  > These release notes include the changes incorporated in versions 1.0.4 thru 1.0.21.
+
+## *New Features/Enhancements*
 The following new features and enhancements are introduced:
 
 - **Support for Future-dated Payments and Standing Orders (recurring payments)**
@@ -50,7 +54,7 @@ The following new features and enhancements are introduced:
   >  - `provider` – underlying connectivity type (e.g., Yodlee FinAPI Token)
   >  - `country` – ISO 3166-1 alpha-2 two-letter country code in uppercase
   
-## Deprecations
+## *Deprecations*
 Within a major version of the Token SDK, deprecated APIs/methods fall into two types:
   1. functions removed/replaced by another function 
   2. function that, though not removed, cannot be used in precisely the same way as previously (i.e., in a prior version of the SDK).
@@ -77,7 +81,6 @@ The deprecations listed here encompass the respective changes dating back to the
   - `setProviderMetadata` is renamed to `setProviderTransferMetadata`
   - `addDestination(TransferEndpoint destination)` is deprecated; use `addDestination(TransferDestination destination)` instead
 
-## Other Changes
+## *Other Changes*
 The following additional changes have been incorporated into this release:
   - Visual design fixes to Nav header and footer – corrected font sizes/styles, logo size/color, etc.
-  
