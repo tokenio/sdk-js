@@ -1,6 +1,6 @@
 # *JavaScript SDK Release Notes*
 
-> If you're upgrading to the latest version of the SDK, here's what's new.
+If you're upgrading to the latest version of the SDK, here's what's new.
 
 # Release 1.0.21
   > These release notes include the changes incorporated in versions 1.0.4 thru 1.0.21.
