@@ -51,8 +51,32 @@ The following new features and enhancements are introduced:
   >  - `country` – ISO 3166-1 alpha-2 two-letter country code in uppercase
   
 ## Deprecations
-Insert the complete list of deprecations.
+Within a major version of the Token SDK, deprecated APIs/methods fall into two types:
+  1. functions removed/replaced by another function 
+  2. function that, though not removed, cannot be used in precisely the same way as previously (i.e., in a prior version of the SDK).
+> **NOTE**: Version numbers consist of three numbers separated by dots. The leftmost number designates a **major** release. The middle number designates a **minor** (yet significant) update to a major release. The rightmost number identifies a notable revision to a minor release of the SDK and is often referred to as a **point release**.
+
+The deprecations listed here encompass the respective changes dating back to the original major version of the SDK and is intended for developers using the most current major version of the SDK. Unless stated otherwise deprecations apply to both asynchronous and synchronous variations of an API call. Developers using a version of the SDK predating the most current major release are encouraged to upgrade to take advantage of the latest capabilities and improvements.
+
+- **`Member`**
+  - `createAttachment` is deprecated; Token attachments are no longer supported
+  - `redeemToken(... TransferEndpoint destination ...)`; use `redeemToken(... TransferDesitnation destination ...)` instead
+  - `getTokenAttachment` is deprecated; Token attachments are no longer supported
+  - `createCustomization(Payload logo, Map<String, Sting> colors, String consentText)` now accepts `String name` and `String appName` as well
   
+- **`TokenClient`**
+  - `getBanks(... Map,<String, Boolean> bank FeaturesMap ...)` is deprecated;
+    use `getBanks(... BankFeatures bankFeatures ...)` instead
+  - `completeRecoveryWithDefaultRule(String memberId, String verificationId, String code)` now accepts `CryptoEngine cryptoEngine` as well
+  - `generateTokenRequestUrl(String requestId, String state)` should now set state on `TokenRequest` builder instead of passing it here
+  - `generateTokenRequestUrl(String requestId, String state, String csrfToken)` should now set state and SDRF token on `TokenRequest` builder instead of passing them here
+  - `parseTokenRequestCallbackIrl(String callbackUrl)` should now use the method that also takes in `String csrfToken'
+  - `parseTokenRequestCallbackParams(Map<String, String. callbackParams)` should now use the method that also takes in `String csrfToken`
+
+- **`TokenRequest (`/`TokenRequestBuilder`/[`Access`/`Transfer`]`TokenRequestBuilder)`**
+  - `setProviderMetadata` is renamed to `setProviderTransferMetadata`
+  - `addDestination(TransferEndpoint destination)` is deprecated; use `addDestination(TransferDestination destination)` instead
+
 ## Other Changes
 The following additional changes have been incorporated into this release:
   - Visual design fixes to Nav header and footer – corrected font sizes/styles, logo size/color, etc.
