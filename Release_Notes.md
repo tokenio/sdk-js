@@ -22,7 +22,9 @@ The following new features and enhancements are introduced:
   
 - **Support for Bulk Transfers**
   > A bulk transfer is a convenient way for PSUs to make payments to multiple payees at the same time based on a defined payment group specifying all of the pertinent details. The PSU-defined group of payments is then made to multiple creditor accounts from the same debtor account on the same date with the same currency according to the same payment scheme.
-  > The major difference between bulk and single transactions is that bulk payments/transfers only need to be authenticated once for the specified payment group, rather than requiring the PSU to authenticate each individual transaction. 
+  > The major difference between bulk and single transactions is that bulk payments/transfers only need to be authenticated once for the specified payment group, rather than requiring the PSU to authenticate each individual transaction.
+  >
+  >**NOTE**: This feature is not yet fully supported by all banks pending agreed limits on file size and the number of bulk transfer items that can be included.
   
 - **Support for Confirming Available Funds (CAF)**
   > CAF checks that an account (debit/credit) has sufficient funds available to make a payment. The method for invoking Token's CAF feature differs somewhat between CBPIIs and PISPs.
