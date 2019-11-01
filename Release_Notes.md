@@ -59,8 +59,8 @@ The following new features and enhancements are introduced:
   
 ## *Deprecations*
 Within a major version of the Token SDK, deprecated APIs/methods fall into two types:
-  1. functions removed/replaced by another function 
-  2. function that, though not removed, cannot be used in precisely the same way as previously (i.e., in a prior version of the SDK).
+  1. Functions removed/replaced by another function 
+  2. Function that, though not removed, cannot be used in precisely the same way as previously (i.e., in a prior version of the SDK).
 > **NOTE**: Version numbers consist of three numbers separated by dots. The leftmost number designates a **major** release. The middle number designates a **minor** (yet significant) update to a major release. The rightmost number identifies the package number of the SDK and is often referred to as a **point release**.
 
 The deprecations listed here encompass the respective changes dating back to the original major version of the SDK and is intended for developers using the most current major version of the SDK. Unless stated otherwise deprecations apply to both asynchronous and synchronous variations of an API call. Developers using a version of the SDK predating the most current major release are encouraged to upgrade to take advantage of the latest capabilities and improvements.
