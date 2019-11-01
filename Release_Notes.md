@@ -48,15 +48,7 @@ The following new features and enhancements are introduced:
   
 - **TRUSTED_PARTY signature type removed from the directory service**
   > Replaced by a new `User_And_Realm` signature type for electronic signature by a trusted party
-    
-- **Added `getBanks` filtering to UI customization**
-  > By specifying the `bankId` of the PSU-selected bank when creating the token request, you can now filter the banks available to the user and control the bank selection UI. Each bank returned specifies the additional properties it supports:
-  >  - `supports_information` – allows retrieval of account information
-  >  - `supports_send_payment` – allows payment initiation
-  >  - `supports_receive_payment` – allows payments to be received
-  >  - `provider` – underlying connectivity type (e.g., Yodlee FinAPI Token)
-  >  - `country` – ISO 3166-1 alpha-2 two-letter country code in uppercase
-  
+      
 ## *Deprecations*
 Within a major version of the Token SDK, deprecated APIs/methods fall into two types:
   1. Functions removed/replaced by another function 
