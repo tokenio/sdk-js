@@ -82,6 +82,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      *
      * @param bankId - source bank ID
      * @returns TransferTokenBuilder
+     * @deprecated use setSource instead
      */
     setSourceAccountGuest(bankId: string): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.source = {
