@@ -225,6 +225,8 @@ export type TransferEndpoint = {
     account: Object,
     // optional
     customerData?: Object,
+    // optional
+    bankId?: string,
 };
 
 export type Balance = {
