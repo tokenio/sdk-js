@@ -689,6 +689,30 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Stores a linking request.
+     *
+     * @param memberId - ID of member whose accounts to link
+     * @param callbackUrl - callback url
+     * @param tokenRequestId - token request ID
+     * @return {Object} response to the API call
+     */
+    async storeLinkingRequest(memberId, callbackUrl, tokenRequestId) {
+        const req = {
+            memberId,
+            callbackUrl,
+            tokenRequestId,
+        };
+
+        const request = {
+            method: 'post',
+            url: '/linking-requests',
+            data: req,
+        };
+
+        return this._instance(request);
+    }
+
     async _tokenOperation(token, operation, suffix, blocking) {
         const tokenId = token.id;
         const request = {
