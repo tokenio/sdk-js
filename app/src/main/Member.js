@@ -781,19 +781,16 @@ export default class Member extends CoreMember {
     /**
      * Stores a linking request.
      *
-     * @param memberId - ID of member whose accounts to link
      * @param callbackUrl - callback url
      * @param tokenRequestId - token request ID
      * @return linking request ID
      */
     storeLinkingRequest(
-        memberId: string,
         callbackUrl: string,
         tokenRequestId: string
     ): Promise<string> {
         return Util.callAsync(this.storeLinkingRequest, async () => {
             const res = await this._client.storeLinkingRequest(
-                memberId,
                 callbackUrl,
                 tokenRequestId);
             return res.data.linkingRequestId;

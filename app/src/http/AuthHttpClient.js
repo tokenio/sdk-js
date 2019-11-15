@@ -692,14 +692,12 @@ class AuthHttpClient extends CoreAuthHttpClient {
     /**
      * Stores a linking request.
      *
-     * @param memberId - ID of member whose accounts to link
      * @param callbackUrl - callback url
      * @param tokenRequestId - token request ID
      * @return {Object} response to the API call
      */
-    async storeLinkingRequest(memberId, callbackUrl, tokenRequestId) {
+    async storeLinkingRequest(callbackUrl, tokenRequestId) {
         const req = {
-            memberId,
             callbackUrl,
             tokenRequestId,
         };
