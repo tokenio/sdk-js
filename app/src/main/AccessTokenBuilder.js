@@ -82,7 +82,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
      */
     forAccountStandingOrders(accountId: string): AccessTokenBuilder {
         this.tokenPayload.access.resources.push({
-            standingOrder: {
+            standingOrders: {
                 accountId,
             },
         });
@@ -97,7 +97,7 @@ export default class AccessTokenBuilder extends TokenBuilder {
      */
     forAccountsStandingOrders(accountIds: Array<string>): AccessTokenBuilder {
         accountIds.forEach(id => this.tokenPayload.access.resources.push({
-            standingOrder: {
+            standingOrders: {
                 accountId: id,
             },
         }));
