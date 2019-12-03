@@ -1,6 +1,6 @@
 {
     "name": "@token-io/app",
-    "version": "1.0.25",
+    "version": "1.0.26",
     "description": "Token JavaScript App SDK",
     "license": "ISC",
     "author": {
@@ -38,6 +38,7 @@
         "babel-eslint": "^10.0.3",
         "babel-loader": "^8.0.6",
         "chai": "^4.2.0",
+        "es-abstract": "^1.14.2",
         "esdoc": "^1.1.0",
         "esdoc-ecmascript-proposal-plugin": "^1.0.0",
         "esdoc-flow-type-plugin": "^1.1.0",
