@@ -1,6 +1,6 @@
 {
     "name": "@token-io/tpp",
-    "version": "1.0.24",
+    "version": "1.0.25",
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {
@@ -34,6 +34,7 @@
         "babel-eslint": "^10.0.3",
         "babel-loader": "^8.0.6",
         "chai": "^4.2.0",
+        "es-abstract": "^1.14.2",
         "esdoc": "^1.1.0",
         "esdoc-ecmascript-proposal-plugin": "^1.0.0",
         "esdoc-flow-type-plugin": "^1.1.0",
