@@ -98,9 +98,11 @@ export default class Representable {
         accountId: string,
         offset: string,
         limit: number,
-        keyLevel: KeyLevel
+        keyLevel: KeyLevel,
+        startDate: string,
+        endDate: string
     ): Promise<{transactions: Array<Transaction>, offset: string}> {
-        return this._member.getTransactions(accountId, offset, limit, keyLevel);
+        return this._member.getTransactions(accountId, offset, limit, keyLevel, startDate, endDate);
     }
 
     /**

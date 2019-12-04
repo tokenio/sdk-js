@@ -33,6 +33,9 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
                 transferDestinations: [],
             };
         }
+        else if (!this.requestPayload.transferBody.instructions.transferDestinations) {
+            this.requestPayload.transferBody.instructions.transferDestinations = [];
+        }
         this.requestPayload.transferBody.instructions.transferDestinations.push(destination);
         return this;
     }
@@ -140,6 +143,17 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      */
     setSetTransferDestinationsUrl(url: string): TransferTokenRequestBuilder {
         this.requestPayload.transferBody.setTransferDestinationsUrl = url;
+        return this;
+    }
+
+    /**
+     * Optional. Sets the source account to bypass account selection.
+     *
+     * @param source
+     * @return TransferTokenRequestBuilder
+     */
+    setSource(source: TransferEndpoint): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.instructions = { source };
         return this;
     }
 }
