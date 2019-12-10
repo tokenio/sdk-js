@@ -209,6 +209,12 @@ export class AuthHttpClient {
      */
     async getTransactions(accountId, offset, limit, keyLevel, startDate, endDate) {
         this.useKeyLevel(keyLevel);
+        if (startDate === undefined) {
+            startDate = '';
+        }
+        if (endDate === undefined) {
+            endDate = '';
+        }
         const request = {
             method: 'get',
             url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`,
