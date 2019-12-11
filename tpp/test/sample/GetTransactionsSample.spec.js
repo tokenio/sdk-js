@@ -1,17 +1,27 @@
 import CreateMemberSample from '../../sample/CreateMemberSample';
 import RedeemTransferTokenSample from '../../sample/RedeemTransferTokenSample';
-import GetTransactionsSample from '../../sample/GetTransactionsSample';
+import { GetTransactions, GetTransactionsWithDate } from '../../sample/GetTransactionsSample';
 import TestUtil from '../TestUtil';
-const {assert} = require('chai');
+const { assert } = require('chai');
 
 describe('GetTransactionsSample test', () => {
-    it('Should run the sample', async () => {
+    it('Get Transactions without date', async () => {
         const tppMember = await CreateMemberSample();
         const userMember = await TestUtil.createUserMember();
         const tppAlias = await tppMember.firstAlias();
         const res = await TestUtil.createTransferToken(userMember, tppAlias);
         await RedeemTransferTokenSample(tppMember, res.id);
-        const transactions = await GetTransactionsSample(userMember);
+        const transactions = await GetTransactions(userMember);
+        assert.equal(transactions.length, 1);
+    });
+
+    it('Get Transaction with date', async () => {
+        const tppMember = await CreateMemberSample();
+        const userMember = await TestUtil.createUserMember();
+        const tppAlias = await tppMember.firstAlias();
+        const res = await TestUtil.createTransferToken(userMember, tppAlias);
+        await RedeemTransferTokenSample(tppMember, res.id);
+        const transactions = await GetTransactionsWithDate(userMember);
         assert.equal(transactions.length, 1);
     });
 });
