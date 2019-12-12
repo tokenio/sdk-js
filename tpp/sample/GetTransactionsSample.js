@@ -1,4 +1,5 @@
 import config from '../src/config.json';
+import TestUtil from '../test/TestUtil';
 
 /**
  * Gets a member's recent transactions
@@ -24,7 +25,7 @@ export const GetTransactions = async payer => {
  * @param {Member} payer - payer member
  * @return {Object} array of transactions
  */
-export const GetTransactionsWithDate = async payer => {
+export const GetTransactionsWithDate = async (payer, date) => {
     const accounts = await payer.getAccounts();
     const accountId = accounts[0].id();
 
@@ -34,6 +35,6 @@ export const GetTransactionsWithDate = async payer => {
         10,
         config.KeyLevel.STANDARD,
         '2019-06-10',
-        '2019-10-10');
+        date);
     return pagedResult.transactions;
 };
