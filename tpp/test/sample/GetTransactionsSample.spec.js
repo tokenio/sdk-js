@@ -21,7 +21,8 @@ describe('GetTransactionsSample test', () => {
         const tppAlias = await tppMember.firstAlias();
         const res = await TestUtil.createTransferToken(userMember, tppAlias);
         await RedeemTransferTokenSample(tppMember, res.id);
-        const transactions = await GetTransactionsWithDate(userMember);
+        const today = TestUtil.formatDate(Date.now());
+        const transactions = await GetTransactionsWithDate(userMember, today);
         assert.equal(transactions.length, 1);
     });
 });
