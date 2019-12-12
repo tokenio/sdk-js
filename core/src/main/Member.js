@@ -354,10 +354,12 @@ export class Member {
         accountId: string,
         offset: string,
         limit: number,
-        keyLevel: KeyLevel
+        keyLevel: KeyLevel,
+        startDate: string,
+        endDate: string
     ): Promise<{transactions: Array<Transaction>, offset: string}> {
         return Util.callAsync(this.getTransactions, async () => {
-            const res = await this._client.getTransactions(accountId, offset, limit, keyLevel);
+            const res = await this._client.getTransactions(accountId, offset, limit, keyLevel, startDate, endDate);
             switch (res.data.status){
             case 'SUCCESSFUL_REQUEST':
                 return {

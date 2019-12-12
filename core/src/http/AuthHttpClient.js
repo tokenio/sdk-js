@@ -207,11 +207,11 @@ export class AuthHttpClient {
      * @param {string} keyLevel - key level
      * @return {Object} response to the API call
      */
-    async getTransactions(accountId, offset, limit, keyLevel) {
+    async getTransactions(accountId, offset, limit, keyLevel, startDate, endDate) {
         this.useKeyLevel(keyLevel);
         const request = {
             method: 'get',
-            url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}`,
+            url: `/accounts/${accountId}/transactions?offset=${offset}&limit=${limit}&startDate=${startDate || ''}&endDate=${endDate || ''}`,
         };
         return this._instance(request);
     }
