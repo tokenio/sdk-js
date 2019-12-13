@@ -78,6 +78,9 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
                 transferDestinations: [],
             };
         }
+        else if (!this.requestPayload.standingOrderBody.instructions.transferDestinations) {
+            this.requestPayload.standingOrderBody.instructions.transferDestinations = [];
+        }
         this.requestPayload.standingOrderBody.instructions.transferDestinations.push(destination);
         return this;
     }
