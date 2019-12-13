@@ -1,6 +1,6 @@
 // @flow
 import TokenRequestBuilder from './TokenRequestBuilder';
-import type {TransferDestination} from '@token-io/core';
+import type {TransferDestination, TransferEndpoint} from '@token-io/core';
 
 export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilder {
     /**
@@ -102,6 +102,17 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
      */
     setProviderTransferMetadata(metadata: Object): StandingOrderTokenRequestBuilder {
         this.requestPayload.standingOrderBody.instructions.metadata = metadata;
+        return this;
+    }
+
+    /**
+     * Optional. Sets the source account to bypass account selection.
+     *
+     * @param source
+     * @return StandingOrderTokenRequestBuilder
+     */
+    setSource(source: TransferEndpoint): StandingOrderTokenRequestBuilder {
+        this.requestPayload.standingOrderBody.instructions = { source };
         return this;
     }
 }
