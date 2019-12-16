@@ -9,7 +9,6 @@ import {TokenClient} from '../src';
 export default async () => {
     // Initialize SDK:
     // 'sandbox' is a good value for TEST_ENV here.
-    const devKey = require('../src/config.json').devKey[TEST_ENV];
     const Token = new TokenClient({env: TEST_ENV, developerKey: devKey});
 
     // Generate a random-nonsense-string alias.
