@@ -153,7 +153,11 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setSource(source: TransferEndpoint): TransferTokenRequestBuilder {
-        this.requestPayload.transferBody.instructions = { source };
+        if(!this.requestPayload.transferBody.instructions)
+        {
+            this.requestPayload.transferBody.instructions = { };
+        }
+        this.requestPayload.transferBody.instructions.source = source;
         return this;
     }
 }
