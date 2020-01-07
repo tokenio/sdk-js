@@ -312,11 +312,6 @@ export default class Member extends CoreMember {
                 description,
                 destinations,
                 refId);
-            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
-                const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
-                error.authorizationDetails = res.data.authorizationDetails;
-                throw error;
-            }
             return res.data.transfer;
         });
     }
