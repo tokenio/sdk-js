@@ -1,13 +1,17 @@
 # *JavaScript SDK Release Notes*
 
+>
+>Last Updated: 15 January 2020
+>
+
 If you're upgrading to the latest version of the SDK, here's what's new.
 
 > ## Notice of Compulsory eIDAS Validation
 >
 > Effective 14 Spetember 2019, Token is required under PSD2 rules to validate third-party providers (TPPs) and their service requests on behalf of its PSD2-enabled banks. An initial validation check is performed during TTP onboarding to ensure that the TPP is in compliance with respective host-nation business licensing requirements for the TPP's planned service geography and that the TPP is using a legitimate eIDAS certificate issued by a qualified trust service provider (QTSP). Successful validation is required before Token can promote a TPP to production. Thereafter, automated validation checks are performed no less than 4 times per business day (GMT 0700-1800). Validation failure will suspend any subsequent service requests attempted by the TPP until the TPP's certificate or license issue is resolved.
 
-# Release 1.0.21
-  > These release notes include the changes incorporated in versions 1.0.4 thru 1.0.21.
+# Release 1.0.*x*
+  > These release notes include the changes incorporated in versions 1.0.4 thru 1.0.2*x*.
 
 ## *New Features/Enhancements*
 The following new features and enhancements are introduced:
