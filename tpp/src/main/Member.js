@@ -21,6 +21,9 @@ import type {
     BulkTransfer,
     VerifyEidasPayload,
     VerifyEidasResponse,
+    GetBankAuthUrlResponse,
+    OnBankAuthCallbackResponse,
+    GetRawConsentResponse,
 } from '@token-io/core';
 
 /**
@@ -481,6 +484,44 @@ export default class Member extends CoreMember {
     verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {
         return Util.callAsync(this.verifyEidas, async () => {
             await this._client.verifyEidas(payload, signature);
+        });
+    }
+
+    /**
+     * Get url to bank authorization page for a token request.
+     *
+     * @param bankId {string} Bank Id
+     * @param tokenRequestId {string} Token Request Id
+     * @returns {GetBankAuthUrlResponse} url
+     */
+    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<GetBankAuthUrlResponse> {
+        return Util.callAsync(this.getBankAuthUrl, async () => {
+            await this._client.getBankAuthUrl(bankId, tokenRequestId);
+        });
+    }
+
+    /**
+     * Forward the callback from the bank (after user authentication) to Token.
+     *
+     * @param bankId {string} Bank Id
+     * @param query {string} HTTP query string
+     * @returns {OnBankAuthCallbackResponse} token request ID
+     */
+    onBankAuthCallback(bankId: string, query: string): Promise<OnBankAuthCallbackResponse> {
+        return Util.callAsync(this.getBankAuthUrl, async () => {
+            await this._client.onBankAuthCallback(bankId, query);
+        });
+    }
+
+    /**
+     * Get the raw consent from the bank associated with a token.
+     *
+     * @param tokenId {string} Token Id
+     * @returns {GetRawConsentResponse} raw consent
+     */
+    getRawConsent(tokenId: string): Promise<GetRawConsentResponse> {
+        return Util.callAsync(this.getBankAuthUrl, async () => {
+            await this._client.onBankAuthCallback(tokenId);
         });
     }
 }
