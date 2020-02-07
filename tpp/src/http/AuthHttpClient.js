@@ -401,6 +401,50 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._instance(request);
     }
 
+    /**
+     * Get url to bank authorization page for a token request.
+     *
+     * @param bankId {string} Bank Id
+     * @param tokenRequestId {string} Token request id
+     * @returns {Object} response to the api call
+     */
+    async getBankAuthUrl(bankId, tokenRequestId){
+        const request = {
+            method: 'post',
+            url: `/banks/${bankId}/token-requests/${tokenRequestId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Forward the callback from the bank (after user authentication) to Token.
+     *
+     * @param bankId {string} bank Id
+     * @param query {string} HTTP query string
+     * @returns {Object} response to the api call
+     */
+    async onBankAuthCallback(bankId, query){
+        const request = {
+            method: 'post',
+            url: `/banks/${bankId}/callback?query=${query}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Get the raw consent from the bank associated with a token.
+     *
+     * @param tokenId {string} Token Id
+     * @returns {Object} response to the api call
+     */
+    async getRawConsent(tokenId){
+        const request = {
+            method: 'get',
+            url: `/tokens/${tokenId}/consent`,
+        };
+        return this._instance(request);
+    }
+
     async _tokenOperation(token, operation, suffix) {
         const tokenId = token.id;
         const request = {

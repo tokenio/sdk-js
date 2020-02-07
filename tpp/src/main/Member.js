@@ -483,4 +483,46 @@ export default class Member extends CoreMember {
             await this._client.verifyEidas(payload, signature);
         });
     }
+
+    /**
+     * Get url to bank authorization page for a token request.
+     *
+     * @param bankId {string} Bank Id
+     * @param tokenRequestId {string} Token Request Id
+     * @returns {string} url
+     */
+    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
+        return Util.callAsync(this.getBankAuthUrl, async () => {
+            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId);
+            return res.data.url;
+        });
+    }
+
+    /**
+     * Forward the callback from the bank (after user authentication) to Token.
+     *
+     * @param bankId {string} Bank Id
+     * @param query {string} HTTP query string
+     * @returns {string} token request ID
+     */
+    onBankAuthCallback(bankId: string, query: string): Promise<string> {
+        return Util.callAsync(this.onBankAuthCallback, async () => {
+            const encodedQuery = query && encodeURIComponent(query) || '';
+            const res = await this._client.onBankAuthCallback(bankId, encodedQuery);
+            return res.data.tokenRequestId;
+        });
+    }
+
+    /**
+     * Get the raw consent from the bank associated with a token.
+     *
+     * @param tokenId {string} Token Id
+     * @returns {string} raw consent
+     */
+    getRawConsent(tokenId: string): Promise<string> {
+        return Util.callAsync(this.getRawConsent, async () => {
+            const res = await this._client.getRawConsent(tokenId);
+            return res.data.consent;
+        });
+    }
 }

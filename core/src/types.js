@@ -315,8 +315,8 @@ export type BulkTransfer = {
     tokenid: string,
     createdAtMs: string,
     transactions: Array<Object>,  // Transactions for which the bank provides IDs and/or statuses.
-                                      // Might not be populated right away.
-    totalAmount: string,             // Total amount irrespective of currency. Used for redundancy check.
+                                  // Might not be populated right away.
+    totalAmount: string,          // Total amount irrespective of currency. Used for redundancy check.
     source: TransferEndpoint,
 };
 
