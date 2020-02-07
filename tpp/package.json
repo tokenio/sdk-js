@@ -1,6 +1,10 @@
 {
     "name": "@token-io/tpp",
+<<<<<<< HEAD
     "version": "1.0.31",
+=======
+    "version": "1.0.32",
+>>>>>>> Modified the changes according to RD-2714 of sdk-java
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {

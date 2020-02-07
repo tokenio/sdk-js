@@ -109,26 +109,6 @@ export class Member {
     }
 
     /**
-     * Sets the security metadata to be sent with each request.
-     *
-     * @param securityMetadata
-     */
-    setSecurityMetadata(securityMetadata: SecurityMetadata): void {
-        return Util.callSync(this.setSecurityMetadata, () => {
-            this._client.setSecurityMetadata(securityMetadata);
-        });
-    }
-
-    /**
-     * Clears the security metadata.
-     */
-    clearSecurityMetadata(): void {
-        return Util.callSync(this.clearSecurityMetadata, () => {
-            this._client.clearSecurityMetadata();
-        });
-    }
-
-    /**
      * Approves a new key for this member.
      *
      * @param key - key to add
