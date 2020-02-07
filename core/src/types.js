@@ -340,15 +340,3 @@ export type VerifyEidasResponse = {
   status: KonsentusVerificationStatus,
   statusDetails: string,
 };
-
-export type GetBankAuthUrlResponse = {
-    url: string,
-};
-
-export type OnBankAuthCallbackResponse = {
-    tokenRequestId: string,
-};
-
-export type GetRawConsentResponse = {
-    consent: string,
-};

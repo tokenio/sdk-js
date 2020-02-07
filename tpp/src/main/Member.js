@@ -21,9 +21,6 @@ import type {
     BulkTransfer,
     VerifyEidasPayload,
     VerifyEidasResponse,
-    GetBankAuthUrlResponse,
-    OnBankAuthCallbackResponse,
-    GetRawConsentResponse,
 } from '@token-io/core';
 
 /**
@@ -492,11 +489,12 @@ export default class Member extends CoreMember {
      *
      * @param bankId {string} Bank Id
      * @param tokenRequestId {string} Token Request Id
-     * @returns {GetBankAuthUrlResponse} url
+     * @returns {string} url
      */
-    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<GetBankAuthUrlResponse> {
+    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
         return Util.callAsync(this.getBankAuthUrl, async () => {
-            await this._client.getBankAuthUrl(bankId, tokenRequestId);
+            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId);
+            return res.data.url;
         });
     }
 
@@ -505,11 +503,12 @@ export default class Member extends CoreMember {
      *
      * @param bankId {string} Bank Id
      * @param query {string} HTTP query string
-     * @returns {OnBankAuthCallbackResponse} token request ID
+     * @returns {string} token request ID
      */
-    onBankAuthCallback(bankId: string, query: string): Promise<OnBankAuthCallbackResponse> {
-        return Util.callAsync(this.getBankAuthUrl, async () => {
-            await this._client.onBankAuthCallback(bankId, query);
+    onBankAuthCallback(bankId: string, query: string): Promise<string> {
+        return Util.callAsync(this.onBankAuthCallback, async () => {
+            const res = await this._client.onBankAuthCallback(bankId, query);
+            return res.data.tokenRequestId;
         });
     }
 
@@ -517,11 +516,12 @@ export default class Member extends CoreMember {
      * Get the raw consent from the bank associated with a token.
      *
      * @param tokenId {string} Token Id
-     * @returns {GetRawConsentResponse} raw consent
+     * @returns {string} raw consent
      */
-    getRawConsent(tokenId: string): Promise<GetRawConsentResponse> {
-        return Util.callAsync(this.getBankAuthUrl, async () => {
-            await this._client.onBankAuthCallback(tokenId);
+    getRawConsent(tokenId: string): Promise<string> {
+        return Util.callAsync(this.getRawConsent, async () => {
+            const res = await this._client.getRawConsent(tokenId);
+            return res.data.consent;
         });
     }
 }
