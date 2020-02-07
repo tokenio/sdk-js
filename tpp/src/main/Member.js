@@ -507,7 +507,7 @@ export default class Member extends CoreMember {
      */
     onBankAuthCallback(bankId: string, query: string): Promise<string> {
         return Util.callAsync(this.onBankAuthCallback, async () => {
-            const encodedQuery = `query=${query && encodeURIComponent(query) || ''}`;
+            const encodedQuery = query && encodeURIComponent(query) || '';
             const res = await this._client.onBankAuthCallback(bankId, encodedQuery);
             return res.data.tokenRequestId;
         });

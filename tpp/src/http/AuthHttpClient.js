@@ -426,7 +426,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     async onBankAuthCallback(bankId, query){
         const request = {
             method: 'post',
-            url: `/banks/${bankId}/callback?${query}`,
+            url: `/banks/${bankId}/callback?query=${query}`,
         };
         return this._instance(request);
     }
