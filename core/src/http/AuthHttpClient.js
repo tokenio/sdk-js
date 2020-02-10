@@ -7,7 +7,7 @@ import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
 import stringify from 'fast-json-stable-stringify';
-import SecurityMetadataHeader from './SecurityMetadataHeader';
+import CustomerTrackingMetadata from './CustomerTrackingMetadata';
 
 /**
  * Client for making authenticated requests to the Token gateway.
@@ -89,33 +89,6 @@ export class AuthHttpClient {
     useKeyLevel(keyLevel) {
         this._context.keyLevel = keyLevel;
         this._resetRequestInterceptor();
-    }
-
-    /**
-     * Sets the security metadata to be sent with each request.
-     *
-     * @param {object} securityMetadata - security metadata
-     */
-    setSecurityMetadata(securityMetadata) {
-        this._securityMetadata = securityMetadata;
-        this._resetRequestInterceptor();
-    }
-
-    /**
-     * Clears the security metadata.
-     */
-    clearSecurityMetadata() {
-        this._securityMetadata = undefined;
-        this._resetRequestInterceptor();
-    }
-
-    /**
-     * Returns the security metadata.
-     *
-     * @return {object} security metadata
-     */
-    getSecurityMetadata() {
-        return this._securityMetadata;
     }
 
     /**
@@ -646,12 +619,12 @@ export class AuthHttpClient {
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(this._developerKey);
-        const securityMetadataHeader = new SecurityMetadataHeader(this._securityMetadata);
+        const customerTrackingMetadataHeader = new CustomerTrackingMetadata(this._context.customerTrackingMetadata);
         this._interceptor = this._instance.interceptors.request.use(async request => {
             await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
-            securityMetadataHeader.addSecurityMetadataHeader(request);
+            customerTrackingMetadataHeader.addCustomerTrackingData(request);
             return request;
         });
     }
