@@ -171,6 +171,7 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
+     * @deprecated
      * Gets directly integrated bank auth URL.
      *
      * @param {string} bankId - ID of the bank
