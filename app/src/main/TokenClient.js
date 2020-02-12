@@ -342,7 +342,7 @@ export class TokenClient extends Core {
      */
     getDirectBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
         return Util.callAsync(this.getDirectBankAuthUrl, async () => {
-            const res = await this._client.getDirectBankAuthUrl(bankId, tokenRequestId);
+            const res = await this._unauthenticatedClient.getDirectBankAuthUrl(bankId, tokenRequestId);
             return res.data.url;
         });
     }
