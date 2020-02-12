@@ -180,7 +180,7 @@ class HttpClient extends CoreHttpClient{
     async getDirectBankAuthUrl(bankId, tokenRequestId) {
         const request = {
             method: 'get',
-            url: `/banks/direct/${bankId}/token-requests/${tokenRequestId}`,
+            url: `/banks/${bankId}/token-requests/${tokenRequestId}/auth-url`,
         };
         return this._instance(request);
     }
