@@ -169,6 +169,21 @@ class HttpClient extends CoreHttpClient{
         };
         return this._instance(request);
     }
+
+    /**
+     * Gets directly integrated bank auth URL.
+     *
+     * @param {string} bankId - ID of the bank
+     * @param {string} tokenRequestId - ID of the token request
+     * @return {Promise} response to the API call
+     */
+    async getDirectBankAuthUrl(bankId, tokenRequestId) {
+        const request = {
+            method: 'get',
+            url: `/banks/direct/${bankId}/token-requests/${tokenRequestId}`,
+        };
+        return this._instance(request);
+    }
 }
 
 export default HttpClient;

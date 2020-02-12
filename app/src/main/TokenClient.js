@@ -332,4 +332,18 @@ export class TokenClient extends Core {
             return res.data;
         });
     }
+
+    /**
+     * Gets directly integrated bank auth URL.
+     *
+     * @param bankId - ID of the bank
+     * @param tokenRequestId - ID of the token request
+     * @return url
+     */
+    getDirectBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
+        return Util.callAsync(this.getDirectBankAuthUrl, async () => {
+            const res = await this._client.getDirectBankAuthUrl(bankId, tokenRequestId);
+            return res.data.url;
+        });
+    }
 }
