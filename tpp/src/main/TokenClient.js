@@ -96,6 +96,7 @@ export class TokenClient extends Core {
             if (typeof resources[0] === 'string') {
                 payload = {
                     accessBody: {
+                        type: resources,
                         resourceTypeList: {
                             resources,
                         },
