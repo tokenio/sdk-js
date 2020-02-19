@@ -51,7 +51,7 @@ describe('VerifyEidasSample test', () => {
             'DBl2qEf37t3zh636m0ndS5x9A==';
 
         const member = await VerifyEidasSample.verifyEidas(
-            certificate, tppAuthNumber, 'iron', privateKey);
+            certificate, tppAuthNumber, 'gold', privateKey);
         const aliases = await member.aliases();
         assert.equal(aliases.length, 1);
         assert.equal(aliases[0].value, tppAuthNumber);
