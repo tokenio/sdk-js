@@ -1,6 +1,6 @@
 {
     "name": "@token-io/tpp",
-    "version": "1.0.32",
+    "version": "1.0.33",
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {
@@ -29,7 +29,7 @@
         "@babel/plugin-transform-runtime": "^7.5.5",
         "@babel/preset-env": "^7.5.5",
         "@babel/preset-flow": "^7.0.0",
-        "@token-io/app": "^1.0.12",
+        "@token-io/app": "^1.0.27",
         "@token-io/eslint-config": "^1.0.5",
         "babel-eslint": "^10.0.3",
         "babel-loader": "^8.0.6",

@@ -9,7 +9,7 @@
     "devSetup": "concurrently 'npm:devSetup:*'",
     "link:app": "cd app && npm link",
     "link:core": "cd core && npm link",
-    "link:tpp": "cd tpp && npm link",
+    "link:tpp": "cd tpp && npme link",
     "removeLinks": "concurrently 'npm:unlink:*'",
     "unlink:app": "npm unlink --no-save @token-io/app",
     "unlink:core": "npm unlink --no-save @token-io/core",

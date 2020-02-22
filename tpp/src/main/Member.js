@@ -21,6 +21,7 @@ import type {
     BulkTransfer,
     VerifyEidasPayload,
     VerifyEidasResponse,
+    GetEidasVerificationStatusResponse,
 } from '@token-io/core';
 
 /**
@@ -466,21 +467,37 @@ export default class Member extends CoreMember {
     }
 
     /**
-    * Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
-    * of the alias. Before making this call make sure that:<ul>
-    *     <li>The member is under the realm of a bank (the one tpp tries to gain access to)</li>
-    *     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
-    *     to the member</li>
-    *     <li>The realmId of the alias is equal to the member's realmId</li>
-    *</ul>
-    *
-    * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
-    * @param signature - the payload signed with a private key corresponding to the certificate
-    * @return a result of the verification process
-    */
+     * Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
+     * of the alias. Before making this call make sure that:<ul>
+     *     <li>The member is under the realm of a bank (the one tpp tries to gain access to)</li>
+     *     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
+     *     to the member</li>
+     *     <li>The realmId of the alias is equal to the member's realmId</li>
+     *</ul>
+     *
+     * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
+     * @param signature - the payload signed with a private key corresponding to the certificate
+     * @return a result of the verification process, including verification status and
+     *       verificationId that can be used to retrieve the status of the verification using
+     *       getEidasVerificationStatus call.
+     */
     verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {
         return Util.callAsync(this.verifyEidas, async () => {
-            await this._client.verifyEidas(payload, signature);
+            const res = await this._client.verifyEidas(payload, signature);
+            return res.data;
+        });
+    }
+
+    /**
+     * Retrieves an eIDAS verification status by verificationId.
+     *
+     * @param verificationId verification id
+     * @return a status of the verification operation together with the certificate and alias value
+     */
+    async getEidasVerificationStatus(verificationId: string): Promise<GetEidasVerificationStatusResponse> {
+        return Util.callAsync(this.getEidasVerificationStatus, async () => {
+            const res = await this._client.getEidasVerificationStatus(verificationId);
+            return res.data;
         });
     }
 

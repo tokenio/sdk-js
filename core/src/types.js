@@ -2,10 +2,12 @@
 export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE' | 'EIDAS';
 export type KeyAlgorithm = 'ED25519' | 'ECDSA_SHA256' | 'RSA';
 export type KeyLevel = 'LOW' | 'STANDARD' | 'PRIVILEGED';
-export type KonsentusVerificationStatus = 'INVALID'
+export type VerificationStatus = 'INVALID'
     | 'SUCCESS'
-    | 'FAILURE_EIDAS_INVALID'
-    | 'FAILURE_ERROR_RESPONSE';
+    | 'FAILURE_EIDAS_INVALID' // the request has succeeded, but certificate is invalid
+    | 'FAILURE_ERROR_RESPONSE' // verification service returned an error response
+    | 'FAILURE_ERROR' // an error happened during the verification process
+    | 'IN_PROGRESS'; // certificate validation has not finished yet, use getEidasVerificationStatus call to get the result later
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'COMPLETED' | 'INVALIDATED';
 export type NotifyStatus = 'ACCEPTED' | 'NO_SUBSCRIBERS';
 export type TokenOperationStatus = 'SUCCESS' | 'MORE_SIGNATURES_NEEDED';
@@ -337,6 +339,14 @@ export type VerifyEidasPayload = {
 };
 
 export type VerifyEidasResponse = {
-  status: KonsentusVerificationStatus,
-  statusDetails: string,
+    status: VerificationStatus,
+    statusDetails: string,
+    verificationId: string,
+};
+
+export type GetEidasVerificationStatusResponse = {
+    aliasValue: string,
+    certificate: string,
+    status: VerificationStatus,
+    statusDetails: string,
 };
