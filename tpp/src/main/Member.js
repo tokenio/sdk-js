@@ -478,7 +478,7 @@ export default class Member extends CoreMember {
      * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
      * @param signature - the payload signed with a private key corresponding to the certificate
      * @return a result of the verification process, including verification status and
-     *       verificationId that can be used to retrieve the status of the verification using
+     *       verificationId that can be used later to retrieve the status of the verification using
      *       getEidasVerificationStatus call.
      */
     verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {

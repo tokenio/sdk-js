@@ -49,7 +49,7 @@ class VerifyEidasSample {
             .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
         // verify eIDAS
         const response = await tpp.verifyEidas(payload, signature);
-        // get the verification status (useful if verifyEidas response returned IN_PROGRESS status)
+        // get the verification status (useful if verifyEidas returned IN_PROGRESS status)
         const verificationStatus = await tpp.getEidasVerificationStatus(response.verificationId);
         return tpp;
     }
