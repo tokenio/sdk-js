@@ -110,17 +110,6 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
     }
 
     /**
-     * Sets the provider transfer meta data.
-     *
-     * @param metadata
-     * @return StandingOrderTokenBuilder
-     */
-    setProviderTransferMetadata(metadata: Object): StandingOrderTokenBuilder {
-        this.tokenPayload.standingOrder.instructions.metadata = metadata;
-        return this;
-    }
-
-    /**
      * Sets the purpose of payment of the token.
      *
      * @param purposeOfPayment

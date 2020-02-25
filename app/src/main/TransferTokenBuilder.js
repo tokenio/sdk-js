@@ -225,6 +225,16 @@ export default class TransferTokenBuilder extends TokenBuilder{
     }
 
     /**
+     * Sets provider specific transfer metadata
+     *
+     * @param providerTransferMetadata
+     * @return builder
+     */
+    setProviderTransferMetadata(providerTransferMetadata: Object): TransferTokenBuilder {
+        this.tokenPayload.transfer.instructions.metadata.providerTransferMetadata = providerTransferMetadata;
+    }
+
+    /**
      * Creates the token.
      *
      * @return the created transfer token
