@@ -232,6 +232,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      */
     setProviderTransferMetadata(providerTransferMetadata: Object): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.metadata.providerTransferMetadata = providerTransferMetadata;
+        return this;
     }
 
     /**
