@@ -118,7 +118,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setProviderTransferMetadata(metadata: Object): TransferTokenRequestBuilder {
-        this.requestPayload.transferBody.instructions.metadata = metadata;
+        this.requestPayload.transferBody.instructions.metadata.providerTransferMetadata = metadata;
         return this;
     }
 
