@@ -12,7 +12,6 @@ import type {
     KeyLevel,
     OauthBankAuthorization,
     RecoveryRule,
-    SecurityMetadata,
     Transaction,
     Notification,
     Signature,

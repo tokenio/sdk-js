@@ -109,16 +109,19 @@ class AuthHeader {
     }
 
     static _customerTrackingMetadata(context){
-        let customerTrackingData = "";
-        if(context && context.customerTrackingMetadata !== {}){
+        let customerTrackingData = '';
+        if(context &&  Object.keys(this._customerTrackingData).length > 0){
             if(context.customerTrackingMetadata.deviceId !== undefined){
-                customerTrackingData += ",token-customer-device-id="+ context.customerTrackingMetadata.deviceId;
+                customerTrackingData += ',token-customer-device-id='
+                    + context.customerTrackingMetadata.deviceId;
             }
             if(context.customerTrackingMetadata.geoLocation !== undefined){
-                customerTrackingData += ",token-customer-geo-location="+ context.customerTrackingMetadata.geoLocation;
+                customerTrackingData += ',token-customer-geo-location='
+                    + context.customerTrackingMetadata.geoLocation;
             }
             if(context.customerTrackingMetadata.ipAddress !== undefined){
-                customerTrackingData += ",token-customer-ip-address="+ context.customerTrackingMetadata.ipAddress;
+                customerTrackingData += ',token-customer-ip-address='
+                    + context.customerTrackingMetadata.ipAddress;
             }
         }
         return customerTrackingData;
