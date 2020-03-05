@@ -110,7 +110,7 @@ class AuthHeader {
 
     static _customerTrackingMetadata(context){
         let customerTrackingData = '';
-        if(context &&  Object.keys(this._customerTrackingData).length > 0){
+        if(context && Object.keys(context.customerTrackingMetadata).length > 0){
             if(context.customerTrackingMetadata.deviceId !== undefined){
                 customerTrackingData += ',token-customer-device-id='
                     + context.customerTrackingMetadata.deviceId;
