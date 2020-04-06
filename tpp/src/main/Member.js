@@ -21,6 +21,7 @@ import type {
     BulkTransfer,
     VerifyEidasPayload,
     VerifyEidasResponse,
+    GetEidasVerificationStatusResponse,
 } from '@token-io/core';
 
 /**
@@ -312,11 +313,6 @@ export default class Member extends CoreMember {
                 description,
                 destinations,
                 refId);
-            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
-                const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
-                error.authorizationDetails = res.data.authorizationDetails;
-                throw error;
-            }
             return res.data.transfer;
         });
     }
@@ -471,21 +467,79 @@ export default class Member extends CoreMember {
     }
 
     /**
-    * Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
-    * of the alias. Before making this call make sure that:<ul>
-    *     <li>The member is under the realm of a bank (the one tpp tries to gain access to)</li>
-    *     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
-    *     to the member</li>
-    *     <li>The realmId of the alias is equal to the member's realmId</li>
-    *</ul>
-    *
-    * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
-    * @param signature - the payload signed with a private key corresponding to the certificate
-    * @return a result of the verification process
-    */
+     * Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
+     * of the alias. Before making this call make sure that:<ul>
+     *     <li>The member is under the realm of a bank (the one tpp tries to gain access to)</li>
+     *     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
+     *     to the member</li>
+     *     <li>The realmId of the alias is equal to the member's realmId</li>
+     *</ul>
+     *
+     * @param payload - payload containing the member id and the base64 encoded eIDAS certificate
+     * @param signature - the payload signed with a private key corresponding to the certificate
+     * @return a result of the verification process, including verification status and
+     *       verificationId that can be used later to retrieve the status of the verification using
+     *       getEidasVerificationStatus call.
+     */
     verifyEidas(payload: VerifyEidasPayload, signature: string): Promise<VerifyEidasResponse> {
         return Util.callAsync(this.verifyEidas, async () => {
-            await this._client.verifyEidas(payload, signature);
+            const res = await this._client.verifyEidas(payload, signature);
+            return res.data;
+        });
+    }
+
+    /**
+     * Retrieves an eIDAS verification status by verificationId.
+     *
+     * @param verificationId verification id
+     * @return a status of the verification operation together with the certificate and alias value
+     */
+    async getEidasVerificationStatus(verificationId: string): Promise<GetEidasVerificationStatusResponse> {
+        return Util.callAsync(this.getEidasVerificationStatus, async () => {
+            const res = await this._client.getEidasVerificationStatus(verificationId);
+            return res.data;
+        });
+    }
+
+    /**
+     * Get url to bank authorization page for a token request.
+     *
+     * @param bankId {string} Bank Id
+     * @param tokenRequestId {string} Token Request Id
+     * @returns {string} url
+     */
+    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
+        return Util.callAsync(this.getBankAuthUrl, async () => {
+            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId);
+            return res.data.url;
+        });
+    }
+
+    /**
+     * Forward the callback from the bank (after user authentication) to Token.
+     *
+     * @param bankId {string} Bank Id
+     * @param query {string} HTTP query string
+     * @returns {string} token request ID
+     */
+    onBankAuthCallback(bankId: string, query: string): Promise<string> {
+        return Util.callAsync(this.onBankAuthCallback, async () => {
+            const encodedQuery = query && encodeURIComponent(query) || '';
+            const res = await this._client.onBankAuthCallback(bankId, encodedQuery);
+            return res.data.tokenRequestId;
+        });
+    }
+
+    /**
+     * Get the raw consent from the bank associated with a token.
+     *
+     * @param tokenId {string} Token Id
+     * @returns {string} raw consent
+     */
+    getRawConsent(tokenId: string): Promise<string> {
+        return Util.callAsync(this.getRawConsent, async () => {
+            const res = await this._client.getRawConsent(tokenId);
+            return res.data.consent;
         });
     }
 }

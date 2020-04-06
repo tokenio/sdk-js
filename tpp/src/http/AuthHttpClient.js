@@ -347,9 +347,23 @@ class AuthHttpClient extends CoreAuthHttpClient {
             signature,
         };
         const request = {
-            method: 'put',
-            url: '/verifications/eidas',
+            method: 'post',
+            url: '/eidas/verifications',
             data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Retrieves an eIDAS verification status by verificationId.
+     *
+     * @param verificationId verification id
+     * @return a status of the verification operation together with the certificate and alias value
+     */
+    async getEidasVerificationStatus(verificationId) {
+        const request = {
+            method: 'get',
+            url: `/eidas/verifications/${verificationId}`,
         };
         return this._instance(request);
     }
@@ -397,6 +411,50 @@ class AuthHttpClient extends CoreAuthHttpClient {
         const request = {
             method: 'get',
             url: `/bulk-transfers/${bulkTransferId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Get url to bank authorization page for a token request.
+     *
+     * @param bankId {string} Bank Id
+     * @param tokenRequestId {string} Token request id
+     * @returns {Object} response to the api call
+     */
+    async getBankAuthUrl(bankId, tokenRequestId){
+        const request = {
+            method: 'post',
+            url: `/banks/${bankId}/token-requests/${tokenRequestId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Forward the callback from the bank (after user authentication) to Token.
+     *
+     * @param bankId {string} bank Id
+     * @param query {string} HTTP query string
+     * @returns {Object} response to the api call
+     */
+    async onBankAuthCallback(bankId, query){
+        const request = {
+            method: 'post',
+            url: `/banks/${bankId}/callback?query=${query}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Get the raw consent from the bank associated with a token.
+     *
+     * @param tokenId {string} Token Id
+     * @returns {Object} response to the api call
+     */
+    async getRawConsent(tokenId){
+        const request = {
+            method: 'get',
+            url: `/tokens/${tokenId}/consent`,
         };
         return this._instance(request);
     }

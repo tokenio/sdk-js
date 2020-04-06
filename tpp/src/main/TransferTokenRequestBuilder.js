@@ -114,11 +114,19 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
     /**
      * Adds metadata for a specific provider.
      *
-     * @param metadata provider-specific metadata
+     * @param providerTransferMetadata provider-specific metadata
      * @return TransferTokenRequestBuilder
      */
-    setProviderTransferMetadata(metadata: Object): TransferTokenRequestBuilder {
-        this.requestPayload.transferBody.instructions.metadata = metadata;
+    setProviderTransferMetadata(providerTransferMetadata: Object): TransferTokenRequestBuilder {
+        if(!this.requestPayload.transferBody.instructions)
+        {
+            this.requestPayload.transferBody.instructions = {};
+        }
+        if(!this.requestPayload.transferBody.instructions.metadata)
+        {
+            this.requestPayload.transferBody.instructions.metadata = {};
+        }
+        this.requestPayload.transferBody.instructions.metadata.providerTransferMetadata = providerTransferMetadata;
         return this;
     }
 
@@ -153,7 +161,11 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setSource(source: TransferEndpoint): TransferTokenRequestBuilder {
-        this.requestPayload.transferBody.instructions = { source };
+        if(!this.requestPayload.transferBody.instructions)
+        {
+            this.requestPayload.transferBody.instructions = {};
+        }
+        this.requestPayload.transferBody.instructions.source = source;
         return this;
     }
 }
