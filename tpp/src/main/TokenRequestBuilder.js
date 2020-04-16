@@ -147,6 +147,17 @@ export default class TokenRequestBuilder {
     }
 
     /**
+     * Sets the expiration of the token.
+     *
+     * @param tokenExpiration
+     * @return TokenRequestBuilder
+     */
+    setTokenExpiration(tokenExpiration: number | string): TokenRequestBuilder {
+        this.requestPayload.tokenExpiration = tokenExpiration.toString();
+        return this;
+    }
+
+    /**
      * Sets the callback state.
      *
      * @param state - arbitrary JS object or string
