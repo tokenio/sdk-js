@@ -1,5 +1,6 @@
 import HttpClient from '../../src/http/HttpClient';
 import MemoryCryptoEngine from '../../../core/src/security/engines/MemoryCryptoEngine';
+import Util from '../../src/Util';
 const {assert} = require('chai');
 const devKey = require('../../src/config.json').devKey[TEST_ENV];
 
@@ -8,6 +9,12 @@ describe('Unauthenticated', () => {
         const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
         const res = await unauthenticatedClient.createMemberId();
         assert.isOk(res.data.memberId);
+    });
+
+    it('should get direct bank auth url', async () => {
+        const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
+        const res = await unauthenticatedClient.getDirectBankAuthUrl('silver', Util.generateNonce());
+        assert.isOk(res.data.url);
     });
 
     it('should add a key', async () => {
@@ -39,7 +46,7 @@ describe('Unauthenticated', () => {
         // Override sdk version to force version mismatch error.
         unauthenticatedClient._instance.interceptors.request.eject(0);
         unauthenticatedClient._instance.interceptors.request.use(config => {
-            config.headers['token-sdk'] = 'js';
+            config.headers['token-sdk'] = 'js-user';
             config.headers['token-sdk-version'] = '0.0.1';
             return config;
         });

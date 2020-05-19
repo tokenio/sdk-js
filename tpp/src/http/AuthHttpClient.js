@@ -352,9 +352,23 @@ class AuthHttpClient extends CoreAuthHttpClient {
             signature,
         };
         const request = {
-            method: 'put',
-            url: '/verifications/eidas',
+            method: 'post',
+            url: '/eidas/verifications',
             data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Retrieves an eIDAS verification status by verificationId.
+     *
+     * @param verificationId verification id
+     * @return a status of the verification operation together with the certificate and alias value
+     */
+    async getEidasVerificationStatus(verificationId) {
+        const request = {
+            method: 'get',
+            url: `/eidas/verifications/${verificationId}`,
         };
         return this._instance(request);
     }
