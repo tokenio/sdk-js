@@ -16,15 +16,10 @@ class AuthHttpClient extends CoreAuthHttpClient {
      *
      * @param {string} accessTokenId - Id of the access token
      * @param {boolean} customerInitiated - whether the user initiated this session / request
-     * @param {CustomerTrackingMetadata} customerTrackingMetadata
      */
-    useAccessToken(accessTokenId, customerInitiated = false, customerTrackingMetadata = {}) {
+    useAccessToken(accessTokenId, customerInitiated = false) {
         this._context.customerInitiated = customerInitiated;
         this._context.onBehalfOf = accessTokenId;
-        if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
-            this._context.customerInitiated = true;
-            this._context.customerTrackingMetadata = customerTrackingMetadata;
-        }
         this._resetRequestInterceptor();
     }
 
