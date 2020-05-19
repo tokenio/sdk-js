@@ -21,6 +21,7 @@ import type {
     BulkTransfer,
     VerifyEidasPayload,
     VerifyEidasResponse,
+    CustomerTrackingMetadata,
     GetEidasVerificationStatusResponse,
 } from '@token-io/core';
 
@@ -79,13 +80,26 @@ export default class Member extends CoreMember {
      * Creates a representable that acts as another member via an access token.
      *
      * @param accessTokenId - ID of the access token
+     * @param {CustomerTrackingMetadata} customerTrackingMetadata
+     * @param {boolean} customerInitiated
      * @return new member that acts as another member
      */
-    forAccessToken(accessTokenId: string): Representable {
+    forAccessToken(
+        accessTokenId: string,
+        customerInitiated?: boolean,
+        customerTrackingMetadata: CustomerTrackingMetadata,
+    ): Representable {
         return Util.callSync(this.forAccessToken, () => {
             const newMember = new Member(this._options);
-            newMember._client.useAccessToken(accessTokenId);
-            newMember._client.setSecurityMetadata(this._client.getSecurityMetadata());
+
+            if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
+                throw new Error('User tracking metadata is empty. Use forAccessToken(String) instead.');
+            } else if(!customerTrackingMetadata){
+                newMember._client.useAccessToken(accessTokenId, customerInitiated);
+                return new Representable(newMember);
+            }
+
+            newMember._client.useAccessToken(accessTokenId, true, customerTrackingMetadata);
             return new Representable(newMember);
         });
     }
@@ -355,7 +369,7 @@ export default class Member extends CoreMember {
     /**
      * Redeems a standing order token.
      *
-     * @param token - token to redeem. Can also be a tokenId
+     * @param {string} tokenId - token to redeem. Can also be a tokenId
      * @return standing order submission created as a result of this redeem call
      */
     redeemStandingOrderToken(
