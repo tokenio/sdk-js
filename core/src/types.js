@@ -286,7 +286,7 @@ export type SecurityMetadata = {
 export type CustomerTrackingMetadata = {
     ipAddress: string, // IP address of the customer. Required when the request is initiated by the customer, which means the request is exempted from the PSD2 data access restriction.
     geoLocation: string, // Optional. Geographical location of the customer.
-    deviceId: string; // Optional. Universally Unique Identifier for a device of the customer that identifies either a device or a device dependent application installation.
+    deviceId: string, // Optional. Universally Unique Identifier for a device of the customer that identifies either a device or a device dependent application installation.
 }
 
 export type StandingOrder = {

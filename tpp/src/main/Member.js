@@ -81,16 +81,21 @@ export default class Member extends CoreMember {
      *
      * @param accessTokenId - ID of the access token
      * @param {CustomerTrackingMetadata} customerTrackingMetadata
+     * @param {boolean} customerInitiated
      * @return new member that acts as another member
      */
-    forAccessToken(accessTokenId: string, customerTrackingMetadata: CustomerTrackingMetadata): Representable {
+    forAccessToken(
+        accessTokenId: string,
+        customerTrackingMetadata: CustomerTrackingMetadata,
+        customerInitiated?: boolean
+    ): Representable {
         return Util.callSync(this.forAccessToken, () => {
             const newMember = new Member(this._options);
 
             if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
                 throw  'User tracking metadata is empty. Use forAccessToken(String) instead.';
             } else if(!customerTrackingMetadata){
-                newMember._client.useAccessToken(accessTokenId);
+                newMember._client.useAccessToken(accessTokenId, customerInitiated);
                 return new Representable(newMember);
             }
 
