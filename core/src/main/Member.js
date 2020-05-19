@@ -12,6 +12,7 @@ import type {
     KeyLevel,
     OauthBankAuthorization,
     RecoveryRule,
+    SecurityMetadata,
     Transaction,
     Notification,
     Signature,
@@ -104,6 +105,26 @@ export class Member {
         return Util.callAsync(this.keys, async () => {
             const member = await this._getMember();
             return member.keys || [];
+        });
+    }
+
+    /**
+     * Sets the security metadata to be sent with each request.
+     *
+     * @param securityMetadata
+     */
+    setSecurityMetadata(securityMetadata: SecurityMetadata): void {
+        return Util.callSync(this.setSecurityMetadata, () => {
+            this._client.setSecurityMetadata(securityMetadata);
+        });
+    }
+
+    /**
+     * Clears the security metadata.
+     */
+    clearSecurityMetadata(): void {
+        return Util.callSync(this.clearSecurityMetadata, () => {
+            this._client.clearSecurityMetadata();
         });
     }
 
