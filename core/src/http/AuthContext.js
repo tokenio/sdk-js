@@ -1,4 +1,5 @@
 import config from '../config.json';
+import type {CustomerTrackingMetadata} from '../types';
 
 /**
  * Handles the auth context when using access tokens.
@@ -11,6 +12,7 @@ class AuthContext {
         this._onBehalfOf = undefined;
         this._keyLevel = config.KeyLevel.LOW;
         this._customerInitiated = false;
+        this._customerTrackingMetadata = {};
     }
 
     /**
@@ -66,6 +68,22 @@ class AuthContext {
      */
     get customerInitiated() {
         return this._customerInitiated;
+    }
+
+    /**
+     * Gets the customer tracking metadata
+     * @returns {CustomerTrackingMetadata}
+     */
+    get customerTrackingMetadata() {
+        return this._customerTrackingMetadata;
+    }
+
+    /**
+     * Sets the customer tracking metadata
+     * @param {CustomerTrackingMetadata} value
+     */
+    set customerTrackingMetadata(value) {
+        this._customerTrackingMetadata = value;
     }
 }
 
