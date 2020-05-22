@@ -1,5 +1,4 @@
 import {AuthHttpClient as CoreAuthHttpClient} from '@token-io/core';
-import Util from '../Util';
 import config from '../config.json';
 import base64js from 'base64-js';
 
@@ -460,6 +459,50 @@ class AuthHttpClient extends CoreAuthHttpClient {
         const request = {
             method: 'get',
             url: `/tokens/${tokenId}/consent`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Set a webhook config. The config contains a url and a list of event types.
+     *
+     * @param {Object} config - webhook config
+     * @returns {Object} response to the api call
+     */
+    async setWebhookConfig(config){
+        const req = {
+            config,
+        };
+        const request = {
+            method: 'put',
+            url: '/webhook/config',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Get the webhook config.
+     *
+     * @returns {Object} response to the api call
+     */
+    async getWebhookConfig(){
+        const request = {
+            method: 'get',
+            url: '/webhook/config',
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Delete the webhook config.
+     *
+     * @returns {Object} response to the api call
+     */
+    async deleteWebhookConfig(){
+        const request = {
+            method: 'delete',
+            url: '/webhook/config',
         };
         return this._instance(request);
     }

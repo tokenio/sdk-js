@@ -45,6 +45,9 @@ export type SubmissionStatus = 'INVALID'
     | 'SUCCESS'
     | 'FAILED'
     | 'INITIATED';
+export type EventType = 'INVALID'
+    | 'TRANSFER_STATUS_CHANGED'
+    | 'BULK_TRANSFER_STATUS_CHANGED';
 
 export type Alias = {
     type: AliasType,
@@ -355,4 +358,9 @@ export type GetEidasVerificationStatusResponse = {
     certificate: string,
     status: VerificationStatus,
     statusDetails: string,
+};
+
+export type WebhookConfig = {
+    url: string,
+    type: Array<EventType>,
 };
