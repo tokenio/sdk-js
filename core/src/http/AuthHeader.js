@@ -70,7 +70,8 @@ class AuthHeader {
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
             AuthHeader._onBehalfOfHeader(context) +
-            AuthHeader._customerInitiated(context);
+            AuthHeader._customerInitiated(context) +
+            AuthHeader._customerTrackingMetadata(context);
 
         request.headers = {
             Authorization: header,
@@ -105,6 +106,25 @@ class AuthHeader {
             return ',customer-initiated=true';
         }
         return '';
+    }
+
+    static _customerTrackingMetadata(context){
+        let customerTrackingData = '';
+        if(context && Object.keys(context.customerTrackingMetadata).length > 0){
+            if(context.customerTrackingMetadata.deviceId !== undefined){
+                customerTrackingData += ',token-customer-device-id='
+                    + context.customerTrackingMetadata.deviceId;
+            }
+            if(context.customerTrackingMetadata.geoLocation !== undefined){
+                customerTrackingData += ',token-customer-geo-location='
+                    + context.customerTrackingMetadata.geoLocation;
+            }
+            if(context.customerTrackingMetadata.ipAddress !== undefined){
+                customerTrackingData += ',token-customer-ip-address='
+                    + context.customerTrackingMetadata.ipAddress;
+            }
+        }
+        return customerTrackingData;
     }
 }
 

@@ -45,6 +45,9 @@ export type SubmissionStatus = 'INVALID'
     | 'SUCCESS'
     | 'FAILED'
     | 'INITIATED';
+export type EventType = 'INVALID'
+    | 'TRANSFER_STATUS_CHANGED'
+    | 'BULK_TRANSFER_STATUS_CHANGED';
 
 export type Alias = {
     type: AliasType,
@@ -283,6 +286,12 @@ export type SecurityMetadata = {
     deviceFingerprint: string,
 };
 
+export type CustomerTrackingMetadata = {
+    ipAddress: string, // IP address of the customer. Required when the request is initiated by the customer, which means the request is exempted from the PSD2 data access restriction.
+    geoLocation: string, // Optional. Geographical location of the customer.
+    deviceId: string, // Optional. Universally Unique Identifier for a device of the customer that identifies either a device or a device dependent application installation.
+}
+
 export type StandingOrder = {
     id: string,
     status: string,
@@ -349,4 +358,9 @@ export type GetEidasVerificationStatusResponse = {
     certificate: string,
     status: VerificationStatus,
     statusDetails: string,
+};
+
+export type WebhookConfig = {
+    url: string,
+    type: Array<EventType>,
 };

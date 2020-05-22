@@ -21,7 +21,9 @@ import type {
     BulkTransfer,
     VerifyEidasPayload,
     VerifyEidasResponse,
+    CustomerTrackingMetadata,
     GetEidasVerificationStatusResponse,
+    WebhookConfig,
 } from '@token-io/core';
 
 /**
@@ -79,13 +81,27 @@ export default class Member extends CoreMember {
      * Creates a representable that acts as another member via an access token.
      *
      * @param accessTokenId - ID of the access token
+     * @param {CustomerTrackingMetadata} customerTrackingMetadata
+     * @param {boolean} customerInitiated
      * @return new member that acts as another member
      */
-    forAccessToken(accessTokenId: string): Representable {
+    forAccessToken(
+        accessTokenId: string,
+        customerInitiated?: boolean,
+        customerTrackingMetadata: CustomerTrackingMetadata,
+    ): Representable {
         return Util.callSync(this.forAccessToken, () => {
             const newMember = new Member(this._options);
-            newMember._client.useAccessToken(accessTokenId);
-            newMember._client.setSecurityMetadata(this._client.getSecurityMetadata());
+
+            if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
+                throw new Error('User tracking metadata is empty.\
+                 Use forAccessToken(String) instead.');
+            } else if(!customerTrackingMetadata){
+                newMember._client.useAccessToken(accessTokenId, customerInitiated);
+                return new Representable(newMember);
+            }
+
+            newMember._client.useAccessToken(accessTokenId, true, customerTrackingMetadata);
             return new Representable(newMember);
         });
     }
@@ -355,7 +371,7 @@ export default class Member extends CoreMember {
     /**
      * Redeems a standing order token.
      *
-     * @param token - token to redeem. Can also be a tokenId
+     * @param {string} tokenId - token to redeem. Can also be a tokenId
      * @return standing order submission created as a result of this redeem call
      */
     redeemStandingOrderToken(
@@ -418,7 +434,10 @@ export default class Member extends CoreMember {
      * @param limit - how many to retrieve
      * @return standing order submissions
      */
-    getStandingOrderSubmissions(offset: string, limit: string): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
+    getStandingOrderSubmissions(
+        offset: string,
+        limit: string
+    ): Promise<{submissions: Array<StandingOrderSubmission>, offset: string}> {
         return Util.callAsync(this.getStandingOrderSubmissions, async () => {
             const res = await this._client.getStandingOrderSubmissions(offset, limit);
             return {
@@ -435,9 +454,14 @@ export default class Member extends CoreMember {
      * @param transferDestinations destination account
      * @return observable that completes when request handled
      */
-    setTokenRequestTransferDestinations(tokenRequestId: string, transferDestinations: Array<TransferDestination>): Promise<{}> {
+    setTokenRequestTransferDestinations(
+        tokenRequestId: string,
+        transferDestinations: Array<TransferDestination>
+    ): Promise<{}> {
         return Util.callAsync(this.setTokenRequestTransferDestinations, async () => {
-            return await this._client.setTokenRequestTransferDestinations(tokenRequestId, transferDestinations);
+            return await this._client.setTokenRequestTransferDestinations(
+                tokenRequestId,
+                transferDestinations);
         });
     }
 
@@ -494,7 +518,9 @@ export default class Member extends CoreMember {
      * @param verificationId verification id
      * @return a status of the verification operation together with the certificate and alias value
      */
-    async getEidasVerificationStatus(verificationId: string): Promise<GetEidasVerificationStatusResponse> {
+    async getEidasVerificationStatus(
+        verificationId: string
+    ): Promise<GetEidasVerificationStatusResponse> {
         return Util.callAsync(this.getEidasVerificationStatus, async () => {
             const res = await this._client.getEidasVerificationStatus(verificationId);
             return res.data;
@@ -540,6 +566,41 @@ export default class Member extends CoreMember {
         return Util.callAsync(this.getRawConsent, async () => {
             const res = await this._client.getRawConsent(tokenId);
             return res.data.consent;
+        });
+    }
+
+    /**
+     * Set a webhook config. The config contains a url and a list of event types.
+     *
+     * @param {WebhookConfig} config - webhook config
+     * @returns empty
+     */
+    setWebhookConfig(config: WebhookConfig): Promise<void> {
+        return Util.callAsync(this.setWebhookConfig, async () => {
+            await this._client.setWebhookConfig(config);
+        });
+    }
+
+    /**
+     * Get the webhook config.
+     *
+     * @returns {WebhookConfig} webhook config
+     */
+    getWebhookConfig(): Promise<WebhookConfig> {
+        return Util.callAsync(this.getWebhookConfig, async () => {
+            const res = await this._client.getWebhookConfig();
+            return res.data.config;
+        });
+    }
+
+    /**
+     * Delete the webhook config.
+     *
+     * @returns empty
+     */
+    deleteWebhookConfig(): Promise<void> {
+        return Util.callAsync(this.deleteWebhookConfig, async () => {
+            await this._client.deleteWebhookConfig();
         });
     }
 }
