@@ -29,7 +29,7 @@ class WebhookSample {
     }
 
     /**
-     * Set a webhook config
+     * Delete the webhook config
 
      * @param {Object} tppAuthNumber authNumber of the TPP
      * @return empty
