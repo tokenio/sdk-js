@@ -330,7 +330,7 @@ export class TokenClient extends Core {
      */
     getTokenRequestResult(
         tokenRequestId: string
-    ): Promise<{tokenId: string, signature: Signature}> {
+    ): Promise<{tokenId: string, signature: Signature, transferId: string}> {
         return Util.callAsync(this.getTokenRequestResult, async () => {
             const res = await this._unauthenticatedClient.getTokenRequestResult(tokenRequestId);
             return res.data;
