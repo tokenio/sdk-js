@@ -326,7 +326,7 @@ export class TokenClient extends Core {
      * Gets the token request result based on its token request ID.
      *
      * @param tokenRequestId - token request ID
-     * @return token ID and signature
+     * @return token ID, signature, and transfer ID if present
      */
     getTokenRequestResult(
         tokenRequestId: string
