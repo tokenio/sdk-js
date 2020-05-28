@@ -18,6 +18,7 @@ import type {
     TokenRequestTransferDestinationsCallbackParameters,
     TransferEndpoint,
     BulkTransferBodyTransfers,
+    RegisterWithEidasPayload,
 } from '@token-io/core';
 import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 
@@ -319,6 +320,63 @@ export class TokenClient extends Core {
                 tokenId: params.tokenId,
                 innerState: params.state.innerState,
             };
+        });
+    }
+
+    /**
+     * Recovers an eIDAS-verified member with eIDAS payload.
+     *
+     * @param payload a payload containing member id, the certificate and a new key to add to the
+     *     member
+     * @param signature a payload signature with the private key corresponding to the certificate
+     * @param engine a crypto engine that must contain the privileged key that is included in
+     *     the payload (if it does not contain keys for other levels they will be generated)
+     * @return a new member
+     */
+    recoverEidasMember(
+        payload: EidasRecoveryPayload,
+        signature: string,
+        engine: KeyStoreCryptoEngine
+    ): Promise<Member> {
+        const memberId = payload.memberId;
+        const devKey = require('../../src/config.json').devKey[TEST_ENV];
+        return Util.callAsync(this.recoverEidasMember, async () => {
+            const privilegedKey = payload.key;
+            const standardKey = await engine.generateKey('STANDARD');
+            const lowKey = await engine.generateKey('LOW');
+            const keys = [privilegedKey, standardKey, lowKey];
+            const signer = await engine.createSignerById(privilegedKey.id);
+            const response = await this._unauthenticatedClient.recoverEidasMember(
+                payload, signature);
+            const memberRes = await this._unauthenticatedClient.getMember(memberId);
+            const updateRes = await this._unauthenticatedClient.updateMember(
+                memberId, memberRes.data.member.lastHash, keys, signer,
+                [response.data.recoveryEntry]);
+            return new Member(
+                {env: TEST_ENV, memberId: updateRes.data.member.id,
+                    realmId: updateRes.data.member.realmId, cryptoEngine: engine,
+                    developerKey: devKey});
+        });
+    }
+
+    /**
+     * Creates a business member under realm of a bank with an EIDAS alias (with value equal to the
+     * authNumber from the certificate) and a PRIVILEGED-level public key taken from the
+     * certificate. Then onboards the member with the provided certificate.
+     * A successful onboarding includes verifying the member and the alias and adding permissions
+     * based on the certificate.
+     *
+     * @param payload payload with eidas certificate and bank id
+     * @param signature payload signed with private key corresponding to the certificate public key
+     * @returns member id, key id and id of the certificate verification request
+     */
+    registerWithEidas(
+        payload: RegisterWithEidasPayload,
+        signature: string
+    ): Promise<{memberId: memberId, keyId: keyId, verificationId: verificationId}> {
+        return Util.callAsync(this.registerWithEidas, async () => {
+            const res = await this._unauthenticatedClient.registerWithEidas(payload, signature);
+            return res.data;
         });
     }
 

@@ -3,6 +3,7 @@ import {base64Url} from './Base64UrlCodec';
 import sha256 from 'fast-sha256';
 import nacl from 'tweetnacl';
 import Util from '../Util';
+import forge from 'node-forge';
 
 /**
  * Class providing static crypto primitives.
@@ -28,6 +29,26 @@ class Crypto {
     }
 
     /**
+     *
+     * @param keyPair - rsa key pair
+     * @param {string} keyId - key id
+     * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
+     * @param {number} expirationMs - (optional) expiration duration of the key in milliseconds
+     * @return {Object} formatted rsa key pair
+     */
+    static generateRsaKeys(keyPair, keyId, keyLevel, expirationMs) {
+        const keys = {};
+        keys.publicKey = keyPair.publicKey;
+        keys.id = keyId;
+        keys.algorithm = 'RSA';
+        keys.level = keyLevel;
+        keys.privateKey = keyPair.privateKey;
+        if (expirationMs)
+            keys.expiresAtMs = ((new Date()).getTime() + expirationMs).toString();
+        return keys;
+    }
+
+    /**
      * Signs a json object and returns the signature
      *
      * @param {Object} json - object to sign
@@ -46,6 +67,12 @@ class Crypto {
      * @return {string} signature
      */
     static sign(message, keys) {
+        if(keys.algorithm === 'RSA') {
+            const md = forge.md.sha256.create();
+            md.update(message, 'utf8');
+            return forge.util.encode64(keys.privateKey.sign(md))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+        }
         const msg = Util.wrapBuffer(message);
         return base64Url(nacl.sign.detached(msg, keys.privateKey));
     }

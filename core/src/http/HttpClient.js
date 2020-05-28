@@ -80,6 +80,51 @@ export class HttpClient {
     }
 
     /**
+     * Update member
+     *
+     * @param memberId - ID of the member
+     * @param {string} prevHash - member's last hash
+     * @param {Array} keys - keys to add
+     * @param {Object} signer - signer for keyId and signature(updating signature)
+     * @param {Array} recover - recovery rules for member
+     * @returns  {Object} response to the API call
+     */
+    async updateMember(memberId, prevHash, keys, signer, recover){
+        const operation =
+            keys.map(key => ({
+                addKey: {
+                    key: {
+                        id: key.id,
+                        publicKey: Util.strKey(key.publicKey),
+                        level: key.level,
+                        algorithm: key.algorithm,
+                        ...key.expiresAtMs && {expiresAtMs: key.expiresAtMs},
+                    },
+                },
+            }));
+        recover.forEach(value => operation.push({recover: value}));
+        const update = {
+            memberId: memberId,
+            prevHash: prevHash,
+            operations: operation,
+        };
+        const req = {
+            update,
+            updateSignature: {
+                memberId: memberId,
+                keyId: signer.getKeyId(),
+                signature: await signer.signJson(update),
+            },
+        };
+        const request = {
+            method: 'post',
+            url: `/members/${memberId}/updates`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets banks or countries.
      *
      * @param {Object} options - optional parameters

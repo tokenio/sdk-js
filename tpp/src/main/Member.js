@@ -2,6 +2,7 @@
 import {Member as CoreMember, Account} from '@token-io/core';
 import config from '../config.json';
 import Representable from './Representable';
+import ExternalMetadata from './ExternalMetadata';
 import TokenRequestBuilder from './TokenRequestBuilder';
 import AuthHttpClient from '../http/AuthHttpClient';
 import HttpClient from '../http/HttpClient';
@@ -23,6 +24,7 @@ import type {
     VerifyEidasResponse,
     CustomerTrackingMetadata,
     GetEidasVerificationStatusResponse,
+    GetEidasCertificateStatusResponse,
     WebhookConfig,
 } from '@token-io/core';
 
@@ -129,6 +131,19 @@ export default class Member extends CoreMember {
         return Util.callAsync(this.getProfile, async () => {
             const res = await this._client.getProfile(id);
             return res.data.profile;
+        });
+    }
+
+    /**
+     * Get the external metadata from the bank associated with a token request.
+     *
+     * @param tokenRequestId token request ID
+     * @return external metadata
+     */
+    getExternalMetadata(tokenRequestId: string): Promise<ExternalMetadata>{
+        return  Util.callAsync(this.getExternalMetadata,async () => {
+            const res = await this._client.getExternalMetadata(tokenRequestId);
+            return new ExternalMetadata(res.data.standard, res.data.consent);
         });
     }
 
@@ -528,6 +543,18 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Get status of the current eIDAS certificate along with the certificate itself, if present.
+     *
+     * @return eidas status and the eidas certificate, if any
+     */
+    async getEidasCertificateStatus(): Promise<GetEidasCertificateStatusResponse> {
+        return  Util.callAsync(this.getEidasCertificateStatus, async () => {
+            const res = await this._client.getEidasCertificateStatus();
+            return res.data;
+        });
+    }
+
+    /**
      * Get url to bank authorization page for a token request.
      *
      * @param bankId {string} Bank Id
@@ -553,19 +580,6 @@ export default class Member extends CoreMember {
             const encodedQuery = query && encodeURIComponent(query) || '';
             const res = await this._client.onBankAuthCallback(bankId, encodedQuery);
             return res.data.tokenRequestId;
-        });
-    }
-
-    /**
-     * Get the raw consent from the bank associated with a token.
-     *
-     * @param tokenId {string} Token Id
-     * @returns {string} raw consent
-     */
-    getRawConsent(tokenId: string): Promise<string> {
-        return Util.callAsync(this.getRawConsent, async () => {
-            const res = await this._client.getRawConsent(tokenId);
-            return res.data.consent;
         });
     }
 

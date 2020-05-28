@@ -48,6 +48,23 @@ export class KeyStoreCryptoEngine {
     }
 
     /**
+     * Encapsulate rsa key pair data
+     *
+     * @param keyPair rsa key pair.
+     * @param keyId - key Id.
+     * @param keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
+     * @param expirationMs - (optional) expiration duration of the key in milliseconds
+     * @return formatted rsa key data.
+     */
+    async generateRsaKey(
+        keyPair: Object, keyId: string, keyLevel, expirationMs?: number | string
+    ): Object {
+        const keys = await this._crypto.generateRsaKeys(keyPair, keyId, keyLevel, expirationMs);
+        const stored = await this._keystore.put(this._memberId, keys);
+        return stored;
+    }
+
+    /**
      * Creates a signer. Assumes we previously generated the relevant key.
      *
      * @param level - privilege level 'LOW', 'STANDARD', 'PRIVILEGED'
@@ -55,6 +72,17 @@ export class KeyStoreCryptoEngine {
      */
     async createSigner(level: KeyLevel): Object {
         const keyPair = await this._keystore.getByLevel(this._memberId, level);
+        return this._crypto.createSignerFromKeyPair(keyPair);
+    }
+
+    /**
+     * Creates a new signer using a key with a specified id.
+     *
+     * @param keyId key Id
+     * @returns signer object that implements sign, signJson, and getKeyId
+     */
+    async createSignerById(keyId: string): Object {
+        const keyPair = await this._keystore.getById(this._memberId, keyId);
         return this._crypto.createSignerFromKeyPair(keyPair);
     }
 
