@@ -19,7 +19,6 @@ export default async (payer, payee) => {
         .setRefId('a713c8a61994a749')
         .setChargeAmount(10.0)
         .setDescription('Book purchase')
-        .setPurposeOfPayment('PERSONAL_EXPENSES')
         .execute();
 
     // Payer endorses the token, creating a digital signature on it
