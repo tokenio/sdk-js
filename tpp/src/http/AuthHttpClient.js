@@ -388,6 +388,19 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Get status of the current eIDAS certificate along with the certificate itself.
+     *
+     * @return eidas status and the eidas certificate, if any
+     */
+    async getEidasCertificateStatus() {
+        const request = {
+            method: 'get',
+            url: '/eidas/status',
+        };
+        return this._instance(request);
+    }
+
+    /**
      *  Redeem a bulk transfer token, creating a bulk transfer.
      *
      * @param {String} tokenId - token to redeem
@@ -450,15 +463,15 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
-     * Get the raw consent from the bank associated with a token.
+     * Get the external metadata from the bank associated with a token request.
      *
-     * @param tokenId {string} Token Id
-     * @returns {Object} response to the api call
+     * @param tokenRequestId token request ID
+     * @return external metadata
      */
-    async getRawConsent(tokenId){
+    async getExternalMetadata(tokenRequestId){
         const request = {
             method: 'get',
-            url: `/tokens/${tokenId}/consent`,
+            url: `/token-requests/${tokenRequestId}/external-metadata`,
         };
         return this._instance(request);
     }

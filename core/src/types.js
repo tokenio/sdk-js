@@ -8,6 +8,10 @@ export type VerificationStatus = 'INVALID'
     | 'FAILURE_ERROR_RESPONSE' // verification service returned an error response
     | 'FAILURE_ERROR' // an error happened during the verification process
     | 'IN_PROGRESS'; // certificate validation has not finished yet, use getEidasVerificationStatus call to get the result later
+export type EidasCertificateStatus = 'INVALID_CERTIFICATE_STATUS'
+    | 'CERTIFICATE_VALID'
+    | 'CERTIFICATE_INVALID'
+    | 'CERTIFICATE_NOT_FOUND';
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'COMPLETED' | 'INVALIDATED';
 export type NotifyStatus = 'ACCEPTED' | 'NO_SUBSCRIBERS';
 export type TokenOperationStatus = 'SUCCESS' | 'MORE_SIGNATURES_NEEDED';
@@ -48,6 +52,17 @@ export type SubmissionStatus = 'INVALID'
 export type EventType = 'INVALID'
     | 'TRANSFER_STATUS_CHANGED'
     | 'BULK_TRANSFER_STATUS_CHANGED';
+
+export type OpenBankingStandard =
+    'Invalid_Standard'
+    | 'UK_Open_Banking_Standard'
+    | 'Starling_Bank_API'
+    | 'PolishAPI'
+    | 'STET_PSD2_API'
+    | 'Citi_Handlowy_PSD2_API'
+    | 'NextGenPSD2'
+    | 'Slovak_Banking_API_Standard'
+    | 'Czech_Open_Banking_Standard';
 
 export type Alias = {
     type: AliasType,
@@ -360,7 +375,17 @@ export type GetEidasVerificationStatusResponse = {
     statusDetails: string,
 };
 
+export type GetEidasCertificateStatusResponse = {
+    status: EidasCertificateStatus,
+    certificate: string,
+};
+
 export type WebhookConfig = {
     url: string,
     type: Array<EventType>,
+};
+
+export type RegisterWithEidasPayload = {
+    bankId: string,
+    certificate: string,
 };
