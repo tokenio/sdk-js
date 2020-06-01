@@ -18,6 +18,7 @@ import type {
     TokenRequestTransferDestinationsCallbackParameters,
     TransferEndpoint,
     BulkTransferBodyTransfers,
+    TransferDestination,
 } from '@token-io/core';
 import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 
@@ -175,6 +176,7 @@ export class TokenClient extends Core {
                         MNTH, TOMN, QUTR, SEMI, YEAR
      * @param startDate ISO 8601: YYYY-MM-DD or YYYYMMDD.
      * @param endDate   ISO 8601: YYYY-MM-DD or YYYYMMDD. If not specified, the standing order will occur indefinitely.
+     * @param destinations destination account of the standing order
      * @returns The created StandingOrderTokenRequestBuilder
      */
     createStandingOrderTokenRequest(
@@ -183,6 +185,7 @@ export class TokenClient extends Core {
         frequency: string,
         startDate: string,
         endDate: string,
+        destinations: Array<TransferDestination>,
     ): StandingOrderTokenRequestBuilder {
         return Util.callSync(this.createStandingOrderTokenRequest, () => {
             const payload = {
@@ -193,7 +196,7 @@ export class TokenClient extends Core {
                     startDate,
                     endDate,
                     instructions: {
-                        transferDestinations: [],
+                        transferDestinations: destinations,
                         metadata: {},
                     },
                 },
