@@ -10,6 +10,7 @@ import AccessTokenRequestBuilder from './AccessTokenRequestBuilder';
 import StandingOrderTokenRequestBuilder from './StandingOrderTokenRequestBuilder';
 import type {
     Alias,
+    Key,
     ResourceType,
     AccountResources,
     Signature,
@@ -237,6 +238,74 @@ export class TokenClient extends Core {
         return Util.callAsync(this.retrieveTokenRequest, async () => {
             const res = await this._unauthenticatedClient.retrieveTokenRequest(requestId);
             return res.data;
+        });
+    }
+
+    /**
+     * Completes account recovery if the default recovery rule was set.
+     *
+     * @param memberId the member id
+     * @param verificationId the verification id
+     * @param code the code
+     * @param cryptoEngine crypto engine
+     * @return the new member
+     */
+    completeRecoveryWithDefaultRule(
+        memberId: string, verificationId: string, code: string,
+        cryptoEngine: Class<KeyStoreCryptoEngine>
+    ): Promise<Member>{
+        return Util.callAsync(this.completeRecoveryWithDefaultRule,async () => {
+            const {ENV: TEST_ENV = 'dev'} = process.env;
+            const devKey = require('../../src/config.json').devKey[TEST_ENV];
+            const privilegedKey = await cryptoEngine.generateKey('PRIVILEGED');
+            const standardKey = await cryptoEngine.generateKey('STANDARD');
+            const lowKey = await cryptoEngine.generateKey('LOW');
+            const signer = await cryptoEngine.createSigner('PRIVILEGED');
+            const recoveryResponse = await this._unauthenticatedClient.completeRecovery(
+                verificationId, code, privilegedKey);
+            const updateMember = await this._unauthenticatedClient.getMember(memberId);
+            const res = await this._unauthenticatedClient.updateMember(
+                updateMember.data.member.id, updateMember.data.member.lastHash,
+                [privilegedKey,standardKey,lowKey], signer, [recoveryResponse.data.recoveryEntry]);
+            return new Member({
+                env: TEST_ENV,
+                memberId: res.data.member.id,
+                cryptoEngine: cryptoEngine,
+                developerKey: devKey,
+            });
+        });
+    }
+
+    /**
+     * Completes account recovery.
+     *
+     * @param memberId - the member id
+     * @param memberRecoveryOperation - the member recovery operations
+     * @param privilegedKey - the privileged public key in the member recovery operations
+     * @param cryptoEngine - the new crypto engine
+     * @return the updated member
+     */
+    completeRecovery(
+        memberId: string, memberRecoveryOperation: Array<Object>,
+        privilegedKey: Key, cryptoEngine: Class<KeyStoreCryptoEngine>
+    ): Promise<Member> {
+        return Util.callAsync(this.completeRecovery, async () => {
+            const member = await this._unauthenticatedClient.getMember(memberId);
+            const prevHash = member.data.member.lastHash;
+            const {ENV: TEST_ENV = 'dev'} = process.env;
+            const devKey = require('../../src/config.json').devKey[TEST_ENV];
+            const standardKey = await cryptoEngine.generateKey('STANDARD');
+            const lowKey = await cryptoEngine.generateKey('LOW');
+            const signer = await cryptoEngine.createSignerById(privilegedKey.id);
+            const updatedMember = await this._unauthenticatedClient.updateMember(
+                memberId, prevHash, [privilegedKey, standardKey, lowKey],
+                signer, memberRecoveryOperation);
+            return new Member({
+                env: TEST_ENV,
+                memberId: updatedMember.data.member.id,
+                cryptoEngine: cryptoEngine,
+                developerKey: devKey,
+            });
         });
     }
 

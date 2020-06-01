@@ -66,6 +66,46 @@ export class HttpClient {
     }
 
     /**
+     * Completes account recovery
+     *
+     * @param {string} verificationId - the verification id
+     * @param {string} code - the code
+     * @param {Object} key - the privileged public key in the member recovery operation
+     * @returns {Object} response to the API call
+     */
+    async completeRecovery(verificationId, code, key){
+        const req = {
+            verificationId,
+            code,
+            key,
+        };
+        const request = {
+            method: 'post',
+            url: `/recovery/verifications/${verificationId}/complete/${code}`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Begins account recovery.
+     *
+     * @param alias - the alias used to recover
+     * @return {Object} response to the API call
+     */
+    async beginRecovery(alias){
+        const req = {
+            alias,
+        };
+        const request = {
+            method: 'post',
+            url: '/recovery/verifications',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets the member's information.
      *
      * @param {string} memberId - member ID to lookup the member for

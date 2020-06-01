@@ -389,3 +389,14 @@ export type RegisterWithEidasPayload = {
     bankId: string,
     certificate: string,
 };
+
+export type Authorization = {
+    memberId: string,
+    memberKey: Key,
+    prevHash: string,
+};
+
+export type MemberRecoveryOperation = {
+    authorization: Authorization,
+    agentSignature: Signature,
+};

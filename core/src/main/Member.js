@@ -17,6 +17,7 @@ import type {
     Signature,
     TransferDestination,
     StandingOrder,
+    Authorization,
 } from '..';
 
 /**
@@ -228,6 +229,18 @@ export class Member {
             };
             const res = await this._client.addRecoveryRule(prevHash, rule);
             return res.data.member.recoveryRule;
+        });
+    }
+
+    /**
+     * Authorizes recovery as a trusted agent.
+     *
+     * @param authorization - the authorization
+     * @return the signature
+     */
+    authorizeRecovery(authorization: Authorization): Promise<Signature>{
+        return Util.callAsync(this.authorizeRecovery, async () => {
+            return this._client.authorizeRecovery(authorization);
         });
     }
 
@@ -533,6 +546,31 @@ export class Member {
             default:
                 throw new Error(res.data.status);
             }
+        });
+    }
+
+    /**
+     * Adds the recovery rule.
+     *
+     * @param {string} prevHash - hash of the previous directory entry.
+     * @param {Object} rule - the recoveryRule
+     * @returns updated member
+     */
+    addRecoveryRule(prevHash, rule): Promise<Object> {
+        return Util.callAsync( this.addRecoveryRule , async () => {
+            return this._client.addRecoveryRule(prevHash, rule);
+        });
+    }
+
+    /**
+     * Verifies a given alias.
+     *
+     * @param verificationId the verification id
+     * @param code the code
+     */
+    verifyAlias(verificationId, code): Promise<void> {
+        return Util.callAsync(this.verifyAlias, async () => {
+            await this._client.verifyAlias(verificationId, code);
         });
     }
 

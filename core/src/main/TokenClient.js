@@ -13,6 +13,7 @@ import type {
     Paging,
     TokenMember,
     StandingOrder,
+    Authorization,
 } from '..';
 
 /**
@@ -156,6 +157,51 @@ export class TokenClient {
                 banks: res.data.banks || [],
                 paging: res.data.paging,
             };
+        });
+    }
+
+    /**
+     * Begins account recovery.
+     *
+     * @param alias - the alias used to recover
+     * @return the verification id
+     */
+    beginRecovery(alias: Alias): Promise<string>{
+        return Util.callAsync(this.beginRecovery, async () => {
+            const  res = await this._unauthenticatedClient.beginRecovery(alias);
+            return res.data.verificationId;
+        });
+    }
+
+    /**
+     * Create a recovery authorization for some agent to sign.
+     *
+     * @param memberId Id of member we claim to be.
+     * @param newKey new privileged key we want to use.
+     * @return authorization structure for agent to sign
+     */
+    createRecoveryAuthorization(memberId: string, newKey: Key): Promise<Authorization> {
+        return Util.callAsync(this.createRecoveryAuthorization, async () => {
+            const member = await this._unauthenticatedClient.getMember(memberId);
+            const authorization: Authorization = {
+                memberId: member.data.member.id,
+                memberKey: newKey,
+                prevHash: member.data.member.lastHash,
+            };
+            return authorization;
+        });
+    }
+
+    /**
+     * Looks up member id for a given alias.
+     *
+     * @param alias - alias to check
+     * @return member id, or throws exception if member not found
+     */
+    getMemberId(alias: Alias): Promise<string>{
+        return  Util.callAsync(this.getMemberId, async () => {
+            const res = await this._unauthenticatedClient.resolveAlias(alias);
+            return res.data.member.id;
         });
     }
 

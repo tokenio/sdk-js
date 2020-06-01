@@ -118,6 +118,44 @@ export class AuthHttpClient {
     }
 
     /**
+     * Verify the given alias
+     *
+     * @param verificationId - the verification id
+     * @param code - the code
+     * @returns {Object} response to the API call
+     */
+    verifyAlias(verificationId, code){
+        const req = {
+            verificationId,
+            code,
+        };
+
+        const request = {
+            method: 'put',
+            url: `/verifications/${verificationId}/complete/${code}`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Authorizes recovery as a trusted agent.
+     *
+     * @param {Object} authorization - the authorization
+     * @returns {Object} Signature
+     */
+    async authorizeRecovery(authorization){
+        const signer = await this._cryptoEngine.createSigner('STANDARD');
+        const sign = await signer.signJson(authorization);
+        const signature = {
+            memberId: this._memberId,
+            keyId: signer.getKeyId(),
+            signature: sign,
+        };
+        return signature;
+    }
+
+    /**
      * Gets the balance of an account.
      *
      * @param {string} accountId - accountId
