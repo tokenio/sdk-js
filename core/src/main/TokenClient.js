@@ -147,6 +147,7 @@ export class TokenClient {
             perPage?: number,
             provider?: string,
             destinationCountry?: string,
+            destinationCountries?: Array<string>,
             bankFeatures?: Object,
         }
     ): Promise<{banks: Array<Bank>, paging: Paging}> {
@@ -172,6 +173,7 @@ export class TokenClient {
             country?: string,
             provider?: string,
             destinationCountry?: string,
+            destinationCountries?: Array<string>,
         }
     ): Promise<{countries: Array<string>}> {
         return Util.callAsync(this.getBanks, async () => {

@@ -98,8 +98,8 @@ export class HttpClient {
             perPage: options.perPage,
             // Optional provider
             provider: options.provider || '',
-            // Optional destination country
-            destinationCountry: options.destinationCountry || '',
+            // Optional destination countries
+            destinationCountries: options.destinationCountries || (options.destinationCountry ? [options.destinationCountry] : []),
             // (Optional) Filter for banks that support or don't support certain features. See Bank for the feature keys we support.
             // Set "true" for banks that support the feature or "false" for banks that don't support the feature.
             // e.g. ["supports_linking_uri": "true"] means only banks who supports the linking uri feature.
@@ -112,7 +112,7 @@ export class HttpClient {
             page,
             perPage,
             provider,
-            destinationCountry,
+            destinationCountries,
             bankFeatures,
         } = formattedOptions;
         let url = `/banks${getCountries ? '/countries' : ''}?`;
@@ -124,8 +124,9 @@ export class HttpClient {
         if (page) url += `page=${encodeURIComponent(page)}&`;
         if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
         if (provider) url += `provider=${encodeURIComponent(provider)}&`;
-        if (destinationCountry)
-            url += `destinationCountry=${encodeURIComponent(destinationCountry)}&`;
+        for (const destinationCountry of destinationCountries) {
+            url += `destinationCountries=${encodeURIComponent(destinationCountry)}&`;
+        }
         if (bankFeatures) {
             for (const key in bankFeatures) {
                 url += `${key}=${encodeURIComponent(bankFeatures[key])}&`;

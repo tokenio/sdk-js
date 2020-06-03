@@ -86,6 +86,7 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
     }
 
     /**
+     * @deprecated Use setCountries instead.
      * Sets the destination country in order to narrow down
      * the country selection in the web-app UI.
      *
@@ -93,7 +94,19 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
      * @return StandingOrderTokenRequestBuilder
      */
     setDestinationCountry(destinationCountry: string): StandingOrderTokenRequestBuilder {
-        this.requestPayload.destinationCountry = destinationCountry;
+        this.setCountries([destinationCountry]);
+        return this;
+    }
+
+    /**
+     * Sets the list of destination countries in order to narrow down
+     * the country selection in the web-app UI.
+     *
+     * @param countries
+     * @return StandingOrderTokenRequestBuilder
+     */
+    setCountries(countries: Array<string>): StandingOrderTokenRequestBuilder {
+        this.requestPayload.countries = countries;
         return this;
     }
 

@@ -89,6 +89,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
     }
 
     /**
+     * @deprecated Use setCountries instead.
      * Sets the destination country in order to narrow down
      * the country selection in the web-app UI.
      *
@@ -96,7 +97,19 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setDestinationCountry(destinationCountry: string): TransferTokenRequestBuilder {
-        this.requestPayload.destinationCountry = destinationCountry;
+        this.setCountries([destinationCountry]);
+        return this;
+    }
+
+    /**
+     * Sets the list of destination countries in order to narrow down
+     * the country selection in the web-app UI.
+     *
+     * @param countries
+     * @return TransferTokenRequestBuilder
+     */
+    setCountries(countries: Array<string>): TransferTokenRequestBuilder {
+        this.requestPayload.countries = countries;
         return this;
     }
 
