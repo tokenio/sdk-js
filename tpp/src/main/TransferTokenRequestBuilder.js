@@ -97,8 +97,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setDestinationCountry(destinationCountry: string): TransferTokenRequestBuilder {
-        this.setCountries([destinationCountry]);
-        return this;
+        return this.setCountries([destinationCountry]);
     }
 
     /**

@@ -94,8 +94,7 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
      * @return StandingOrderTokenRequestBuilder
      */
     setDestinationCountry(destinationCountry: string): StandingOrderTokenRequestBuilder {
-        this.setCountries([destinationCountry]);
-        return this;
+        return this.setCountries([destinationCountry]);
     }
 
     /**
