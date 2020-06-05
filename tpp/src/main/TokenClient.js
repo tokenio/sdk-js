@@ -69,6 +69,24 @@ export class TokenClient extends Core {
     }
 
     /**
+     * Creates a member with a alias and a key pair using the provided engine.
+     *
+     * @param  alias - alias for the member
+     * @param  CryptoEngine - engine to use for key creation and storage
+     * @param  realmId - (optional) member id of the Member to which this new member will belong
+     * @param memberType - (optional) member type of the Member, default is BUSINESS
+     * @return Promise of created Member
+     */
+    createMemberWithType(
+        alias: ?Alias,
+        CryptoEngine: Class<KeyStoreCryptoEngine>,
+        realmId?: string,
+        memberType?: string
+    ): Promise<Member> {
+        return super.createMemberCore(alias, CryptoEngine, Member, memberType, undefined, realmId);
+    }
+
+    /**
      * Returns 'logged-in' member that uses keys already in the CryptoEngine.
      * If memberId is not provided, the last member to 'log in' will be used.
      *
