@@ -73,15 +73,15 @@ export class TokenClient extends Core {
      *
      * @param  alias - alias for the member
      * @param  CryptoEngine - engine to use for key creation and storage
+     * @param  memberType - member type of the Member, default is BUSINESS
      * @param  realmId - (optional) member id of the Member to which this new member will belong
-     * @param memberType - (optional) member type of the Member, default is BUSINESS
      * @return Promise of created Member
      */
     createMemberWithType(
         alias: ?Alias,
         CryptoEngine: Class<KeyStoreCryptoEngine>,
-        realmId?: string,
-        memberType?: string
+        memberType: string,
+        realmId?: string
     ): Promise<Member> {
         return super.createMemberCore(alias, CryptoEngine, Member, memberType, undefined, realmId);
     }
