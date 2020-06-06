@@ -58,24 +58,18 @@ export class TokenClient extends Core {
      * @param  alias - alias for the member
      * @param  CryptoEngine - engine to use for key creation and storage
      * @param  realmId - (optional) member id of the Member to which this new member will belong
-     * @param  tppType - (optional) TPP type of the Member, default is Type 1
+     * @param  memberType - (optional) of the Member, default is BUSINESS
      * @return Promise of created Member
      */
     createMember(
         alias: ?Alias,
         CryptoEngine: Class<KeyStoreCryptoEngine>,
         realmId?: string,
-        tppType?: Number
+        memberType?: 'BUSINESS' | 'LICENSED_TPP'
     ): Promise<Member> {
-        let memberType = 'BUSINESS';
-        if (typeof tppType !== 'undefined' ) {
-            switch(tppType) {
-            case 2:
-                memberType = 'LICENSED_TPP';
-                break;
-            default:
-                memberType = 'BUSINESS';
-            }
+
+        if (typeof memberType === 'undefined' ) {
+            memberType = 'BUSINESS';
         }
         return super.createMemberCore(alias,
             CryptoEngine,
