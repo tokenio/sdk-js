@@ -58,7 +58,7 @@ export class TokenClient extends Core {
      * @param  alias - alias for the member
      * @param  CryptoEngine - engine to use for key creation and storage
      * @param  realmId - (optional) member id of the Member to which this new member will belong
-     * @param  tppType - (optional) TPP type of the Member, default is BUSINESS
+     * @param  tppType - (optional) TPP type of the Member, default is Type 1
      * @return Promise of created Member
      */
     createMember(
@@ -74,7 +74,7 @@ export class TokenClient extends Core {
                 memberType = 'LICENSED_TPP';
                 break;
             default:
-                throw new Error('Not supported');
+                memberType = 'BUSINESS';
             }
         }
         return super.createMemberCore(alias,
