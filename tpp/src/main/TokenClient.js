@@ -71,7 +71,8 @@ export class TokenClient extends Core {
             CryptoEngine,
             Member,
             typeof memberType !== 'undefined' ? memberType : 'BUSINESS',
-            undefined, realmId);
+            undefined,
+            realmId);
     }
 
     /**
