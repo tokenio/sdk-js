@@ -49,8 +49,8 @@ export type EventType = 'INVALID'
     | 'TRANSFER_STATUS_CHANGED'
     | 'BULK_TRANSFER_STATUS_CHANGED';
 
-export type MemberType = 'BUSINESS'
-    | 'LICENSED_TPP';
+export type MemberType = 'BUSINESS' // a customer of Token; Token is the regulated TPP in this case.
+    | 'LICENSED_TPP'; // a customer of Token, but uses its own license.
 
 export type Alias = {
     type: AliasType,
