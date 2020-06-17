@@ -105,7 +105,7 @@ export class HttpClient {
             // e.g. ["supports_linking_uri": "true"] means only banks who supports the linking uri feature.
             bankFeatures: options.bankFeatures || '',
             // Optional tpp member id
-            tppId: options.tppId || '',
+            memberId: options.memberId || '',
         });
         const {
             ids,
@@ -116,7 +116,7 @@ export class HttpClient {
             provider,
             destinationCountry,
             bankFeatures,
-            tppId,
+            memberId,
         } = formattedOptions;
         let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
@@ -129,7 +129,7 @@ export class HttpClient {
         if (provider) url += `provider=${encodeURIComponent(provider)}&`;
         if (destinationCountry)
             url += `destinationCountry=${encodeURIComponent(destinationCountry)}&`;
-        if (tppId) url += `tppId=${encodeURIComponent(tppId)}&`;
+        if (memberId) url += `memberId=${encodeURIComponent(memberId)}&`;
         if (bankFeatures) {
             for (const key in bankFeatures) {
                 url += `${key}=${encodeURIComponent(bankFeatures[key])}&`;
