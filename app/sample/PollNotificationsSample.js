@@ -29,12 +29,12 @@ class PollNotificationsSample {
             if (pagedList.notifications.length > 0) {
                 const notification = pagedList.notifications[0];
                 switch (notification.content.type) {
-                case 'PAYEE_TRANSFER_PROCESSED':
-                    // console.log('Transfer Processed: ', JSON.stringify(notification));
-                    break;
-                default:
-                    // console.log('Got Notification: ', JSON.stringify(notification));
-                    break;
+                    case 'PAYEE_TRANSFER_PROCESSED':
+                        // console.log('Transfer Processed: ', JSON.stringify(notification));
+                        break;
+                    default:
+                        // console.log('Got Notification: ', JSON.stringify(notification));
+                        break;
                 }
                 return;
             }

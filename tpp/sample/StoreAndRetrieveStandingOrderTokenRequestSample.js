@@ -16,7 +16,7 @@ export default async grantee => {
         [{
             faster_payments: {
                 sort_code: 123456,
-                account_number: 12345678
+                account_number: 12345678,
             },
         }])
         .setDescription('Monthly music subscription')
