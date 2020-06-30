@@ -12,8 +12,13 @@ const Token = new TokenClient({env: TEST_ENV, developerKey: devKey, keyDir: './k
 export default async grantee => {
     // Create token request to be stored
     const tokenRequest = Token.createStandingOrderTokenRequest(
-        10, 'EUR', 'MNTH', '2020-02-15', '2021-02-15'
-    )
+        10, 'EUR', 'MNTH', '2020-02-15', '2021-02-15',
+        [{
+            faster_payments: {
+                sort_code: 123456,
+                account_number: 12345678,
+            },
+        }])
         .setDescription('Monthly music subscription')
         .setRedirectUrl('https://token.io/callback')
         .setFromAlias('EMAIL', 'grantorEmail@gmail.com')

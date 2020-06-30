@@ -49,6 +49,9 @@ export type EventType = 'INVALID'
     | 'TRANSFER_STATUS_CHANGED'
     | 'BULK_TRANSFER_STATUS_CHANGED';
 
+export type MemberType = 'BUSINESS' // a customer of Token; Token is the regulated TPP in this case.
+    | 'LICENSED_TPP'; // a customer of Token, but uses its own lisense.
+
 export type Alias = {
     type: AliasType,
     value: string,
@@ -290,7 +293,7 @@ export type CustomerTrackingMetadata = {
     ipAddress: string, // IP address of the customer. Required when the request is initiated by the customer, which means the request is exempted from the PSD2 data access restriction.
     geoLocation: string, // Optional. Geographical location of the customer.
     deviceId: string, // Optional. Universally Unique Identifier for a device of the customer that identifies either a device or a device dependent application installation.
-}
+};
 
 export type StandingOrder = {
     id: string,

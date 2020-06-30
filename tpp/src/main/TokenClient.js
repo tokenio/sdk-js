@@ -18,6 +18,8 @@ import type {
     TokenRequestTransferDestinationsCallbackParameters,
     TransferEndpoint,
     BulkTransferBodyTransfers,
+    TransferDestination,
+    MemberType,
 } from '@token-io/core';
 import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 
@@ -57,14 +59,25 @@ export class TokenClient extends Core {
      * @param  alias - alias for the member
      * @param  CryptoEngine - engine to use for key creation and storage
      * @param  realmId - (optional) member id of the Member to which this new member will belong
+     * @param  memberType - (optional) type of the Member, default is BUSINESS
      * @return Promise of created Member
      */
     createMember(
         alias: ?Alias,
         CryptoEngine: Class<KeyStoreCryptoEngine>,
-        realmId?: string
+        realmId?: string,
+        memberType?: MemberType
     ): Promise<Member> {
-        return super.createMemberCore(alias, CryptoEngine, Member, 'BUSINESS', undefined, realmId);
+
+        if (typeof memberType === 'undefined' ) {
+            memberType = 'BUSINESS';
+        }
+        return super.createMemberCore(alias,
+            CryptoEngine,
+            Member,
+            memberType,
+            undefined,
+            realmId);
     }
 
     /**
@@ -175,6 +188,7 @@ export class TokenClient extends Core {
                         MNTH, TOMN, QUTR, SEMI, YEAR
      * @param startDate ISO 8601: YYYY-MM-DD or YYYYMMDD.
      * @param endDate   ISO 8601: YYYY-MM-DD or YYYYMMDD. If not specified, the standing order will occur indefinitely.
+     * @param destinations destination account of the standing order
      * @returns The created StandingOrderTokenRequestBuilder
      */
     createStandingOrderTokenRequest(
@@ -183,6 +197,7 @@ export class TokenClient extends Core {
         frequency: string,
         startDate: string,
         endDate: string,
+        destinations: Array<TransferDestination>,
     ): StandingOrderTokenRequestBuilder {
         return Util.callSync(this.createStandingOrderTokenRequest, () => {
             const payload = {
@@ -193,7 +208,7 @@ export class TokenClient extends Core {
                     startDate,
                     endDate,
                     instructions: {
-                        transferDestinations: [],
+                        transferDestinations: destinations,
                         metadata: {},
                     },
                 },
@@ -326,11 +341,11 @@ export class TokenClient extends Core {
      * Gets the token request result based on its token request ID.
      *
      * @param tokenRequestId - token request ID
-     * @return token ID and signature
+     * @return token ID, signature, and transfer ID if present
      */
     getTokenRequestResult(
         tokenRequestId: string
-    ): Promise<{tokenId: string, signature: Signature}> {
+    ): Promise<{tokenId: string, signature: Signature, transferId: string}> {
         return Util.callAsync(this.getTokenRequestResult, async () => {
             const res = await this._unauthenticatedClient.getTokenRequestResult(tokenRequestId);
             return res.data;
