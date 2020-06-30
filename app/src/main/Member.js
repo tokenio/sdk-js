@@ -455,11 +455,12 @@ export default class Member extends CoreMember {
      * Prepares a token for creation, retrieves policy, and resolves payload.
      *
      * @param tokenPayload - token payload to prepare
+     * @param appCallbackUrl - used by web-app
      * @returns a policy and the resolved payload
      */
-    prepareToken(tokenPayload: Object): Promise<Object> {
+    prepareToken(tokenPayload: Object, appCallbackUrl: string): Promise<Object> {
         return Util.callAsync(this.prepareToken, async () => {
-            const res = await this._client.prepareToken(tokenPayload);
+            const res = await this._client.prepareToken(tokenPayload, appCallbackUrl);
             return res.data;
         });
     }

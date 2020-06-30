@@ -303,14 +303,16 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * Prepares a token for creation, retrieves policy, and resolves payload.
      *
      * @param {Object} tokenPayload - token payload
+     * @param {string} appCallbackUrl - used by web-app
      * @returns {Promise} policy and resolved payload
      */
-    async prepareToken(tokenPayload) {
+    async prepareToken(tokenPayload, appCallbackUrl) {
         const request = {
             method: 'post',
             url: '/tokens/prepare',
             data: {
                 payload: tokenPayload,
+                appCallbackUrl,
             },
         };
         return this._instance(request);
