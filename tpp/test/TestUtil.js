@@ -1,5 +1,5 @@
 import {TokenClient} from '@token-io/app';
-
+const forge = require('node-forge');
 const Token = new TokenClient({env: TEST_ENV});
 
 export default class TestUtil {
@@ -148,5 +148,41 @@ export default class TestUtil {
             day = '0' + day;
 
         return [year, month, day].join('-');
+    }
+
+    static async generateEidasCertificate(keyPair, tppAuthNumber) {
+        const pki = forge.pki;
+        const cert = pki.createCertificate();
+        cert.publicKey = keyPair.publicKey;
+        cert.serialNumber = '01';
+        cert.validity.notBefore = new Date();
+        cert.validity.notAfter = new Date();
+        cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1);
+        const attrs = [
+            {
+                name: 'commonName',
+                value: 'Token.io',
+            },
+            {
+                name: 'organizationIdentifier',
+                value: tppAuthNumber,
+                type: '2.5.4.97',
+            },
+        ];
+        cert.setSubject(attrs);
+        cert.setIssuer(attrs);
+        cert.setExtensions([
+            {
+                name: 'basicConstraints',
+                cA: true,
+            },
+        ]);
+
+        // self-sign certificate
+        cert.sign(keyPair.privateKey, forge.md.sha256.create());
+        // convert a Forge certificate to PEM
+        const certificate = forge.util.encode64(forge.asn1.toDer(pki.certificateToAsn1(cert)).getBytes());
+
+        return certificate;
     }
 }
