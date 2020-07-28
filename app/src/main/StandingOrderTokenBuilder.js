@@ -121,6 +121,17 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
     }
 
     /**
+     * Sets provider specific transfer metadata
+     *
+     * @param providerStandingOrderMetadata
+     * @return builder
+     */
+    setProviderMetadata(providerStandingOrderMetadata: Object): StandingOrderTokenBuilder {
+        this.tokenPayload.standingOrder.instructions.metadata.providerStandingOrderMetadata = providerStandingOrderMetadata;
+        return this;
+    }
+
+    /**
      *  Sets the flag indicating whether a receipt is requested.
      *
      * @param receiptRequested
