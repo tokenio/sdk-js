@@ -121,7 +121,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
     }
 
     /**
-     * Sets provider specific transfer metadata
+     * Sets provider specific standing order metadata
      *
      * @param providerStandingOrderMetadata
      * @return builder
