@@ -100,11 +100,20 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
     /**
      * Sets the meta data for a specific provider
      *
-     * @param metadata
+     * @param providerStandingOrderMetadata
+
      * @return StandingOrderTokenRequestBuilder
      */
-    setProviderTransferMetadata(metadata: Object): StandingOrderTokenRequestBuilder {
-        this.requestPayload.standingOrderBody.instructions.metadata = metadata;
+    setProviderMetadata(providerStandingOrderMetadata: Object): StandingOrderTokenRequestBuilder {
+        if(!this.requestPayload.standingOrderBody.instructions)
+        {
+            this.requestPayload.standingOrderBody.instructions = {};
+        }
+        if(!this.requestPayload.standingOrderBody.instructions.metadata)
+        {
+            this.requestPayload.standingOrderBody.instructions.metadata = {};
+        }
+        this.requestPayload.standingOrderBody.instructions.metadata.providerStandingOrderMetadata = providerStandingOrderMetadata;
         return this;
     }
 
