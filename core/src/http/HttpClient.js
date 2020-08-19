@@ -91,13 +91,13 @@ export class HttpClient {
             // Can be at most 1000
             ids: options.ids || [],
             search: options.search || '',
-            country: options.country || '',
+            countries: options.country ? [options.country] : (options.countries || []),
             // Default to 1 if not specified
             page: options.page,
             // Can be at most 200, default to 200 if not specified
             perPage: options.perPage,
             // Optional provider
-            provider: options.provider || '',
+            providers: options.provider ? [options.provider] : (options.providers || []),
             // Optional destination country
             destinationCountry: options.destinationCountry || '',
             // (Optional) Filter for banks that support or don't support certain features. See Bank for the feature keys we support.
@@ -123,10 +123,14 @@ export class HttpClient {
             url += `ids=${encodeURIComponent(id)}&`;
         }
         if (search) url += `search=${encodeURIComponent(search)}&`;
-        if (country) url += `country=${encodeURIComponent(country)}&`;
+        for (const country of countries) {
+            url += `countries=${encodeURIComponent(country)}&`;
+        }
         if (page) url += `page=${encodeURIComponent(page)}&`;
         if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
-        if (provider) url += `provider=${encodeURIComponent(provider)}&`;
+        for (const provider of providers) {
+            url += `providers=${encodeURIComponent(provider)}&`;
+        }
         if (destinationCountry)
             url += `destinationCountry=${encodeURIComponent(destinationCountry)}&`;
         if (memberId) url += `memberId=${encodeURIComponent(memberId)}&`;
