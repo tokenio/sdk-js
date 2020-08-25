@@ -9,7 +9,7 @@ const Token = new TokenClient({env: TEST_ENV, developerKey: devKey});
 describe('Token library', () => {
     it('should perform a transfer flow', async () => {
         const alias1 = Token.Util.randomAlias();
-        const alias2 = Token.Util.randomAlias();
+        const alias2 = Token.Util.randomAlias('DOMAIN');
 
         const member1 = await TestUtil.createUserMember(alias1);
         await member1.subscribeToNotifications('iron');

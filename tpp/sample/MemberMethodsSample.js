@@ -36,18 +36,18 @@ class MemberMethodsSample {
     static async aliases(Token, member) {
         const alias1 = (await member.aliases())[0]; // or member.firstAlias();
         const alias2 = {
-            type: 'EMAIL',
-            value: 'alias2-' + Token.Util.generateNonce() + '+noverify@token.io',
+            type: 'DOMAIN',
+            value: 'alias2-' + Token.Util.generateNonce() + '.com.noverify',
         };
         await member.addAlias(alias2);
 
         const alias3 = {
-            type: 'EMAIL',
-            value: 'alias3-' + Token.Util.generateNonce() + '+noverify@token.io',
+            type: 'DOMAIN',
+            value: 'alias3-' + Token.Util.generateNonce() + '.com.noverify',
         };
         const alias4 = {
-            type: 'EMAIL',
-            value: 'alias4-' + Token.Util.generateNonce() + '+noverify@token.io',
+            type: 'DOMAIN',
+            value: 'alias4-' + Token.Util.generateNonce() + '.com.noverify',
         };
         await member.addAliases([alias3, alias4]);
 
