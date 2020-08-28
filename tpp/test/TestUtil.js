@@ -150,7 +150,7 @@ export default class TestUtil {
         return [year, month, day].join('-');
     }
 
-    static async generateEidasCertificate(keyPair, tppAuthNumber) {
+    static async generateEidasCertificate(keyPair, tppAuthNumber, pspSubjectName) {
         const pki = forge.pki;
         const cert = pki.createCertificate();
         cert.publicKey = keyPair.publicKey;
@@ -167,6 +167,10 @@ export default class TestUtil {
                 name: 'organizationIdentifier',
                 value: tppAuthNumber,
                 type: '2.5.4.97',
+            },
+            {
+                name: 'organizationName',
+                value: pspSubjectName,
             },
         ];
         cert.setSubject(attrs);
