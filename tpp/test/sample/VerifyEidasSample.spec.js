@@ -19,8 +19,7 @@ describe('VerifyEidasSample test', () => {
         assert.equal(aliases.length, 1);
         assert.equal(aliases[0].value, tppAuthNumber);
         assert.equal(aliases[0].type, 'EIDAS');
-        //TODO(PLT-179): uncomment after member service change is deployed
-        //const profile = await member.getProfile(member.memberId());
-        //assert.equal(profile.displayNameFirst, pspSubjectName);
+        const profile = await member.getProfile(member.memberId());
+        assert.equal(profile.displayNameFirst, pspSubjectName);
     });
 });
