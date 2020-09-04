@@ -35,6 +35,28 @@ class HttpClient extends CoreHttpClient{
         };
         return this._instance(request);
     }
+
+    /**
+     * Create and onboard a business member under realm of a bank using eIDAS certificate.
+     *
+     * @param payload payload with eIDAS certificate and bank id
+     * @param signature payload signed with the private key corresponding to the certificate
+     * public key
+     * @return {AxiosPromise<RegisterWithEidasResponse>} response containing member id, registered
+     * key id and id of the certificate verification request
+     */
+    async registerWithEidas(payload, signature) {
+        const req = {
+            payload,
+            signature,
+        };
+        const request = {
+            method: 'put',
+            url: '/eidas/register',
+            data: req,
+        };
+        return this._instance(request);
+    }
 }
 
 export default HttpClient;

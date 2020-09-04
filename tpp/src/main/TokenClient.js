@@ -81,6 +81,35 @@ export class TokenClient extends Core {
     }
 
     /**
+     * Creates a business member under realm of a bank with an EIDAS alias (with value equal to the
+     * authNumber from the certificate) and a PRIVILEGED-level public key taken from the
+     * certificate. Then onboards the member with the provided certificate.
+     * A successful onboarding includes verifying the member and the alias and adding permissions
+     * based on the certificate.<br>
+     * The call is idempotent.<br>
+     * If you need to submit another certificate for an existing member, please use VerifyEidas call
+     * instead.<br><br>
+     * Note, that the call is asynchronous and the newly created member might not be onboarded at
+     * the time the call returns. You can check the verification status using
+     * member.getEidasVerificationStatus call with the verification id returned by this call.
+     *
+     * @param payload payload with eIDAS certificate and bank id
+     * @param signature payload signed with the private key corresponding to the certificate
+     * public key
+     * @return {Promise<RegisterWithEidasResponse>} a response containing member id, registered
+     * key id and id of the certificate verification request
+     */
+    registerWithEidas(
+        payload: RegisterWithEidasPayload,
+        signature: string
+    ): Promise<RegisterWithEidasResponse> {
+        return Util.callAsync(this.registerWithEidas, async () => {
+            const res = await this._unauthenticatedClient.registerWithEidas(payload, signature);
+            return res.data;
+        });
+    }
+
+    /**
      * Returns 'logged-in' member that uses keys already in the CryptoEngine.
      * If memberId is not provided, the last member to 'log in' will be used.
      *

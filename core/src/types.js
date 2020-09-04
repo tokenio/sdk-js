@@ -343,6 +343,17 @@ export type BulkTransferBodyTransfers = {
     metadata: Object,
 };
 
+export type RegisterWithEidasPayload = {
+    bank_id: string,  // ID of the bank under whose realm a member should be created
+    certificate: string, // serialized eIDAS certificate
+};
+
+export type RegisterWithEidasResponse = {
+    memberId: string, // ID of a newly-created or already registered with this bank member
+    key_id: string, // ID of the key that has been added
+    verification_id: string, // ID of the verification for this certificate
+};
+
 export type VerifyEidasPayload = {
     memberId: string,
     alias: Alias,
