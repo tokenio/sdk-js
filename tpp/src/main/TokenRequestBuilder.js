@@ -200,4 +200,15 @@ export default class TokenRequestBuilder {
         this.requestPayload.redirectUrl = redirectUrl;
         return this;
     }
+
+    /**
+     * Sets authorization metadata as name value map
+     *
+     * @param authMetadataMap
+     * @return TokenRequestBuilder
+     */
+    setAuthorizationMetadata(authMetadataMap: {[string]: string}): TokenRequestBuilder {
+        this.requestPayload.authorizationMetadata = authMetadataMap;
+        return this;
+    }
 }
