@@ -1,4 +1,5 @@
 import Crypto from '../../../core/src/security/Crypto';
+import CryptoRsa from '../../../core/src/security/CryptoRsa';
 import Util from '../../src/Util';
 const {assert} = require('chai');
 
@@ -53,6 +54,28 @@ describe('Key management', () => {
 
             try {
                 await Crypto.verifyJson({bad: 'json'}, sig, keys.publicKey);
+                return Promise.reject('Should fail');
+            } catch (e) {
+                return true;
+            }
+        }
+    });
+
+    it('should sign and verify json with rsa keys', async () => {
+        for (let i = 0; i < 10; i++) {
+            const keys = await CryptoRsa.generateKeys('LOW');
+            const json = {
+                abc: 123,
+                def: 'a string',
+                obj: {
+                    an: 'object',
+                },
+            };
+            const sig = await CryptoRsa.signJson(json, keys);
+            await CryptoRsa.verifyJson(json, sig, keys.publicKey);
+
+            try {
+                await CryptoRsa.verifyJson({bad: 'json'}, sig, keys.publicKey);
                 return Promise.reject('Should fail');
             } catch (e) {
                 return true;

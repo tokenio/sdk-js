@@ -154,7 +154,7 @@ export default class TestUtil {
         const pki = forge.pki;
         const cert = pki.createCertificate();
         cert.publicKey = keyPair.publicKey;
-        cert.serialNumber = '01';
+        cert.serialNumber = Math.random().toString(10).slice(5);
         cert.validity.notBefore = new Date();
         cert.validity.notAfter = new Date();
         cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1);
@@ -190,3 +190,9 @@ export default class TestUtil {
         return certificate;
     }
 }
+
+export const getPublicKey = certificate =>  {
+    const cert = forge.pki.certificateFromPem(
+        '-----BEGIN CERTIFICATE-----\n' + certificate + '-----END CERTIFICATE-----');
+    return cert.publicKey;
+};

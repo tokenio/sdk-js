@@ -20,6 +20,8 @@ import type {
     BulkTransferBodyTransfers,
     TransferDestination,
     MemberType,
+    RegisterWithEidasPayload,
+    RegisterWithEidasResponse,
 } from '@token-io/core';
 import BulkTransferTokenRequestBuilder from './BulkTransferTokenRequestBuilder';
 

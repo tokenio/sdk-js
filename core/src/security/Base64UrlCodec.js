@@ -23,7 +23,7 @@ export const base64UrlToBuffer = input => {
 
 export default base64Url;
 
-function base64ToBase64Url(input) {
+export const base64ToBase64Url = input => {
     return input
         .replace(/=/g, '')
         .replace(/\+/g, '-')
