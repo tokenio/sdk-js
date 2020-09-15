@@ -122,6 +122,17 @@ export default class TokenBuilder {
     }
 
     /**
+     * Sets authorization metadata as name value map
+     *
+     * @param authMetadataMap
+     * @return TokenBuilder
+     */
+    setAuthorizationMetadata(authMetadataMap: {[string]: string}): TokenBuilder {
+        this.tokenPayload.authorizationMetadata = authMetadataMap;
+        return this;
+    }
+
+    /**
      * Returns the token payload.
      *
      * @returns TokenPayload
