@@ -695,7 +695,7 @@ export default class Member extends CoreMember {
     ): Promise<StandingOrderSubmission> {
         return Util.callAsync(this.redeemStandingOrderToken, async () => {
             const res = await this._client.redeemStandingOrderToken(token);
-            if (res.data.transfer.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
+            if (res.data.submission.status === 'PENDING_EXTERNAL_AUTHORIZATION') {
                 const error: Object = new Error('PENDING_EXTERNAL_AUTHORIZATION');
                 error.authorizationDetails = res.data.authorizationDetails;
                 throw error;
