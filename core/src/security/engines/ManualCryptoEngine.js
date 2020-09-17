@@ -3,6 +3,7 @@ import KeyStoreCryptoEngine from './KeyStoreCryptoEngine';
 import {base64Url} from '../Base64UrlCodec';
 import sha256 from 'fast-sha256';
 import Util from '../../Util';
+import CryptoRsa from '../CryptoRsa';
 
 let keys = [];
 const globalKeyStore = new MemoryKeyStore();
@@ -18,9 +19,11 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
      *
      * Must be an array with objects of the format:
      * {
+     *     id: '123456', // optional
      *     publicKey: '123456',
      *     privateKey: '123456',
      *     level: 'LOW' || 'STANDARD' || 'PRIVILEGED',
+     *     algorithm: 'ED25519' || 'RSA', // optional (default to 'ED25519')
      * }
      */
     static async setKeys(memberKeys) {
@@ -39,7 +42,9 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
                 keyPair.id = base64Url(sha256(Util.bufferKey(keyPair.publicKey)))
                     .substring(0, 16);
             }
-            keyPair.algorithm = 'ED25519';
+            if(!keyPair.algorithm) {
+                keyPair.algorithm = 'ED25519';
+            }
         }
     }
 
@@ -79,7 +84,8 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         if (!keyPairs || !keyPairs.length) {
             throw new Error(`No key with level ${level} found`);
         }
-        return this._crypto.createSignerFromKeyPair(clone(keyPairs[0]));
+        const keyPair = clone(keyPairs[0]);
+        return this.cryptoForAlgorithm(keyPair.algorithm).createSignerFromKeyPair(keyPair);
     }
 
     /**
@@ -93,7 +99,15 @@ class ManualCryptoEngine extends KeyStoreCryptoEngine {
         if (!keyPairs || !keyPairs.length) {
             throw new Error(`No key with id ${keyId} found`);
         }
-        return this._crypto.createVerifierFromKeyPair(clone(keyPairs[0]));
+        const keyPair = clone(keyPairs[0]);
+        return this.cryptoForAlgorithm(keyPair.algorithm).createVerifierFromKeyPair(keyPair);
+    }
+
+    cryptoForAlgorithm(keyAlgorithm) {
+        if (keyAlgorithm === 'RS256') {
+            return CryptoRsa;
+        }
+        return this._crypto;
     }
 }
 
