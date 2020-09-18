@@ -4,7 +4,7 @@ import {base64Url} from './Base64UrlCodec';
 import {base64UrlToBuffer} from './Base64UrlCodec';
 import {base64ToBase64Url} from './Base64UrlCodec';
 import sha256 from 'fast-sha256';
-import forge from 'node-forge';
+const forge = require('node-forge');
 
 /**
  * Class providing static crypto primitives.
