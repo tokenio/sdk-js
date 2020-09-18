@@ -39,6 +39,6 @@
         "fast-json-stable-stringify": "^2.0.0",
         "fast-sha256": "^1.1.0",
         "tweetnacl": "^1.0.1",
-        "node-forge": "^0.9.0"
+        "node-forge": "^0.10.0"
     }
 }
