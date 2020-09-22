@@ -123,6 +123,10 @@ class AuthHeader {
                 customerTrackingData += ',token-customer-ip-address='
                     + context.customerTrackingMetadata.ipAddress;
             }
+            if(context.customerTrackingMetadata.userAgent !== undefined){
+                customerTrackingData += ',token-customer-user-agent='
+                    + context.customerTrackingMetadata.userAgent;
+            }
         }
         return customerTrackingData;
     }
