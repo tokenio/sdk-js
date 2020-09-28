@@ -69,9 +69,7 @@ class AuthHeader {
             'key-id=' + signer.getKeyId() + ',' +
             'signature=' + signature + ',' +
             'created-at-ms=' + now +
-            AuthHeader._onBehalfOfHeader(context) +
-            AuthHeader._customerInitiated(context) +
-            AuthHeader._customerTrackingMetadata(context);
+            AuthHeader._onBehalfOfHeader(context);
 
         request.headers = {
             Authorization: header,
@@ -96,39 +94,6 @@ class AuthHeader {
             return level;
         }
         return config.KeyLevel.LOW;
-    }
-
-    static _customerInitiated(context) {
-        // if the customer initiated request flag is set to true,
-        // we add it to the header, and reset the flag.
-        if (context && context.customerInitiated) {
-            context.customerInitiated = false;
-            return ',customer-initiated=true';
-        }
-        return '';
-    }
-
-    static _customerTrackingMetadata(context){
-        let customerTrackingData = '';
-        if(context && Object.keys(context.customerTrackingMetadata).length > 0){
-            if(context.customerTrackingMetadata.deviceId !== undefined){
-                customerTrackingData += ',token-customer-device-id='
-                    + context.customerTrackingMetadata.deviceId;
-            }
-            if(context.customerTrackingMetadata.geoLocation !== undefined){
-                customerTrackingData += ',token-customer-geo-location='
-                    + context.customerTrackingMetadata.geoLocation;
-            }
-            if(context.customerTrackingMetadata.ipAddress !== undefined){
-                customerTrackingData += ',token-customer-ip-address='
-                    + context.customerTrackingMetadata.ipAddress;
-            }
-            if(context.customerTrackingMetadata.userAgent !== undefined){
-                customerTrackingData += ',token-customer-user-agent='
-                    + context.customerTrackingMetadata.userAgent;
-            }
-        }
-        return customerTrackingData;
     }
 }
 
