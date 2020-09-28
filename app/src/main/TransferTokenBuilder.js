@@ -41,6 +41,17 @@ export default class TransferTokenBuilder extends TokenBuilder{
     }
 
     /**
+     * Sets the remittance reference of the transfer.
+     *
+     * @param remittanceReference remittance reference
+     * @return TransferTokenBuilder
+     */
+    setRemittanceReference(remittanceReference: string): TransferTokenBuilder {
+        this.tokenPayload.transfer.remittanceReference = remittanceReference;
+        return this;
+    }
+
+    /**
      * Sets the source bank if account is managed by a coop bank.
      *
      * @param bankId

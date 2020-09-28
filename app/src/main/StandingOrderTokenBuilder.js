@@ -41,6 +41,17 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
     }
 
     /**
+     * Sets the remittance reference of the standing order.
+     *
+     * @param remittanceReference remittance reference
+     * @return StandingOrderTokenBuilder
+     */
+    setRemittanceReference(remittanceReference: string): StandingOrderTokenBuilder {
+        this.tokenPayload.standingOrder.remittanceReference = remittanceReference;
+        return this;
+    }
+
+    /**
      * Sets the source custom authorization.
      *
      * @param bankId - source bank ID

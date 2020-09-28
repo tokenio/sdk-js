@@ -33,6 +33,17 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
     }
 
     /**
+     * Sets the remittance reference of the requested standing order.
+     *
+     * @param remittanceReference remittance reference
+     * @return StandingOrderTokenRequestBuilder
+     */
+    setRemittanceReference(remittanceReference: string): StandingOrderTokenRequestBuilder {
+        this.requestPayload.standingOrderBody.remittanceReference = remittanceReference;
+        return this;
+    }
+
+    /**
      * Sets the frequency of the standing order token request.
      *
      * @param frequency

@@ -22,6 +22,17 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
     }
 
     /**
+     * Sets the remittance reference of the requested transfer.
+     *
+     * @param remittanceReference remittance reference
+     * @return TransferTokenRequestBuilder
+     */
+    setRemittanceReference(remittanceReference: string): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.remittanceReference = remittanceReference;
+        return this;
+    }
+
+    /**
      * Adds a transfer destination to a transfer token request.
      *
      * @param destination
