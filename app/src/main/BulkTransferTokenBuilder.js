@@ -53,6 +53,7 @@ export default class BulkTransferTokenBuilder extends TokenBuilder {
      */
     setSourceAccountGuest(bankId: string): BulkTransferTokenBuilder {
         this.tokenPayload.bulkTransfer.source = {
+            bankId,
             account: {
                 guest: {
                     bankId,

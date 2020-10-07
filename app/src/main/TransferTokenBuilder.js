@@ -97,6 +97,7 @@ export default class TransferTokenBuilder extends TokenBuilder{
      */
     setSourceAccountGuest(bankId: string): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.source = {
+            bankId,
             account: {
                 guest: {
                     bankId,
