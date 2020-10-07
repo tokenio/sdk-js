@@ -78,6 +78,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      */
     setSourceAccountGuest(bankId: string): StandingOrderTokenBuilder {
         this.tokenPayload.standingOrder.instructions.source = {
+            bankId,
             account: {
                 guest: {
                     bankId,
