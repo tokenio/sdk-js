@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/tokenio/sdk-js#readme",
   "dependencies": {
-    "concurrently": "4.1.1",
+    "concurrently": "^5.3.0",
     "recursive-install": "1.4.0"
   }
 }
