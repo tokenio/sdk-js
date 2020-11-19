@@ -405,7 +405,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      */
     async replaceToken(tokenToCancel, newResources) {
         const cancelTokenId = tokenToCancel.id;
-        const cancelReq = await this._tokenOperationRequest(tokenToCancel, 'cancelled');
+        const cancelReq = await this._tokenOperationRequest(tokenToCancel, 'cancelled', config.KeyLevel.LOW);
 
         const createReq = {
             payload: {
@@ -439,11 +439,13 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @param {Object} token - token to endorse
      * @return {Object} response to the API call
      */
-    async endorseToken(token) {
+    async endorseToken(token, keyLevel) {
         return this._tokenOperation(
             token,
             'endorse',
-            'endorsed');
+            'endorsed',
+            null,
+            keyLevel);
     }
 
     /**
@@ -458,7 +460,8 @@ class AuthHttpClient extends CoreAuthHttpClient {
             token,
             'cancel',
             'cancelled',
-            blocking);
+            blocking,
+            config.KeyLevel.LOW);
     }
 
     /**
@@ -713,24 +716,24 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._instance(request);
     }
 
-    async _tokenOperation(token, operation, suffix, blocking) {
+    async _tokenOperation(token, operation, suffix, blocking, keyLevel) {
         const tokenId = token.id;
         const request = {
             method: 'put',
             url: `/tokens/${tokenId}/${operation}`,
-            data: await this._tokenOperationRequest(token, suffix),
+            data: await this._tokenOperationRequest(token, suffix, keyLevel),
         };
         if (blocking) request.adapter = BlockingAdapter;
         return this._instance(request);
     }
 
-    async _tokenOperationRequest(token, suffix) {
+    async _tokenOperationRequest(token, suffix, keyLevel = config.KeyLevel.STANDARD) {
         return {
             tokenId: token.id,
             signature: await this.tokenOperationSignature(
                 token.payload,
                 suffix,
-                config.KeyLevel.STANDARD),
+                keyLevel),
         };
     }
 }
