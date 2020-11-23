@@ -46,6 +46,8 @@ export class TokenClient extends Core {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
+        // beta env path part
+        tokenPathPart?: string,
     }) {
         super(options);
         this.options.keyDir = options.keyDir;
