@@ -295,7 +295,8 @@ export class TokenClient extends Core {
      */
     generateTokenRequestUrl(requestId: string): string {
         return Util.callSync(this.generateTokenRequestUrl, () => {
-            return `${this.options.customSdkUrl || config.webAppUrls[this.options.env]}/app/request-token/${requestId}`; // eslint-disable-line max-len
+            return `${this.options.customSdkUrl || Util.substituteConfigsTokenPathPart(config, this.options.tokenPathPart)
+                .webAppUrls[this.options.env]}/app/request-token/${requestId}`; // eslint-disable-line max-len
         });
     }
 
