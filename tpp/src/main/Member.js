@@ -23,6 +23,7 @@ import type {
     VerifyEidasResponse,
     CustomerTrackingMetadata,
     GetEidasVerificationStatusResponse,
+    InitiateBankAuthorizationResponse,
     WebhookConfig,
 } from '@token-io/core';
 
@@ -528,15 +529,32 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Initiate authorization process with the source bank, for an existing token request.
+     *
+     * @param tokenRequestId token request ID
+     * @param {CustomerTrackingMetadata} trackingMetadata customer tracking metadata
+     * @return initiation response
+     */
+    initiateBankAuthorization(
+        tokenRequestId: string,
+        trackingMetadata: CustomerTrackingMetadata
+    ): Promise<InitiateBankAuthorizationResponse> {
+        return Util.callAsync(this.initiateBankAuthorization, async () => {
+            const res = await this._client.initiateBankAuthorization(tokenRequestId, trackingMetadata);
+            return res.data;
+        });
+    }
+
+    /**
      * Get url to bank authorization page for a token request.
      *
      * @param bankId {string} Bank Id
      * @param tokenRequestId {string} Token Request Id
      * @returns {string} url
      */
-    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
+    getBankAuthUrl(bankId: string, tokenRequestId: string, customerTrackingMetadata: CustomerTrackingMetadata): Promise<string> {
         return Util.callAsync(this.getBankAuthUrl, async () => {
-            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId);
+            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId, customerTrackingMetadata);
             return res.data.url;
         });
     }
@@ -548,10 +566,10 @@ export default class Member extends CoreMember {
      * @param query {string} HTTP query string
      * @returns {string} token request ID
      */
-    onBankAuthCallback(bankId: string, query: string): Promise<string> {
+    onBankAuthCallback(bankId: string, query: string, customerTrackingMetadata: CustomerTrackingMetadata): Promise<string> {
         return Util.callAsync(this.onBankAuthCallback, async () => {
             const encodedQuery = query && encodeURIComponent(query) || '';
-            const res = await this._client.onBankAuthCallback(bankId, encodedQuery);
+            const res = await this._client.onBankAuthCallback(bankId, encodedQuery, customerTrackingMetadata);
             return res.data.tokenRequestId;
         });
     }

@@ -1,6 +1,7 @@
 // @flow
 export type AliasType = 'EMAIL' | 'DOMAIN' | 'PHONE' | 'EIDAS';
 export type KeyAlgorithm = 'ED25519' | 'ECDSA_SHA256' | 'RSA';
+export type ScaStatus = 'INVALID' | 'AUTHENTICATED' | 'AUTHENTICATION_FAILED';
 export type KeyLevel = 'LOW' | 'STANDARD' | 'PRIVILEGED';
 export type VerificationStatus = 'INVALID'
     | 'SUCCESS'
@@ -378,4 +379,14 @@ export type GetEidasVerificationStatusResponse = {
 export type WebhookConfig = {
     url: string,
     type: Array<EventType>,
+};
+
+export type InitiateBankAuthorizationResponse = string | ScaStatus | Array<CredentialField>;
+
+export type CredentialField = {
+    id: string,
+    displayName: string,
+    options: Array<string>,
+    password: boolean,
+    description: string,
 };

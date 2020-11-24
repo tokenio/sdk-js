@@ -424,12 +424,38 @@ class AuthHttpClient extends CoreAuthHttpClient {
      *
      * @param bankId {string} Bank Id
      * @param tokenRequestId {string} Token request id
+     * @param customerTrackingMetadata customer tracking metadata
      * @returns {Object} response to the api call
      */
-    async getBankAuthUrl(bankId, tokenRequestId){
+    async getBankAuthUrl(bankId, tokenRequestId, customerTrackingMetadata){
+        if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
+            this._context.customerInitiated = true;
+            this._context.customerTrackingMetadata = customerTrackingMetadata;
+            this._resetRequestInterceptor();
+        }
         const request = {
             method: 'post',
             url: `/banks/${bankId}/token-requests/${tokenRequestId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
+     * Initiate authorization process with the source bank, for an existing token request.
+     *
+     * @param tokenRequestId token request ID
+     * @param customerTrackingMetadata customer tracking metadata
+     * @return {Object} response to the api call
+     */
+    async initiateBankAuthorization(tokenRequestId, customerTrackingMetadata) {
+        if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
+            this._context.customerInitiated = true;
+            this._context.customerTrackingMetadata = customerTrackingMetadata;
+            this._resetRequestInterceptor();
+        }
+        const request = {
+            method: 'post',
+            url: `/token-requests/${tokenRequestId}/authorization`,
         };
         return this._instance(request);
     }
@@ -439,9 +465,15 @@ class AuthHttpClient extends CoreAuthHttpClient {
      *
      * @param bankId {string} bank Id
      * @param query {string} HTTP query string
+     * @param customerTrackingMetadata customer tracking metadata
      * @returns {Object} response to the api call
      */
-    async onBankAuthCallback(bankId, query){
+    async onBankAuthCallback(bankId, query, customerTrackingMetadata){
+        if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
+            this._context.customerInitiated = true;
+            this._context.customerTrackingMetadata = customerTrackingMetadata;
+            this._resetRequestInterceptor();
+        }
         const request = {
             method: 'post',
             url: `/banks/${bankId}/callback?query=${query}`,
