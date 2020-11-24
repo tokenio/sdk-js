@@ -10,7 +10,6 @@ const Token = new TokenClient({env: TEST_ENV, developerKey: devKey, keyDir: './k
  * @return {Object} retrieved token request
  */
 export default async payee => {
-    console.log('Inside token sample');
     const tokenRequest = Token.createTransferTokenRequest(10.00, 'EUR')
         .setToMemberId(payee.memberId())
         .setFromAlias('EMAIL', 'payerEmail@gmail.com')
@@ -18,8 +17,5 @@ export default async payee => {
         .setRedirectUrl('https://token.io/callback')
         .setBankId('iron');
     const request = await payee.storeTokenRequest(tokenRequest);
-    console.log('After store token request', request);
-    const respo = await payee.initiateBankAuthorization(request.id);
-    console.log('hey response ======>', respo);
     return await Token.retrieveTokenRequest(request.id);
 };
