@@ -40,6 +40,8 @@ export class TokenClient {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
+        // beta env path part
+        tokenPathPart?: string,
     } = {}) {
         this.options = options;
         this.options.developerKey = this.options.developerKey || config.devKey.default;

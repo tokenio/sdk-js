@@ -237,6 +237,13 @@ export class Util {
     static setUpCustomResponseInterceptor(instance, cri) {
         cri && instance.interceptors.response.use(cri.onFulfilled, cri.onRejected);
     }
+
+    static  substituteConfigsTokenPathPart(config,tokenPathPart = ''){
+        const substituted = JSON.stringify(config).replace(
+            /\${TOKEN_PATH_PART}/g,
+            tokenPathPart);
+        return JSON.parse(substituted);
+    }
 }
 
 export default Util;
