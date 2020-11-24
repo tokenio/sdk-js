@@ -560,12 +560,13 @@ export default class Member extends CoreMember {
      * the member prompting them to use a higher-privilege key.
      *
      * @param token - token to endorse, can be the token ID as well
+     * @param {string} keyLevel - 'LOW', 'STANDARD', or 'PRIVILEGED'
      * @return endorsed token
      */
-    endorseToken(token: Token | string): Promise<TokenOperationResult> {
+    endorseToken(token: Token | string, keyLevel: string): Promise<TokenOperationResult> {
         return Util.callAsync(this.endorseToken, async () => {
             const finalToken = await this._resolveToken(token);
-            const endorsed = await this._client.endorseToken(finalToken);
+            const endorsed = await this._client.endorseToken(finalToken, keyLevel);
             if (typeof token !== 'string') {
                 token.payloadSignatures = endorsed.data.result.token.payloadSignatures;
             }

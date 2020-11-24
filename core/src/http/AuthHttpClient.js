@@ -54,30 +54,30 @@ export class AuthHttpClient {
 
     /**
      * Creates the necessary signer objects, based on the level requested.
-     * If the level is not available, attempts to fetch a lower level.
+     * If the level is not available, attempts to fetch a higher level.
      *
-     * @param {string} level - requested level of key
+     * @param {string} level - requested minimum level of key
      * @return {Promise} object used to sign
      */
     async getSigner(level) {
-        if (level === config.KeyLevel.LOW) {
-            return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
+        if (level === config.KeyLevel.PRIVILEGED) {
+            return await this._cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
         }
         if (level === config.KeyLevel.STANDARD) {
             try {
                 return await this._cryptoEngine.createSigner(config.KeyLevel.STANDARD);
             } catch (err) {
-                return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
+                return await this._cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
             }
         }
-        if (level === config.KeyLevel.PRIVILEGED) {
+        if (level === config.KeyLevel.LOW) {
             try {
-                return await this._cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
+                return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
             } catch (err) {
                 try {
                     return await this._cryptoEngine.createSigner(config.KeyLevel.STANDARD);
                 } catch (err2) {
-                    return await this._cryptoEngine.createSigner(config.KeyLevel.LOW);
+                    return await this._cryptoEngine.createSigner(config.KeyLevel.PRIVILEGED);
                 }
             }
         }

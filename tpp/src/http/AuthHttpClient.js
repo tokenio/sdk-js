@@ -193,7 +193,8 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._tokenOperation(
             token,
             'cancel',
-            'cancelled');
+            'cancelled',
+            config.KeyLevel.LOW);
     }
 
     /**
@@ -507,23 +508,23 @@ class AuthHttpClient extends CoreAuthHttpClient {
         return this._instance(request);
     }
 
-    async _tokenOperation(token, operation, suffix) {
+    async _tokenOperation(token, operation, suffix, keyLevel) {
         const tokenId = token.id;
         const request = {
             method: 'put',
             url: `/tokens/${tokenId}/${operation}`,
-            data: await this._tokenOperationRequest(token, suffix),
+            data: await this._tokenOperationRequest(token, suffix, keyLevel),
         };
         return this._instance(request);
     }
 
-    async _tokenOperationRequest(token, suffix) {
+    async _tokenOperationRequest(token, suffix, keyLevel = config.KeyLevel.STANDARD) {
         return {
             tokenId: token.id,
             signature: await this.tokenOperationSignature(
                 token.payload,
                 suffix,
-                config.KeyLevel.STANDARD),
+                keyLevel),
         };
     }
 }
