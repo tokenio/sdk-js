@@ -4,8 +4,9 @@ import {Buffer} from 'buffer';
 
 export default class Util extends CoreUtil {
     static enableIframePassthrough(env) {
-        const suffix = config.corsDomainSuffix;
-        const url = config.urls[env];
+        const conf = Util.substituteConfigsTokenPathPart(config,'');
+        const suffix = conf.corsDomainSuffix;
+        const url = conf.urls[env];
         if (Util.stringEndsWith(document.domain, suffix) ||
             document.domain === suffix.substring(1)) {
             const setupAPI = function() {
