@@ -429,7 +429,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      */
     async getBankAuthUrl(bankId, tokenRequestId, customerTrackingMetadata){
         if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
-            this._context.customerInitiated = true;
+            this._context.customerInitiated = false;
             this._context.customerTrackingMetadata = customerTrackingMetadata;
             this._resetRequestInterceptor();
         }
@@ -449,7 +449,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      */
     async initiateBankAuthorization(tokenRequestId, customerTrackingMetadata) {
         if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
-            this._context.customerInitiated = true;
+            this._context.customerInitiated = false;
             this._context.customerTrackingMetadata = customerTrackingMetadata;
             this._resetRequestInterceptor();
         }
@@ -470,7 +470,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      */
     async onBankAuthCallback(bankId, query, customerTrackingMetadata){
         if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
-            this._context.customerInitiated = true;
+            this._context.customerInitiated = false;
             this._context.customerTrackingMetadata = customerTrackingMetadata;
             this._resetRequestInterceptor();
         }
