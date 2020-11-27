@@ -202,13 +202,13 @@ export default class TokenRequestBuilder {
     }
 
     /**
-     * Sets authorization metadata as name value map
+     * Sets credentials as key value map
      *
-     * @param authMetadataMap
+     * @param credentials
      * @return TokenRequestBuilder
      */
-    setAuthorizationMetadata(authMetadataMap: {[string]: string}): TokenRequestBuilder {
-        this.requestPayload.authorizationMetadata = authMetadataMap;
+    setCredentials(credentials: {[string]: string}): TokenRequestBuilder {
+        this.requestPayload.credentials = credentials;
         return this;
     }
 }
