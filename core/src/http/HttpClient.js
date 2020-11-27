@@ -16,15 +16,13 @@ export class HttpClient {
         loggingEnabled,
         customSdkUrl,
         customResponseInterceptor,
-        tokenPathPart,
     }) {
-        const conf = Util.substituteConfigsTokenPathPart(config,tokenPathPart);
-        if (!(conf.urls[env] || customSdkUrl)) {
+        if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
-                JSON.stringify(conf.urls));
+                JSON.stringify(config.urls));
         }
         this._instance = axios.create({
-            baseURL: customSdkUrl || conf.urls[env],
+            baseURL: customSdkUrl || config.urls[env],
         });
         if (loggingEnabled) {
             Util.setUpHttpErrorLogging(this._instance);

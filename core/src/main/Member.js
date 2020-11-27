@@ -44,8 +44,6 @@ export class Member {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
-        // beta env path part
-        tokenPathPart?: string,
     }) {
         const {memberId} = options;
         this._id = memberId;

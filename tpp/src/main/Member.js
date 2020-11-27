@@ -46,8 +46,6 @@ export default class Member extends CoreMember {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
-        // beta env path part
-        tokenPathPart?: string,
     }) {
         super(options);
         this._unauthenticatedClient = new HttpClient(options);
