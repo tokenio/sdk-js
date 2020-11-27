@@ -7,7 +7,8 @@
         "perf": "https://api.perf.token.io",
         "sandbox": "https://api.sandbox.token.io",
         "int": "https://api.int.token.io",
-        "prd": "https://api.token.io"
+        "prd": "https://api.token.io",
+        "beta": "https://api.token.io/beta"
     },
     "webAppUrls": {
         "local": "http://localhost:5000",
@@ -16,7 +17,9 @@
         "perf": "https://web-app.perf.token.io",
         "sandbox": "https://web-app.sandbox.token.io",
         "int": "https://web-app.int.token.io",
-        "prd": "https://web-app.token.io"
+        "prd": "https://web-app.token.io",
+        "beta": "https://web-app.token.io/beta"
+
     },
     "transferTokenVersion": "1.0",
     "accessTokenVersion": "1.0",
