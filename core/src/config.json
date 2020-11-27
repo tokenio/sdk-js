@@ -1,22 +1,22 @@
 {
     "signatureScheme": "Token-Ed25519-SHA512",
     "urls": {
-      "local": "http://localhost:8000${TOKEN_PATH_PART}",
-      "dev": "https://api.dev.token.io${TOKEN_PATH_PART}",
-      "stg": "https://api.stg.token.io${TOKEN_PATH_PART}",
-      "perf": "https://api.perf.token.io${TOKEN_PATH_PART}",
-      "sandbox": "https://api.sandbox.token.io${TOKEN_PATH_PART}",
-      "int": "https://api.int.token.io${TOKEN_PATH_PART}",
-      "prd": "https://api.token.io${TOKEN_PATH_PART}"
+        "local": "http://localhost:8000",
+        "dev": "https://api.dev.token.io",
+        "stg": "https://api.stg.token.io",
+        "perf": "https://api.perf.token.io",
+        "sandbox": "https://api.sandbox.token.io",
+        "int": "https://api.int.token.io",
+        "prd": "https://api.token.io"
     },
     "webAppUrls": {
-        "local": "http://localhost:5000${TOKEN_PATH_PART}",
-        "dev": "https://web-app.dev.token.io${TOKEN_PATH_PART}",
-        "stg": "https://web-app.stg.token.io${TOKEN_PATH_PART}",
-        "perf": "https://web-app.perf.token.io${TOKEN_PATH_PART}",
-        "sandbox": "https://web-app.sandbox.token.io${TOKEN_PATH_PART}",
-        "int": "https://web-app.int.token.io${TOKEN_PATH_PART}",
-        "prd": "https://web-app.token.io${TOKEN_PATH_PART}"
+        "local": "http://localhost:5000",
+        "dev": "https://web-app.dev.token.io",
+        "stg": "https://web-app.stg.token.io",
+        "perf": "https://web-app.perf.token.io",
+        "sandbox": "https://web-app.sandbox.token.io",
+        "int": "https://web-app.int.token.io",
+        "prd": "https://web-app.token.io"
     },
     "transferTokenVersion": "1.0",
     "accessTokenVersion": "1.0",
