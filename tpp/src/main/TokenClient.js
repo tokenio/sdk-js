@@ -337,13 +337,13 @@ export class TokenClient extends Core {
      * @param csrfToken
      */
     parseTokenRequestCallbackParams(
-        callback: {'token-id': string, signature: string, state: string},
+        callback: {tokenId: string, signature: string, state: string},
         csrfToken?: string
     ): Promise<{tokenId: string, innerState: string}> {
         return Util.callAsync(this.parseTokenRequestCallbackParams, async () => {
             const tokenMember = await this._unauthenticatedClient.getTokenMember();
             const params = {
-                tokenId: callback['token-id'],
+                tokenId: callback.tokenId,
                 state: JSON.parse(decodeURIComponent(callback.state)),
                 signature: JSON.parse(callback.signature),
             };
