@@ -27,7 +27,5 @@ describe('MemberMethods test', () => {
     it('Should run the profiles sample', async () => {
         const profile = await MemberMethodsSample.profiles(member);
         assert.isOk(profile);
-        assert.isOk(profile.displayNameFirst);
-        assert.isOk(profile.displayNameLast);
     });
 });

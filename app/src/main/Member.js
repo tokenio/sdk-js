@@ -270,6 +270,19 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Gets a member's public profile name.
+     *
+     * @param id - member ID whose profile to get
+     * @return profile
+     */
+    getProfileName(id: string): Promise<Profile> {
+        return Util.callAsync(this.getProfile, async () => {
+            const res = await this._client.getProfileName(id);
+            return res.data.profileName;
+        });
+    }
+
+    /**
      * Uploads the authenticated member's public profile.
      *
      * @param type - MIME type
