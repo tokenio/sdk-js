@@ -273,9 +273,9 @@ export default class Member extends CoreMember {
      * Gets a member's public profile name.
      *
      * @param id - member ID whose profile to get
-     * @return profile
+     * @return profile name
      */
-    getProfileName(id: string): Promise<Profile> {
+    getProfileName(id: string): Promise<string> {
         return Util.callAsync(this.getProfile, async () => {
             const res = await this._client.getProfileName(id);
             return res.data.profileName;
