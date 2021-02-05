@@ -81,7 +81,7 @@ class MemberMethodsSample {
         const jpeg = loadPicture('tycho.jpg'); // file contents as byte array
         await member.setProfilePicture('image/jpeg', jpeg);
 
-        const profile = await member.getProfile(member.memberId());
+        const profile = await member.getProfileName(member.memberId());
         return profile;
     }
 }

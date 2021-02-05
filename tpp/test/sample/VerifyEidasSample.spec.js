@@ -19,7 +19,7 @@ describe('VerifyEidasSample test', () => {
         assert.equal(aliases.length, 1);
         assert.equal(aliases[0].value, tppAuthNumber);
         assert.equal(aliases[0].type, 'EIDAS');
-        const profile = await member.getProfile(member.memberId());
-        assert.equal(profile.displayNameFirst, pspSubjectName);
+        const profileName = await member.getProfileName(member.memberId());
+        assert.equal(profileName, pspSubjectName);
     });
 });

@@ -136,6 +136,20 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Gets a member's public profile name.
+     *
+     * @param {string} id - member ID whose profile to get
+     * @return {Object} response to the API call
+     */
+    async getProfileName(id) {
+        const request = {
+            method: 'get',
+            url: `/members/${id}/profile-name`,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Uploads member's public profile picture.
      *
      * @param {string} type - MIME type
