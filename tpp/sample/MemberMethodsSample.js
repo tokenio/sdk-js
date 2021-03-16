@@ -73,11 +73,8 @@ class MemberMethodsSample {
     }
 
     static async profiles(member) {
-        const name = {
-            displayNameFirst: 'Tycho',
-            displayNameLast: 'Nestoris',
-        };
-        await member.setProfile(name);
+        const name = 'Tycho Nestoris';
+        await member.setProfileName(name);
         const jpeg = loadPicture('tycho.jpg'); // file contents as byte array
         await member.setProfilePicture('image/jpeg', jpeg);
 

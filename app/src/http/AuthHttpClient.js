@@ -122,6 +122,25 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Replaces the authenticated member's public profile name.
+     *
+     * @param {string} id - member ID whose profile name to set
+     * @param {string} profileName - profile name to set
+     * @return {Object} response to the API call
+     */
+    async setProfileName(id, profileName) {
+        const req = {
+            profileName,
+        };
+        const request = {
+            method: 'put',
+            url: `/members/${id}/profile-name`,
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets a member's public profile.
      *
      * @param {string} id - member ID whose profile to get
