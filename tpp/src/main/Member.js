@@ -127,7 +127,7 @@ export default class Member extends CoreMember {
      */
     setProfileName(profileName: string): Promise<void> {
         return Util.callAsync(this.setProfileName, async () => {
-            await this._client.setProfileName(this.memberId(), profileName);
+            await this._client.setProfileName(profileName);
         });
     }
 

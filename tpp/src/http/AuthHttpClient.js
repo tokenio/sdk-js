@@ -52,13 +52,13 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @param {string} profileName - profile name to set
      * @return {Object} response to the API call
      */
-    async setProfileName(id, profileName) {
+    async setProfileName(profileName) {
         const req = {
             profileName,
         };
         const request = {
             method: 'put',
-            url: `/members/${id}/profile-name`,
+            url: `/members/profile-name`,
             data: req,
         };
         return this._instance(request);
