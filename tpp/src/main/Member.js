@@ -120,6 +120,18 @@ export default class Member extends CoreMember {
     }
 
     /**
+     * Replaces the authenticated member's public profile name.
+     *
+     * @param profileName - profile name to set
+     * @return empty promise
+     */
+    setProfileName(profileName: string): Promise<void> {
+        return Util.callAsync(this.setProfileName, async () => {
+            await this._client.setProfileName(profileName);
+        });
+    }
+
+    /**
      * Gets a member's public profile.
      *
      * @param id - member ID whose profile to get
