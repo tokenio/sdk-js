@@ -28,6 +28,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * @deprecated
      * Replaces the authenticated member's public profile.
      *
      * @param {Object} profile - profile to set
@@ -58,7 +59,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
         };
         const request = {
             method: 'put',
-            url: `/members/profile-name`,
+            url: '/members/profile-name',
             data: req,
         };
         return this._instance(request);
