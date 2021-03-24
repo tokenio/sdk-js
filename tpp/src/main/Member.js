@@ -557,11 +557,12 @@ export default class Member extends CoreMember {
      *
      * @param bankId {string} Bank Id
      * @param tokenRequestId {string} Token Request Id
+     * @param {boolean} consentAccepted consent accepted by user/payer
      * @returns {string} url
      */
-    getBankAuthUrl(bankId: string, tokenRequestId: string): Promise<string> {
+    getBankAuthUrl(bankId: string, tokenRequestId: string, consentAccepted: boolean): Promise<string> {
         return Util.callAsync(this.getBankAuthUrl, async () => {
-            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId);
+            const res = await this._client.getBankAuthUrl(bankId, tokenRequestId, consentAccepted);
             return res.data.url;
         });
     }
