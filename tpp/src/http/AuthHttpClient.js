@@ -466,8 +466,8 @@ class AuthHttpClient extends CoreAuthHttpClient {
             method: 'post',
             url: `/banks/${bankId}/token-requests/${tokenRequestId}`,
             data: {
-                consentAccepted
-            }
+                consentAccepted,
+            },
         };
         return this._instance(request);
     }
