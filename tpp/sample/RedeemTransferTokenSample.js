@@ -29,7 +29,7 @@ export default async (payee, tokenId) => {
     // Payer redeems the token, getting a transfer
     return await payee.redeemToken(
         transferToken,
-        5,
+        parseFloat(transferToken.payload.transfer.lifetimeAmount),
         'EUR',
         'lunch',
         [destination],
