@@ -12,6 +12,6 @@ describe('GetTransactionSample test', () => {
         const res = await TestUtil.createTransferToken(userMember, tppAlias);
         const transfer = await RedeemTransferTokenSample(tppMember, res.id);
         const transaction = await GetTransactionSample(userMember, transfer);
-        assert.equal(transaction.amount.value, 5);
+        assert.equal(transaction.amount.value, 100);
     });
 });
