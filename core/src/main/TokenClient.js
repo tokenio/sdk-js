@@ -173,6 +173,7 @@ export class TokenClient {
             country?: string,
             provider?: string,
             destinationCountry?: string,
+            memberId?: string,
         }
     ): Promise<{countries: Array<string>}> {
         return Util.callAsync(this.getBanks, async () => {
