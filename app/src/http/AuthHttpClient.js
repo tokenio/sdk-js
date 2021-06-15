@@ -265,6 +265,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @param {CustomerTrackingMetadata} customerTrackingMetadata
      */
     addCustomerTrackingMetadata(customerTrackingMetadata) {
+        this._context.customerInitiated = true;
         this._context.customerTrackingMetadata = customerTrackingMetadata;
         this._resetRequestInterceptor();
     }
