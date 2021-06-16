@@ -828,20 +828,16 @@ export default class Member extends CoreMember {
      * Populate customer tracking metadata headers in token calls.
      *
      * @param {CustomerTrackingMetadata} customerTrackingMetadata
-     * @return new member
      */
     addCustomerTrackingMetadata(
         customerTrackingMetadata: CustomerTrackingMetadata,
-    ): Member {
+    ): void {
         return Util.callSync(this.addCustomerTrackingMetadata, () => {
-            const newMember = new Member(this._options);
-
             if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
                 throw new Error('User tracking metadata is empty.');
             }
 
-            newMember._client.addCustomerTrackingMetadata(customerTrackingMetadata);
-            return newMember;
+            this._client.addCustomerTrackingMetadata(customerTrackingMetadata);
         });
     }
 
