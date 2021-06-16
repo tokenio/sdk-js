@@ -260,6 +260,17 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Populate customer tracking metadata headers
+     *
+     * @param {CustomerTrackingMetadata} customerTrackingMetadata
+     */
+    addCustomerTrackingMetadata(customerTrackingMetadata) {
+        this._context.customerInitiated = true;
+        this._context.customerTrackingMetadata = customerTrackingMetadata;
+        this._resetRequestInterceptor();
+    }
+
+    /**
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
      * @param {Array} accountIds - account IDs to unlink

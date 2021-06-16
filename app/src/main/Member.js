@@ -29,6 +29,7 @@ import type {
     BulkTransfer,
     BulkTransferBodyTransfers,
     TransferEndpoint,
+    CustomerTrackingMetadata,
 } from '@token-io/core';
 
 /**
@@ -820,6 +821,23 @@ export default class Member extends CoreMember {
                 callbackUrl,
                 tokenRequestId);
             return res.data.linkingRequestId;
+        });
+    }
+
+    /**
+     * Populate customer tracking metadata headers in token calls.
+     *
+     * @param {CustomerTrackingMetadata} customerTrackingMetadata
+     */
+    addCustomerTrackingMetadata(
+        customerTrackingMetadata: CustomerTrackingMetadata,
+    ): void {
+        return Util.callSync(this.addCustomerTrackingMetadata, () => {
+            if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
+                throw new Error('User tracking metadata is empty.');
+            }
+
+            this._client.addCustomerTrackingMetadata(customerTrackingMetadata);
         });
     }
 
