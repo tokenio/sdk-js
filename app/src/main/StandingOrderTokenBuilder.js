@@ -149,7 +149,7 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
      * @param returnRefundAccount whether  the refund account should be returned
      * @return builder
      */
-    setReturnRefundAccount(returnRefundAccount: boolean): TransferTokenBuilder {
+    setReturnRefundAccount(returnRefundAccount: boolean): StandingOrderTokenBuilder {
         this.tokenPayload.standingOrder.returnRefundAccount = returnRefundAccount;
         return this;
     }
