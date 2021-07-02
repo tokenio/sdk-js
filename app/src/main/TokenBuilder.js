@@ -133,6 +133,17 @@ export default class TokenBuilder {
     }
 
     /**
+     * Sets the flag indicating whether a receipt is requested.
+     *
+     * @param receiptRequested
+     * @return TokenBuilder
+     */
+    setReceiptRequested(receiptRequested: boolean): TokenBuilder {
+        this.tokenPayload.receiptRequested = receiptRequested;
+        return this;
+    }
+
+    /**
      * Returns the token payload.
      *
      * @returns TokenPayload

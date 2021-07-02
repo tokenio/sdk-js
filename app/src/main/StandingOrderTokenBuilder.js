@@ -144,13 +144,13 @@ export default class StandingOrderTokenBuilder extends TokenBuilder {
     }
 
     /**
-     *  Sets the flag indicating whether a receipt is requested.
+     * Optional. Sets whether the refund account should be returned.
      *
-     * @param receiptRequested
-     * @return StandingOrderTokenBuilder
+     * @param returnRefundAccount whether  the refund account should be returned
+     * @return builder
      */
-    setReceiptRequested(receiptRequested: boolean): StandingOrderTokenBuilder {
-        this.tokenPayload.receiptRequested = receiptRequested;
+    setReturnRefundAccount(returnRefundAccount: boolean): TransferTokenBuilder {
+        this.tokenPayload.standingOrder.returnRefundAccount = returnRefundAccount;
         return this;
     }
 

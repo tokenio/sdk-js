@@ -215,17 +215,6 @@ export default class TransferTokenBuilder extends TokenBuilder{
     }
 
     /**
-     *  Sets the flag indicating whether a receipt is requested.
-     *
-     * @param receiptRequested
-     * @return TransferTokenBuilder
-     */
-    setReceiptRequested(receiptRequested: boolean): TransferTokenBuilder {
-        this.tokenPayload.receiptRequested = receiptRequested;
-        return this;
-    }
-
-    /**
      * Sets whether CAF should be attempted before transfer
      *
      * @param confirmFunds - whether to attempt CAF before transfer
@@ -244,6 +233,17 @@ export default class TransferTokenBuilder extends TokenBuilder{
      */
     setProviderTransferMetadata(providerTransferMetadata: Object): TransferTokenBuilder {
         this.tokenPayload.transfer.instructions.metadata.providerTransferMetadata = providerTransferMetadata;
+        return this;
+    }
+
+    /**
+     * Optional. Sets whether the refund account should be returned.
+     *
+     * @param returnRefundAccount whether  the refund account should be returned
+     * @return builder
+     */
+    setReturnRefundAccount(returnRefundAccount: boolean): TransferTokenBuilder {
+        this.tokenPayload.transfer.returnRefundAccount = returnRefundAccount;
         return this;
     }
 

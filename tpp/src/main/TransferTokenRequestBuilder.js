@@ -179,4 +179,15 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
         this.requestPayload.transferBody.instructions.source = source;
         return this;
     }
+
+    /**
+     * Optional. Sets whether the refund account should be returned.
+     *
+     * @param returnRefundAccount whether  the refund account should be returned
+     * @return TransferTokenRequestBuilder
+     */
+    setReturnRefundAccount(returnRefundAccount: boolean): TransferTokenRequestBuilder {
+        this.requestPayload.transferBody.returnRefundAccount = returnRefundAccount;
+        return this;
+    }
 }
