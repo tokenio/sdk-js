@@ -138,4 +138,15 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
         this.requestPayload.standingOrderBody.instructions = { source };
         return this;
     }
+
+    /**
+     * Optional. Sets whether the refund account should be returned.
+     *
+     * @param returnRefundAccount whether  the refund account should be returned
+     * @return StandingOrderTokenRequestBuilder
+     */
+    setReturnRefundAccount(returnRefundAccount: boolean): StandingOrderTokenRequestBuilder {
+        this.requestPayload.standingOrderBody.returnRefundAccount = returnRefundAccount;
+        return this;
+    }
 }

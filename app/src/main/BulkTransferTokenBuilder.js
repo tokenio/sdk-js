@@ -62,14 +62,4 @@ export default class BulkTransferTokenBuilder extends TokenBuilder {
         };
         return this;
     }
-    /**
-     *  Sets the flag indicating whether a receipt is requested.
-     *
-     * @param receiptRequested
-     * @return BulkTransferTokenBuilder
-     */
-    setReceiptRequested(receiptRequested: boolean): BulkTransferTokenBuilder {
-        this.tokenPayload.receiptRequested = receiptRequested;
-        return this;
-    }
 }
