@@ -12,7 +12,6 @@ import type {
     Bank,
     Paging,
     TokenMember,
-    StandingOrder,
 } from '..';
 
 /**
@@ -174,6 +173,7 @@ export class TokenClient {
             provider?: string,
             destinationCountry?: string,
             memberId?: string,
+            headers?: any,
         }
     ): Promise<{countries: Array<string>}> {
         return Util.callAsync(this.getBanks, async () => {

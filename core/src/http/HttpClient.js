@@ -106,6 +106,8 @@ export class HttpClient {
             bankFeatures: options.bankFeatures || '',
             // Optional tpp member id
             memberId: options.memberId || '',
+            // Optional add headers such as dev key to this request
+            headers: options.headers
         });
         const {
             ids,
@@ -117,6 +119,7 @@ export class HttpClient {
             destinationCountry,
             bankFeatures,
             memberId,
+            headers,
         } = formattedOptions;
         let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
@@ -135,9 +138,11 @@ export class HttpClient {
                 url += `${key}=${encodeURIComponent(bankFeatures[key])}&`;
             }
         }
+
         const request = {
             method: 'get',
             url: url,
+            headers: headers
         };
         return this._instance(request);
     }
