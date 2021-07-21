@@ -34,6 +34,9 @@ export class HttpClient {
         this._instance.interceptors.request.use(request => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
+            if (request.additionalHeaders) {
+              request.headers = {...request.headers, ...request.additionalHeaders}
+            }
             return request;
         });
 
@@ -142,7 +145,7 @@ export class HttpClient {
         const request = {
             method: 'get',
             url: url,
-            headers: headers
+            additionalHeaders: headers
         };
         return this._instance(request);
     }
