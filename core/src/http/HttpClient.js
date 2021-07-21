@@ -2,6 +2,7 @@ import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
+import AdditionalHeaders from './AdditionalHeaders';
 import Util from '../Util';
 import axios from 'axios';
 
@@ -31,9 +32,11 @@ export class HttpClient {
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
+        const additionalHeaders = new AdditionalHeaders();
         this._instance.interceptors.request.use(request => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
+            additionalHeaders.addAdditionalHeaders(request);
             return request;
         });
 
@@ -106,6 +109,8 @@ export class HttpClient {
             bankFeatures: options.bankFeatures || '',
             // Optional tpp member id
             memberId: options.memberId || '',
+            // Optional add headers such as dev key to this request
+            headers: options.headers
         });
         const {
             ids,
@@ -117,6 +122,7 @@ export class HttpClient {
             destinationCountry,
             bankFeatures,
             memberId,
+            headers,
         } = formattedOptions;
         let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
@@ -135,9 +141,11 @@ export class HttpClient {
                 url += `${key}=${encodeURIComponent(bankFeatures[key])}&`;
             }
         }
+
         const request = {
             method: 'get',
             url: url,
+            additionalHeaders: headers
         };
         return this._instance(request);
     }
