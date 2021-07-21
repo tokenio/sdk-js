@@ -1,9 +1,9 @@
 /**
- * Class to add sdk version and type.
+ * Class to add additional headers.
  */
  class AdditionalHeaders {
   /**
-   * Adds the sdk type and version to the request config.
+   * Adds additional headers to request config.
    *
    * @param {Object} config - config of the request
    */
