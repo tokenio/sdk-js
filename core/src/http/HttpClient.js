@@ -2,6 +2,7 @@ import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
+import AdditionalHeaders from './AdditionalHeaders';
 import Util from '../Util';
 import axios from 'axios';
 
@@ -31,12 +32,11 @@ export class HttpClient {
 
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
+        const additionalHeaders = new AdditionalHeaders();
         this._instance.interceptors.request.use(request => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
-            if (request.additionalHeaders) {
-              request.headers = {...request.headers, ...request.additionalHeaders}
-            }
+            additionalHeaders.addAdditionalHeaders(request);
             return request;
         });
 
