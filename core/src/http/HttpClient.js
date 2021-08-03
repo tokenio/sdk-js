@@ -2,7 +2,7 @@ import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
-import AdditionalHeaders from './AdditionalHeaders';
+import setAdditionalHeaders from './setAdditionalHeaders';
 import Util from '../Util';
 import axios from 'axios';
 
@@ -29,14 +29,12 @@ export class HttpClient {
             Util.setUpHttpErrorLogging(this._instance);
         }
         Util.setUpCustomResponseInterceptor(this._instance, customResponseInterceptor);
-
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
-        const additionalHeaders = new AdditionalHeaders();
         this._instance.interceptors.request.use(request => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
-            additionalHeaders.addAdditionalHeaders(request);
+            setAdditionalHeaders(request);
             return request;
         });
 
@@ -145,7 +143,7 @@ export class HttpClient {
         const request = {
             method: 'get',
             url: url,
-            additionalHeaders: headers
+            requestHeaders: headers
         };
         return this._instance(request);
     }

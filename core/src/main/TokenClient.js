@@ -25,6 +25,7 @@ export class TokenClient {
     ManualCryptoEngine: Class<MemoryCryptoEngine>;
     Util: Util;
     _unauthenticatedClient: HttpClient;
+    defaultHeaders: Object;
 
     constructor(options: {
         // Token environment to target, defaults to 'prd'
@@ -39,6 +40,8 @@ export class TokenClient {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
+        // default headers passed into a authHttpClient
+        defaultHeaders?: Object
     } = {}) {
         this.options = options;
         this.options.developerKey = this.options.developerKey || config.devKey.default;
@@ -46,6 +49,7 @@ export class TokenClient {
         this.Crypto = Crypto;
         this.MemoryCryptoEngine = MemoryCryptoEngine;
         this.ManualCryptoEngine = ManualCryptoEngine;
+        this.setDefaultHeaders(options.defaultHeaders);
     }
 
     /**
@@ -127,6 +131,7 @@ export class TokenClient {
                 memberId,
                 cryptoEngine: engine,
                 ...this.options,
+                defaultHeaders: this.getDefaultHeaders()
             });
         });
     }
@@ -180,5 +185,23 @@ export class TokenClient {
             const res = await this._unauthenticatedClient.getBanksOrCountries(options, true);
             return res.data.countries;
         });
+    }
+
+    /**
+     * Sets default headers passed into authHttpClient
+     *
+     * @param defaultHeaders - object with string values passed into axios headers
+     */
+    setDefaultHeaders(defaultHeaders: Object) {
+      this.defaultHeaders = defaultHeaders || {};
+    }
+
+    /**
+     * Gets default headers passed into authHttpClient. Used to understand what default headers are existing
+     *
+     * @return object with string values
+     */
+    getDefaultHeaders() {
+      return this.defaultHeaders;
     }
 }
