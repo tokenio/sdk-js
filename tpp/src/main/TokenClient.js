@@ -46,6 +46,8 @@ export class TokenClient extends Core {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
+        // default headers passed into a authHttpClient
+        defaultHeaders?: Object,
     }) {
         super(options);
         this.options.keyDir = options.keyDir;
