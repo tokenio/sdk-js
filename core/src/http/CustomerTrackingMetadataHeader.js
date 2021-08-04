@@ -29,9 +29,6 @@ class CustomerTrackingMetadataHeader {
             if(context.customerTrackingMetadata.userAgent){
                 config.headers['token-customer-user-agent'] = context.customerTrackingMetadata.userAgent;
             }
-            if (context.customerTrackingMetadata.jsonError){
-                config.headers['token-json-error'] = context.customerTrackingMetadata.jsonError;
-            }
         }
     }
 }

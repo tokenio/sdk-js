@@ -5,6 +5,7 @@ import AuthContext from './AuthContext';
 import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import CustomerTrackingMetadataHeader from './CustomerTrackingMetadataHeader';
+import MiscHeaders from './MiscHeaders';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
 import stringify from 'fast-json-stable-stringify';
@@ -620,11 +621,13 @@ export class AuthHttpClient {
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(this._developerKey);
         const customerTrackingMetadataHeader = new CustomerTrackingMetadataHeader();
+        const miscHeaders = new MiscHeaders();
         this._interceptor = this._instance.interceptors.request.use(async request => {
             await this._authHeader.addAuthorizationHeader(this._memberId, request, this._context);
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
             customerTrackingMetadataHeader.addCustomerTrackingMetadata(request, this._context);
+            miscHeaders.setMiscHeaders(request, this._context)
             setAdditionalHeaders(request);
             
             return request;

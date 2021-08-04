@@ -296,6 +296,10 @@ export type CustomerTrackingMetadata = {
     userAgent: string,
 };
 
+export type MiscHeaders = {
+    jsonError: boolean
+};
+
 export type StandingOrder = {
     id: string,
     status: string,
