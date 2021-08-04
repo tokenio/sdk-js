@@ -1,5 +1,5 @@
 import config from '../config.json';
-import type {CustomerTrackingMetadata} from '../types';
+import type {CustomerTrackingMetadata, MiscHeaders} from '../types';
 
 /**
  * Handles the auth context when using access tokens.
@@ -13,6 +13,7 @@ class AuthContext {
         this._keyLevel = config.KeyLevel.LOW;
         this._customerInitiated = false;
         this._customerTrackingMetadata = {};
+        this._miscHeaders = {};
     }
 
     /**
@@ -85,6 +86,22 @@ class AuthContext {
     set customerTrackingMetadata(value) {
         this._customerTrackingMetadata = value;
     }
+
+    /**
+     * Gets misc headers
+     * @returns {MiscHeaders}
+     */
+     get miscHeaders() {
+      return this._miscHeaders;
+  }
+
+  /**
+   * Sets misc headers
+   * @param {MiscHeaders} value
+   */
+  set miscHeaders(value) {
+      this._miscHeaders = value;
+  }
 }
 
 export default AuthContext;
