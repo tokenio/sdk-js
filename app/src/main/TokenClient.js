@@ -37,8 +37,6 @@ export class TokenClient extends Core {
         customSdkUrl?: string,
         // custom HTTP response interceptor for axios
         customResponseInterceptor?: Object,
-        // default headers passed into AuthHttpClient
-        defaultHeaders?: Object,
     }) {
         super(options);
         this._unauthenticatedClient = new HttpClient(options);

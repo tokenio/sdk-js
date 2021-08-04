@@ -12,7 +12,6 @@ import setAdditionalHeaders from './setAdditionalHeaders';
 
 /**
  * Client for making authenticated requests to the Token gateway.
- * defaultHeaders argument is for passing in optional headers like https://developer.token.io/token_rest_api_doc/content/0_-_common/request-headers.htm 
  */
 export class AuthHttpClient {
     constructor({
@@ -24,7 +23,6 @@ export class AuthHttpClient {
         loggingEnabled,
         customSdkUrl,
         customResponseInterceptor,
-        defaultHeaders
     }) {
         if (!(config.urls[env] || customSdkUrl)) {
             throw new Error('Invalid environment string. Please use one of: ' +
@@ -44,7 +42,6 @@ export class AuthHttpClient {
         this._authHeader = new AuthHeader(customSdkUrl || config.urls[env], this);
 
         this._developerKey = developerKey;
-        this.defaultHeaders = defaultHeaders;
         this._resetRequestInterceptor();
 
         const errorHandler = new ErrorHandler(globalRpcErrorCallback);
@@ -628,7 +625,7 @@ export class AuthHttpClient {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
             customerTrackingMetadataHeader.addCustomerTrackingMetadata(request, this._context);
-            setAdditionalHeaders(request, this.defaultHeaders);
+            setAdditionalHeaders(request);
             
             return request;
         });
