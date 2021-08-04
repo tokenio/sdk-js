@@ -17,7 +17,7 @@ describe('Token library', () => {
 
         const member2 = await Token.createMember(alias2, Token.MemoryCryptoEngine);
 
-        const token = await member1.createTransferTokenBuilder(100.00, 'EUR')
+        const token = await member1.createTransferTokenBuilder(5.0, 'EUR')
             .setAccountId(account.id())
             .setToAlias(alias2)
             .execute();
