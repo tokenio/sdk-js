@@ -28,7 +28,6 @@ import type {
     StandingOrderSubmission,
     BulkTransfer,
     BulkTransferBodyTransfers,
-    TransferEndpoint,
     CustomerTrackingMetadata,
 } from '@token-io/core';
 

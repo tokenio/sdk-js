@@ -15,7 +15,8 @@
     "unlink:core": "npm unlink --no-save @token-io/core",
     "unlink:tpp": "npm unlink --no-save @token-io/tpp",
     "devSetup:app": "cd app && npm link @token-io/core && npm link @token-io/tpp",
-    "devSetup:tpp": "cd tpp && npm link @token-io/core && npm link @token-io/app"
+    "devSetup:tpp": "cd tpp && npm link @token-io/core && npm link @token-io/app",
+    "build": "cd tpp && npm run build && cd ../app && npm run build && cd .."
   },
   "repository": {
     "type": "git",

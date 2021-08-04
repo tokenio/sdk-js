@@ -1,6 +1,5 @@
 // @flow
 import TokenBuilder from './TokenBuilder';
-import config from '../config.json';
 import Util from '../Util';
 import type {
     TransferEndpoint,
