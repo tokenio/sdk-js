@@ -271,6 +271,16 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Populate misc headers
+     *
+     * @param {MiscHeaders} miscHeaders
+     */
+    setMiscHeaders(miscHeaders) {
+        this._context.miscHeaders = miscHeaders;
+        this._resetRequestInterceptor();
+    }
+
+    /**
      * Unlinks bank accounts previously linked by the linkAccounts call.
      *
      * @param {Array} accountIds - account IDs to unlink

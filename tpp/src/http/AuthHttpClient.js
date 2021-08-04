@@ -584,6 +584,28 @@ class AuthHttpClient extends CoreAuthHttpClient {
                 config.KeyLevel.STANDARD),
         };
     }
+
+    /**
+     * Populate customer tracking metadata headers
+     *
+     * @param {CustomerTrackingMetadata} customerTrackingMetadata
+     */
+    addCustomerTrackingMetadata(customerTrackingMetadata) {
+        this._context.customerInitiated = true;
+        this._context.customerTrackingMetadata = customerTrackingMetadata;
+        this._resetRequestInterceptor();
+    }
+
+    /**
+     * Populate misc headers
+     *
+     * @param {MiscHeaders} miscHeaders
+     */
+    setMiscHeaders(miscHeaders) {
+        this._context.miscHeaders = miscHeaders;
+        this._resetRequestInterceptor();
+    }
+
 }
 
 export default AuthHttpClient;

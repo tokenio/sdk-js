@@ -29,6 +29,7 @@ import type {
     BulkTransfer,
     BulkTransferBodyTransfers,
     CustomerTrackingMetadata,
+    MiscHeaders,
 } from '@token-io/core';
 
 /**
@@ -837,6 +838,23 @@ export default class Member extends CoreMember {
             }
 
             this._client.addCustomerTrackingMetadata(customerTrackingMetadata);
+        });
+    }
+
+    /**
+     * Populate misc headers in token calls
+     *
+     * @param {MiscHeaders} miscHeaders
+     */
+    setMiscHeaders(
+        miscHeaders: MiscHeaders,
+    ): void {
+        return Util.callSync(this.setMiscHeaders, () => {
+            if(miscHeaders && Object.keys(miscHeaders).length === 0){
+                throw new Error('Misc headers are empty.');
+            }
+
+            this._client.setMiscHeaders(miscHeaders);
         });
     }
 
