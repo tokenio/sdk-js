@@ -627,9 +627,8 @@ export class AuthHttpClient {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
             customerTrackingMetadataHeader.addCustomerTrackingMetadata(request, this._context);
-            miscHeaders.setMiscHeaders(request, this._context)
+            miscHeaders.setMiscHeaders(request, this._context);
             setAdditionalHeaders(request);
-            
             return request;
         });
     }

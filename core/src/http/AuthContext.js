@@ -1,5 +1,4 @@
 import config from '../config.json';
-import type {CustomerTrackingMetadata, MiscHeaders} from '../types';
 
 /**
  * Handles the auth context when using access tokens.
@@ -91,17 +90,17 @@ class AuthContext {
      * Gets misc headers
      * @returns {MiscHeaders}
      */
-     get miscHeaders() {
-      return this._miscHeaders;
-  }
+    get miscHeaders() {
+        return this._miscHeaders;
+    }
 
-  /**
-   * Sets misc headers
-   * @param {MiscHeaders} value
-   */
-  set miscHeaders(value) {
-      this._miscHeaders = value;
-  }
+    /**
+     * Sets misc headers
+     * @param {MiscHeaders} value
+     */
+    set miscHeaders(value) {
+        this._miscHeaders = value;
+    }
 }
 
 export default AuthContext;
