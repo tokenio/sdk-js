@@ -297,7 +297,7 @@ export type CustomerTrackingMetadata = {
 };
 
 export type MiscHeaders = {
-    jsonError: boolean
+    jsonError: boolean,
 };
 
 export type StandingOrder = {

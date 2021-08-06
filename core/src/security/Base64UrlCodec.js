@@ -28,7 +28,7 @@ export const base64ToBase64Url = input => {
         .replace(/=/g, '')
         .replace(/\+/g, '-')
         .replace(/\//g, '_');
-}
+};
 
 function base64UrlToBase64(input) {
     return pad(input.toString())

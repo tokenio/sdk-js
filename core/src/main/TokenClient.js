@@ -97,7 +97,7 @@ export class TokenClient {
             const member = new Member({
                 memberId: response.data.memberId,
                 cryptoEngine: engine,
-                ...this.options
+                ...this.options,
             });
             alias && await member.addAlias(alias);
             return member;
@@ -126,7 +126,7 @@ export class TokenClient {
             return new Member({
                 memberId,
                 cryptoEngine: engine,
-                ...this.options
+                ...this.options,
             });
         });
     }

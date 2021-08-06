@@ -108,7 +108,7 @@ export class HttpClient {
             // Optional tpp member id
             memberId: options.memberId || '',
             // Optional add headers such as dev key to this request
-            headers: options.headers
+            headers: options.headers,
         });
         const {
             ids,
@@ -143,7 +143,7 @@ export class HttpClient {
         const request = {
             method: 'get',
             url: url,
-            requestHeaders: headers
+            requestHeaders: headers,
         };
         return this._instance(request);
     }
