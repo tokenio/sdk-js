@@ -91,6 +91,7 @@ export class HttpClient {
         const formattedOptions = Object.assign({}, {
             // Can be at most 1000
             ids: options.ids || [],
+            supportedPaymentNetworks: options.supportedPaymentNetworks || [],
             search: options.search || '',
             country: options.country || '',
             // Default to 1 if not specified
@@ -112,6 +113,7 @@ export class HttpClient {
         });
         const {
             ids,
+            supportedPaymentNetworks,
             search,
             country,
             page,
@@ -125,6 +127,9 @@ export class HttpClient {
         let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
             url += `ids=${encodeURIComponent(id)}&`;
+        }
+        for (const paymentNetwork of supportedPaymentNetworks) {
+            url += `supportedPaymentNetworks=${encodeURIComponent(paymentNetwork)}&`;
         }
         if (search) url += `search=${encodeURIComponent(search)}&`;
         if (country) url += `country=${encodeURIComponent(country)}&`;
