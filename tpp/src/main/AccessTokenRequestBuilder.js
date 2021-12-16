@@ -1,5 +1,4 @@
 // @flow
-import type {TransferDestination} from '@token-io/core';
 import TokenRequestBuilder from './TokenRequestBuilder';
 
 export default class AccessTokenRequestBuilder extends TokenRequestBuilder {
@@ -22,25 +21,6 @@ export default class AccessTokenRequestBuilder extends TokenRequestBuilder {
             this.requestPayload.accessBody.resourceTypeList = {};
         }
         this.requestPayload.accessBody.resourceTypeList.source = source;
-        return this;
-    }
-
-    /**
-     * Adds a transfer destination to a access token request.
-     *
-     * @param destination
-     * @return AccessTokenRequestBuilder
-     */
-    addTransferDestination(destination: TransferDestination): AccessTokenRequestBuilder {
-        if (!this.requestPayload.transferBody.instructions) {
-            this.requestPayload.transferBody.instructions = {
-                transferDestinations: [],
-            };
-        }
-        else if (!this.requestPayload.transferBody.instructions.transferDestinations) {
-            this.requestPayload.transferBody.instructions.transferDestinations = [];
-        }
-        this.requestPayload.transferBody.instructions.transferDestinations.push(destination);
         return this;
     }
 }
