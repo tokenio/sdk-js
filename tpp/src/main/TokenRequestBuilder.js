@@ -211,4 +211,15 @@ export default class TokenRequestBuilder {
         this.requestPayload.credentials = credentials;
         return this;
     }
+
+    /**
+     * Sets Future Dated Payment Conversion as bool flag in the payload
+     *
+     * @param disableFutureDatedPaymentConversion
+     * @return TokenRequestBuilder
+     */
+    setDisableFutureDatedPaymentConversion(disableFutureDatedPaymentConversion: boolean): TokenRequestBuilder {
+        this.requestPayload.disableFutureDatedPaymentConversion = disableFutureDatedPaymentConversion;
+        return this;
+    }
 }
