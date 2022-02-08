@@ -229,7 +229,7 @@ export default class TokenRequestBuilder {
      * @param useCredentialFlow
      * @return TokenRequestBuilder
      */
-    setCredentialFlow(useCredentialFlow: boolean): TokenRequestBuilder {
+    setUseCredentialFlow(useCredentialFlow: boolean): TokenRequestBuilder {
         this.requestPayload.useCredentialFlow = useCredentialFlow;
         return this;
     }
