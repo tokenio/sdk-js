@@ -222,4 +222,15 @@ export default class TokenRequestBuilder {
         this.requestPayload.disableFutureDatedPaymentConversion = disableFutureDatedPaymentConversion;
         return this;
     }
+
+    /**
+     * Sets use credential flow as bool flag in the payload
+     *
+     * @param useCredentialFlow
+     * @return TokenRequestBuilder
+     */
+    setUseCredentialFlow(useCredentialFlow: boolean): TokenRequestBuilder {
+        this.requestPayload.useCredentialFlow = useCredentialFlow;
+        return this;
+    }
 }
