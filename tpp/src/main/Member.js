@@ -25,6 +25,7 @@ import type {
     GetEidasVerificationStatusResponse,
     WebhookConfig,
     MiscHeaders,
+    InitiateBankAuthorizationResponse,
 } from '@token-io/core';
 
 /**
@@ -549,6 +550,35 @@ export default class Member extends CoreMember {
     ): Promise<GetEidasVerificationStatusResponse> {
         return Util.callAsync(this.getEidasVerificationStatus, async () => {
             const res = await this._client.getEidasVerificationStatus(verificationId);
+            return res.data;
+        });
+    }
+
+    /**
+     * Initiate bank authorization.
+     *
+     * @param {string} tokenRequestId Token request id
+     * @param {Object} credentials map of credentials
+     * @param {boolean} consentAccepted if consent accepted by user/payer
+     * @param {boolean} useCredentialFlow Use credential flow
+     * @param {boolean} useWebAppCredentialsFlow Use webapp credentials flow
+     * @returns {Object} response to the api call
+     */
+    async initiateBankAuthorization(
+        tokenRequestId: string,
+        credentials: ?{[string]: string},
+        consentAccepted: boolean,
+        useCredentialFlow: boolean,
+        useWebAppCredentialsFlow: boolean
+    ): Promise<InitiateBankAuthorizationResponse> {
+        return Util.callAsync(this.initiateBankAuthorization, async () => {
+            const res = await this._client.initiateBankAuthorization(
+                tokenRequestId,
+                credentials,
+                consentAccepted,
+                useCredentialFlow,
+                useWebAppCredentialsFlow,
+            );
             return res.data;
         });
     }
