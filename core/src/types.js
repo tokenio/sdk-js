@@ -54,6 +54,8 @@ export type MemberType = 'BUSINESS' // a customer of Token; Token is the regulat
 
 export type ScaStatus =  'INVALID' | 'AUTHENTICATED' | 'AUTHENTICATION_FAILED';
 
+export type Type = 'INVALID' | 'FIELD' | 'PASSWORD' | 'PSU_MESSAGE' | 'IMAGE' | 'FLICKER' | 'DECOUPLED';
+
 export type Alias = {
     type: AliasType,
     value: string,
@@ -381,7 +383,10 @@ export type GetEidasVerificationStatusResponse = {
     statusDetails: string,
 };
 
-export type Type = 'INVALID' | 'FIELD' | 'PASSWORD' | 'PSU_MESSAGE' | 'IMAGE' | 'FLICKER' | 'DECOUPLED';
+export type WebhookConfig = {
+    url: string,
+    type: Array<EventType>,
+};
 
 export type CredentialField = {
     id: string,
@@ -392,11 +397,6 @@ export type CredentialField = {
     image: string,
     flickerCode: string,
     type: Type,
-};
-
-export type WebhookConfig = {
-    url: string,
-    type: Array<EventType>,
 };
 
 export type InitiateBankAuthorizationResponse = {
