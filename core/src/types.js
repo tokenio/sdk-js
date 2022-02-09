@@ -52,6 +52,8 @@ export type EventType = 'INVALID'
 export type MemberType = 'BUSINESS' // a customer of Token; Token is the regulated TPP in this case.
     | 'LICENSED_TPP'; // a customer of Token, but uses its own lisense.
 
+export type ScaStatus =  'INVALID' | 'AUTHENTICATED' | 'AUTHENTICATION_FAILED';
+
 export type Alias = {
     type: AliasType,
     value: string,
@@ -379,7 +381,26 @@ export type GetEidasVerificationStatusResponse = {
     statusDetails: string,
 };
 
+export type Type = 'INVALID' | 'FIELD' | 'PASSWORD' | 'PSU_MESSAGE' | 'IMAGE' | 'FLICKER' | 'DECOUPLED';
+
+export type CredentialField = {
+    id: string,
+    displayName: string,
+    options: Array<string>,
+    password: boolean,
+    description: string,
+    image: string,
+    flickerCode: string,
+    type: Type,
+};
+
 export type WebhookConfig = {
     url: string,
     type: Array<EventType>,
+};
+
+export type InitiateBankAuthorizationResponse = {
+    redirectUrl: string,
+    status: ScaStatus,
+    fields: Array<CredentialField>,
 };
