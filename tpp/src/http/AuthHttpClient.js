@@ -482,7 +482,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @param {boolean} useWebappCredentialsFlow Use webapp credentials flow
      * @returns {Object} response to the api call
      */
-    async initiateBankAuthorization(tokenRequestId, credentials, consentAccepted, useCredentialFlow, useWebappCredentialsFlow){
+    async initiateBankAuthorization(tokenRequestId, credentials, consentAccepted =  false, useCredentialFlow = false, useWebappCredentialsFlow = false){
         const request = {
             method: 'post',
             url: `/token-requests/${tokenRequestId}/authorization`,
