@@ -561,7 +561,7 @@ export default class Member extends CoreMember {
      * @param {Object} credentials map of credentials
      * @param {boolean} consentAccepted if consent accepted by user/payer
      * @param {boolean} useCredentialFlow Use credential flow
-     * @param {boolean} useWebAppCredentialsFlow Use webapp credentials flow
+     * @param {boolean} useWebappCredentialsFlow Use webapp credentials flow
      * @returns {Object} response to the api call
      */
     async initiateBankAuthorization(
@@ -569,7 +569,7 @@ export default class Member extends CoreMember {
         credentials: ?{[string]: string},
         consentAccepted: boolean,
         useCredentialFlow: boolean,
-        useWebAppCredentialsFlow: boolean
+        useWebappCredentialsFlow: boolean
     ): Promise<InitiateBankAuthorizationResponse> {
         return Util.callAsync(this.initiateBankAuthorization, async () => {
             const res = await this._client.initiateBankAuthorization(
@@ -577,7 +577,7 @@ export default class Member extends CoreMember {
                 credentials,
                 consentAccepted,
                 useCredentialFlow,
-                useWebAppCredentialsFlow,
+                useWebappCredentialsFlow,
             );
             return res.data;
         });
