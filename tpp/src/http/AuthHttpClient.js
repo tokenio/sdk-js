@@ -479,7 +479,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @param {Object} credentials map of credentials
      * @param {boolean} consentAccepted if consent accepted by user/payer
      * @param {boolean} useCredentialFlow Use credential flow
-     * @param {boolean} useWebAppCredentialsFlow Use webapp credentials flow
+     * @param {boolean} useWebappCredentialsFlow Use webapp credentials flow
      * @returns {Object} response to the api call
      */
     async initiateBankAuthorization(
@@ -487,7 +487,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
         credentials,
         consentAccepted = false,
         useCredentialFlow = false,
-        useWebAppCredentialsFlow = false
+        useWebappCredentialsFlow = false
     ){
         const request = {
             method: 'post',
@@ -496,7 +496,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
                 credentials,
                 consentAccepted,
                 useCredentialFlow,
-                useWebAppCredentialsFlow,
+                useWebappCredentialsFlow,
             },
         };
         return this._instance(request);
