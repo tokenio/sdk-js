@@ -18,6 +18,13 @@ export default async grantee => {
                 sort_code: 123456,
                 account_number: 12345678,
             },
+            customerData: {
+                legalNames: ['Southside'],
+                address: {
+                    houseNumber: '10',
+                    city: 'London',
+                    state: 'UK',
+                }},
         }])
         .setDescription('Monthly music subscription')
         .setRedirectUrl('https://token.io/callback')
