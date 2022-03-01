@@ -1,6 +1,6 @@
 {
     "name": "@token-io/core",
-    "version": "1.0.28",
+    "version": "1.0.29",
     "description": "Token JavaScript Core SDK",
     "license": "ISC",
     "author": {
@@ -38,7 +38,7 @@
         "buffer": "^5.2.1",
         "fast-json-stable-stringify": "^2.0.0",
         "fast-sha256": "^1.1.0",
-        "node-forge": "0.10.0",
+        "node-forge": "1.2.1",
         "tweetnacl": "^1.0.1"
     }
 }
