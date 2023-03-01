@@ -5,11 +5,15 @@
     "dev": "https://api.dev.token.io",
     "dev-eks": "https://api.dev-eks.token.io",
     "stg": "https://api.stg.token.io",
+    "stg-eks": "https://api.stg-eks.token.io",
     "perf": "https://api.perf.token.io",
     "sandbox": "https://api.sandbox.token.io",
+    "sandbox-eks": "https://api.sandbox-eks.token.io",
     "int": "https://api.int.token.io",
     "prd": "https://api.token.io",
+    "prd-eks": "https://api.token.io",
     "beta": "https://api.beta.token.io",
+    "beta-eks": "https://api.beta-eks.token.io",
     "escrow":"https://api.escrow.token.io"
   },
   "webAppUrls": {
@@ -17,11 +21,15 @@
     "dev": "https://web-app.dev.token.io",
     "dev-eks": "https://web-app.dev-eks.token.io",
     "stg": "https://web-app.stg.token.io",
+    "stg-eks": "https://web-app.stg.token.io",
     "perf": "https://web-app.perf.token.io",
     "sandbox": "https://web-app.sandbox.token.io",
+    "sandbox-eks": "https://web-app.sandbox-eks.token.io",
     "int": "https://web-app.int.token.io",
     "prd": "https://web-app.token.io",
+    "prd-eks": "https://web-app.eks.token.io",
     "beta": "https://web-app.beta.token.io",
+    "beta-eks": "https://web-app.beta-eks.token.io",
     "escrow": "https://web-app.escrow.token.io"
   },
   "transferTokenVersion": "1.0",
@@ -41,9 +49,12 @@
     "dev": "f3982819-5d8d-4123-9601-886df2780f42",
     "dev-eks": "f3982819-5d8d-4123-9601-886df2780f42",
     "stg": "f3982819-5d8d-4123-9601-886df2780f42",
+    "stg-eks": "f3982819-5d8d-4123-9601-886df2780f42",
     "sandbox": "f3982819-5d8d-4123-9601-886df2780f42",
+    "sandbox-eks": "f3982819-5d8d-4123-9601-886df2780f42",
     "int": "f3982819-5d8d-4123-9601-886df2780f42",
     "prd": "f3982819-5d8d-4123-9601-886df2780f42",
+    "prd-eks": "f3982819-5d8d-4123-9601-886df2780f42",
     "escrow": "f3982819-5d8d-4123-9601-886df2780f42"
   }
 }
