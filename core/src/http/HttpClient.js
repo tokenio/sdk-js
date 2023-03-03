@@ -141,7 +141,7 @@ export class HttpClient {
         if (memberId) url += `memberId=${encodeURIComponent(memberId)}&`;
         if (bankFeatures) {
             for (const key in bankFeatures) {
-                url += `${key}=${encodeURIComponent(bankFeatures[key])}&`;
+                url += `bank_features.${key}.value=${encodeURIComponent(bankFeatures[key])}&`;
             }
         }
 
