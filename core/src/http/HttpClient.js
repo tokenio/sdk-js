@@ -93,7 +93,7 @@ export class HttpClient {
             ids: options.ids || [],
             supportedPaymentNetworks: options.supportedPaymentNetworks || [],
             search: options.search || '',
-            country: options.country || '',
+            countries: options.countries || [],
             // Default to 1 if not specified
             page: options.page,
             // Can be at most 200, default to 200 if not specified
@@ -115,7 +115,7 @@ export class HttpClient {
             ids,
             supportedPaymentNetworks,
             search,
-            country,
+            countries,
             page,
             perPage,
             provider,
@@ -132,7 +132,9 @@ export class HttpClient {
             url += `supportedPaymentNetworks=${encodeURIComponent(paymentNetwork)}&`;
         }
         if (search) url += `search=${encodeURIComponent(search)}&`;
-        if (country) url += `countries=${encodeURIComponent(country)}&`;
+        for (const country of countries) {
+            url += `countries=${encodeURIComponent(country)}&`;
+        }
         if (page) url += `page=${encodeURIComponent(page)}&`;
         if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
         if (provider) url += `provider=${encodeURIComponent(provider)}&`;
