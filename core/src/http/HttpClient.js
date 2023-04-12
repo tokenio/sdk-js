@@ -132,7 +132,7 @@ export class HttpClient {
             url += `supportedPaymentNetworks=${encodeURIComponent(paymentNetwork)}&`;
         }
         if (search) url += `search=${encodeURIComponent(search)}&`;
-        if (country) url += `country=${encodeURIComponent(country)}&`;
+        if (country) url += `countries=${encodeURIComponent(country)}&`;
         if (page) url += `page=${encodeURIComponent(page)}&`;
         if (perPage) url += `perPage=${encodeURIComponent(perPage)}&`;
         if (provider) url += `provider=${encodeURIComponent(provider)}&`;
