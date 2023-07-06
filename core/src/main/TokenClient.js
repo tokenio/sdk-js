@@ -149,6 +149,7 @@ export class TokenClient {
             bankFeatures?: Object,
             memberId?: string,
             supportedPaymentNetworks?: Array<string>,
+            sort?: string,
         }
     ): Promise<{banks: Array<Bank>, paging: Paging}> {
         return Util.callAsync(this.getBanks, async () => {
