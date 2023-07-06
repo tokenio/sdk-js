@@ -95,6 +95,7 @@ export class HttpClient {
             search: options.search || '',
             country: options.country || '',
             countries: options.countries || [],
+            sort: options.sort || '',
             // Default to 1 if not specified
             page: options.page,
             // Can be at most 200, default to 200 if not specified
@@ -125,6 +126,7 @@ export class HttpClient {
             bankFeatures,
             memberId,
             headers,
+            sort,
         } = formattedOptions;
         let url = `/banks${getCountries ? '/countries' : ''}?`;
         for (const id of ids) {
@@ -134,6 +136,7 @@ export class HttpClient {
             url += `supportedPaymentNetworks=${encodeURIComponent(paymentNetwork)}&`;
         }
         if (search) url += `search=${encodeURIComponent(search)}&`;
+        if (sort) url += `sort=${encodeURIComponent(sort)}&`;
         if (country) url += `country=${encodeURIComponent(country)}&`;
         for (const country of countries) {
             url += `countries=${encodeURIComponent(country)}&`;
