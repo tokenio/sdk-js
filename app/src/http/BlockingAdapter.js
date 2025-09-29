@@ -1,6 +1,4 @@
-import utils from 'axios/lib/utils';
-import buildURL from 'axios/lib/helpers/buildURL';
-import isURLSameOrigin from 'axios/lib/helpers/isURLSameOrigin';
+import AxiosHelpers from '../AxiosHelpers';
 
 /**
  * Axios adapter to create a blocking XMLHttpRequest
@@ -25,7 +23,7 @@ export default function BlockingAdapter(config) {
     let requestData = config.data;
     const requestHeaders = config.headers;
 
-    if (utils.isFormData(requestData)) {
+    if (AxiosHelpers.isFormData(requestData)) {
         delete requestHeaders['Content-Type']; // Let the browser set it
     }
 
@@ -36,7 +34,7 @@ export default function BlockingAdapter(config) {
     // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
     if (typeof window !== 'undefined' &&
       window.XDomainRequest && !('withCredentials' in request) &&
-      !isURLSameOrigin(config.url)) {
+      !AxiosHelpers.isURLSameOrigin(config.url)) {
         request = new window.XDomainRequest();
     }
 
@@ -48,18 +46,16 @@ export default function BlockingAdapter(config) {
     }
 
     request.open(config.method.toUpperCase(),
-        buildURL(config.url, config.params, config.paramsSerializer), false);
+        AxiosHelpers.buildURL(config.url, config.params, {serialize: config.paramsSerializer}), false);
 
     // Add xsrf header
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
-    if (utils.isStandardBrowserEnv()) {
-        const cookies = require('axios/lib/helpers/cookies');
-
+    if (AxiosHelpers.isStandardBrowserEnv()) {
         // Add xsrf header
-        const xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) &&
+        const xsrfValue = (config.withCredentials || AxiosHelpers.isURLSameOrigin(config.url)) &&
         config.xsrfCookieName ?
-            cookies.read(config.xsrfCookieName) :
+            AxiosHelpers.cookieRead(config.xsrfCookieName) :
             undefined;
 
         if (xsrfValue) {
@@ -69,7 +65,7 @@ export default function BlockingAdapter(config) {
 
     // Add headers to the request
     if ('setRequestHeader' in request) {
-        utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        AxiosHelpers.forEach(requestHeaders, function setRequestHeader(val, key) {
             if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
                 // Remove Content-Type if data is undefined
                 delete requestHeaders[key];
