@@ -1,6 +1,6 @@
 {
     "name": "@token-io/app",
-    "version": "1.0.69",
+    "version": "1.0.70",
     "description": "Token JavaScript App SDK",
     "license": "ISC",
     "author": {
@@ -78,7 +78,7 @@
         "@token-io/core": "^1.0.44",
         "axios": "^1.12.2",
         "base64-js": "^1.3.1",
-        "bs58": "4.0.0",
+        "bs58": "^5.0.0",
         "buffer": "^5.4.3",
         "fast-json-stable-stringify": "^2.1.0",
         "fast-sha256": "^1.3.0",
