@@ -46,7 +46,12 @@ export default function BlockingAdapter(config) {
     }
 
     request.open(config.method.toUpperCase(),
-        AxiosHelpers.buildURL(config.url, config.params, {serialize: config.paramsSerializer}), false);
+        AxiosHelpers.buildURL(
+            config.url,
+            config.params,
+            {serialize: config.paramsSerializer}
+        ),
+        false);
 
     // Add xsrf header
     // This is only done if running in a standard browser environment.
