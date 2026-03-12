@@ -833,7 +833,7 @@ export default class Member extends CoreMember {
         customerTrackingMetadata: CustomerTrackingMetadata,
     ): void {
         return Util.callSync(this.addCustomerTrackingMetadata, () => {
-            if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
+            if (customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0) {
                 throw new Error('User tracking metadata is empty.');
             }
 
@@ -850,7 +850,7 @@ export default class Member extends CoreMember {
         miscHeaders: MiscHeaders,
     ): void {
         return Util.callSync(this.setMiscHeaders, () => {
-            if(miscHeaders && Object.keys(miscHeaders).length === 0){
+            if (miscHeaders && Object.keys(miscHeaders).length === 0) {
                 throw new Error('Misc headers are empty.');
             }
 

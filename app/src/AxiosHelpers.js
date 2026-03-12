@@ -25,7 +25,7 @@ export default class AxiosHelpers {
             urlParsingNode.setAttribute('href', href);
             return {
                 protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-                host: urlParsingNode.host
+                host: urlParsingNode.host,
             };
         }
 

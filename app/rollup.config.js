@@ -6,7 +6,7 @@ import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
-import {uglify} from 'rollup-plugin-uglify';
+import terser from '@rollup/plugin-terser';
 const path = require('path');
 
 import pkg from './package.json';
@@ -65,9 +65,7 @@ if (isModule) {
         globals(),
         builtins(),
         commonjs(),
-        uglify({
-            warnings: false,
-        }));
+        terser());
 }
 
 export default config;
