@@ -183,4 +183,27 @@ export class TokenClient {
             return res.data.countries;
         });
     }
+
+    /**
+     * Sets custom headers to be sent with every request.
+     * Can be called multiple times to merge additional headers.
+     *
+     * @param headers - key-value map of headers
+     */
+    setCustomHeaders(headers: {[string]: string}): void {
+        this.options.customHeaders = {...(this.options.customHeaders || {}), ...headers};
+        if (this._unauthenticatedClient) {
+            this._unauthenticatedClient.setMiscHeaders(headers);
+        }
+    }
+
+    /**
+     * Clears all custom headers.
+     */
+    clearCustomHeaders(): void {
+        this.options.customHeaders = {};
+        if (this._unauthenticatedClient) {
+            this._unauthenticatedClient.clearMiscHeaders();
+        }
+    }
 }

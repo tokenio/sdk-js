@@ -13,6 +13,11 @@ class MiscHeaders {
             if (context.miscHeaders.jsonError){
                 config.headers['token-json-error'] = context.miscHeaders.jsonError;
             }
+            Object.entries(context.miscHeaders).forEach(([key, value]) => {
+                if (key !== 'jsonError' && value !== undefined) {
+                    config.headers[key] = value;
+                }
+            });
         }
     }
 }
