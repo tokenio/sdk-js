@@ -1,3 +1,5 @@
+const ALLOWED_PREFIX = 'x-token-trace-';
+
 /**
  * Class to add misc headers
  */
@@ -14,7 +16,7 @@ class MiscHeaders {
                 config.headers['token-json-error'] = context.miscHeaders.jsonError;
             }
             Object.entries(context.miscHeaders).forEach(([key, value]) => {
-                if (key !== 'jsonError' && value !== undefined) {
+                if (key.startsWith(ALLOWED_PREFIX) && value !== undefined) {
                     config.headers[key] = value;
                 }
             });
