@@ -2,6 +2,7 @@ import config from '../config.json';
 import ErrorHandler from './ErrorHandler';
 import DeveloperHeader from './DeveloperHeader';
 import VersionHeader from './VersionHeader';
+import MiscHeaders from './MiscHeaders';
 import setAdditionalHeaders from './setAdditionalHeaders';
 import Util from '../Util';
 import axios from 'axios';
@@ -29,11 +30,14 @@ export class HttpClient {
             Util.setUpHttpErrorLogging(this._instance);
         }
         Util.setUpCustomResponseInterceptor(this._instance, customResponseInterceptor);
+        this._context = { miscHeaders: {} };
         const versionHeader = new VersionHeader();
         const developerHeader = new DeveloperHeader(developerKey);
+        const miscHeaders = new MiscHeaders();
         this._instance.interceptors.request.use(request => {
             versionHeader.addVersionHeader(request);
             developerHeader.addDeveloperHeader(request);
+            miscHeaders.setMiscHeaders(request, this._context);
             setAdditionalHeaders(request);
             return request;
         });
@@ -42,6 +46,22 @@ export class HttpClient {
         this._instance.interceptors.response.use(null, error => {
             throw errorHandler.handleError(error);
         });
+    }
+
+    /**
+     * Sets misc headers to be sent with every request.
+     *
+     * @param {Object} headers - key-value map of headers to merge
+     */
+    setMiscHeaders(headers) {
+        this._context.miscHeaders = {...this._context.miscHeaders, ...headers};
+    }
+
+    /**
+     * Clears all misc headers.
+     */
+    clearMiscHeaders() {
+        this._context.miscHeaders = {};
     }
 
     async normalizeAlias(alias) {
