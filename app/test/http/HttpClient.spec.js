@@ -1,4 +1,5 @@
 import HttpClient from '../../src/http/HttpClient';
+import {TokenClient} from '../../src';
 import MemoryCryptoEngine from '../../../core/src/security/engines/MemoryCryptoEngine';
 import Util from '../../src/Util';
 const {assert} = require('chai');
@@ -11,9 +12,38 @@ describe('Unauthenticated', () => {
         assert.isOk(res.data.memberId);
     });
 
-    it('should get direct bank auth url', async () => {
+    it('should set and clear misc headers', () => {
         const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
-        const res = await unauthenticatedClient.getDirectBankAuthUrl('silver', Util.generateNonce());
+        unauthenticatedClient.setMiscHeaders({
+            'x-token-trace-initial-service-name': 'Node Server',
+            'x-token-trace-initial-endpoint-type': 'REST_STANDALONE',
+        });
+        assert.equal(
+            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            'Node Server');
+        assert.equal(
+            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-endpoint-type'],
+            'REST_STANDALONE');
+
+        unauthenticatedClient.setMiscHeaders({
+            'x-token-trace-initial-endpoint-name': 'GET: /foo',
+        });
+        assert.equal(
+            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-endpoint-name'],
+            'GET: /foo');
+        assert.equal(
+            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            'Node Server');
+
+        unauthenticatedClient.clearMiscHeaders();
+        assert.deepEqual(unauthenticatedClient._context.miscHeaders, {});
+    });
+
+    it('should get direct bank auth url', async () => {
+        const unauthenticatedClient = new HttpClient(
+            {env: TEST_ENV, developerKey: devKey});
+        const res = await unauthenticatedClient
+            .getDirectBankAuthUrl('silver', Util.generateNonce());
         assert.isOk(res.data.url);
     });
 
@@ -76,5 +106,44 @@ describe('Unauthenticated', () => {
         assert.isOk(res3.data.member);
         assert.isOk(res3.data.member.lastHash);
         assert.equal(res3.data.member.keys.length, 3);
+    });
+});
+
+describe('TokenClient custom headers', () => {
+    it('should set and clear custom headers on TokenClient', () => {
+        const Token = new TokenClient({env: TEST_ENV, developerKey: devKey});
+
+        Token.setCustomHeaders({
+            'x-token-trace-initial-service-name': 'Node Server',
+            'x-token-trace-initial-endpoint-type': 'REST_STANDALONE',
+        });
+
+        assert.equal(
+            Token.options.customHeaders['x-token-trace-initial-service-name'],
+            'Node Server');
+        assert.equal(
+            Token._unauthenticatedClient._context
+                .miscHeaders['x-token-trace-initial-service-name'],
+            'Node Server');
+        assert.equal(
+            Token._unauthenticatedClient._context
+                .miscHeaders['x-token-trace-initial-endpoint-type'],
+            'REST_STANDALONE');
+
+        // Merge additional headers
+        Token.setCustomHeaders({
+            'x-token-trace-initiated-by': 'FRONTEND',
+        });
+        assert.equal(
+            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initiated-by'],
+            'FRONTEND');
+        // Previous headers still present
+        assert.equal(
+            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            'Node Server');
+
+        Token.clearCustomHeaders();
+        assert.deepEqual(Token.options.customHeaders, {});
+        assert.deepEqual(Token._unauthenticatedClient._context.miscHeaders, {});
     });
 });

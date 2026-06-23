@@ -56,6 +56,9 @@ export default class Member extends CoreMember {
         super(options);
         this._unauthenticatedClient = new HttpClient(options);
         this._client = new AuthHttpClient(options);
+        this._client.setMiscHeaders({
+            'x-token-trace-member-id': options.memberId,
+        });
     }
 
     /**

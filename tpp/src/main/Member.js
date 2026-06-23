@@ -52,6 +52,9 @@ export default class Member extends CoreMember {
         super(options);
         this._unauthenticatedClient = new HttpClient(options);
         this._client = new AuthHttpClient(options);
+        this._client.setMiscHeaders({
+            'x-token-trace-member-id': options.memberId,
+        });
     }
 
     /**
@@ -95,10 +98,10 @@ export default class Member extends CoreMember {
         return Util.callSync(this.forAccessToken, () => {
             const newMember = new Member(this._options);
 
-            if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
+            if (customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0) {
                 throw new Error('User tracking metadata is empty.\
                  Use forAccessToken(String) instead.');
-            } else if(!customerTrackingMetadata){
+            } else if (!customerTrackingMetadata) {
                 newMember._client.useAccessToken(accessTokenId, customerInitiated);
                 return new Representable(newMember);
             }
@@ -670,7 +673,7 @@ export default class Member extends CoreMember {
         customerTrackingMetadata: CustomerTrackingMetadata,
     ): void {
         return Util.callSync(this.addCustomerTrackingMetadata, () => {
-            if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0){
+            if (customerTrackingMetadata && Object.keys(customerTrackingMetadata).length === 0) {
                 throw new Error('User tracking metadata is empty.');
             }
 
@@ -687,7 +690,7 @@ export default class Member extends CoreMember {
         miscHeaders: MiscHeaders,
     ): void {
         return Util.callSync(this.setMiscHeaders, () => {
-            if(miscHeaders && Object.keys(miscHeaders).length === 0){
+            if (miscHeaders && Object.keys(miscHeaders).length === 0) {
                 throw new Error('Misc headers are empty.');
             }
 

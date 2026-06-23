@@ -129,12 +129,10 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setProviderTransferMetadata(providerTransferMetadata: Object): TransferTokenRequestBuilder {
-        if(!this.requestPayload.transferBody.instructions)
-        {
+        if (!this.requestPayload.transferBody.instructions) {
             this.requestPayload.transferBody.instructions = {};
         }
-        if(!this.requestPayload.transferBody.instructions.metadata)
-        {
+        if (!this.requestPayload.transferBody.instructions.metadata) {
             this.requestPayload.transferBody.instructions.metadata = {};
         }
         this.requestPayload.transferBody.instructions.metadata.providerTransferMetadata = providerTransferMetadata;
@@ -172,8 +170,7 @@ export default class TransferTokenRequestBuilder extends TokenRequestBuilder {
      * @return TransferTokenRequestBuilder
      */
     setSource(source: TransferEndpoint): TransferTokenRequestBuilder {
-        if(!this.requestPayload.transferBody.instructions)
-        {
+        if (!this.requestPayload.transferBody.instructions) {
             this.requestPayload.transferBody.instructions = {};
         }
         this.requestPayload.transferBody.instructions.source = source;
