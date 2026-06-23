@@ -20,7 +20,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
     useAccessToken(accessTokenId, customerInitiated = false, customerTrackingMetadata = {}) {
         this._context.customerInitiated = customerInitiated;
         this._context.onBehalfOf = accessTokenId;
-        if(customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
+        if (customerTrackingMetadata && Object.keys(customerTrackingMetadata).length > 0){
             this._context.customerInitiated = true;
             this._context.customerTrackingMetadata = customerTrackingMetadata;
         }

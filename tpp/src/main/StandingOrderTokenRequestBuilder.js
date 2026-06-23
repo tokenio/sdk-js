@@ -116,12 +116,10 @@ export default class StandingOrderTokenRequestBuilder extends TokenRequestBuilde
      * @return StandingOrderTokenRequestBuilder
      */
     setProviderMetadata(providerStandingOrderMetadata: Object): StandingOrderTokenRequestBuilder {
-        if(!this.requestPayload.standingOrderBody.instructions)
-        {
+        if (!this.requestPayload.standingOrderBody.instructions) {
             this.requestPayload.standingOrderBody.instructions = {};
         }
-        if(!this.requestPayload.standingOrderBody.instructions.metadata)
-        {
+        if (!this.requestPayload.standingOrderBody.instructions.metadata) {
             this.requestPayload.standingOrderBody.instructions.metadata = {};
         }
         this.requestPayload.standingOrderBody.instructions.metadata.providerStandingOrderMetadata = providerStandingOrderMetadata;

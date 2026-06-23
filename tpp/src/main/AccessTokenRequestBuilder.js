@@ -16,8 +16,7 @@ export default class AccessTokenRequestBuilder extends TokenRequestBuilder {
      * @return AccessTokenRequestBuilder
      */
     setSource(source: Object): AccessTokenRequestBuilder {
-        if(!this.requestPayload.accessBody.resourceTypeList)
-        {
+        if (!this.requestPayload.accessBody.resourceTypeList) {
             this.requestPayload.accessBody.resourceTypeList = {};
         }
         this.requestPayload.accessBody.resourceTypeList.source = source;

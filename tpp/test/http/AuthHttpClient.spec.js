@@ -2,11 +2,32 @@ import HttpClient from '../../src/http/HttpClient';
 import AuthHttpClient from '../../src/http/AuthHttpClient';
 import MemoryCryptoEngine from '../../../core/src/security/engines/MemoryCryptoEngine';
 import Util from '../../src/Util';
+import Member from '../../src/main/Member';
 
 const {assert} = require('chai');
 const devKey = require('../../src/config.json').devKey[TEST_ENV];
 
 describe('AuthHttpClient', () => {
+    it('should set misc headers on authenticated client', () => {
+        const engine = new MemoryCryptoEngine('m:test:123');
+        const client = new AuthHttpClient({
+            env: TEST_ENV,
+            memberId: 'm:test:123',
+            cryptoEngine: engine,
+            developerKey: devKey,
+        });
+        client.setMiscHeaders({
+            'x-token-trace-initial-service-name': 'Node Server',
+            'x-token-trace-initial-endpoint-name': 'POST: /pay',
+        });
+        assert.equal(
+            client._context.miscHeaders['x-token-trace-initial-service-name'],
+            'Node Server');
+        assert.equal(
+            client._context.miscHeaders['x-token-trace-initial-endpoint-name'],
+            'POST: /pay');
+    });
+
     it('should add a second key', async () => {
         const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
         const res = await unauthenticatedClient.createMemberId();
@@ -104,5 +125,48 @@ describe('AuthHttpClient', () => {
         assert.equal(res4.data.member.aliasHashes.length, 2);
         const res5 = await client.removeAlias(res4.data.member.lastHash, secondAlias);
         assert.equal(res5.data.member.aliasHashes.length, 1);
+    });
+});
+
+
+describe('Member misc headers', () => {
+    it('should automatically set member-id header', () => {
+        const engine = new MemoryCryptoEngine('m:test:member:456');
+        const member = new Member({
+            env: TEST_ENV,
+            memberId: 'm:test:member:456',
+            cryptoEngine: engine,
+            developerKey: devKey,
+        });
+
+        assert.equal(
+            member._client._context.miscHeaders['x-token-trace-member-id'],
+            'm:test:member:456');
+    });
+
+    it('should set misc headers on member', () => {
+        const engine = new MemoryCryptoEngine('m:test:member:789');
+        const member = new Member({
+            env: TEST_ENV,
+            memberId: 'm:test:member:789',
+            cryptoEngine: engine,
+            developerKey: devKey,
+        });
+
+        member.setMiscHeaders({
+            'x-token-trace-initial-endpoint-name': 'GET: /accounts',
+            'x-token-trace-initiated-by': 'FRONTEND',
+            'x-token-trace-member-id': 'm:test:member:789',
+        });
+
+        assert.equal(
+            member._client._context.miscHeaders['x-token-trace-initial-endpoint-name'],
+            'GET: /accounts');
+        assert.equal(
+            member._client._context.miscHeaders['x-token-trace-initiated-by'],
+            'FRONTEND');
+        assert.equal(
+            member._client._context.miscHeaders['x-token-trace-member-id'],
+            'm:test:member:789');
     });
 });
