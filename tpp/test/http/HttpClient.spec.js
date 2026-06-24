@@ -15,24 +15,24 @@ describe('Unauthenticated', () => {
     it('should set and clear misc headers', () => {
         const unauthenticatedClient = new HttpClient({env: TEST_ENV, developerKey: devKey});
         unauthenticatedClient.setMiscHeaders({
-            'x-token-trace-initial-service-name': 'Node Server',
-            'x-token-trace-initial-endpoint-type': 'REST_STANDALONE',
+            'token-trace-initial-service-name': 'Node Server',
+            'token-trace-initial-endpoint-type': 'REST_STANDALONE',
         });
         assert.equal(
-            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            unauthenticatedClient._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
         assert.equal(
-            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-endpoint-type'],
+            unauthenticatedClient._context.miscHeaders['token-trace-initial-endpoint-type'],
             'REST_STANDALONE');
 
         unauthenticatedClient.setMiscHeaders({
-            'x-token-trace-initial-endpoint-name': 'GET: /foo',
+            'token-trace-initial-endpoint-name': 'GET: /foo',
         });
         assert.equal(
-            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-endpoint-name'],
+            unauthenticatedClient._context.miscHeaders['token-trace-initial-endpoint-name'],
             'GET: /foo');
         assert.equal(
-            unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            unauthenticatedClient._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
 
         unauthenticatedClient.clearMiscHeaders();
@@ -107,30 +107,30 @@ describe('TokenClient custom headers', () => {
         const Token = new TokenClient({env: TEST_ENV, developerKey: devKey});
 
         Token.setCustomHeaders({
-            'x-token-trace-initial-service-name': 'Node Server',
-            'x-token-trace-initial-endpoint-type': 'REST_STANDALONE',
+            'token-trace-initial-service-name': 'Node Server',
+            'token-trace-initial-endpoint-type': 'REST_STANDALONE',
         });
 
         assert.equal(
-            Token.options.customHeaders['x-token-trace-initial-service-name'],
+            Token.options.customHeaders['token-trace-initial-service-name'],
             'Node Server');
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initial-endpoint-type'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initial-endpoint-type'],
             'REST_STANDALONE');
 
         // Merge additional headers
         Token.setCustomHeaders({
-            'x-token-trace-initiated-by': 'FRONTEND',
+            'token-trace-initiated-by': 'FRONTEND',
         });
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initiated-by'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initiated-by'],
             'FRONTEND');
         // Previous headers still present
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
 
         Token.clearCustomHeaders();

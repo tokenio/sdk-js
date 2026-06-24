@@ -7,32 +7,32 @@ const Token = new TokenClient({env: TEST_ENV, developerKey: devKey});
 describe('Token library', () => {
     it('should set custom headers on TokenClient and Member', () => {
         Token.setCustomHeaders({
-            'x-token-trace-initial-service-name': 'Node Server',
-            'x-token-trace-initial-endpoint-type': 'REST_STANDALONE',
+            'token-trace-initial-service-name': 'Node Server',
+            'token-trace-initial-endpoint-type': 'REST_STANDALONE',
         });
 
         // Verify headers stored in options for propagation to members
         assert.equal(
-            Token.options.customHeaders['x-token-trace-initial-service-name'],
+            Token.options.customHeaders['token-trace-initial-service-name'],
             'Node Server');
         assert.equal(
-            Token.options.customHeaders['x-token-trace-initial-endpoint-type'],
+            Token.options.customHeaders['token-trace-initial-endpoint-type'],
             'REST_STANDALONE');
 
         // Verify headers set on unauthenticated client
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
 
         // Additional headers merge
         Token.setCustomHeaders({
-            'x-token-trace-initiated-by': 'FRONTEND',
+            'token-trace-initiated-by': 'FRONTEND',
         });
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initiated-by'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initiated-by'],
             'FRONTEND');
         assert.equal(
-            Token._unauthenticatedClient._context.miscHeaders['x-token-trace-initial-service-name'],
+            Token._unauthenticatedClient._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
 
         Token.clearCustomHeaders();

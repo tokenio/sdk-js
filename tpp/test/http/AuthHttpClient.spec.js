@@ -17,14 +17,14 @@ describe('AuthHttpClient', () => {
             developerKey: devKey,
         });
         client.setMiscHeaders({
-            'x-token-trace-initial-service-name': 'Node Server',
-            'x-token-trace-initial-endpoint-name': 'POST: /pay',
+            'token-trace-initial-service-name': 'Node Server',
+            'token-trace-initial-endpoint-name': 'POST: /pay',
         });
         assert.equal(
-            client._context.miscHeaders['x-token-trace-initial-service-name'],
+            client._context.miscHeaders['token-trace-initial-service-name'],
             'Node Server');
         assert.equal(
-            client._context.miscHeaders['x-token-trace-initial-endpoint-name'],
+            client._context.miscHeaders['token-trace-initial-endpoint-name'],
             'POST: /pay');
     });
 
@@ -140,7 +140,7 @@ describe('Member misc headers', () => {
         });
 
         assert.equal(
-            member._client._context.miscHeaders['x-token-trace-member-id'],
+            member._client._context.miscHeaders['token-trace-member-id'],
             'm:test:member:456');
     });
 
@@ -154,19 +154,19 @@ describe('Member misc headers', () => {
         });
 
         member.setMiscHeaders({
-            'x-token-trace-initial-endpoint-name': 'GET: /accounts',
-            'x-token-trace-initiated-by': 'FRONTEND',
-            'x-token-trace-member-id': 'm:test:member:789',
+            'token-trace-initial-endpoint-name': 'GET: /accounts',
+            'token-trace-initiated-by': 'FRONTEND',
+            'token-trace-member-id': 'm:test:member:789',
         });
 
         assert.equal(
-            member._client._context.miscHeaders['x-token-trace-initial-endpoint-name'],
+            member._client._context.miscHeaders['token-trace-initial-endpoint-name'],
             'GET: /accounts');
         assert.equal(
-            member._client._context.miscHeaders['x-token-trace-initiated-by'],
+            member._client._context.miscHeaders['token-trace-initiated-by'],
             'FRONTEND');
         assert.equal(
-            member._client._context.miscHeaders['x-token-trace-member-id'],
+            member._client._context.miscHeaders['token-trace-member-id'],
             'm:test:member:789');
     });
 });
