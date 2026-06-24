@@ -1,4 +1,4 @@
-const ALLOWED_PREFIX = 'x-token-trace-';
+const ALLOWED_PREFIX = 'token-trace-';
 
 /**
  * Class to add misc headers
