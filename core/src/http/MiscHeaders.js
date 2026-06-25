@@ -1,3 +1,4 @@
+// @flow
 const ALLOWED_PREFIX = 'token-trace-';
 
 export const MISC_HEADERS = {
@@ -14,7 +15,7 @@ class MiscHeaders {
      * @param {Object} config - config of the request
      * @param {AuthContext} context - auth context for access token redemption
      */
-    setMiscHeaders(config, context) {
+    setMiscHeaders(config: Object, context: Object) {
         if(context && Object.keys(context.miscHeaders).length > 0){
             if (context.miscHeaders.jsonError){
                 config.headers['token-json-error'] = context.miscHeaders.jsonError;
