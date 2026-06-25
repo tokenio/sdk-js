@@ -276,7 +276,7 @@ class AuthHttpClient extends CoreAuthHttpClient {
      * @param {MiscHeaders} miscHeaders
      */
     setMiscHeaders(miscHeaders) {
-        this._context.miscHeaders = miscHeaders;
+        this._context.miscHeaders = {...this._context.miscHeaders, ...miscHeaders};
         this._resetRequestInterceptor();
     }
 

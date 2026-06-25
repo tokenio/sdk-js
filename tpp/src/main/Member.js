@@ -1,5 +1,5 @@
 // @flow
-import {Member as CoreMember, Account} from '@token-io/core';
+import {Member as CoreMember, Account, MISC_HEADERS} from '@token-io/core';
 import config from '../config.json';
 import Representable from './Representable';
 import TokenRequestBuilder from './TokenRequestBuilder';
@@ -53,7 +53,7 @@ export default class Member extends CoreMember {
         this._unauthenticatedClient = new HttpClient(options);
         this._client = new AuthHttpClient(options);
         this._client.setMiscHeaders({
-            'token-trace-member-id': options.memberId,
+            [MISC_HEADERS.TOKEN_TRACE_MEMBER_ID]: options.memberId,
         });
     }
 
