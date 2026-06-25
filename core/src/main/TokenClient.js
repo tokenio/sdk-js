@@ -5,6 +5,7 @@ import HttpClient from '../http/HttpClient';
 import KeyStoreCryptoEngine from '../security/engines/KeyStoreCryptoEngine';
 import MemoryCryptoEngine from '../security/engines/MemoryCryptoEngine';
 import ManualCryptoEngine from '../security/engines/ManualCryptoEngine';
+import {MISC_HEADERS} from '../http/MiscHeaders';
 import Util from '../Util';
 import type Member from './Member';
 import type {
@@ -86,16 +87,20 @@ export class TokenClient {
                 tokenRequestId,
                 realmId
             );
-            const engine = new CryptoEngine(response.data.memberId);
+            const memberId = response.data.memberId;
+            this._unauthenticatedClient.setMiscHeaders({
+                [MISC_HEADERS.TOKEN_TRACE_MEMBER_ID]: memberId,
+            });
+            const engine = new CryptoEngine(memberId);
             const pk1 = await engine.generateKey('PRIVILEGED');
             const pk2 = await engine.generateKey('STANDARD');
             const pk3 = await engine.generateKey('LOW');
             await this._unauthenticatedClient.approveFirstKeys(
-                response.data.memberId,
+                memberId,
                 [pk1, pk2, pk3],
                 engine);
             const member = new Member({
-                memberId: response.data.memberId,
+                memberId,
                 cryptoEngine: engine,
                 ...this.options,
             });

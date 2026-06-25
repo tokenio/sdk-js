@@ -1,5 +1,9 @@
 const ALLOWED_PREFIX = 'token-trace-';
 
+export const MISC_HEADERS = {
+    TOKEN_TRACE_MEMBER_ID: 'token-trace-member-id',
+};
+
 /**
  * Class to add misc headers
  */
