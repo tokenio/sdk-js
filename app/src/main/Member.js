@@ -2,6 +2,7 @@
 import {Member as CoreMember} from '@token-io/core';
 import AccessTokenBuilder from './AccessTokenBuilder';
 import AuthHttpClient from '../http/AuthHttpClient';
+import {MISC_HEADERS} from '@token-io/core';
 import config from '../config.json';
 import HttpClient from '../http/HttpClient';
 import TransferTokenBuilder from './TransferTokenBuilder';
@@ -57,7 +58,7 @@ export default class Member extends CoreMember {
         this._unauthenticatedClient = new HttpClient(options);
         this._client = new AuthHttpClient(options);
         this._client.setMiscHeaders({
-            'token-trace-member-id': options.memberId,
+            [MISC_HEADERS.TOKEN_TRACE_MEMBER_ID]: options.memberId,
         });
     }
 
