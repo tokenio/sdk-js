@@ -164,6 +164,20 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Gets the token request result based on its token request ID.
+     *
+     * @param {string} tokenRequestId - token request ID
+     * @return {Promise} response to the API call
+     */
+    async getTokenRequestResult(tokenRequestId) {
+        const request = {
+            method: 'get',
+            url: `/token-requests/${tokenRequestId}/token_request_result`,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Sets destination account for once if it has'nt been set.
      *
      * @param {string} tokenRequestId - tokenRequestId

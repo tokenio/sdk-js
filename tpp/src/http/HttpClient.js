@@ -23,20 +23,6 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
-     * Get the token request result based on its token request ID.
-     *
-     * @param {string} tokenRequestId - token request ID
-     * @return {Object} response to the API call
-     */
-    async getTokenRequestResult(tokenRequestId) {
-        const request = {
-            method: 'get',
-            url: `/token-requests/${tokenRequestId}/token_request_result`,
-        };
-        return this._instance(request);
-    }
-
-    /**
      * Create and onboard a business member under realm of a bank using eIDAS certificate.
      *
      * @param payload payload with eIDAS certificate and bank id

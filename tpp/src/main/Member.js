@@ -11,6 +11,7 @@ import type {
     BlobPayload,
     Profile,
     ProfilePictureSize,
+    Signature,
     Token,
     TokenRequest,
     TokenOperationResult,
@@ -235,6 +236,21 @@ export default class Member extends CoreMember {
                 encodeURIComponent(JSON.stringify(tokenRequest.requestPayload.callbackState));
             const res = await this._client.storeTokenRequest(tokenRequest);
             return res.data.tokenRequest;
+        });
+    }
+
+    /**
+     * Gets the token request result based on its token request ID.
+     *
+     * @param tokenRequestId - token request ID
+     * @return token ID, signature, and transfer ID if present
+     */
+    getTokenRequestResult(
+        tokenRequestId: string
+    ): Promise<{tokenId: string, signature: Signature, transferId: string}> {
+        return Util.callAsync(this.getTokenRequestResult, async () => {
+            const res = await this._client.getTokenRequestResult(tokenRequestId);
+            return res.data;
         });
     }
 
