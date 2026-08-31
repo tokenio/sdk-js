@@ -1,6 +1,6 @@
 {
     "name": "@token-io/tpp",
-    "version": "1.0.94",
+    "version": "2.0.0",
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {
