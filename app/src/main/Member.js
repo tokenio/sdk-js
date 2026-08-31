@@ -13,6 +13,7 @@ import Account from './Account';
 import type {
     Blob,
     Notification,
+    NotifyStatus,
     BankAuthorization,
     OauthBankAuthorization,
     Profile,
@@ -95,6 +96,22 @@ export default class Member extends CoreMember {
     unlinkAccounts(accountIds: Array<string>): Promise<void> {
         return Util.callAsync(this.unlinkAccounts, async() => {
             await this._client.unlinkAccounts(accountIds);
+        });
+    }
+
+    /**
+     * Sends a notification to a user to request a payment.
+     *
+     * @param tokenPayload - requested transfer token
+     * @return status
+     */
+    notifyPaymentRequest(tokenPayload: Object): Promise<NotifyStatus> {
+        return Util.callAsync(this.notifyPaymentRequest, async () => {
+            if (!tokenPayload.refId) {
+                tokenPayload.refId = Util.generateNonce();
+            }
+            const res = await this._client.notifyPaymentRequest(tokenPayload);
+            return res.data.status;
         });
     }
 

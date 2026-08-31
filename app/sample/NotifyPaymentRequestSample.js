@@ -35,6 +35,6 @@ export default async (Token, payee, payerAlias) => {
         // transfer token will have random refId:
         refId: cartId,
     };
-    const status = await Token.notifyPaymentRequest(paymentRequest);
+    const status = await payee.notifyPaymentRequest(paymentRequest);
     return status;
 };

@@ -166,6 +166,7 @@ export class TokenClient extends Core {
      *
      * @param tokenPayload - requested transfer token
      * @return status
+     * @deprecated use Member#notifyPaymentRequest instead
      */
     notifyPaymentRequest(tokenPayload: Object): Promise<NotifyStatus> {
         if (!tokenPayload.refId) {

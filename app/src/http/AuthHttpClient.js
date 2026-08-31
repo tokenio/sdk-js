@@ -13,6 +13,24 @@ class AuthHttpClient extends CoreAuthHttpClient {
     }
 
     /**
+     * Sends a notification to a user to request a payment.
+     *
+     * @param {Object} tokenPayload - requested transfer token
+     * @return {Object} response to the API call
+     */
+    async notifyPaymentRequest(tokenPayload) {
+        const req = {
+            tokenPayload,
+        };
+        const request = {
+            method: 'post',
+            url: '/request-transfer',
+            data: req,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Subscribes to push notifications.
      *
      * @param {string} handler - who is handling the notifications
