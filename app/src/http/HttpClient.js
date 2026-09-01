@@ -48,6 +48,7 @@ class HttpClient extends CoreHttpClient{
      *
      * @param {Object} tokenPayload - requested transfer token
      * @return {Object} response to the API call
+     * @deprecated use AuthHttpClient#notifyPaymentRequest instead
      */
     async notifyPaymentRequest(tokenPayload) {
         const req = {

@@ -169,3 +169,71 @@ describe('Member misc headers', () => {
             'm:test:member:789');
     });
 });
+
+describe('Member notifyPaymentRequest', () => {
+    it('should send an authenticated POST to the request-transfer path', async () => {
+        const memberId = 'm:test:789';
+        const engine = new MemoryCryptoEngine(memberId);
+        await engine.generateKey('LOW');
+        const member = new Member({
+            env: TEST_ENV,
+            memberId,
+            cryptoEngine: engine,
+            developerKey: devKey,
+        });
+        let captured;
+        // stub both clients, so using the unauthenticated one is caught
+        // rather than escaping to the network
+        for (const client of [member._client, member._unauthenticatedClient]) {
+            client._instance.defaults.adapter = async config => {
+                captured = config;
+                return {
+                    data: {status: 'ACCEPTED'},
+                    status: 200,
+                    statusText: 'OK',
+                    headers: {},
+                    config,
+                };
+            };
+        }
+
+        await member.notifyPaymentRequest({description: 'test', refId: 'ref-1'});
+
+        assert.equal(captured.method, 'post');
+        assert.equal(captured.url, '/request-transfer');
+        assert.deepEqual(JSON.parse(captured.data).tokenPayload.refId, 'ref-1');
+        const authorization = captured.headers.get('Authorization');
+        assert.isOk(authorization, 'request was not authenticated');
+        assert.match(authorization, new RegExp(`member-id=${memberId},`));
+        assert.match(authorization, /signature=[^,]+/);
+    });
+
+    it('should default a missing refId', async () => {
+        const memberId = 'm:test:790';
+        const engine = new MemoryCryptoEngine(memberId);
+        await engine.generateKey('LOW');
+        const member = new Member({
+            env: TEST_ENV,
+            memberId,
+            cryptoEngine: engine,
+            developerKey: devKey,
+        });
+        let captured;
+        for (const client of [member._client, member._unauthenticatedClient]) {
+            client._instance.defaults.adapter = async config => {
+                captured = config;
+                return {
+                    data: {status: 'ACCEPTED'},
+                    status: 200,
+                    statusText: 'OK',
+                    headers: {},
+                    config,
+                };
+            };
+        }
+
+        await member.notifyPaymentRequest({description: 'test'});
+
+        assert.isOk(JSON.parse(captured.data).tokenPayload.refId, 'refId was not defaulted');
+    });
+});
