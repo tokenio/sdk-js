@@ -93,6 +93,20 @@ export class AuthHttpClient {
     }
 
     /**
+     * Gets the member's information.
+     *
+     * @param {string} memberId - member ID to lookup the member for
+     * @return {Object} response to the API call
+     */
+    async getMember(memberId) {
+        const request = {
+            method: 'get',
+            url: `/members/${memberId}`,
+        };
+        return this._instance(request);
+    }
+
+    /**
      * Gets all accounts linked to the member.
      *
      * @return {Object} response to the API call

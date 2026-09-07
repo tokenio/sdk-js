@@ -538,7 +538,7 @@ export class Member {
 
     _getMember(): Object {
         return Util.callAsync(this._getMember, async () => {
-            const res = await this._unauthenticatedClient.getMember(this._id);
+            const res = await this._client.getMember(this._id);
             return res.data.member;
         });
     }
