@@ -5,6 +5,7 @@ export * from './main/Account';
 export * from './http/HttpClient';
 export * from './http/AuthHttpClient';
 export * from './http/MiscHeaders';
+export {default as Crypto} from './security/Crypto';
 export * from './security/Base64UrlCodec';
 export * from './security/engines/KeyStoreCryptoEngine';
 export * from './Util';
