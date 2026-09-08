@@ -1,5 +1,5 @@
 // @flow
-import {Member as CoreMember, Account, MISC_HEADERS} from '@token-io/core';
+import {Member as CoreMember, Account, MISC_HEADERS, Crypto} from '@token-io/core';
 import config from '../config.json';
 import Representable from './Representable';
 import TokenRequestBuilder from './TokenRequestBuilder';
@@ -251,6 +251,71 @@ export default class Member extends CoreMember {
         return Util.callAsync(this.getTokenRequestResult, async () => {
             const res = await this._client.getTokenRequestResult(tokenRequestId);
             return res.data;
+        });
+    }
+
+    /**
+     * Parses a token request callback URL and verifies the state and signature.
+     * This is used at the end of the redirect flow before redeeming the token.
+     *
+     * @param callbackUrl - callback URL
+     * @param csrfToken - CSRF token
+     * @return inner state and token ID
+     */
+    parseTokenRequestCallbackUrl(
+        callbackUrl: string,
+        csrfToken?: string
+    ): Promise<{tokenId: string, innerState: string}> {
+        return Util.callAsync(this.parseTokenRequestCallbackUrl, async () => {
+            const urlParams = Util.parseParamsFromUrl(callbackUrl);
+            if (urlParams.error) throw new Error(`Error at bank: ${urlParams.error}`);
+            return await this.parseTokenRequestCallbackParams(urlParams, csrfToken);
+        });
+    }
+
+    /**
+     * Parses a token request callback object and verifies the state and signature.
+     * This is similar to parseTokenRequestCallbackUrl
+     * but used in the popup flow instead of redirect.
+     *
+     * @param callback
+     * @param csrfToken
+     */
+    parseTokenRequestCallbackParams(
+        callback: {tokenId: string, signature: string, state: string},
+        csrfToken?: string
+    ): Promise<{tokenId: string, innerState: string}> {
+        return Util.callAsync(this.parseTokenRequestCallbackParams, async () => {
+            const resolveAliasRes = await this._unauthenticatedClient.resolveAlias(
+                Util.tokenAlias()
+            );
+            const tokenMemberId = resolveAliasRes.data.member.id;
+            const getMemberRes = await this._client.getMember(tokenMemberId);
+            const tokenMember = getMemberRes.data.member;
+
+            const params = {
+                tokenId: callback.tokenId,
+                state: JSON.parse(decodeURIComponent(callback.state)),
+                signature: JSON.parse(callback.signature),
+            };
+
+            if (csrfToken &&
+                params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
+                throw new Error('Invalid CSRF token');
+            }
+            const signingKey = Util.getSigningKey(tokenMember.keys, params.signature);
+            await Crypto.verifyJson(
+                {
+                    state: callback.state,
+                    tokenId: params.tokenId,
+                },
+                params.signature.signature,
+                Util.bufferKey(signingKey.publicKey)
+            );
+            return {
+                tokenId: params.tokenId,
+                innerState: params.state.innerState,
+            };
         });
     }
 
