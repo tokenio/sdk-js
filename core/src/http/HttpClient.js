@@ -182,18 +182,6 @@ export class HttpClient {
     }
 
     /**
-     * Returns the Token member.
-     *
-     * @return {Promise} response to the API call
-     */
-    async getTokenMember() {
-        const resolveAliasRes = await this.resolveAlias(Util.tokenAlias());
-        const tokenMemberId = resolveAliasRes.data.member.id;
-        const getMemberRes = await this.getMember(tokenMemberId);
-        return getMemberRes.data.member;
-    }
-
-    /**
      * Creates a memberId.
      *
      * @param  {string} memberType - type of member to create. 'PERSONAL' if undefined
