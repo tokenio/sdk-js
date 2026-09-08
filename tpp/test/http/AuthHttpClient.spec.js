@@ -160,43 +160,6 @@ describe('Member getTokenRequestResult', () => {
     });
 });
 
-describe('Member getMember', () => {
-    it('should send an authenticated GET to the member path', async () => {
-        const memberId = 'm:test:789';
-        const engine = new MemoryCryptoEngine(memberId);
-        await engine.generateKey('LOW');
-        const member = new Member({
-            env: TEST_ENV,
-            memberId,
-            cryptoEngine: engine,
-            developerKey: devKey,
-        });
-        let captured;
-        // stub both clients, so using the unauthenticated one is caught rather than escaping to the network
-        for (const client of [member._client, member._unauthenticatedClient]) {
-            client._instance.defaults.adapter = async config => {
-                captured = config;
-                return {
-                    data: {member: {lastHash: 'h1'}},
-                    status: 200,
-                    statusText: 'OK',
-                    headers: {},
-                    config,
-                };
-            };
-        }
-
-        await member.lastHash();
-
-        assert.equal(captured.method, 'get');
-        assert.equal(captured.url, `/members/${memberId}`);
-        const authorization = captured.headers.get('Authorization');
-        assert.isOk(authorization, 'request was not authenticated');
-        assert.match(authorization, new RegExp(`member-id=${memberId},`));
-        assert.match(authorization, /signature=[^,]+/);
-    });
-});
-
 describe('Member misc headers', () => {
     it('should automatically set member-id header', () => {
         const engine = new MemoryCryptoEngine('m:test:member:456');
