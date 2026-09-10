@@ -32,4 +32,33 @@ describe('Util', () => {
         assert.equal(Util.hashAndSerializeAlias(alias),
             '5cmRKhdQaKFrkso7E4UHyY6AB5yUN2UE6JLfAJCQDZo2');
     });
+
+    it('should lower case and trim the alias value', () => {
+        assert.deepEqual(
+            Util.normalizeAlias({type: 'EMAIL', value: '  Alias@Token.IO '}),
+            {type: 'EMAIL', value: 'alias@token.io'});
+        assert.deepEqual(
+            Util.normalizeAlias({type: 'DOMAIN', value: 'Token.IO'}),
+            {type: 'DOMAIN', value: 'token.io'});
+    });
+
+    it('should only trim an EIDAS alias value, as it is case sensitive', () => {
+        assert.deepEqual(
+            Util.normalizeAlias({type: 'EIDAS', value: ' PSDGB-FCA-AbC123 '}),
+            {type: 'EIDAS', value: 'PSDGB-FCA-AbC123'});
+    });
+
+    it('should keep the realm and realm ID, and leave the input untouched', () => {
+        const alias = {type: 'EMAIL', value: 'Alias@Token.io', realm: 'r', realmId: 'm:1'};
+        assert.deepEqual(
+            Util.normalizeAlias(alias),
+            {type: 'EMAIL', value: 'alias@token.io', realm: 'r', realmId: 'm:1'});
+        assert.equal(alias.value, 'Alias@Token.io');
+    });
+
+    it('should reject an unknown alias type', () => {
+        assert.throws(
+            () => Util.normalizeAlias({type: 'INVALID', value: 'x'}),
+            'Invalid alias type: INVALID');
+    });
 });

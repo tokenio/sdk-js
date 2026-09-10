@@ -138,6 +138,30 @@ export class Util {
     }
 
     /**
+     * Normalizes an alias. Mirrors the normalization the backend applies, so no API call
+     * is needed: every alias type is lower cased and trimmed, except EIDAS, whose value is
+     * case sensitive and is only trimmed.
+     *
+     * @param {Object} alias - alias to normalize
+     * @return {Object} a new, normalized alias
+     */
+    static normalizeAlias(alias) {
+        switch (alias.type) {
+        case 'BANK':
+        case 'CUSTOM':
+        case 'DOMAIN':
+        case 'EMAIL':
+        case 'PHONE':
+        case 'USERNAME':
+            return {...alias, value: alias.value.toLowerCase().trim()};
+        case 'EIDAS':
+            return {...alias, value: alias.value.trim()};
+        default:
+            throw new Error('Invalid alias type: ' + alias.type);
+        }
+    }
+
+    /**
      * Support alias hashing
      *
      * @param {Object} alias - alias to be hashed

@@ -197,6 +197,45 @@ describe('Member getMember', () => {
     });
 });
 
+describe('Member addAliases', () => {
+    it('should normalize the alias locally, without calling the API', async () => {
+        const memberId = 'm:test:alias';
+        const engine = new MemoryCryptoEngine(memberId);
+        await engine.generateKey('PRIVILEGED');
+        await engine.generateKey('LOW');
+        const member = new Member({
+            env: TEST_ENV,
+            memberId,
+            cryptoEngine: engine,
+            developerKey: devKey,
+        });
+        const captured = [];
+        // stub both clients, so any call that escapes to the network is caught here instead
+        for (const client of [member._client, member._unauthenticatedClient]) {
+            client._instance.defaults.adapter = async config => {
+                captured.push(config);
+                return {
+                    data: {member: {id: memberId, lastHash: 'h:prev'}},
+                    status: 200,
+                    statusText: 'OK',
+                    headers: {},
+                    config,
+                };
+            };
+        }
+
+        await member.addAliases([{type: 'EMAIL', value: '  Alias@Token.io '}]);
+
+        assert.isNotOk(
+            captured.find(config => config.url.includes('/aliases/normalize')),
+            'alias normalization was sent to the API');
+        const update = captured.find(config => config.url.endsWith('/updates'));
+        assert.isOk(update, 'member update was not sent');
+        const {metadata} = JSON.parse(update.data);
+        assert.equal(metadata[0].addAliasMetadata.alias.value, 'alias@token.io');
+    });
+});
+
 describe('Member misc headers', () => {
     it('should automatically set member-id header', () => {
         const engine = new MemoryCryptoEngine('m:test:member:456');
