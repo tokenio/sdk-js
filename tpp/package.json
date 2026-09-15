@@ -1,6 +1,6 @@
 {
     "name": "@token-io/tpp",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "description": "Token JavaScript TPP SDK",
     "license": "ISC",
     "author": {
@@ -13,6 +13,7 @@
         "url": "git://github.com/tokenio/sdk-js.git"
     },
     "scripts": {
+        "prepublishOnly": "npm run build",
         "lint": "eslint .",
         "test": "npm run build && npm run testOnly",
         "testOnly": "eslint test && mocha-webpack --webpack-config test/webpack.config.js --full-trace --check-leaks -t 60000 -c \"test/**/*.spec.js\" && rimraf keys",
