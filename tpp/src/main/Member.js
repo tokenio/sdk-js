@@ -299,6 +299,9 @@ export default class Member extends CoreMember {
                 signature: JSON.parse(callback.signature),
             };
 
+            if (params.state.csrfTokenHash && !csrfToken) {
+                throw new Error('Missing CSRF token: the callback state is bound to one');
+            }
             if (csrfToken &&
                 params.state.csrfTokenHash !== Util.hashString(csrfToken)) {
                 throw new Error('Invalid CSRF token');
