@@ -178,8 +178,8 @@ export class Member {
     addAliases(aliases: Array<Alias>): Promise<void> {
         return Util.callAsync(this.addAliases, async () => {
             const member = await this._getMember();
-            const normalized = await Promise.all(aliases.map(alias =>
-                this._normalizeAlias(alias, member.partnerId)));
+            const normalized = aliases.map(alias =>
+                this._normalizeAlias(alias, member.partnerId));
             const prevHash = await this.lastHash();
             await this._client.addAliases(prevHash, normalized);
         });
@@ -543,23 +543,17 @@ export class Member {
         });
     }
 
-    _normalizeAlias(alias: Alias, partnerId: string): Promise<Alias> {
-        return Util.callAsync(this._normalizeAlias, async () => {
-            const normalized =
-                (await this._unauthenticatedClient.normalizeAlias(alias)).data.alias;
+    _normalizeAlias(alias: Alias, partnerId: string): Alias {
+        const normalized = Util.normalizeAlias(alias);
 
-            if (partnerId && partnerId !== 'token') {
-                // Realm must equal member's partner ID if affiliated
-                if (normalized.realm && normalized.realm !== partnerId) {
-                    throw new Error('Alias realm must equal partner ID: ' + partnerId);
-                }
-                normalized.realm = partnerId;
+        if (partnerId && partnerId !== 'token') {
+            // Realm must equal member's partner ID if affiliated
+            if (normalized.realm && normalized.realm !== partnerId) {
+                throw new Error('Alias realm must equal partner ID: ' + partnerId);
             }
-            if (alias.realmId) {
-                normalized.realmId = alias.realmId;
-            }
-            return normalized;
-        });
+            normalized.realm = partnerId;
+        }
+        return normalized;
     }
 }
 
