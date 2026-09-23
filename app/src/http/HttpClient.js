@@ -63,34 +63,11 @@ class HttpClient extends CoreHttpClient{
     }
 
     /**
-     * Notifies subscribed devices that a token should be created and endorsed.
-     *
-     * @param tokenRequestId - token request ID
-     * @param addKey - (optional) add key payload
-     * @param receiptContact - (optional) receipt contact
-     * @return {Object} response to the API call
-     */
-    async notifyCreateAndEndorseToken(tokenRequestId, addKey, receiptContact) {
-        const req = {
-            tokenRequestId: tokenRequestId,
-            addKey: addKey,
-            contact: receiptContact,
-        };
-        const request = {
-            method: 'post',
-            url: '/notify/create-and-endorse-token',
-            data: req,
-        };
-        return this._instance(request);
-    }
-
-    /**
      * Notifies subscribed devices that a token payload should be endorsed and keys should be
      * added.
      *
      * @param {Object} endorseAndAddKey - the endorseAndAddKey payload to be sent
      * @return {Object} response to the API call
-     * @deprecated use notifyCreateAndEndorseToken instead
      */
     notifyEndorseAndAddKey(endorseAndAddKey) {
         const req = {
@@ -121,25 +98,6 @@ class HttpClient extends CoreHttpClient{
             data: req,
         };
         if (blocking) request.adapter = BlockingAdapter;
-        return this._instance(request);
-    }
-
-    /**
-     * Updates an existing token request.
-     *
-     * @param {string} requestId - token request ID
-     * @param {Object} options - new token request options
-     * @return {Promise} response to the API call
-     */
-    async updateTokenRequest(requestId, options) {
-        const request = {
-            method: 'put',
-            url: `/token-requests/${requestId}`,
-            data: {
-                requestId: requestId,
-                requestOptions: options,
-            },
-        };
         return this._instance(request);
     }
 

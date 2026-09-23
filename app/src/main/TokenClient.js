@@ -14,7 +14,6 @@ import type {
     ReceiptContact,
     Signature,
     TokenRequest,
-    TokenRequestOptions,
     KeyStoreCryptoEngine,
 } from '@token-io/core';
 
@@ -179,34 +178,6 @@ export class TokenClient extends Core {
     }
 
     /**
-     * Notifies subscribed devices that a token should be created and endorsed.
-     *
-     * @param tokenRequestId - token request ID
-     * @param keys - (optional) token keys to be added
-     * @param deviceMetadata - device metadata of the keys
-     * @param receiptContact - (optional) receipt contact
-     * @return {Object} response to the API call
-     */
-    notifyCreateAndEndorseToken(
-        tokenRequestId: string,
-        keys: Array<Key>,
-        deviceMetadata: DeviceMetadata,
-        receiptContact: ReceiptContact
-    ): Promise<{notificationId: string, status: NotifyStatus}> {
-        const addKey = {
-            keys,
-            deviceMetadata,
-        };
-        return Util.callAsync(this.notifyCreateAndEndorseToken, async () => {
-            const res = await this._unauthenticatedClient.notifyCreateAndEndorseToken(
-                tokenRequestId,
-                addKey,
-                receiptContact);
-            return res.data;
-        });
-    }
-
-    /**
      * Notifies subscribed devices that a token payload should be endorsed and keys should be
      * added.
      *
@@ -218,7 +189,6 @@ export class TokenClient extends Core {
      * @param state - (optional) token request state for signing
      * @param receiptContact - (optional) receipt contact
      * @return notification Id and notify status
-     * @deprecated use notifyCreateAndEndorseToken instead
      */
     notifyEndorseAndAddKey(
         tokenPayload: Object,
@@ -275,19 +245,6 @@ export class TokenClient extends Core {
                 typeof res.data.dispatchRequest === 'function') {
                 return res.data.dispatchRequest;
             }
-        });
-    }
-
-    /**
-     * Updates an existing token request.
-     *
-     * @param requestId - token request ID
-     * @param options - new token request options
-     * @return empty promise
-     */
-    updateTokenRequest(requestId: string, options: TokenRequestOptions): Promise<void> {
-        return Util.callAsync(this.updateTokenRequest, async () => {
-            await this._unauthenticatedClient.updateTokenRequest(requestId, options);
         });
     }
 
